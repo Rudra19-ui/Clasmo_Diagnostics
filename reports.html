@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports — Clasmo Diagnostics</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="dashboard">
+  <div id="clasmo-shell"></div>
+  <main class="dash-main">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ul>
+        <li><a href="search.html">Home</a></li>
+        <li>Reports</li>
+      </ul>
+    </nav>
+    <h2 class="page-heading">Reports</h2>
+    <ul class="report-links">
+      <li id="daily"><a href="#daily">Daily Summary</a> — registrations and revenue for the day</li>
+      <li id="collection"><a href="#collection">Collection Report</a> — home collection and phlebotomy</li>
+      <li id="outstanding"><a href="#outstanding">Outstanding Report</a> — pending payments</li>
+      <li id="tat"><a href="#tat">TAT Report</a> — turnaround time analysis</li>
+    </ul>
+    <section class="content-panel">
+      <p>Select a report from the list above. Use filters and click Generate.</p>
+      <div id="filter-area"></div>
+      <button type="button" class="btn-blue">Generate Report</button>
+      <div class="card-placeholder tall" style="margin-top:12px">Report preview area</div>
+    </section>
+  </main>
+  <footer class="dash-footer">Copyright © 2014 &amp; Forever Blue Pearl Infotech Pvt. Ltd / All rights reserved.</footer>
+  <script src="js/auth.js"></script>
+  <script src="js/layout.js"></script>
+  <script>
+    ClasmoLayout.renderShell('reports');
+    document.getElementById('filter-area').innerHTML = ClasmoLayout.renderFilterPanel();
+  </script>
+</body>
+</html>

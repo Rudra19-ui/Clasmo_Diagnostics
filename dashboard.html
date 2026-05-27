@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>eLab Dashboard — Clasmo Diagnostics</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="dashboard">
+  <div id="clasmo-shell"></div>
+  <main class="dash-main">
+    <div class="page-title-bar">
+      <h2>eLab Dashboard</h2>
+      <div class="dash-filters-inline">
+        <label>From Date <input type="text" value="27-05-2026"></label>
+        <label>To Date <input type="text" value="27-05-2026"></label>
+        <select><option>MRP/Net Amount</option><option>Count</option></select>
+        <button type="button" class="btn-blue">UPDATE</button>
+      </div>
+    </div>
+    <div class="dashboard-grid">
+      <section class="dash-card span-2">
+        <h3>TAT Summary</h3>
+        <div class="card-controls">
+          <label>Select Test:</label>
+          <select><option>Display Name</option></select>
+          <input type="text" placeholder="Search test">
+        </div>
+        <div class="card-placeholder chart-placeholder">Chart / summary data</div>
+      </section>
+      <section class="dash-card">
+        <h3>Test Level Status Summary</h3>
+        <div class="card-placeholder">Status breakdown</div>
+      </section>
+      <section class="dash-card span-2">
+        <h3>Department wise Dashboard Summary</h3>
+        <div class="card-controls two-col">
+          <div><label>Department</label><select multiple size="5"><option>Biochemistry</option><option>Hematology</option></select></div>
+          <div><label>Test Category</label><select multiple size="5"><option>Routine</option><option>Special</option></select></div>
+        </div>
+        <button type="button" class="btn-blue">Search</button>
+        <div class="card-placeholder">Department summary</div>
+      </section>
+      <section class="dash-card">
+        <h3>Collection Center wise Summary</h3>
+        <div class="card-placeholder">Center summary</div>
+      </section>
+      <section class="dash-card full-width">
+        <h3>Affiliation wise Summary</h3>
+        <div class="card-controls wrap">
+          <select><option>Registration wise</option></select>
+          <select><option>Department</option></select>
+          <select><option>Test Category</option></select>
+          <button type="button" class="btn-blue">Get Summary</button>
+          <button type="button" class="btn-outline">Aff. Summary Export To Excel</button>
+          <label><input type="radio" name="aff" checked> All Affiliation</label>
+          <label><input type="radio" name="aff"> Default Top 10 Affiliation</label>
+          <select><option>Sales Rep: Select</option></select>
+        </div>
+        <div class="card-placeholder tall">Affiliation summary table</div>
+      </section>
+    </div>
+  </main>
+  <footer class="dash-footer">Copyright © 2014 &amp; Forever Blue Pearl Infotech Pvt. Ltd / All rights reserved.</footer>
+  <script src="js/auth.js"></script>
+  <script src="js/layout.js"></script>
+  <script>ClasmoLayout.renderShell('dashboard');</script>
+</body>
+</html>

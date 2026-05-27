@@ -1,0 +1,13 @@
+# Cursor / IDE
+agent-transcripts/
+terminals/
+mcps/
+canvases/
+.cursor/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dependencies (if added later)
+node_modules/

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Registration — CLASMO DIAGNOSTICS</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="dashboard page-registration">
+  <div id="clasmo-shell"></div>
+  <main class="dash-main">
+    <section class="form-grid" aria-label="Patient information">
+      <div class="form-col">
+        <div class="form-row">
+          <label>Patient Type</label>
+          <select><option>O.P.D.</option><option>I.P.D.</option><option>Corporate</option></select>
+        </div>
+        <div class="form-row">
+          <label>Patient Name <span class="req">*</span></label>
+          <div class="name-row">
+            <select><option>Mr.</option><option>Mrs.</option><option>Ms.</option><option>Dr.</option></select>
+            <input type="text" required placeholder="Full name">
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Gender</label>
+          <div class="radio-group">
+            <label><input type="radio" name="gender" value="male" checked> Male</label>
+            <label><input type="radio" name="gender" value="female"> Female</label>
+            <label><input type="radio" name="gender" value="none"> None</label>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Address</label>
+          <input type="text">
+        </div>
+        <div class="form-row">
+          <label>Doctor Name</label>
+          <input type="text">
+          <button type="button" class="btn-add" title="Add doctor">+</button>
+        </div>
+        <div class="form-row">
+          <label>Barcode</label>
+          <a href="#">Manage Barcode</a>
+        </div>
+        <div class="form-row">
+          <label></label>
+          <label><input type="checkbox"> Send Result in SMS</label>
+        </div>
+      </div>
+
+      <div class="form-col">
+        <div class="form-row">
+          <label>Patient ID</label>
+          <input type="text">
+        </div>
+        <div class="form-row">
+          <label>Age</label>
+          <div class="age-group">
+            <input type="number" class="short" min="0" placeholder="0"><span>Y</span>
+            <input type="number" class="short" min="0" max="11" placeholder="0"><span>M</span>
+            <input type="number" class="short" min="0" max="30" placeholder="0"><span>D</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Email</label>
+          <input type="email">
+        </div>
+        <div class="form-row">
+          <label>City</label>
+          <input type="text">
+        </div>
+        <div class="form-row">
+          <label></label>
+          <label><input type="checkbox"> Is Register</label>
+        </div>
+        <div class="form-row">
+          <label></label>
+          <label><input type="checkbox" id="homeCollection"> Home Collection</label>
+        </div>
+        <div class="form-row">
+          <label>Sample Collected At</label>
+          <input type="text">
+        </div>
+      </div>
+
+      <div class="form-col">
+        <div class="form-row">
+          <label>Lab Code</label>
+          <input type="text" id="labCode" value="270526041" readonly>
+        </div>
+        <div class="form-row">
+          <label>Registration Date</label>
+          <input type="text" id="regDate" readonly>
+        </div>
+        <div class="form-row">
+          <label>Date of Birth</label>
+          <input type="text" placeholder="DD-MM-YYYY">
+        </div>
+        <div class="form-row">
+          <label>Mobile Number</label>
+          <input type="tel">
+        </div>
+        <div class="form-row">
+          <label>Collection Center</label>
+          <input type="text" value="CLASMO Diagnostics pvt">
+        </div>
+        <div class="form-row">
+          <label>Affiliation / Referred Doctor</label>
+          <input type="text">
+          <button type="button" class="btn-add" title="Add doctor">+</button>
+        </div>
+        <div class="form-row">
+          <label>Collection Date</label>
+          <input type="text" id="collectionDate" readonly>
+        </div>
+        <div class="form-row">
+          <label>Collection/Round Boy</label>
+          <input type="text">
+        </div>
+      </div>
+    </section>
+
+    <section class="test-section">
+      <div class="test-filters">
+        <label>Search By</label>
+        <select id="searchBy"><option>Short Name</option><option>Test Code</option><option>Full Name</option></select>
+        <input type="search" id="testSearch" placeholder="Search tests...">
+        <label>Select Test Category</label>
+        <select><option value="">-- All --</option><option>Biochemistry</option><option>Hematology</option><option>Serology</option></select>
+        <label>Select Test Profile</label>
+        <select><option value="">-- None --</option><option>Full Body Checkup</option><option>Diabetes Panel</option></select>
+      </div>
+
+      <div class="dual-list">
+        <div class="list-panel">
+          <div class="list-tabs">
+            <button type="button" class="active">Favourite Tests</button>
+            <button type="button">Test List</button>
+          </div>
+          <h4>Test List</h4>
+          <select id="availableTests" multiple size="12"></select>
+        </div>
+
+        <div class="list-actions">
+          <button type="button" id="btnAdd">Add &gt;&gt;</button>
+          <button type="button" id="btnAddAll">Add All &gt;&gt;</button>
+          <button type="button" id="btnRemove">&lt;&lt; Remove</button>
+          <button type="button" id="btnRemoveAll">&lt;&lt; Remove All</button>
+        </div>
+
+        <div class="list-panel">
+          <h4>Selected Test List</h4>
+          <div class="selected-header">
+            <span>Test Name</span>
+            <span>Price</span>
+            <span>Discount</span>
+            <span>Refund</span>
+          </div>
+          <select id="selectedTests" multiple size="12"></select>
+        </div>
+      </div>
+
+      <div class="comment-row">
+        <div>
+          <label>Enter Comment</label>
+          <textarea placeholder="Enter Comment"></textarea>
+        </div>
+        <div class="upload-trf">
+          <label>Upload TRF</label>
+          <input type="file" id="trfUpload" hidden>
+          <button type="button" onclick="document.getElementById('trfUpload').click()">Choose File</button>
+          <span id="trfFileName" style="font-size:11px;color:#666;"></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="billing-section">
+      <div class="billing-row">
+        <label>Discount (Test)</label>
+        <input type="number" value="0" min="0" step="0.01">
+        <label>Discount (Regn)</label>
+        <input type="number" value="0" min="0" step="0.01">
+        <select><option>Amt</option><option>%</option></select>
+        <label>Reason</label>
+        <select><option>— Select —</option><option>Staff</option><option>Corporate</option><option>Camp</option></select>
+        <label>Authorisation</label>
+        <select><option>— Select —</option><option>Manager</option><option>Director</option></select>
+      </div>
+      <div class="billing-row payment-methods">
+        <span>Payment:</span>
+        <label><input type="radio" name="payment" value="cash" checked> Cash</label>
+        <label><input type="radio" name="payment" value="credit"> Credit Card</label>
+        <label><input type="radio" name="payment" value="debit"> Debit Card</label>
+        <label><input type="radio" name="payment" value="cheque"> Cheque</label>
+        <label><input type="radio" name="payment" value="others"> Others</label>
+      </div>
+      <div class="billing-row">
+        <label><input type="checkbox" id="urgency"> Urgency</label>
+        <label>Total</label>
+        <input type="text" id="total" readonly value="0.00">
+        <label>Visiting Charges</label>
+        <input type="number" id="visiting" value="0" min="0" step="0.01">
+        <label>Net Amount</label>
+        <input type="text" id="netAmount" readonly value="0.00">
+        <label>Paid</label>
+        <input type="number" id="paid" value="0" min="0" step="0.01">
+        <label>Balance</label>
+        <input type="text" id="balance" readonly value="0.00">
+        <label>Refund Amount</label>
+        <input type="number" id="refund" value="0" min="0" step="0.01">
+        <label>Recovery Amount</label>
+        <input type="number" id="recovery" value="0" min="0" step="0.01">
+        <label>Bill Receipt No.</label>
+        <input type="text" class="wide">
+      </div>
+    </section>
+  </main>
+
+  <div class="dash-actions">
+    <button type="button" onclick="location.href='search.html'">&lt;&lt; Test Search</button>
+    <button type="button" class="primary" id="btnSave">Save</button>
+    <button type="button" id="btnProceed">Proceed &gt;&gt;</button>
+    <button type="button" id="btnClear">Clear</button>
+  </div>
+
+  <footer class="dash-footer">
+    Copyright © 2014 &amp; Forever Blue Pearl Infotech Pvt. Ltd / All rights reserved.
+  </footer>
+
+  <script src="js/auth.js"></script>
+  <script src="js/layout.js"></script>
+  <script>ClasmoLayout.renderShell('registration');</script>
+  <script src="js/app.js"></script>
+</body>
+</html>

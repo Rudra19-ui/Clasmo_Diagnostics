@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — Clasmo Diagnostics</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="login-page">
+  <header class="login-header">
+    <div class="login-logo">
+      <div class="logo-mark">C</div>
+      <div>
+        <h1>Clasmo Diagnostics</h1>
+        <p>Laboratory Information Management System</p>
+      </div>
+    </div>
+    <p class="login-contact">+91-8975273383 / +91-9146188320</p>
+  </header>
+
+  <main class="login-main">
+    <section class="login-card">
+      <ul class="login-tabs" role="tablist">
+        <li><button type="button" class="active" data-role="user" role="tab">User Login</button></li>
+        <li><button type="button" data-role="admin" role="tab">Admin Login</button></li>
+      </ul>
+
+      <form id="loginForm" class="login-form-card">
+        <input type="hidden" id="loginRole" name="role" value="user">
+        <div class="field">
+          <label for="username">Username *</label>
+          <input type="text" id="username" name="username" required autocomplete="username" placeholder="Enter username">
+        </div>
+        <div class="field">
+          <label for="password">Password *</label>
+          <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Enter password">
+        </div>
+        <p class="login-error" id="loginError" hidden></p>
+        <button type="submit" class="btn-login-full">Login</button>
+        <label class="remember"><input type="checkbox" name="remember"> Remember Me</label>
+      </form>
+
+      <aside class="trial-box">
+        <h2>Trial login (for testing)</h2>
+        <ul class="trial-credentials">
+          <li>
+            <strong>User</strong>
+            <ul>
+              <li>Username: <code>user_test</code></li>
+              <li>Password: <code>password123</code></li>
+            </ul>
+            <button type="button" class="btn-fill" data-user="user_test" data-pass="password123" data-role="user">Use User credentials</button>
+          </li>
+          <li>
+            <strong>Admin</strong>
+            <ul>
+              <li>Username: <code>admin_test</code></li>
+              <li>Password: <code>admin123</code></li>
+            </ul>
+            <button type="button" class="btn-fill" data-user="admin_test" data-pass="admin123" data-role="admin">Use Admin credentials</button>
+          </li>
+        </ul>
+      </aside>
+    </section>
+
+    <section class="login-features">
+      <h2>Modules</h2>
+      <ul class="module-list">
+        <li>Search &amp; patient lookup</li>
+        <li>Test Registration &amp; billing</li>
+        <li>Test Result &amp; authorization</li>
+        <li>Administration <em>(Admin only)</em></li>
+        <li>Reports &amp; Dashboard</li>
+        <li>Device Request &amp; home collection</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="dash-footer login-footer">
+    Copyright © 2014 &amp; Forever Blue Pearl Infotech Pvt. Ltd / All rights reserved.
+  </footer>
+
+  <script src="js/auth.js"></script>
+  <script>
+    (function () {
+      if (window.ClasmoAuth.getSession()) {
+        window.location.href = 'search.html';
+        return;
+      }
+
+      const form = document.getElementById('loginForm');
+      const roleInput = document.getElementById('loginRole');
+      const errorEl = document.getElementById('loginError');
+      const tabs = document.querySelectorAll('.login-tabs button');
+
+      tabs.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          tabs.forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          roleInput.value = btn.dataset.role;
+        });
+      });
+
+      document.querySelectorAll('.btn-fill').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          document.getElementById('username').value = btn.dataset.user;
+          document.getElementById('password').value = btn.dataset.pass;
+          roleInput.value = btn.dataset.role;
+          tabs.forEach(function (b) {
+            b.classList.toggle('active', b.dataset.role === btn.dataset.role);
+          });
+        });
+      });
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        errorEl.hidden = true;
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const expectedRole = roleInput.value;
+        const result = window.ClasmoAuth.login(username, password);
+
+        if (!result.ok) {
+          errorEl.textContent = result.message;
+          errorEl.hidden = false;
+          return;
+        }
+        if (result.session.role !== expectedRole) {
+          window.ClasmoAuth.logout();
+          errorEl.textContent = 'This account is not a ' + expectedRole + '. Switch tab or use correct trial login.';
+          errorEl.hidden = false;
+          sessionStorage.removeItem('clasmo_session');
+          return;
+        }
+        window.location.href = 'search.html';
+      });
+    })();
+  </script>
+</body>
+</html>

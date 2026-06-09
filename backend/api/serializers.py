@@ -24,10 +24,10 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
 
     def validate(self, attrs):
-        user = authenticate(
-            username=attrs['username'].strip().lower(),
-            password=attrs['password'],
-        )
+        username = attrs['username'].strip()
+        user = authenticate(username=username, password=attrs['password'])
+        if not user:
+            user = authenticate(username=username.lower(), password=attrs['password'])
         if not user:
             raise serializers.ValidationError('Invalid username or password.')
         attrs['user'] = user

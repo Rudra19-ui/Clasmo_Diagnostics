@@ -1,6 +1,8 @@
 from datetime import datetime
 
 from django.db.models import Count, Q, Sum
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, permissions, status
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -34,6 +36,7 @@ class IsAdmin(permissions.BasePermission):
         return request.user.is_authenticated and request.user.role == User.ROLE_ADMIN
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
 

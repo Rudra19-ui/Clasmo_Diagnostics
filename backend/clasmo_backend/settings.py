@@ -22,13 +22,25 @@ if railway_domain := os.environ.get('RAILWAY_PUBLIC_DOMAIN'):
 if os.environ.get('RAILWAY_ENVIRONMENT'):
     ALLOWED_HOSTS.extend(['.up.railway.app', '.railway.app'])
 
+_default_domains = 'clasmodiagnostics.com,www.clasmodiagnostics.com'
+for domain in os.environ.get('PRODUCTION_DOMAINS', _default_domains).split(','):
+    domain = domain.strip()
+    if domain and domain not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(domain)
+
 CSRF_TRUSTED_ORIGINS = [
     origin.strip()
     for origin in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',')
     if origin.strip()
 ]
 if railway_domain := os.environ.get('RAILWAY_PUBLIC_DOMAIN'):
-    CSRF_TRUSTED_ORIGINS.extend([f'https://{railway_domain}'])
+    CSRF_TRUSTED_ORIGINS.append(f'https://{railway_domain}')
+for domain in ALLOWED_HOSTS:
+    if domain.startswith('.'):
+        continue
+    for origin in (f'https://{domain}', f'http://{domain}'):
+        if origin not in CSRF_TRUSTED_ORIGINS:
+            CSRF_TRUSTED_ORIGINS.append(origin)
 
 INSTALLED_APPS = [
     'django.contrib.admin',

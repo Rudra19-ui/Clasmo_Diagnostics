@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: clasmo
+      POSTGRES_USER: clasmo
+      POSTGRES_PASSWORD: clasmo
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U clasmo -d clasmo']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    ports:
+      - '8000:8000'
+    environment:
+      DATABASE_URL: postgres://clasmo:clasmo@db:5432/clasmo
+      SECRET_KEY: local-dev-secret-change-in-production
+      DEBUG: 'false'
+      ALLOWED_HOSTS: localhost,127.0.0.1
+      RUN_SEED: 'true'
+      PORT: '8000'
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

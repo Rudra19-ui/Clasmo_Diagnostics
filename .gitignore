@@ -9,5 +9,12 @@ canvases/
 .DS_Store
 Thumbs.db
 
-# Dependencies (if added later)
+# Dependencies
 node_modules/
+backend/venv/
+backend/db.sqlite3
+backend/media/
+frontend/dist/
+*.pyc
+__pycache__/
+.env

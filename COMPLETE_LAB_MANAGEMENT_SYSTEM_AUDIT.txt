@@ -1,0 +1,582 @@
+================================================================================
+COMPLETE LAB MANAGEMENT SYSTEM AUDIT REPORT
+================================================================================
+Project: Clasmo Diagnostics LIMS
+Stack: React (Vite) + Django REST Framework + SQLite
+Audit Date: June 8, 2026
+Auditor Role: Senior Architect / QA / DevOps / DBA / Security / Product
+
+================================================================================
+EXECUTIVE SUMMARY
+================================================================================
+
+This project is a UI-rich prototype / early MVP migrated from a static HTML LIMS
+mockup into a React + Django architecture. It has working authentication,
+registration search, patient test registration (create-only), a test catalog,
+basic dashboard/report summaries, and two device-request forms.
+
+It is NOT a complete lab management system. Most clinical, billing, reporting,
+inventory, multi-branch, and enterprise modules are missing or non-functional.
+The system is NOT production-ready.
+
+Completion Summary:
+  Frontend Completion    : 38%
+  Backend Completion     : 22%
+  Database Completion    : 18%
+  Security Completion    : 32%
+  Overall Project        : ~25%
+
+Production Readiness Classification: PROTOTYPE -> Early MVP (closer to Prototype)
+
+================================================================================
+PHASE 1: PROJECT STRUCTURE AUDIT
+================================================================================
+
+Area                    Status  Notes
+--------------------------------------------------------------------------------
+Frontend structure      OK      frontend/src/ with components/, pages/, services/,
+                                context/, utils/, styles/
+Backend structure       OK      Django project clasmo_backend/ + single api/ app
+Database structure      PARTIAL SQLite only; 8 domain tables; no migrations beyond initial
+API structure           PARTIAL Flat /api/ REST; 15 endpoints; no versioning (/api/v1/)
+Authentication system   PARTIAL DRF Token auth (not JWT); login/logout/me
+Authorization system    PARTIAL Binary roles: user / admin; one IsAdmin permission class
+User roles              PARTIAL Only 2 roles; no Receptionist/Technician/Pathologist/Accountant
+State management        PARTIAL AuthContext only; page-level useState; no Redux/Zustand/React Query
+Folder organization     OK      Reasonable separation; legacy static HTML still in repo root
+Environment variables   PARTIAL VITE_API_URL referenced; no .env or .env.example committed
+Configuration files     PARTIAL settings.py, vite.config.js, requirements.txt exist; no prod config
+Build process           PARTIAL npm run build works; Django runserver only; no WSGI/ASGI prod setup
+Deployment readiness    MISSING No Docker, CI/CD, nginx, gunicorn, health checks, or staging config
+
+Legacy / Duplicate Code:
+- Original static prototype still present: index.html, css/, js/, device/ at repo root
+- Creates confusion about which codebase is canonical (React vs static HTML)
+
+================================================================================
+PHASE 2: FEATURE AUDIT
+================================================================================
+
+--------------------------------------------------------------------------------
+PATIENT MANAGEMENT
+--------------------------------------------------------------------------------
+Feature                 Status  Evidence
+Patient Registration    PARTIAL RegistrationCreateView + Registration.jsx - creates patient + registration
+Patient Search          PARTIAL Via registration search (/api/registrations/) not dedicated patient API
+Patient History         MISSING No endpoint or UI for patient timeline
+Patient Edit              MISSING No PATCH/PUT on patients
+Patient Delete            MISSING No delete endpoint
+Visit History             MISSING No patient_visits model
+Duplicate Detection       MISSING Every registration creates a new Patient record
+
+--------------------------------------------------------------------------------
+BILLING
+--------------------------------------------------------------------------------
+Feature                 Status  Evidence
+Invoice Generation      MISSING No Invoice model or PDF
+GST                     MISSING Not implemented
+Discounts               PARTIAL Model fields exist; frontend does not send them on save
+Payment Collection      PARTIAL paid, balance, net_amount on Registration
+Payment Methods         PARTIAL Stored on registration; UI radio buttons work
+Refund Management       PARTIAL refund_amount field only; no workflow
+Receipt Printing        MISSING "Direct Print" button is non-functional
+
+--------------------------------------------------------------------------------
+LAB TEST MANAGEMENT
+--------------------------------------------------------------------------------
+Feature                 Status  Evidence
+Create Tests            MISSING GET /api/tests/ only; seeded via seed_data
+Edit Tests              MISSING No update endpoint
+Delete Tests            MISSING No delete endpoint
+Test Categories         PARTIAL Model + list endpoint; no CRUD UI
+Test Packages           MISSING UI dropdown placeholder only
+Profiles                MISSING UI placeholder only
+
+--------------------------------------------------------------------------------
+TEST PARAMETERS
+--------------------------------------------------------------------------------
+Parameter Creation          MISSING
+Reference Ranges            MISSING
+Gender-wise Ranges          MISSING
+Age-wise Ranges             MISSING
+Critical Value Alerts       MISSING
+
+--------------------------------------------------------------------------------
+SAMPLE COLLECTION
+--------------------------------------------------------------------------------
+Feature                 Status  Evidence
+Sample Collection       PARTIAL Status workflow as string field only
+Barcode Generation      MISSING UI link "Manage Barcode" is href="#"
+Sample Tracking         MISSING No tracking model
+Collection Status       PARTIAL Filterable status on registrations
+
+--------------------------------------------------------------------------------
+REPORT MANAGEMENT
+--------------------------------------------------------------------------------
+Feature                 Status  Evidence
+Report Entry            MISSING Test Result page is search table only
+Report Verification     MISSING
+Report Approval         MISSING
+PDF Generation          MISSING
+Digital Signature       MISSING
+Report Download         MISSING
+
+--------------------------------------------------------------------------------
+DOCTOR MANAGEMENT
+--------------------------------------------------------------------------------
+Referring Doctors       MISSING doctor_name free text on Patient only
+Doctor Database         MISSING
+Doctor Commission       MISSING
+
+--------------------------------------------------------------------------------
+USER MANAGEMENT
+--------------------------------------------------------------------------------
+Admin                   PARTIAL admin_test user + Django admin
+Receptionist            MISSING
+Technician              MISSING
+Pathologist             MISSING
+Accountant              MISSING
+User CRUD UI            MISSING Administration "Open" buttons do nothing
+
+--------------------------------------------------------------------------------
+ROLE BASED ACCESS CONTROL
+--------------------------------------------------------------------------------
+Permissions             PARTIAL user vs admin only
+Route Protection        PARTIAL ProtectedRoute.jsx - admin route guarded
+API Protection          PARTIAL Most endpoints: any authenticated user; only /users/ is admin-only
+
+--------------------------------------------------------------------------------
+INVENTORY MANAGEMENT - ALL MISSING
+--------------------------------------------------------------------------------
+Stock Management            MISSING
+Reagent Tracking            MISSING
+Low Stock Alerts            MISSING
+Expiry Tracking             MISSING
+
+--------------------------------------------------------------------------------
+SUBSCRIPTION MANAGEMENT - ALL MISSING
+--------------------------------------------------------------------------------
+Plan Creation               MISSING
+Billing Cycle               MISSING
+Renewal                     MISSING
+Expiration                  MISSING
+Feature Restrictions        MISSING
+
+--------------------------------------------------------------------------------
+MULTI BRANCH SUPPORT - ALL MISSING
+--------------------------------------------------------------------------------
+Branch Creation             MISSING
+Branch Isolation            MISSING
+Branch Reporting            MISSING
+
+--------------------------------------------------------------------------------
+MULTI TENANT SUPPORT - ALL MISSING
+--------------------------------------------------------------------------------
+Tenant Isolation            MISSING
+Data Security               MISSING
+Tenant Based Queries        MISSING
+
+================================================================================
+PHASE 3: DATABASE AUDIT
+================================================================================
+
+TABLES THAT EXIST (Django -> DB)
+--------------------------------------------------------------------------------
+Table                   Purpose
+api_user                Custom user (role, display_name, lab_code)
+api_testcategory        Test categories
+api_test                Test catalog
+api_patient             Patient demographics
+api_registration        Visit/order + billing fields
+api_registrationtest    Tests on a registration
+api_pickuprequest       Home pickup requests
+api_labmessage          Messages to lab
+authtoken_token         API tokens
+Django system tables    auth, sessions, admin, etc.
+
+REQUIRED TABLES - VERIFICATION
+--------------------------------------------------------------------------------
+Required Table          Exists? Actual Implementation
+users                   YES     api_user
+roles                   NO      role CharField on user (2 values)
+patients                YES     api_patient
+patient_visits          NO      api_registration partially serves this
+tests                   YES     api_test
+test_parameters         NO
+sample_collection       NO
+reports                 NO
+report_values           NO
+payments                NO      Billing fields embedded in registration
+subscriptions           NO
+branches                NO
+inventory               NO
+doctors                 NO
+doctor_commissions      NO
+
+ERD SUMMARY
+--------------------------------------------------------------------------------
+User          -> creates -> Registration, PickupRequest, LabMessage
+Patient       -> has     -> Registration (one-to-many)
+Registration  -> contains -> RegistrationTest (one-to-many)
+Test          -> referenced by -> RegistrationTest
+TestCategory  -> categorizes -> Test
+
+DATABASE ISSUES
+--------------------------------------------------------------------------------
+Severity    Issue
+High        No dedicated roles, permissions tables
+High        Patient duplicated per registration (no reuse/linking logic)
+High        Discount fields on registration never applied in total calculation
+Medium      date_of_birth stored as CharField
+Medium      No indexes on patient_name, mobile, registration_date, status
+Medium      No soft-delete / audit trail columns
+Medium      SQLite in dev with no PostgreSQL migration path configured
+Medium      lab_code generation uses count-based logic (race condition risk)
+Low         No foreign key from PickupRequest to Patient
+
+================================================================================
+PHASE 4: API AUDIT
+================================================================================
+
+Endpoint                            Purpose                 Auth  Authz     Validation  Pagination  Status  Issues
+------------------------------------------------------------------------------------------------------------------------
+POST   /api/auth/login/             Login                   Public  -         OK          -           OK      Token not JWT; no rate limit
+POST   /api/auth/logout/            Logout                  Yes     -         -           -           OK
+GET    /api/auth/me/                Current user            Yes     -         -           -           OK
+GET    /api/tests/                  List tests              Yes     Any user  Partial     NO          PARTIAL Read-only; no CRUD
+GET    /api/test-categories/        List categories         Yes     Any user  -           NO          PARTIAL Read-only
+GET    /api/registrations/          Search registrations    Yes     Any user  Partial     NO          PARTIAL No select_test filter
+POST   /api/registrations/create/   Create registration     Yes     Any user  Partial     -           PARTIAL Always new patient
+GET    /api/registrations/next-lab-code/  Preview lab code  Yes     Any user  -           -           PARTIAL Code can change before save
+GET    /api/registrations/<lab_code>/     Registration detail Yes   Any user  -           -           PARTIAL No frontend usage
+GET/POST /api/pickup-requests/      Pickup requests         Yes     Any user  Partial     NO          OK      Basic
+GET/POST /api/messages/             Lab messages            Yes     Any user  Partial     NO          OK      Basic
+GET    /api/dashboard/summary/      Dashboard stats         Yes     Any user  -           -           PARTIAL N+1 query on categories
+GET    /api/reports/summary/        Report data             Yes     Any user  Partial     NO          PARTIAL Ignores type filter; hard limit 50
+GET    /api/users/                  List users              Yes     Admin only  -         NO          PARTIAL No frontend UI
+GET    /api/search/global/          Global search           Yes     Any user  -           Cap 20      PARTIAL Not wired in frontend
+
+MISSING APIs (CRITICAL GAPS)
+- Patient CRUD (/api/patients/)
+- Test CRUD
+- Report entry/approval/PDF
+- Payment/refund workflows
+- Doctor/inventory/branch/subscription endpoints
+- File upload (TRF, batch import)
+- Status update on registration (collection -> result ready -> printed)
+
+RESPONSE CONSISTENCY ISSUES
+- Mixed: some endpoints return model serializers, others raw dicts
+- No standard error envelope ({ error, code, details })
+- No pagination wrapper (count, next, previous, results)
+
+================================================================================
+PHASE 5: FRONTEND AUDIT
+================================================================================
+
+Area                    Status  Notes
+Dashboard               PARTIAL UI complete; partial API data; charts are placeholders
+Navigation              OK      Full nav tree via nav.js + Layout.jsx
+Forms                   PARTIAL Registration form functional; many fields decorative
+Tables                  OK      DataTable.jsx renders registration rows
+Search                  PARTIAL Patient name + dates work; category/test filters not wired
+Filters                 PARTIAL FilterPanel partially connected
+Pagination              MISSING Not implemented
+Responsive design       PARTIAL Single @media (max-width: 900px) breakpoint
+Mobile view             PARTIAL Basic collapse; not mobile-first
+Error handling          PARTIAL alert() / console.error; no toast/boundary
+Loading states          MISSING Only auth bootstrap; pages fetch silently
+
+BROKEN / NON-FUNCTIONAL UI ELEMENTS
+--------------------------------------------------------------------------------
+Element                         Location              Issue
+Administration "Open" buttons   Administration.jsx    No onClick, no routes
+Global search input             Layout.jsx            Not connected to api.globalSearch
+Utility icons ($, mail, bell)   Layout.jsx            Decorative only
+"Direct Print"                  FilterPanel.jsx       No handler
+"Manage Barcode"                Registration.jsx      Dead link #
+Discount fields on registration Registration.jsx      Not sent to API
+TRF file upload                 Registration.jsx      UI only; no upload API
+Device stubs (5 pages)          DeviceStub.jsx        Placeholder only
+Elab-PAY                        ElabPay.jsx           Static content only
+Dashboard UPDATE / Search       Dashboard.jsx         No API integration
+Breadcrumb <a href>             Several pages         Full page reload instead of React Router Link
+
+ROUTES
+- All main routes defined in App.jsx
+- Protected routes with auth + admin guard
+- Legacy static HTML files still accessible if served separately
+
+UNUSED / DEAD CODE
+- Legacy js/page-template.js (static prototype)
+- api.getUsers(), api.getPickupRequests(), api.getMessages() defined but unused in UI
+- RegistrationDetailView has no frontend consumer
+
+================================================================================
+PHASE 6: SECURITY AUDIT
+================================================================================
+
+Check                       Severity    Finding
+JWT Security                Medium      Uses DRF Token auth, not JWT; no expiry/refresh
+Password Hashing            Low (OK)    Django PBKDF2 default
+SQL Injection               Low (OK)    Django ORM used throughout
+XSS                         Low (OK)    React escapes output; alert() with user strings minor risk
+CSRF                        Medium      CSRF middleware enabled; Token auth on API bypasses CSRF
+Sensitive Data Exposure     High        SECRET_KEY hardcoded in settings.py
+Secrets in Code             High        DEBUG = True, insecure default secret
+API Security                High        No rate limiting, no HTTPS enforcement, token in localStorage
+Permission Escalation       High        Any authenticated user can access all registration/patient data
+CORS                        Medium      Limited to localhost:5173 (OK for dev)
+Token Storage               Medium      localStorage vulnerable to XSS theft
+Input Validation            Medium      Minimal server-side validation on registration payload
+Audit Logging               High        No login/access/change audit trail
+File Upload Security        N/A         Upload UI exists but no backend handler
+
+================================================================================
+PHASE 7: PERFORMANCE AUDIT
+================================================================================
+
+Issue                               Severity    Location
+No API pagination                   High        All list endpoints return full datasets
+Registration search unbounded       High        RegistrationSearchView
+Dashboard N+1 queries                 Medium      Loops TestCategory + count per category
+Missing DB indexes                  Medium      patient_name, status, registration_date
+Frontend auto-refetch on filter     Medium      Search.jsx useEffect depends on loadData
+Large monolithic Registration.jsx   Low         ~250 lines
+Duplicate patient records           Medium      DB bloat over time
+Report endpoint serializes 50 rows  Low         ReportSummaryView
+No caching layer                    Medium      Redis/CDN absent
+SQLite for production scale         High        Not suitable for concurrent writes
+
+================================================================================
+PHASE 8: QA TESTING AUDIT
+================================================================================
+
+TEST MATRIX
+--------------------------------------------------------------------------------
+Feature                     Expected Result                     Current Status              Pass/Fail
+User login                  Valid credentials -> dashboard      Works with trial users      PASS
+Admin login tab mismatch    Reject wrong role tab               Works                       PASS
+Patient registration save   Persist patient + tests + billing   Creates record              PASS
+Patient registration discounts Discounts affect total            Not sent from UI            FAIL
+Patient search by name      Filter results                      Works                       PASS
+Status tab filtering        Correct status rows                 Mislabeled tabs             FAIL
+Test result entry           Enter/verify lab values             Not implemented             FAIL
+PDF report                  Download report                     Not implemented             FAIL
+Invoice/GST                 Tax invoice generated               Not implemented             FAIL
+Barcode generation          Unique barcode per sample           Not implemented             FAIL
+Admin user management       CRUD users                          Buttons dead                FAIL
+Test master CRUD            Add/edit/delete tests               Not implemented             FAIL
+Pickup request              Submit + list                       Submit works; no list UI    PARTIAL
+Global search               Search from header                  Not wired                   FAIL
+Logout                      Clear session                       Works                       PASS
+RBAC - user access admin    Blocked                             Frontend blocked; API open  PARTIAL
+Mobile responsive           Usable on phone                     Partial                     PARTIAL
+API pagination              Paginated lists                     Not implemented             FAIL
+Duplicate patient detection Warn on same mobile                Not implemented             FAIL
+Automated tests             Unit/integration/E2E                Zero tests                  FAIL
+
+AUTOMATED TEST COVERAGE
+  Backend unit tests    : 0
+  Frontend tests        : 0
+  E2E tests             : 0
+  API contract tests    : 0
+
+COMPLETION PERCENTAGES (WEIGHTED)
+  Frontend  : 38%  (Most screens exist; ~30% functional)
+  Backend   : 22%  (Core auth + registration + search only)
+  Database  : 18%  (~8 of ~15+ required entity groups)
+  Security  : 32%  (Basic auth; major prod gaps)
+  Overall   : ~25% (Against full LIMS spec in this audit)
+
+================================================================================
+PHASE 9: PRODUCTION READINESS
+================================================================================
+
+CLASSIFICATION: PROTOTYPE (transitioning to Early MVP)
+
+WHAT WORKS (MVP SIGNALS)
+- Real backend with persistent SQLite DB
+- Token authentication end-to-end
+- Registration create + search flows
+- Seed data for demo
+- React SPA with routing and role-based UI gates
+
+WHAT BLOCKS PRODUCTION
+- No PostgreSQL / production database
+- Hardcoded SECRET_KEY, DEBUG=True
+- No HTTPS, rate limiting, or audit logs
+- No backup/disaster recovery
+- No CI/CD pipeline
+- No automated tests
+- Missing core LIMS modules (results, reports, billing, parameters)
+- No monitoring (Sentry, Datadog, etc.)
+- No deployment manifests (Docker/K8s)
+- Authorization is too coarse - any user sees all lab data
+
+VERDICT: Suitable for internal demo / stakeholder review, NOT for live patient
+data or regulated lab operations.
+
+================================================================================
+PHASE 10: FINAL REPORT
+================================================================================
+
+1. FEATURES COMPLETED
+--------------------------------------------------------------------------------
+- User authentication (login/logout/session restore)
+- Registration-based patient search with filters
+- Test registration (create) with test picker and billing totals
+- Test catalog listing (read-only)
+- Dashboard summary (counts + revenue + status breakdown)
+- Basic reports summary endpoint
+- Pickup request submission
+- Message to lab submission
+- Admin-only route for Administration page
+- Legacy UI/theme faithfully ported to React
+
+2. FEATURES PARTIALLY COMPLETED
+--------------------------------------------------------------------------------
+- Patient management (create + search only; no edit/history)
+- Billing (fields exist; discounts/GST/invoice/print missing)
+- Sample workflow (status string only)
+- Test categories (seeded, read-only)
+- Reports (summary list, no real report types)
+- RBAC (2 roles, frontend guards, weak API enforcement)
+- Device request module (2 of 7 functional)
+- Dashboard (mixed real data + placeholders)
+- Responsive layout (minimal)
+
+3. MISSING FEATURES
+--------------------------------------------------------------------------------
+- Patient edit/delete/history/duplicate detection
+- Invoice, GST, receipt printing, refund workflow
+- Test CRUD, packages, profiles
+- Test parameters & reference ranges
+- Barcode & sample tracking
+- Report entry, verification, approval, PDF, digital signature
+- Doctor database & commissions
+- Full user roles (Receptionist, Technician, Pathologist, Accountant)
+- Granular permissions system
+- Inventory & reagent management
+- Subscription/billing SaaS module
+- Multi-branch & multi-tenant architecture
+- Batch upload/result import (backend)
+- Elab-PAY payment gateway integration
+- Automated testing suite
+- Production deployment infrastructure
+
+4. CRITICAL BUGS
+--------------------------------------------------------------------------------
+#  Bug                                      Impact
+1  Registration always creates new Patient   Duplicate patients; no master patient record
+2  Discount UI fields not sent to API       Incorrect billing
+3  _sync_tests ignores per-test discounts    Wrong net_amount
+4  Status tab "Pending TAT" maps to Collection  Wrong filter results
+5  lab_code preview vs save can differ      User confusion
+6  No registration status update API        Workflow stuck after registration
+7  Administration module entirely non-functional  Admin features inaccessible
+
+5. SECURITY ISSUES
+--------------------------------------------------------------------------------
+Priority    Issue
+Critical    Hardcoded SECRET_KEY in source
+Critical    DEBUG=True suitable only for development
+High        Any authenticated user can access all registration/patient data
+High        No rate limiting on login
+High        No audit trail for PHI access
+Medium      Token in localStorage (XSS theft risk)
+Medium      No token expiration/rotation
+Medium      No environment-based secrets management
+
+6. DATABASE ISSUES
+--------------------------------------------------------------------------------
+- Missing 7+ core tables for a full LIMS
+- No roles/permissions normalization
+- No indexes on search columns
+- Patient-registration relationship causes data duplication
+- SQLite not production-grade for multi-user lab
+- No migration strategy to PostgreSQL documented
+
+7. API ISSUES
+--------------------------------------------------------------------------------
+- 60%+ of required endpoints missing
+- No pagination on any list endpoint
+- No update/delete endpoints for core entities
+- Report endpoint ignores filter parameters
+- Global search API exists but unused
+- No file upload endpoints
+- Inconsistent error response format
+- No API versioning
+
+8. UI ISSUES
+--------------------------------------------------------------------------------
+- Many buttons are decorative (Admin, Print, utility bar)
+- No loading spinners or skeleton states
+- Errors shown via alert() only
+- Global search not connected
+- Breadcrumbs use <a href> causing full reloads
+- 5 device pages are stubs
+- No pagination on tables
+- Test Result page has no result-entry UI
+
+9. RECOMMENDED IMPROVEMENTS
+--------------------------------------------------------------------------------
+IMMEDIATE (Sprint 1-2)
+1. Fix patient model strategy - separate patient master from visits/registrations
+2. Wire discount/billing fields end-to-end
+3. Add registration status update API + UI workflow
+4. Connect global search in header
+5. Move secrets to environment variables; add .env.example
+6. Add pagination to registration/test list APIs
+7. Fix status tab -> status mapping
+
+SHORT-TERM (Sprint 3-6)
+8. Implement Test Master CRUD (admin)
+9. Build Report entry + PDF generation
+10. Add TestParameter + reference ranges
+11. Implement proper RBAC with permissions table
+12. PostgreSQL migration
+13. Add pytest + React Testing Library baseline
+14. Docker Compose for local dev
+
+LONG-TERM
+15. Multi-branch tenancy model
+16. Inventory module
+17. Payment gateway (Elab-PAY)
+18. Barcode/sample tracking
+19. CI/CD + staging environment
+20. HIPAA/compliance audit logging
+
+10. NEXT DEVELOPMENT PRIORITIES (RECOMMENDED ORDER)
+--------------------------------------------------------------------------------
+Priority  Module                              Why
+P0        Patient master + visit model        Foundation for everything else
+P0        Registration update + status workflow  Core lab operations
+P0        Security hardening (env secrets, RBAC API)  Required before any real data
+P1        Test Master CRUD                    Admin cannot manage catalog
+P1        Report entry + PDF                  Core lab deliverable
+P1        Billing (invoice, GST, receipt)     Revenue operations
+P2        Test parameters & reference ranges  Clinical accuracy
+P2        Sample/barcode tracking             Operational traceability
+P2        Automated tests + CI                Quality gate
+P3        Multi-branch, inventory, subscriptions  Scale/enterprise
+
+================================================================================
+APPENDIX: PROJECT FILE MAP
+================================================================================
+
+Clasmo_Diagnostics/
+  backend/                 <- Django API (canonical backend)
+    api/models.py          <- 8 domain models
+    api/views.py           <- 15 API views
+    api/urls.py            <- Route definitions
+  frontend/                <- React SPA (canonical frontend)
+    src/pages/             <- 12+ page components
+  css/, js/, device/       <- Legacy static prototype (reference only)
+  README.md
+
+================================================================================
+END OF AUDIT REPORT
+================================================================================
+Generated: June 8, 2026
+No code changes were made as part of this audit.

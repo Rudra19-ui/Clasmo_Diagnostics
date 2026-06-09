@@ -1,0 +1,153 @@
+================================================================================
+IMPLEMENTATION PLAN: Test Parameters + Result Entry (Clinical Module)
+================================================================================
+Project: Clasmo Diagnostics LIMS
+Date: June 8, 2026
+
+SCOPE
+-----
+Build first production-grade clinical module WITHOUT modifying existing
+registration create/search flows. New models, APIs, permissions, pages, and
+seed data only.
+
+================================================================================
+1. DATABASE DESIGN
+================================================================================
+
+New Models (append to api/models.py):
+
+TestParameter
+  - FK -> Test (CASCADE)
+  - parameter_name, unit
+  - reference_range_male, reference_range_female, reference_range_child (CharField, e.g. "4.5-11.0")
+  - critical_low, critical_high (DecimalField, nullable)
+  - is_active (BooleanField)
+  - Meta: unique_together (test, parameter_name)
+  - Indexes on test_id, is_active
+
+Report (LabReport - internal name to avoid confusion with ReportSummaryView)
+  - FK -> Registration (CASCADE, related_name='lab_reports')
+  - status: pending | entered | verified
+  - entered_by, verified_by -> User (nullable)
+  - created_at, updated_at
+  - Meta: one report per registration (OneToOne or unique on registration)
+
+ReportValue
+  - FK -> Report (CASCADE)
+  - FK -> TestParameter (PROTECT)
+  - value (CharField - supports numeric and text results)
+  - flag: Normal | High | Low | Critical
+  - Meta: unique_together (report, parameter)
+
+User Model Extension
+  - Add roles: technician, pathologist (keep admin, user for backward compat)
+  - Increase role max_length to 20
+
+================================================================================
+2. FLAG AUTO-CALCULATION (clinical_utils.py)
+================================================================================
+
+parse_range("4.5-11.0") -> (4.5, 11.0)
+parse_range("< 5.0") -> (None, 5.0)
+parse_range("> 100") -> (100, None)
+
+select_reference_range(parameter, patient):
+  - child if age_years < 18 -> reference_range_child
+  - female -> reference_range_female
+  - else -> reference_range_male
+
+calculate_flag(value, parameter, patient):
+  1. Parse numeric value; non-numeric -> Normal (or N/A)
+  2. If value <= critical_low or >= critical_high -> Critical
+  3. Compare against reference range -> High / Low / Normal
+
+================================================================================
+3. API ENDPOINTS
+================================================================================
+
+Test Parameters (admin only for write, all clinical roles read):
+  GET    /api/test-parameters/           ?test_id=&search=
+  POST   /api/test-parameters/
+  PUT    /api/test-parameters/{id}/
+  DELETE /api/test-parameters/{id}/
+
+Clinical Reports:
+  GET    /api/reports/{registration_id}/     Full report + values + patient context
+  POST   /api/reports/{registration_id}/     Create/update values, auto-flag
+  PATCH  /api/reports/{registration_id}/verify/  Pathologist/Admin verify
+
+Permissions:
+  Admin        - full parameter CRUD, enter, verify
+  Technician   - read parameters, enter/update results
+  Pathologist  - read parameters, verify reports
+  User         - read report preview only (optional)
+
+================================================================================
+4. BACKEND FILE STRUCTURE
+================================================================================
+
+api/
+  models.py              (+ TestParameter, LabReport, ReportValue, User roles)
+  clinical_utils.py        (NEW - flag calculation)
+  clinical_permissions.py  (NEW - IsAdmin, IsTechnician, etc.)
+  clinical_serializers.py  (NEW)
+  clinical_views.py        (NEW)
+  urls.py                  (+ clinical routes)
+  admin.py                 (+ register new models)
+  management/commands/
+    seed_clinical_data.py  (NEW - CBC, Blood Sugar, Thyroid parameters)
+
+================================================================================
+5. FRONTEND FILE STRUCTURE
+================================================================================
+
+src/
+  utils/roles.js                    (NEW - role helpers)
+  services/api.js                   (+ clinical API methods)
+  components/ProtectedRoute.jsx     (+ allowedRoles prop)
+  pages/clinical/
+    TestParameterMaster.jsx         (Admin)
+    ResultEntry.jsx                 (Technician, Admin)
+    ReportPreview.jsx               (All authenticated)
+  App.jsx                           (+ routes)
+  utils/nav.js                      (+ Clinical submenu)
+
+================================================================================
+6. SEED DATA
+================================================================================
+
+Users:
+  technician_test / tech123
+  pathologist_test / patho123
+
+Parameters:
+  CBC: Hemoglobin, WBC, RBC, Platelet, Hematocrit
+  Blood Sugar Fasting: Fasting Glucose
+  Thyroid Profile: TSH, T3, T4
+
+================================================================================
+7. NAVIGATION UPDATES
+================================================================================
+
+New "Clinical" menu:
+  - Test Parameter Master  (/clinical/test-parameters)     [Admin]
+  - Result Entry           (/clinical/result-entry)        [Technician, Admin]
+  - Report Preview         (/clinical/report-preview)     [All]
+
+Administration submenu: add link to Test Parameter Master
+
+================================================================================
+8. IMPLEMENTATION ORDER
+================================================================================
+
+Step 1: Models + migration
+Step 2: clinical_utils + permissions
+Step 3: Serializers + views + URLs
+Step 4: Admin registration + seed_clinical_data
+Step 5: Frontend API + roles + ProtectedRoute
+Step 6: React pages + routes + nav
+Step 7: Run migrations, seed, verify API
+
+================================================================================
+END OF PLAN
+================================================================================

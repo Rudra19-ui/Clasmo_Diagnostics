@@ -1,0 +1,38 @@
+# Git & IDE
+.git
+.gitignore
+.cursor
+agent-transcripts
+terminals
+mcps
+canvases
+
+# Docs & plans
+*.md
+*.txt
+!backend/requirements.txt
+
+# Frontend dev artifacts
+frontend/node_modules
+frontend/dist
+
+# Backend dev artifacts
+backend/venv
+backend/__pycache__
+backend/**/__pycache__
+backend/*.pyc
+backend/db.sqlite3
+backend/media
+backend/staticfiles
+
+# Env & OS
+.env
+.env.*
+.DS_Store
+Thumbs.db
+
+# Legacy static prototype
+css
+js
+device
+index.html

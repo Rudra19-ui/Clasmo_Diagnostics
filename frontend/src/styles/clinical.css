@@ -1,0 +1,89 @@
+.clinical-panel {
+  background: #fff;
+  border: 1px solid var(--gray-border);
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.clinical-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+  margin-bottom: 16px;
+}
+
+.clinical-toolbar .form-row {
+  margin: 0;
+  min-width: 180px;
+}
+
+.flag-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.flag-normal { background: #e8f5e9; color: #2e7d32; }
+.flag-high { background: #fff3e0; color: #e65100; }
+.flag-low { background: #e3f2fd; color: #1565c0; }
+.flag-critical { background: #ffebee; color: #c62828; font-weight: 700; }
+
+.result-table input[type="text"] {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--gray-border);
+  border-radius: 4px;
+}
+
+.result-table .value-critical input {
+  border-color: #c62828;
+  background: #fff5f5;
+}
+
+.param-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 900px) {
+  .param-form-grid { grid-template-columns: 1fr; }
+}
+
+.report-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--gray-border);
+}
+
+.report-meta span {
+  margin-right: 16px;
+  color: var(--text-muted);
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-pending { background: #f0f0f0; color: #666; }
+.status-entered { background: #e3f2fd; color: #1565c0; }
+.status-verified { background: #e8f5e9; color: #2e7d32; }
+
+.test-group-heading {
+  background: #e8eef5;
+  font-weight: 600;
+  padding: 8px 12px;
+}

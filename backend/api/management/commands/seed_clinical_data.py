@@ -2,7 +2,7 @@ from decimal import Decimal
 
 from django.core.management.base import BaseCommand
 
-from api.models import Test, TestParameter, User
+from api.models import Test, TestParameter
 
 PARAMETER_SEED = {
     'CBC (COMPLETE BLOOD COUNT)': [
@@ -24,29 +24,9 @@ PARAMETER_SEED = {
 
 
 class Command(BaseCommand):
-    help = 'Seed clinical roles, users, and test parameters for CBC, Blood Sugar, Thyroid'
+    help = 'Seed clinical test parameters for CBC, Blood Sugar, Thyroid'
 
     def handle(self, *args, **options):
-        if not User.objects.filter(username='technician_test').exists():
-            User.objects.create_user(
-                username='technician_test',
-                password='tech123',
-                role=User.ROLE_TECHNICIAN,
-                display_name='Lab Technician',
-                lab_code='202505017',
-            )
-            self.stdout.write(self.style.SUCCESS('Created user: technician_test'))
-
-        if not User.objects.filter(username='pathologist_test').exists():
-            User.objects.create_user(
-                username='pathologist_test',
-                password='patho123',
-                role=User.ROLE_PATHOLOGIST,
-                display_name='Pathologist',
-                lab_code='202505017',
-            )
-            self.stdout.write(self.style.SUCCESS('Created user: pathologist_test'))
-
         created = 0
         for test_name, parameters in PARAMETER_SEED.items():
             test = Test.objects.filter(name=test_name).first()

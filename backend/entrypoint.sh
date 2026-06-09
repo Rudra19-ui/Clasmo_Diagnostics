@@ -18,10 +18,9 @@ for i in 1 2 3 4 5 6 7 8 9 10; do
   sleep 5
 done
 
-if [ "$RUN_SEED" = "true" ]; then
-  python manage.py seed_data || true
-  python manage.py seed_clinical_data || true
-fi
+echo "Loading trial login users and sample data..."
+python manage.py seed_data || true
+python manage.py seed_clinical_data || true
 
 echo "Launching Gunicorn on 0.0.0.0:${PORT}..."
 exec gunicorn clasmo_backend.wsgi:application \

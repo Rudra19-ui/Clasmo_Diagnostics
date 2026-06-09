@@ -19,6 +19,16 @@ ALLOWED_HOSTS = [
 ]
 if railway_domain := os.environ.get('RAILWAY_PUBLIC_DOMAIN'):
     ALLOWED_HOSTS.append(railway_domain)
+if os.environ.get('RAILWAY_ENVIRONMENT'):
+    ALLOWED_HOSTS.extend(['.up.railway.app', '.railway.app'])
+
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',')
+    if origin.strip()
+]
+if railway_domain := os.environ.get('RAILWAY_PUBLIC_DOMAIN'):
+    CSRF_TRUSTED_ORIGINS.extend([f'https://{railway_domain}'])
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -68,8 +78,13 @@ DATABASES = {
     'default': dj_database_url.config(
         default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
         conn_max_age=600,
+        conn_health_checks=True,
     )
 }
+if DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql':
+    DATABASES['default'].setdefault('OPTIONS', {})
+    if 'sslmode' not in DATABASES['default']['OPTIONS']:
+        DATABASES['default']['OPTIONS']['sslmode'] = 'require'
 
 AUTH_USER_MODEL = 'api.User'
 

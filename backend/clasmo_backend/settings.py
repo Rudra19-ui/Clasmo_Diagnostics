@@ -10,31 +10,34 @@ SECRET_KEY = os.environ.get(
     'django-insecure-i58p^q1vw-7s4qs^3^e)at(0g3_jv!5e=qk)@4qz#u1)-z5*hh',
 )
 
-DEBUG = os.environ.get('DEBUG', 'True').lower() in ('true', '1', 'yes')
+DEBUG = os.environ.get('DEBUG', 'false' if os.environ.get('RAILWAY_ENVIRONMENT') else 'true').lower() in (
+    'true',
+    '1',
+    'yes',
+)
 
-ALLOWED_HOSTS = [
-    host.strip()
-    for host in os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
-    if host.strip()
-]
+_hosts_raw = os.environ.get('ALLOWED_HOSTS') or 'localhost,127.0.0.1'
+ALLOWED_HOSTS = [host.strip() for host in _hosts_raw.split(',') if host.strip()]
+
 if railway_domain := os.environ.get('RAILWAY_PUBLIC_DOMAIN'):
     ALLOWED_HOSTS.append(railway_domain)
 if os.environ.get('RAILWAY_ENVIRONMENT'):
-    ALLOWED_HOSTS.extend(['.up.railway.app', '.railway.app'])
+    ALLOWED_HOSTS.extend(['.up.railway.app', '.railway.app', '.clasmodiagnostics.com'])
 
 _default_domains = 'clasmodiagnostics.com,www.clasmodiagnostics.com'
-for domain in os.environ.get('PRODUCTION_DOMAINS', _default_domains).split(','):
+_production_domains = os.environ.get('PRODUCTION_DOMAINS') or _default_domains
+for domain in _production_domains.split(','):
     domain = domain.strip()
     if domain and domain not in ALLOWED_HOSTS:
         ALLOWED_HOSTS.append(domain)
 
-CSRF_TRUSTED_ORIGINS = [
-    origin.strip()
-    for origin in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',')
-    if origin.strip()
-]
+_default_csrf = 'https://clasmodiagnostics.com,https://www.clasmodiagnostics.com'
+_csrf_raw = os.environ.get('CSRF_TRUSTED_ORIGINS') or _default_csrf
+CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in _csrf_raw.split(',') if origin.strip()]
 if railway_domain := os.environ.get('RAILWAY_PUBLIC_DOMAIN'):
-    CSRF_TRUSTED_ORIGINS.append(f'https://{railway_domain}')
+    origin = f'https://{railway_domain}'
+    if origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(origin)
 for domain in ALLOWED_HOSTS:
     if domain.startswith('.'):
         continue

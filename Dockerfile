@@ -4,7 +4,7 @@ FROM node:22-alpine AS frontend-build
 WORKDIR /app/frontend
 
 COPY frontend/package.json frontend/package-lock.json ./
-RUN npm ci
+RUN npm install --no-audit --no-fund
 
 COPY frontend/ ./
 ENV VITE_API_URL=/api

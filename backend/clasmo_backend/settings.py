@@ -5,6 +5,16 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+IS_RAILWAY = any(
+    os.environ.get(key)
+    for key in (
+        'RAILWAY_PROJECT_ID',
+        'RAILWAY_ENVIRONMENT_NAME',
+        'RAILWAY_ENVIRONMENT',
+        'RAILWAY_PUBLIC_DOMAIN',
+    )
+)
+
 SECRET_KEY = os.environ.get(
     'SECRET_KEY',
     'django-insecure-i58p^q1vw-7s4qs^3^e)at(0g3_jv!5e=qk)@4qz#u1)-z5*hh',
@@ -74,11 +84,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'clasmo_backend.wsgi.application'
 
-# Prefer the public Postgres URL on Railway when both are set (internal DNS can fail).
-if os.environ.get('RAILWAY_ENVIRONMENT'):
-    _database_url = os.environ.get('DATABASE_PUBLIC_URL') or os.environ.get('DATABASE_URL')
-else:
-    _database_url = os.environ.get('DATABASE_URL') or os.environ.get('DATABASE_PUBLIC_URL')
+# Use public URL first when available (works from Railway and local dev).
+_database_url = os.environ.get('DATABASE_PUBLIC_URL') or os.environ.get('DATABASE_URL')
 DATABASES = {
     'default': dj_database_url.config(
         default=_database_url or f'sqlite:///{BASE_DIR / "db.sqlite3"}',
@@ -130,7 +137,7 @@ REST_FRAMEWORK = {
 _cors_origins = os.environ.get('CORS_ALLOWED_ORIGINS', '')
 if _cors_origins:
     CORS_ALLOWED_ORIGINS = [o.strip() for o in _cors_origins.split(',') if o.strip()]
-elif os.environ.get('RAILWAY_ENVIRONMENT'):
+elif IS_RAILWAY:
     CORS_ALLOWED_ORIGINS = [
         'https://clasmodiagnostics.com',
         'https://www.clasmodiagnostics.com',

@@ -27,6 +27,8 @@ COPY backend/ ./
 
 COPY --from=frontend-build /app/frontend/dist ./frontend_dist
 
+RUN test -f frontend_dist/index.html || (echo "Frontend build failed: index.html missing" && exit 1)
+
 RUN sed -i 's/\r$//' entrypoint.sh && chmod +x entrypoint.sh
 
 EXPOSE 8000

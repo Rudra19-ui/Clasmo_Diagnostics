@@ -140,6 +140,11 @@ REST_FRAMEWORK = {
 _cors_origins = os.environ.get('CORS_ALLOWED_ORIGINS', '')
 if _cors_origins:
     CORS_ALLOWED_ORIGINS = [o.strip() for o in _cors_origins.split(',') if o.strip()]
+elif os.environ.get('RAILWAY_ENVIRONMENT'):
+    CORS_ALLOWED_ORIGINS = [
+        'https://clasmodiagnostics.com',
+        'https://www.clasmodiagnostics.com',
+    ]
 else:
     CORS_ALLOWED_ORIGINS = [
         'http://localhost:5173',

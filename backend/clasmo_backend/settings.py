@@ -87,11 +87,12 @@ TEMPLATES = [
 WSGI_APPLICATION = 'clasmo_backend.wsgi.application'
 
 # Ignore postgres.railway.internal — use the public Connect URL (*.proxy.rlwy.net).
-_database_url = pick_database_url()
-
+# Use parse() not config(): config() always reads the DATABASE_URL env var and
+# would override our picked URL with postgres.railway.internal from Railway.
+_resolved_database_url = pick_database_url() or f'sqlite:///{BASE_DIR / "db.sqlite3"}'
 DATABASES = {
-    'default': dj_database_url.config(
-        default=_database_url or f'sqlite:///{BASE_DIR / "db.sqlite3"}',
+    'default': dj_database_url.parse(
+        _resolved_database_url,
         conn_max_age=600,
         conn_health_checks=True,
     )

@@ -8,7 +8,7 @@ RUN npm install --no-audit --no-fund
 
 COPY frontend/ ./
 ENV VITE_API_URL=/api
-RUN npm run build
+RUN npm run build && test -f dist/index.html
 
 
 # Stage 2: Django backend + static frontend
@@ -26,8 +26,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY backend/ ./
 
 COPY --from=frontend-build /app/frontend/dist ./frontend_dist
-
-RUN test -f frontend_dist/index.html || (echo "Frontend build failed: index.html missing" && exit 1)
 
 RUN sed -i 's/\r$//' entrypoint.sh && chmod +x entrypoint.sh
 

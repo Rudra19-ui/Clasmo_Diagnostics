@@ -1,21 +1,15 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.http import FileResponse, HttpResponse, JsonResponse
+from django.http import FileResponse, Http404, JsonResponse
 from django.urls import include, path, re_path
 
 
-def spa_fallback(request):
+def spa_fallback(request, *_args, **_kwargs):
     index = settings.FRONTEND_DIST / 'index.html'
-    if not index.exists():
-        return HttpResponse(
-            'Frontend build missing. Redeploy the application.',
-            status=503,
-            content_type='text/plain',
-        )
-    response = FileResponse(index.open('rb'), content_type='text/html; charset=utf-8')
-    response['Cache-Control'] = 'no-cache'
-    return response
+    if not index.is_file():
+        raise Http404('Frontend build not found')
+    return FileResponse(index.open('rb'), content_type='text/html; charset=utf-8')
 
 
 urlpatterns = [
@@ -29,7 +23,7 @@ if settings.MEDIA_ROOT:
 
 if settings.FRONTEND_DIST.exists():
     urlpatterns += [
-        path('', spa_fallback, name='spa-index'),
+        path('', spa_fallback, name='spa-root'),
         re_path(
             r'^(?!api/|admin/|media/|static/|health/|assets/).+$',
             spa_fallback,

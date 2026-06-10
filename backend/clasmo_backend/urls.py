@@ -9,6 +9,11 @@ from django.urls import include, path, re_path
 SPA_EXCLUDED_PREFIXES = r'api/|admin/|media/|static/|health/|assets/|favicon\.svg'
 
 
+def health_live(_request):
+    """Railway liveness probe — must not depend on the database."""
+    return JsonResponse({'status': 'ok'})
+
+
 def health_check(_request):
     try:
         connection.ensure_connection()
@@ -27,6 +32,7 @@ def spa_fallback(request, *_args, **_kwargs):
 
 
 urlpatterns = [
+    path('health/live/', health_live),
     path('health/', health_check),
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),

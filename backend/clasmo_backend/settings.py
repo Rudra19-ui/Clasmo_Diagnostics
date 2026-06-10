@@ -85,7 +85,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'clasmo_backend.wsgi.application'
 
 # postgres.railway.internal only works inside the same Railway project.
-# Always prefer the public URL when it is configured.
+# Never use the internal hostname on Railway without a public URL configured.
 _public_db_url = os.environ.get('DATABASE_PUBLIC_URL', '').strip()
 _internal_db_url = os.environ.get('DATABASE_URL', '').strip()
 
@@ -93,8 +93,10 @@ if _public_db_url:
     _database_url = _public_db_url
 elif _internal_db_url and 'railway.internal' not in _internal_db_url:
     _database_url = _internal_db_url
+elif IS_RAILWAY and 'railway.internal' in _internal_db_url:
+    _database_url = ''
 else:
-    _database_url = _internal_db_url
+    _database_url = _internal_db_url or _public_db_url
 
 DATABASES = {
     'default': dj_database_url.config(

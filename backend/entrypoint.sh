@@ -6,7 +6,7 @@ echo "Starting Clasmo Diagnostics on port ${PORT}..."
 
 python -c "import os; os.environ.setdefault('DJANGO_SETTINGS_MODULE','clasmo_backend.settings'); import django; django.setup(); from django.conf import settings; print('ALLOWED_HOSTS =', settings.ALLOWED_HOSTS); print('DEBUG =', settings.DEBUG); print('DB ENGINE =', settings.DATABASES['default']['ENGINE']); print('DB HOST =', settings.DATABASES['default'].get('HOST')); print('DATABASE_URL set =', bool(os.environ.get('DATABASE_URL'))); print('DATABASE_PUBLIC_URL set =', bool(os.environ.get('DATABASE_PUBLIC_URL')))"
 
-python check_db_env.py
+python check_db_env.py || exit 1
 
 bootstrap() {
   echo "Background bootstrap: waiting for PostgreSQL..."

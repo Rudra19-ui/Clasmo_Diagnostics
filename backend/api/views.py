@@ -1,4 +1,5 @@
 import logging
+import os
 from datetime import datetime
 
 from django.db import connection
@@ -47,8 +48,20 @@ class HealthView(APIView):
             })
         except (OperationalError, ProgrammingError) as exc:
             logger.exception('Health check database error')
+            db_host = connection.settings_dict.get('HOST')
             return Response(
-                {'status': 'error', 'database': str(exc)},
+                {
+                    'status': 'error',
+                    'database': str(exc),
+                    'db_host': db_host,
+                    'database_public_url_set': bool(os.environ.get('DATABASE_PUBLIC_URL')),
+                    'hint': (
+                        'Set DATABASE_PUBLIC_URL on the web service to the Postgres '
+                        'Connect public URL (xxxx.proxy.rlwy.net).'
+                        if db_host and 'railway.internal' in str(db_host)
+                        else None
+                    ),
+                },
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
             )
 

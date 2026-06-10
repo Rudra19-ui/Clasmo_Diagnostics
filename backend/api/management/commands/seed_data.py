@@ -4,7 +4,8 @@ from decimal import Decimal
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from api.models import Patient, Registration, RegistrationTest, Test, TestCategory, User
+from api.models import Patient, Registration, RegistrationTest, Test, TestCategory
+from api.trial_users import ensure_trial_users
 
 
 TESTS = [
@@ -43,57 +44,12 @@ MOCK_REGISTRATIONS = [
     ('270526035', 'Sneha Desai', 'HBA1C', 'Printed', 450),
 ]
 
-TRIAL_USERS = [
-    {
-        'username': 'user_test',
-        'password': 'password123',
-        'role': User.ROLE_USER,
-        'display_name': 'CLASMO_Diag',
-    },
-    {
-        'username': 'admin_test',
-        'password': 'admin123',
-        'role': User.ROLE_ADMIN,
-        'display_name': 'Admin',
-        'is_staff': True,
-    },
-    {
-        'username': 'technician_test',
-        'password': 'tech123',
-        'role': User.ROLE_TECHNICIAN,
-        'display_name': 'Lab Technician',
-    },
-    {
-        'username': 'pathologist_test',
-        'password': 'patho123',
-        'role': User.ROLE_PATHOLOGIST,
-        'display_name': 'Pathologist',
-    },
-]
-
 
 class Command(BaseCommand):
     help = 'Seed trial users, tests, and sample registrations'
 
-    def _ensure_trial_users(self):
-        for entry in TRIAL_USERS:
-            if User.objects.filter(username=entry['username']).exists():
-                continue
-            extra = {}
-            if entry.get('is_staff'):
-                extra['is_staff'] = True
-            user = User.objects.create_user(
-                username=entry['username'],
-                password=entry['password'],
-                role=entry['role'],
-                display_name=entry['display_name'],
-                lab_code='202505017',
-                **extra,
-            )
-            self.stdout.write(self.style.SUCCESS(f'Created user: {user.username}'))
-
     def handle(self, *args, **options):
-        self._ensure_trial_users()
+        ensure_trial_users(reset_passwords=True, stdout=self.stdout)
 
         categories = {}
         for _, _, cat_name in TESTS:

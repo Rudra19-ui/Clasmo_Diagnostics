@@ -16,6 +16,7 @@ bootstrap() {
   while [ "$attempt" -le 30 ]; do
     if python manage.py migrate --noinput; then
       echo "Migrations complete."
+      python manage.py ensure_trial_users || true
       python manage.py seed_data || true
       python manage.py seed_clinical_data || true
       echo "Background bootstrap finished."

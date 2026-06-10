@@ -25,6 +25,7 @@ echo "Starting background seed (non-blocking)..."
 (python manage.py seed_data && python manage.py seed_clinical_data || true) &
 
 echo "Launching Gunicorn on 0.0.0.0:${PORT}..."
+python -c "import os; os.environ.setdefault('DJANGO_SETTINGS_MODULE','clasmo_backend.settings'); import django; django.setup(); from django.conf import settings; print('ALLOWED_HOSTS =', settings.ALLOWED_HOSTS); print('DEBUG =', settings.DEBUG)"
 exec gunicorn clasmo_backend.wsgi:application \
   --bind "0.0.0.0:${PORT}" \
   --workers "${GUNICORN_WORKERS:-1}" \

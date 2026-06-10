@@ -10,34 +10,11 @@ SECRET_KEY = os.environ.get(
     'django-insecure-i58p^q1vw-7s4qs^3^e)at(0g3_jv!5e=qk)@4qz#u1)-z5*hh',
 )
 
-_IS_RAILWAY = any(
-    os.environ.get(key)
-    for key in (
-        'RAILWAY_ENVIRONMENT',
-        'RAILWAY_PUBLIC_DOMAIN',
-        'RAILWAY_SERVICE_ID',
-        'RAILWAY_PROJECT_ID',
-        'RAILWAY_DEPLOYMENT_ID',
-    )
-)
-_IS_PRODUCTION = _IS_RAILWAY or (
-    os.environ.get('DATABASE_URL', '').startswith('postgres')
-    or os.environ.get('DATABASE_PUBLIC_URL', '').startswith('postgres')
-)
+DEBUG = os.environ.get('DEBUG', 'false').lower() in ('true', '1', 'yes')
 
-DEBUG = os.environ.get(
-    'DEBUG',
-    'false' if _IS_PRODUCTION else 'true',
-).lower() in ('true', '1', 'yes')
-
-if _IS_PRODUCTION:
-    ALLOWED_HOSTS = ['*']
-else:
-    _hosts_raw = os.environ.get('ALLOWED_HOSTS') or 'localhost,127.0.0.1'
-    ALLOWED_HOSTS = [host.strip() for host in _hosts_raw.split(',') if host.strip()]
-    for domain in ('clasmodiagnostics.com', 'www.clasmodiagnostics.com', '.clasmodiagnostics.com'):
-        if domain not in ALLOWED_HOSTS:
-            ALLOWED_HOSTS.append(domain)
+# Allow all hosts (Railway custom domain + www + internal health checks).
+# Do not override via Railway ALLOWED_HOSTS variable — it breaks www subdomain.
+ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = [
     'https://clasmodiagnostics.com',

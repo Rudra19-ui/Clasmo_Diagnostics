@@ -10,56 +10,45 @@ SECRET_KEY = os.environ.get(
     'django-insecure-i58p^q1vw-7s4qs^3^e)at(0g3_jv!5e=qk)@4qz#u1)-z5*hh',
 )
 
-DEBUG = os.environ.get('DEBUG', 'false' if os.environ.get('RAILWAY_ENVIRONMENT') else 'true').lower() in (
-    'true',
-    '1',
-    'yes',
+_IS_RAILWAY = any(
+    os.environ.get(key)
+    for key in (
+        'RAILWAY_ENVIRONMENT',
+        'RAILWAY_PUBLIC_DOMAIN',
+        'RAILWAY_SERVICE_ID',
+        'RAILWAY_PROJECT_ID',
+        'RAILWAY_DEPLOYMENT_ID',
+    )
 )
+_IS_PRODUCTION = _IS_RAILWAY or os.environ.get('DATABASE_URL', '').startswith('postgres')
 
-_hosts_raw = os.environ.get('ALLOWED_HOSTS') or 'localhost,127.0.0.1'
-ALLOWED_HOSTS = [host.strip() for host in _hosts_raw.split(',') if host.strip()]
+DEBUG = os.environ.get(
+    'DEBUG',
+    'false' if _IS_PRODUCTION else 'true',
+).lower() in ('true', '1', 'yes')
 
-if railway_domain := os.environ.get('RAILWAY_PUBLIC_DOMAIN'):
-    ALLOWED_HOSTS.append(railway_domain)
-if os.environ.get('RAILWAY_ENVIRONMENT'):
-    ALLOWED_HOSTS.extend(['.up.railway.app', '.railway.app', '.clasmodiagnostics.com'])
+if _IS_PRODUCTION:
+    ALLOWED_HOSTS = ['*']
+else:
+    _hosts_raw = os.environ.get('ALLOWED_HOSTS') or 'localhost,127.0.0.1'
+    ALLOWED_HOSTS = [host.strip() for host in _hosts_raw.split(',') if host.strip()]
+    for domain in ('clasmodiagnostics.com', 'www.clasmodiagnostics.com', '.clasmodiagnostics.com'):
+        if domain not in ALLOWED_HOSTS:
+            ALLOWED_HOSTS.append(domain)
 
-_default_domains = 'clasmodiagnostics.com,www.clasmodiagnostics.com'
-_production_domains = os.environ.get('PRODUCTION_DOMAINS') or _default_domains
-for domain in _production_domains.split(','):
-    domain = domain.strip()
-    if domain and domain not in ALLOWED_HOSTS:
-        ALLOWED_HOSTS.append(domain)
-
-_default_csrf = 'https://clasmodiagnostics.com,https://www.clasmodiagnostics.com'
-_csrf_raw = os.environ.get('CSRF_TRUSTED_ORIGINS') or _default_csrf
-CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in _csrf_raw.split(',') if origin.strip()]
+CSRF_TRUSTED_ORIGINS = [
+    'https://clasmodiagnostics.com',
+    'https://www.clasmodiagnostics.com',
+]
+_csrf_raw = os.environ.get('CSRF_TRUSTED_ORIGINS') or ''
+for origin in _csrf_raw.split(','):
+    origin = origin.strip()
+    if origin and origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(origin)
 if railway_domain := os.environ.get('RAILWAY_PUBLIC_DOMAIN'):
     origin = f'https://{railway_domain}'
     if origin not in CSRF_TRUSTED_ORIGINS:
         CSRF_TRUSTED_ORIGINS.append(origin)
-for domain in ALLOWED_HOSTS:
-    if domain.startswith('.'):
-        continue
-    for origin in (f'https://{domain}', f'http://{domain}'):
-        if origin not in CSRF_TRUSTED_ORIGINS:
-            CSRF_TRUSTED_ORIGINS.append(origin)
-
-# Custom domain — always allow (avoids www-only DisallowedHost on SPA routes)
-for _host in ('clasmodiagnostics.com', 'www.clasmodiagnostics.com', '.clasmodiagnostics.com'):
-    if _host not in ALLOWED_HOSTS:
-        ALLOWED_HOSTS.append(_host)
-for _origin in ('https://clasmodiagnostics.com', 'https://www.clasmodiagnostics.com'):
-    if _origin not in CSRF_TRUSTED_ORIGINS:
-        CSRF_TRUSTED_ORIGINS.append(_origin)
-
-# Railway internal health checks and service networking
-if os.environ.get('RAILWAY_ENVIRONMENT'):
-    for _host in ('.railway.internal', 'healthcheck.railway.app', 'localhost', '127.0.0.1'):
-        if _host not in ALLOWED_HOSTS:
-            ALLOWED_HOSTS.append(_host)
-    if '*' not in ALLOWED_HOSTS:
-        ALLOWED_HOSTS.append('*')
 
 INSTALLED_APPS = [
     'django.contrib.admin',

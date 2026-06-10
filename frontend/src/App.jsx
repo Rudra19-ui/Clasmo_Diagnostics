@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import ElabPay from './pages/ElabPay';
 import Help from './pages/Help';
 import Login from './pages/Login';
+import Landing from './pages/Landing';
 import Registration from './pages/Registration';
 import Reports from './pages/Reports';
 import Search from './pages/Search';
@@ -23,8 +24,8 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/" element={<Navigate to="/search" replace />} />
           <Route path="/search" element={<ProtectedRoute><Search /></ProtectedRoute>} />
           <Route path="/registration" element={<ProtectedRoute><Registration /></ProtectedRoute>} />
           <Route path="/test-result" element={<ProtectedRoute><TestResult /></ProtectedRoute>} />
@@ -43,7 +44,7 @@ export default function App() {
           <Route path="/device/trip-management" element={<ProtectedRoute><DeviceStub title="Trip Management" description="Active trips list and management." /></ProtectedRoute>} />
           <Route path="/device/batch-upload" element={<ProtectedRoute><DeviceStub title="Batch Upload" description="Upload CSV/XLSX registration batch files."><input type="file" accept=".csv,.xlsx" /></DeviceStub></ProtectedRoute>} />
           <Route path="/device/test-result-batch" element={<ProtectedRoute><DeviceStub title="Test Result Batch" description="Batch import of analyzer results."><input type="file" /></DeviceStub></ProtectedRoute>} />
-          <Route path="*" element={<Navigate to="/search" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

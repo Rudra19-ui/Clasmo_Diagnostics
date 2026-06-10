@@ -132,7 +132,7 @@ export default function Login() {
       </main>
 
       <footer className="dash-footer login-footer">
-        Copyright © 2014 &amp; Forever Blue Pearl Infotech Pvt. Ltd / All rights reserved.
+        © 2026 Clasmo Diagnostics · Empowering labs with smarter, faster operations.
       </footer>
     </div>
   );

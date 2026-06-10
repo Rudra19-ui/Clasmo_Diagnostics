@@ -9,25 +9,12 @@ MAX_ATTEMPTS = 30
 SLEEP_SECONDS = 3
 
 
+from db_url import pick_database_url
+
+
 def get_database_urls():
-    """Try public URL first; skip unreachable railway.internal when public exists."""
-    public = os.environ.get('DATABASE_PUBLIC_URL', '').strip()
-    internal = os.environ.get('DATABASE_URL', '').strip()
-    urls = []
-
-    if public.startswith('postgres'):
-        urls.append(public)
-
-    if internal.startswith('postgres') and internal not in urls:
-        if 'railway.internal' in internal and public:
-            print(
-                'Skipping postgres.railway.internal because DATABASE_PUBLIC_URL is set.',
-                flush=True,
-            )
-        else:
-            urls.append(internal)
-
-    return urls
+    url = pick_database_url()
+    return [url] if url else []
 
 
 def wait_for_host(host, port, max_attempts=MAX_ATTEMPTS, sleep_seconds=SLEEP_SECONDS):

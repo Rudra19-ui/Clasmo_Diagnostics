@@ -2,6 +2,8 @@
 import os
 import sys
 
+from db_url import is_usable_postgres_url, pick_database_url
+
 
 def main():
     public_url = os.environ.get('DATABASE_PUBLIC_URL', '').strip()
@@ -25,27 +27,31 @@ def main():
             return 1
         return 0
 
-    if 'railway.internal' in database_url and not public_url:
+    if public_url and 'railway.internal' in public_url:
         print(
-            '\nFATAL: DATABASE_URL points to postgres.railway.internal but '
-            'DATABASE_PUBLIC_URL is not set.\n'
-            'That internal hostname only works when Postgres and the web app '
-            'are in the same Railway project.\n\n'
+            '\nFATAL: DATABASE_PUBLIC_URL still uses postgres.railway.internal.\n'
+            'Do NOT use ${{Postgres.DATABASE_URL}} for DATABASE_PUBLIC_URL.\n\n'
             'Fix on the WEB service (Clasmo_Diagnostics) Variables:\n'
-            '  1. Open Postgres → Connect → copy the PUBLIC URL '
-            '(host ends with .proxy.rlwy.net)\n'
-            '  2. Add variable: DATABASE_PUBLIC_URL = <that public URL>\n'
-            '  3. Optionally set DATABASE_URL to the same public URL\n'
+            '  1. Postgres → Connect → copy the PUBLIC URL\n'
+            '     (host must end with .proxy.rlwy.net, e.g. acela.proxy.rlwy.net)\n'
+            '  2. Set DATABASE_PUBLIC_URL to that full pasted URL\n'
+            '  3. Set DATABASE_URL to the same pasted URL\n'
             '  4. Redeploy\n',
             flush=True,
         )
         return 1
 
-    if public_url:
-        print('Using DATABASE_PUBLIC_URL for PostgreSQL.', flush=True)
-    elif database_url:
-        print(f'Using DATABASE_URL host from configured URL.', flush=True)
+    if not is_usable_postgres_url(pick_database_url()):
+        print(
+            '\nFATAL: No usable PostgreSQL URL found.\n'
+            'Set DATABASE_PUBLIC_URL on the web service to the pasted public URL '
+            'from Postgres → Connect.\n',
+            flush=True,
+        )
+        return 1
 
+    chosen = pick_database_url()
+    print(f'Using PostgreSQL URL with host from configured public connection.', flush=True)
     return 0
 
 

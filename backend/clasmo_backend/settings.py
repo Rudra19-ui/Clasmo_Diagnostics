@@ -3,6 +3,8 @@ from pathlib import Path
 
 import dj_database_url
 
+from db_url import pick_database_url
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 IS_RAILWAY = any(
@@ -84,19 +86,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'clasmo_backend.wsgi.application'
 
-# postgres.railway.internal only works inside the same Railway project.
-# Never use the internal hostname on Railway without a public URL configured.
-_public_db_url = os.environ.get('DATABASE_PUBLIC_URL', '').strip()
-_internal_db_url = os.environ.get('DATABASE_URL', '').strip()
-
-if _public_db_url:
-    _database_url = _public_db_url
-elif _internal_db_url and 'railway.internal' not in _internal_db_url:
-    _database_url = _internal_db_url
-elif IS_RAILWAY and 'railway.internal' in _internal_db_url:
-    _database_url = ''
-else:
-    _database_url = _internal_db_url or _public_db_url
+# Ignore postgres.railway.internal — use the public Connect URL (*.proxy.rlwy.net).
+_database_url = pick_database_url()
 
 DATABASES = {
     'default': dj_database_url.config(

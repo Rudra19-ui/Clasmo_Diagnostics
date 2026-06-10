@@ -1,6 +1,8 @@
 from datetime import datetime
 
+from django.db import connection
 from django.db.models import Count, Q, Sum
+from django.db.utils import OperationalError, ProgrammingError
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, permissions, status
@@ -28,7 +30,16 @@ class HealthView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request):
-        return Response({'status': 'ok'})
+        try:
+            connection.ensure_connection()
+            with connection.cursor() as cursor:
+                cursor.execute('SELECT 1')
+            return Response({'status': 'ok', 'database': 'connected'})
+        except (OperationalError, ProgrammingError) as exc:
+            return Response(
+                {'status': 'error', 'database': str(exc)},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
 
 
 class IsAdmin(permissions.BasePermission):
@@ -41,14 +52,20 @@ class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
-        serializer = LoginSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token, _ = Token.objects.get_or_create(user=user)
-        return Response({
-            'token': token.key,
-            'user': UserSerializer(user).data,
-        })
+        try:
+            serializer = LoginSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            user = serializer.validated_data['user']
+            token, _ = Token.objects.get_or_create(user=user)
+            return Response({
+                'token': token.key,
+                'user': UserSerializer(user).data,
+            })
+        except (OperationalError, ProgrammingError) as exc:
+            return Response(
+                {'detail': 'Database is not ready. Please retry in a moment.'},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
 
 
 class LogoutView(APIView):

@@ -18,14 +18,35 @@ def get_database_urls():
     return urls
 
 
-def wait_for_host(host, port, max_attempts=30, sleep_seconds=3):
+def wait_for_host(host, port, max_attempts=MAX_ATTEMPTS, sleep_seconds=SLEEP_SECONDS):
     for attempt in range(1, max_attempts + 1):
         try:
             socket.getaddrinfo(host, port, type=socket.SOCK_STREAM)
             with socket.create_connection((host, port), timeout=5):
                 return True
         except (OSError, socket.gaierror) as exc:
-            print(f'Database not ready ({attempt}/{max_attempts}): {exc}', flush=True)
+            print(f'Database host not ready ({attempt}/{max_attempts}): {exc}', flush=True)
+            time.sleep(sleep_seconds)
+    return False
+
+
+def wait_for_django_connection(max_attempts=MAX_ATTEMPTS, sleep_seconds=SLEEP_SECONDS):
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'clasmo_backend.settings')
+    import django
+
+    django.setup()
+    from django.db import connection
+
+    for attempt in range(1, max_attempts + 1):
+        try:
+            connection.ensure_connection()
+            with connection.cursor() as cursor:
+                cursor.execute('SELECT 1')
+            print('Django database connection verified.', flush=True)
+            return True
+        except Exception as exc:
+            print(f'Django database not ready ({attempt}/{max_attempts}): {exc}', flush=True)
+            connection.close()
             time.sleep(sleep_seconds)
     return False
 
@@ -44,8 +65,9 @@ def main():
             continue
         print(f'Waiting for PostgreSQL at {host}:{port}...', flush=True)
         if wait_for_host(host, port):
-            print('PostgreSQL is reachable.', flush=True)
-            return 0
+            print('PostgreSQL host is reachable.', flush=True)
+            if wait_for_django_connection():
+                return 0
 
     print(
         '\nERROR: Could not connect to PostgreSQL.\n'
@@ -53,9 +75,8 @@ def main():
         '  1. Add a PostgreSQL database to the same project/environment.\n'
         '  2. On the web service Variables, set:\n'
         '     DATABASE_URL=${{Postgres.DATABASE_URL}}\n'
-        '     (use your Postgres service name if it is not "Postgres")\n'
-        '  3. If internal DNS still fails, also try:\n'
-        '     DATABASE_PUBLIC_URL=${{Postgres.DATABASE_PUBLIC_URL}}\n',
+        '     DATABASE_PUBLIC_URL=${{Postgres.DATABASE_PUBLIC_URL}}\n'
+        '     (use your Postgres service name if it is not "Postgres")\n',
         flush=True,
     )
     return 1

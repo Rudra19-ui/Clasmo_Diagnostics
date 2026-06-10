@@ -754,12 +754,25 @@ input, select, textarea, button {
   margin: 8px 0;
 }
 
-.remember { display: block; margin-top: 12px; font-size: 12px; }
+.remember {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.remember input {
+  margin: 0;
+}
 
 .trial-box {
   margin-top: 24px;
   padding-top: 20px;
   border-top: 1px dashed var(--gray-border);
+  max-height: 420px;
+  overflow-y: auto;
 }
 
 .trial-box h2 { font-size: 14px; color: var(--blue-deep); margin-bottom: 12px; }

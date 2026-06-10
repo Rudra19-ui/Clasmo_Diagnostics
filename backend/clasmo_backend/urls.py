@@ -4,6 +4,8 @@ from django.contrib import admin
 from django.http import FileResponse, Http404, JsonResponse
 from django.urls import include, path, re_path
 
+SPA_EXCLUDED_PREFIXES = r'api/|admin/|media/|static/|health/|assets/|favicon\.svg'
+
 
 def spa_fallback(request, *_args, **_kwargs):
     index = settings.FRONTEND_DIST / 'index.html'
@@ -25,7 +27,7 @@ if settings.FRONTEND_DIST.exists():
     urlpatterns += [
         path('', spa_fallback, name='spa-root'),
         re_path(
-            r'^(?!api/|admin/|media/|static/|health/|assets/).+$',
+            rf'^(?!{SPA_EXCLUDED_PREFIXES})(?P<spa_path>.+)/?$',
             spa_fallback,
             name='spa-fallback',
         ),

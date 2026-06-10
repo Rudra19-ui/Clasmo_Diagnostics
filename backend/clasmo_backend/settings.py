@@ -45,6 +45,14 @@ for domain in ALLOWED_HOSTS:
         if origin not in CSRF_TRUSTED_ORIGINS:
             CSRF_TRUSTED_ORIGINS.append(origin)
 
+# Custom domain — always allow (avoids www-only DisallowedHost on SPA routes)
+for _host in ('clasmodiagnostics.com', 'www.clasmodiagnostics.com', '.clasmodiagnostics.com'):
+    if _host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(_host)
+for _origin in ('https://clasmodiagnostics.com', 'https://www.clasmodiagnostics.com'):
+    if _origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(_origin)
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

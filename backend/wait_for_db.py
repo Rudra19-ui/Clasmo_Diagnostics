@@ -10,11 +10,23 @@ SLEEP_SECONDS = 3
 
 
 def get_database_urls():
+    """Try public URL first; skip unreachable railway.internal when public exists."""
+    public = os.environ.get('DATABASE_PUBLIC_URL', '').strip()
+    internal = os.environ.get('DATABASE_URL', '').strip()
     urls = []
-    for key in ('DATABASE_URL', 'DATABASE_PUBLIC_URL'):
-        url = os.environ.get(key, '')
-        if url.startswith('postgres') and url not in urls:
-            urls.append(url)
+
+    if public.startswith('postgres'):
+        urls.append(public)
+
+    if internal.startswith('postgres') and internal not in urls:
+        if 'railway.internal' in internal and public:
+            print(
+                'Skipping postgres.railway.internal because DATABASE_PUBLIC_URL is set.',
+                flush=True,
+            )
+        else:
+            urls.append(internal)
+
     return urls
 
 
@@ -71,12 +83,8 @@ def main():
 
     print(
         '\nERROR: Could not connect to PostgreSQL.\n'
-        'Railway setup checklist:\n'
-        '  1. Add a PostgreSQL database to the same project/environment.\n'
-        '  2. On the web service Variables, set:\n'
-        '     DATABASE_URL=${{Postgres.DATABASE_URL}}\n'
-        '     DATABASE_PUBLIC_URL=${{Postgres.DATABASE_PUBLIC_URL}}\n'
-        '     (use your Postgres service name if it is not "Postgres")\n',
+        'If logs mention postgres.railway.internal, set DATABASE_PUBLIC_URL on the '
+        'WEB service to the Postgres Connect → Public URL (xxxx.proxy.rlwy.net).\n',
         flush=True,
     )
     return 1

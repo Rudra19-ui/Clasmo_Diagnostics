@@ -84,8 +84,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'clasmo_backend.wsgi.application'
 
-# Use public URL first when available (works from Railway and local dev).
-_database_url = os.environ.get('DATABASE_PUBLIC_URL') or os.environ.get('DATABASE_URL')
+# postgres.railway.internal only works inside the same Railway project.
+# Always prefer the public URL when it is configured.
+_public_db_url = os.environ.get('DATABASE_PUBLIC_URL', '').strip()
+_internal_db_url = os.environ.get('DATABASE_URL', '').strip()
+
+if _public_db_url:
+    _database_url = _public_db_url
+elif _internal_db_url and 'railway.internal' not in _internal_db_url:
+    _database_url = _internal_db_url
+else:
+    _database_url = _internal_db_url
+
 DATABASES = {
     'default': dj_database_url.config(
         default=_database_url or f'sqlite:///{BASE_DIR / "db.sqlite3"}',

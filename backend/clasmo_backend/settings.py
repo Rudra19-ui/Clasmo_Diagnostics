@@ -53,6 +53,14 @@ for _origin in ('https://clasmodiagnostics.com', 'https://www.clasmodiagnostics.
     if _origin not in CSRF_TRUSTED_ORIGINS:
         CSRF_TRUSTED_ORIGINS.append(_origin)
 
+# Railway internal health checks and service networking
+if os.environ.get('RAILWAY_ENVIRONMENT'):
+    for _host in ('.railway.internal', 'healthcheck.railway.app', 'localhost', '127.0.0.1'):
+        if _host not in ALLOWED_HOSTS:
+            ALLOWED_HOSTS.append(_host)
+    if '*' not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append('*')
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

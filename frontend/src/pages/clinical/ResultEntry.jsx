@@ -139,7 +139,8 @@ export default function ResultEntry() {
             <button type="button" className="btn-blue" onClick={searchRegs}>Search</button>
           </div>
 
-          <table className="data-table">
+          <div className="data-table-scroll">
+          <table className="data-table data-table-responsive">
             <thead>
               <tr>
                 <th>Lab Code</th>
@@ -152,15 +153,15 @@ export default function ResultEntry() {
             </thead>
             <tbody>
               {!registrations.length ? (
-                <tr><td colSpan="6" className="empty-msg">Search for a registration to enter results.</td></tr>
+                <tr><td colSpan="6" className="empty-msg" data-label="">Search for a registration to enter results.</td></tr>
               ) : registrations.map((r) => (
                 <tr key={r.id} className={selectedId === r.id ? 'active' : ''}>
-                  <td>{r.lab_code}</td>
-                  <td>{r.patient_name}</td>
-                  <td>{r.test}</td>
-                  <td>{r.date}</td>
-                  <td><span className="badge-status">{r.status}</span></td>
-                  <td>
+                  <td data-label="Lab Code">{r.lab_code}</td>
+                  <td data-label="Patient">{r.patient_name}</td>
+                  <td data-label="Test">{r.test}</td>
+                  <td data-label="Date">{r.date}</td>
+                  <td data-label="Status"><span className="badge-status">{r.status}</span></td>
+                  <td data-label="Action">
                     <button type="button" className="btn-link" onClick={() => loadReport(r.id)}>
                       Enter Results
                     </button>
@@ -169,6 +170,7 @@ export default function ResultEntry() {
               ))}
             </tbody>
           </table>
+          </div>
         </section>
 
         {loading && <p>Loading report data...</p>}
@@ -192,7 +194,8 @@ export default function ResultEntry() {
             {!report.parameters?.length ? (
               <p className="empty-msg">No parameters configured for the ordered tests. Add parameters in Test Parameter Master.</p>
             ) : (
-              <table className="data-table result-table">
+              <div className="data-table-scroll">
+              <table className="data-table result-table data-table-responsive">
                 <thead>
                   <tr>
                     <th>Parameter</th>
@@ -206,7 +209,7 @@ export default function ResultEntry() {
                   {Object.entries(parameterGroups).map(([testName, params]) => (
                     <Fragment key={testName}>
                       <tr className="test-group-heading">
-                        <td colSpan="5">{testName}</td>
+                        <td colSpan="5" data-label="">{testName}</td>
                       </tr>
                       {params.map((p) => {
                         const existing = report.values?.find((v) => v.parameter === p.id);
@@ -218,10 +221,10 @@ export default function ResultEntry() {
                             : p.reference_range_male;
                         return (
                           <tr key={p.id} className={existing?.flag === 'Critical' ? 'value-critical' : ''}>
-                            <td>{p.parameter_name}</td>
-                            <td>{p.unit}</td>
-                            <td>{ref || '—'}</td>
-                            <td>
+                            <td data-label="Parameter">{p.parameter_name}</td>
+                            <td data-label="Unit">{p.unit}</td>
+                            <td data-label="Reference Range">{ref || '—'}</td>
+                            <td data-label="Result">
                               <input
                                 type="text"
                                 disabled={isVerified}
@@ -229,7 +232,7 @@ export default function ResultEntry() {
                                 onChange={(e) => setValues({ ...values, [p.id]: e.target.value })}
                               />
                             </td>
-                            <td>
+                            <td data-label="Flag">
                               {existing && (
                                 <span className={`flag-badge ${flagClass(existing.flag)}`}>{existing.flag}</span>
                               )}
@@ -241,6 +244,7 @@ export default function ResultEntry() {
                   ))}
                 </tbody>
               </table>
+              </div>
             )}
 
             <div style={{ marginTop: 16, display: 'flex', gap: 8, flexWrap: 'wrap' }}>

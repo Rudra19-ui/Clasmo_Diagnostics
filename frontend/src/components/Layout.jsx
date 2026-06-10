@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { NAV } from '../utils/nav';
@@ -15,16 +15,47 @@ export default function Layout({ activePage, children }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [openMenu, setOpenMenu] = useState(null);
+  const [navOpen, setNavOpen] = useState(false);
+
+  const closeNav = useCallback(() => {
+    setNavOpen(false);
+    setOpenMenu(null);
+  }, []);
 
   const handleLogout = async () => {
     await logout();
     navigate('/login');
   };
 
+  useEffect(() => {
+    document.body.classList.toggle('nav-scroll-lock', navOpen);
+    return () => document.body.classList.remove('nav-scroll-lock');
+  }, [navOpen]);
+
+  useEffect(() => {
+    if (!navOpen) return undefined;
+
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') closeNav();
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [navOpen, closeNav]);
+
   return (
     <div className="dashboard">
       <div id="clasmo-shell">
         <div className="top-utility">
+          <button
+            type="button"
+            className="nav-toggle"
+            aria-expanded={navOpen}
+            aria-controls="main-navigation"
+            onClick={() => setNavOpen((open) => !open)}
+          >
+            ☰ Menu
+          </button>
           <div className="global-search">
             <input type="search" placeholder="Search by Name, Labcode, Mobile Number, Adhar Number" aria-label="Global search" />
           </div>
@@ -42,7 +73,26 @@ export default function Layout({ activePage, children }) {
             <li><button type="button" className="icon-btn" onClick={handleLogout} title="Logout">⏻</button></li>
           </ul>
         </div>
-        <nav className="main-menu-bar" aria-label="Main navigation">
+
+        <div
+          className={`nav-drawer-overlay${navOpen ? ' open' : ''}`}
+          onClick={closeNav}
+          aria-hidden={!navOpen}
+        />
+
+        <nav
+          id="main-navigation"
+          className={`main-menu-bar${navOpen ? ' nav-open' : ''}`}
+          aria-label="Main navigation"
+        >
+          <button
+            type="button"
+            className="nav-close"
+            aria-label="Close navigation menu"
+            onClick={closeNav}
+          >
+            ✕
+          </button>
           <ul className="main-menu">
             {NAV.filter((item) => canSee(item, user)).map((item) => {
               const visibleChildren = item.children?.filter((c) => canSee(c, user)) || [];
@@ -66,7 +116,13 @@ export default function Layout({ activePage, children }) {
                     <ul className="submenu">
                       {visibleChildren.map((child) => (
                         <li key={child.label}>
-                          <Link to={child.href} className={child.active ? 'active' : ''}>{child.label}</Link>
+                          <Link
+                            to={child.href}
+                            className={child.active ? 'active' : ''}
+                            onClick={closeNav}
+                          >
+                            {child.label}
+                          </Link>
                         </li>
                       ))}
                     </ul>
@@ -76,7 +132,7 @@ export default function Layout({ activePage, children }) {
 
               return (
                 <li key={item.id} className={isActive ? 'active' : ''}>
-                  <Link to={item.href}>{item.label}</Link>
+                  <Link to={item.href} onClick={closeNav}>{item.label}</Link>
                 </li>
               );
             })}

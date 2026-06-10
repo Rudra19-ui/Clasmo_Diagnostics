@@ -1166,3 +1166,25 @@ input, select, textarea, button {
   .dashboard-grid { grid-template-columns: 1fr; }
   .brand-title { order: 3; width: 100%; }
 }
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dashboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .login-main { grid-template-columns: 1fr minmax(200px, 280px); }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1280px) {
+  .dash-main { max-width: 1400px; }
+  .dashboard-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .dashboard-grid .dash-card.span-2 { grid-column: span 2; }
+  .dashboard-grid .dash-card.full-width { grid-column: 1 / -1; }
+}
+
+@media (min-width: 1440px) {
+  .dash-main { max-width: 1520px; }
+}

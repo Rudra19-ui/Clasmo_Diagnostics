@@ -5,6 +5,14 @@
   text-align: left;
 }
 
+#root:has(.dashboard),
+#root:has(.login-page) {
+  width: 100%;
+  max-width: none;
+  border-inline: none;
+  text-align: left;
+}
+
 .landing-page {
   min-height: 100vh;
   background: var(--white);

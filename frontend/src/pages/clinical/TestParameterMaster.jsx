@@ -175,7 +175,8 @@ export default function TestParameterMaster() {
           {error && <p className="login-error">{error}</p>}
           {message && <p style={{ color: '#2e7d32' }}>{message}</p>}
           {loading ? <p>Loading parameters...</p> : (
-            <table className="data-table">
+            <div className="data-table-scroll">
+            <table className="data-table data-table-responsive">
               <thead>
                 <tr>
                   <th>Test</th>
@@ -191,18 +192,18 @@ export default function TestParameterMaster() {
               </thead>
               <tbody>
                 {!parameters.length ? (
-                  <tr><td colSpan="9" className="empty-msg">No parameters found.</td></tr>
+                  <tr><td colSpan="9" className="empty-msg" data-label="">No parameters found.</td></tr>
                 ) : parameters.map((p) => (
                   <tr key={p.id}>
-                    <td>{p.test_name}</td>
-                    <td>{p.parameter_name}</td>
-                    <td>{p.unit}</td>
-                    <td>{p.reference_range_male}</td>
-                    <td>{p.reference_range_female}</td>
-                    <td>{p.reference_range_child}</td>
-                    <td>{p.critical_low ?? '—'} / {p.critical_high ?? '—'}</td>
-                    <td>{p.is_active ? 'Yes' : 'No'}</td>
-                    <td>
+                    <td data-label="Test">{p.test_name}</td>
+                    <td data-label="Parameter">{p.parameter_name}</td>
+                    <td data-label="Unit">{p.unit}</td>
+                    <td data-label="Male">{p.reference_range_male}</td>
+                    <td data-label="Female">{p.reference_range_female}</td>
+                    <td data-label="Child">{p.reference_range_child}</td>
+                    <td data-label="Critical">{p.critical_low ?? '—'} / {p.critical_high ?? '—'}</td>
+                    <td data-label="Active">{p.is_active ? 'Yes' : 'No'}</td>
+                    <td data-label="Actions">
                       <button type="button" className="btn-link" onClick={() => handleEdit(p)}>Edit</button>
                       {' '}
                       {p.is_active && (
@@ -213,6 +214,7 @@ export default function TestParameterMaster() {
                 ))}
               </tbody>
             </table>
+            </div>
           )}
         </section>
       </main>

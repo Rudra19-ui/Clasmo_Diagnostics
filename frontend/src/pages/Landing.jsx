@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
 import heroImage from '../assets/hero.png';
 import '../styles/landing.css';
 
@@ -51,8 +52,30 @@ const AUDIENCES = [
 ];
 
 export default function Landing() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+
+  useEffect(() => {
+    document.body.classList.toggle('nav-scroll-lock', menuOpen);
+    return () => document.body.classList.remove('nav-scroll-lock');
+  }, [menuOpen]);
+
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') closeMenu();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [menuOpen, closeMenu]);
+
   return (
     <div className="landing-page">
+      <div
+        className={`landing-nav-overlay${menuOpen ? ' open' : ''}`}
+        onClick={closeMenu}
+        aria-hidden={!menuOpen}
+      />
       <header className="landing-navbar">
         <Link to="/" className="landing-brand">
           <span className="logo-mark landing-logo-mark">C</span>
@@ -61,11 +84,30 @@ export default function Landing() {
             <small>Laboratory Information Management System</small>
           </span>
         </Link>
-        <nav className="landing-nav-actions">
+        <button
+          type="button"
+          className="landing-menu-toggle"
+          aria-expanded={menuOpen}
+          aria-controls="landing-nav-drawer"
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          ☰
+        </button>
+        <nav className="landing-nav-actions" aria-label="Landing navigation">
           <a href="#features" className="landing-nav-link">Features</a>
           <a href="#audience" className="landing-nav-link">Who It&apos;s For</a>
           <a href="#contact" className="landing-nav-link">Contact</a>
           <Link to="/login" className="btn-landing-login">Login</Link>
+        </nav>
+        <nav
+          id="landing-nav-drawer"
+          className={`landing-nav-drawer${menuOpen ? ' open' : ''}`}
+          aria-label="Mobile navigation"
+        >
+          <a href="#features" className="landing-nav-link" onClick={closeMenu}>Features</a>
+          <a href="#audience" className="landing-nav-link" onClick={closeMenu}>Who It&apos;s For</a>
+          <a href="#contact" className="landing-nav-link" onClick={closeMenu}>Contact</a>
+          <Link to="/login" className="btn-landing-login" onClick={closeMenu}>Login</Link>
         </nav>
       </header>
 

@@ -121,7 +121,8 @@ export default function ReportPreview() {
               Object.entries(valueGroups).map(([testName, items]) => (
                 <div key={testName} style={{ marginBottom: 20 }}>
                   <h4 style={{ marginBottom: 8, color: 'var(--blue-deep)' }}>{testName}</h4>
-                  <table className="data-table">
+                  <div className="data-table-scroll">
+                  <table className="data-table data-table-responsive">
                     <thead>
                       <tr>
                         <th>Parameter</th>
@@ -134,17 +135,18 @@ export default function ReportPreview() {
                     <tbody>
                       {items.map((v) => (
                         <tr key={v.id || v.parameter}>
-                          <td>{v.parameter_name}</td>
-                          <td><strong>{v.value}</strong></td>
-                          <td>{v.unit}</td>
-                          <td>{v.reference_range || '—'}</td>
-                          <td>
+                          <td data-label="Parameter">{v.parameter_name}</td>
+                          <td data-label="Result"><strong>{v.value}</strong></td>
+                          <td data-label="Unit">{v.unit}</td>
+                          <td data-label="Reference">{v.reference_range || '—'}</td>
+                          <td data-label="Flag">
                             <span className={`flag-badge ${flagClass(v.flag)}`}>{v.flag}</span>
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
+                  </div>
                 </div>
               ))
             )}

@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 
 from django.db import connection
@@ -6,6 +7,7 @@ from django.db.utils import OperationalError, ProgrammingError
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, permissions, status
+from rest_framework.exceptions import ValidationError as DRFValidationError
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -25,17 +27,26 @@ from .serializers import (
 )
 from .utils import generate_lab_code
 
+logger = logging.getLogger(__name__)
+
 
 class HealthView(APIView):
     permission_classes = [permissions.AllowAny]
+    authentication_classes = []
 
     def get(self, request):
         try:
             connection.ensure_connection()
             with connection.cursor() as cursor:
                 cursor.execute('SELECT 1')
-            return Response({'status': 'ok', 'database': 'connected'})
+            trial_admin_exists = User.objects.filter(username='admin_test', is_active=True).exists()
+            return Response({
+                'status': 'ok',
+                'database': 'connected',
+                'trial_admin_ready': trial_admin_exists,
+            })
         except (OperationalError, ProgrammingError) as exc:
+            logger.exception('Health check database error')
             return Response(
                 {'status': 'error', 'database': str(exc)},
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
@@ -49,6 +60,7 @@ class IsAdmin(permissions.BasePermission):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
+    authentication_classes = []
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
@@ -61,10 +73,19 @@ class LoginView(APIView):
                 'token': token.key,
                 'user': UserSerializer(user).data,
             })
-        except (OperationalError, ProgrammingError) as exc:
+        except DRFValidationError:
+            raise
+        except (OperationalError, ProgrammingError):
+            logger.exception('Login database error')
             return Response(
                 {'detail': 'Database is not ready. Please retry in a moment.'},
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
+        except Exception:
+            logger.exception('Login failed')
+            return Response(
+                {'detail': 'Login failed due to a server error.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
 

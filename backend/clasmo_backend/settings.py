@@ -74,9 +74,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'clasmo_backend.wsgi.application'
 
-_database_url = os.environ.get('DATABASE_URL') or os.environ.get('DATABASE_PUBLIC_URL')
-if 'railway.internal' in (_database_url or '') and os.environ.get('DATABASE_PUBLIC_URL'):
-    _database_url = os.environ.get('DATABASE_PUBLIC_URL')
+# Prefer the public Postgres URL on Railway when both are set (internal DNS can fail).
+if os.environ.get('RAILWAY_ENVIRONMENT'):
+    _database_url = os.environ.get('DATABASE_PUBLIC_URL') or os.environ.get('DATABASE_URL')
+else:
+    _database_url = os.environ.get('DATABASE_URL') or os.environ.get('DATABASE_PUBLIC_URL')
 DATABASES = {
     'default': dj_database_url.config(
         default=_database_url or f'sqlite:///{BASE_DIR / "db.sqlite3"}',
@@ -145,3 +147,29 @@ if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'api': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}

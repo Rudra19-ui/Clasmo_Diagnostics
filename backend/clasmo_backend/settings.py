@@ -75,6 +75,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'clasmo_backend.wsgi.application'
 
 _database_url = os.environ.get('DATABASE_URL') or os.environ.get('DATABASE_PUBLIC_URL')
+if 'railway.internal' in (_database_url or '') and os.environ.get('DATABASE_PUBLIC_URL'):
+    _database_url = os.environ.get('DATABASE_PUBLIC_URL')
 DATABASES = {
     'default': dj_database_url.config(
         default=_database_url or f'sqlite:///{BASE_DIR / "db.sqlite3"}',

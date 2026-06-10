@@ -5,44 +5,47 @@ import sys
 import time
 from urllib.parse import urlparse
 
-MAX_ATTEMPTS = 60
-SLEEP_SECONDS = 5
+MAX_ATTEMPTS = 30
+SLEEP_SECONDS = 3
 
 
-def get_database_url():
-    return os.environ.get('DATABASE_URL') or os.environ.get('DATABASE_PUBLIC_URL') or ''
+def get_database_urls():
+    urls = []
+    for key in ('DATABASE_URL', 'DATABASE_PUBLIC_URL'):
+        url = os.environ.get(key, '')
+        if url.startswith('postgres') and url not in urls:
+            urls.append(url)
+    return urls
 
 
-def wait_for_host(host, port):
-    for attempt in range(1, MAX_ATTEMPTS + 1):
+def wait_for_host(host, port, max_attempts=30, sleep_seconds=3):
+    for attempt in range(1, max_attempts + 1):
         try:
             socket.getaddrinfo(host, port, type=socket.SOCK_STREAM)
             with socket.create_connection((host, port), timeout=5):
                 return True
         except (OSError, socket.gaierror) as exc:
-            print(f'Database not ready ({attempt}/{MAX_ATTEMPTS}): {exc}', flush=True)
-            time.sleep(SLEEP_SECONDS)
+            print(f'Database not ready ({attempt}/{max_attempts}): {exc}', flush=True)
+            time.sleep(sleep_seconds)
     return False
 
 
 def main():
-    database_url = get_database_url()
-    if not database_url.startswith('postgres'):
+    database_urls = get_database_urls()
+    if not database_urls:
         print('No PostgreSQL URL configured; skipping database wait.', flush=True)
         return 0
 
-    parsed = urlparse(database_url)
-    host = parsed.hostname
-    port = parsed.port or 5432
-
-    if not host:
-        print('ERROR: DATABASE_URL is missing a hostname.', flush=True)
-        return 1
-
-    print(f'Waiting for PostgreSQL at {host}:{port}...', flush=True)
-    if wait_for_host(host, port):
-        print('PostgreSQL is reachable.', flush=True)
-        return 0
+    for database_url in database_urls:
+        parsed = urlparse(database_url)
+        host = parsed.hostname
+        port = parsed.port or 5432
+        if not host:
+            continue
+        print(f'Waiting for PostgreSQL at {host}:{port}...', flush=True)
+        if wait_for_host(host, port):
+            print('PostgreSQL is reachable.', flush=True)
+            return 0
 
     print(
         '\nERROR: Could not connect to PostgreSQL.\n'

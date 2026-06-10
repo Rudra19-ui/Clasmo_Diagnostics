@@ -20,7 +20,10 @@ _IS_RAILWAY = any(
         'RAILWAY_DEPLOYMENT_ID',
     )
 )
-_IS_PRODUCTION = _IS_RAILWAY or os.environ.get('DATABASE_URL', '').startswith('postgres')
+_IS_PRODUCTION = _IS_RAILWAY or (
+    os.environ.get('DATABASE_URL', '').startswith('postgres')
+    or os.environ.get('DATABASE_PUBLIC_URL', '').startswith('postgres')
+)
 
 DEBUG = os.environ.get(
     'DEBUG',
@@ -94,9 +97,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'clasmo_backend.wsgi.application'
 
+_database_url = os.environ.get('DATABASE_URL') or os.environ.get('DATABASE_PUBLIC_URL')
 DATABASES = {
     'default': dj_database_url.config(
-        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
+        default=_database_url or f'sqlite:///{BASE_DIR / "db.sqlite3"}',
         conn_max_age=600,
         conn_health_checks=True,
     )

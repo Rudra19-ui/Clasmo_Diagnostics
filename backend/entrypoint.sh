@@ -4,6 +4,9 @@ set -e
 PORT="${PORT:-8000}"
 echo "Starting Clasmo Diagnostics on port ${PORT}..."
 
+echo "Waiting for PostgreSQL..."
+python wait_for_db.py
+
 echo "Running migrations..."
 for i in 1 2 3 4 5 6 7 8 9 10; do
   if python manage.py migrate --noinput; then
@@ -14,8 +17,8 @@ for i in 1 2 3 4 5 6 7 8 9 10; do
     echo "Migration failed after 10 attempts."
     exit 1
   fi
-  echo "Migration attempt ${i} failed, retrying in 3s..."
-  sleep 3
+  echo "Migration attempt ${i} failed, retrying in 5s..."
+  sleep 5
 done
 
 echo "Starting background seed (non-blocking)..."

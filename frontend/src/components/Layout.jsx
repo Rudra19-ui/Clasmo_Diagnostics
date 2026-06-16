@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import NavIcon from './NavIcon';
 import { NAV } from '../utils/nav';
 
 const PHONES = '+91-8975273383 / +91-9146188320';
@@ -9,6 +10,31 @@ function canSee(item, user) {
   if (item.adminOnly && user?.role !== 'admin') return false;
   if (item.roles?.length && !item.roles.includes(user?.role)) return false;
   return true;
+}
+
+function SidebarLink({ item, isActive, onClick, asButton, showCaret, caretOpen }) {
+  const className = `sidebar-nav-link${isActive ? ' is-active' : ''}`;
+  const content = (
+    <>
+      <NavIcon id={item.id} />
+      <span className="sidebar-nav-label">{item.label}</span>
+      {showCaret && <span className={`submenu-caret${caretOpen ? ' open' : ''}`} aria-hidden>▾</span>}
+    </>
+  );
+
+  if (asButton) {
+    return (
+      <button type="button" className={className} onClick={onClick}>
+        {content}
+      </button>
+    );
+  }
+
+  return (
+    <Link to={item.href} className={className} onClick={onClick}>
+      {content}
+    </Link>
+  );
 }
 
 export default function Layout({ activePage, children }) {
@@ -43,18 +69,96 @@ export default function Layout({ activePage, children }) {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [navOpen, closeNav]);
 
+  const navItems = NAV.filter((item) => canSee(item, user));
+
   return (
-    <div className="dashboard">
-      <div id="clasmo-shell">
+    <div className="dashboard app-with-sidebar">
+      <div
+        className={`nav-drawer-overlay${navOpen ? ' open' : ''}`}
+        onClick={closeNav}
+        aria-hidden={!navOpen}
+      />
+
+      <aside
+        id="main-navigation"
+        className={`app-sidebar${navOpen ? ' nav-open' : ''}`}
+        aria-label="Main navigation"
+      >
+        <div className="sidebar-header">
+          <div className="sidebar-brand">
+            <span className="sidebar-brand-title">CLASMO</span>
+            <span className="sidebar-brand-sub">Diagnostics Pvt. Ltd.</span>
+          </div>
+          <button
+            type="button"
+            className="nav-close"
+            aria-label="Close navigation menu"
+            onClick={closeNav}
+          >
+            ✕
+          </button>
+        </div>
+
+        <ul className="sidebar-menu">
+          {navItems.map((item) => {
+            const visibleChildren = item.children?.filter((c) => canSee(c, user)) || [];
+            const isActive = item.id === activePage;
+
+            if (visibleChildren.length) {
+              return (
+                <li
+                  key={item.id}
+                  className={`has-submenu${isActive ? ' active' : ''}${openMenu === item.id ? ' open' : ''}`}
+                >
+                  <SidebarLink
+                    item={item}
+                    isActive={isActive}
+                    asButton
+                    showCaret
+                    caretOpen={openMenu === item.id}
+                    onClick={() => setOpenMenu(openMenu === item.id ? null : item.id)}
+                  />
+                  <ul className="submenu">
+                    {visibleChildren.map((child) => (
+                      <li key={child.label}>
+                        <Link
+                          to={child.href}
+                          className={child.active ? 'active' : ''}
+                          onClick={closeNav}
+                        >
+                          {child.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              );
+            }
+
+            return (
+              <li key={item.id} className={isActive ? 'active' : ''}>
+                <SidebarLink item={item} isActive={isActive} onClick={closeNav} />
+              </li>
+            );
+          })}
+        </ul>
+
+        <div className="nav-phones">{PHONES}</div>
+      </aside>
+
+      <div className="app-main">
         <div className="top-utility">
           <button
             type="button"
-            className="nav-toggle"
+            className="nav-toggle hamburger-btn"
             aria-expanded={navOpen}
             aria-controls="main-navigation"
+            aria-label={navOpen ? 'Close menu' : 'Open menu'}
             onClick={() => setNavOpen((open) => !open)}
           >
-            ☰ Menu
+            <span className="hamburger-line" />
+            <span className="hamburger-line" />
+            <span className="hamburger-line" />
           </button>
           <div className="global-search">
             <input type="search" placeholder="Search by Name, Labcode, Mobile Number, Adhar Number" aria-label="Global search" />
@@ -73,74 +177,8 @@ export default function Layout({ activePage, children }) {
             <li><button type="button" className="icon-btn" onClick={handleLogout} title="Logout">⏻</button></li>
           </ul>
         </div>
-
-        <div
-          className={`nav-drawer-overlay${navOpen ? ' open' : ''}`}
-          onClick={closeNav}
-          aria-hidden={!navOpen}
-        />
-
-        <nav
-          id="main-navigation"
-          className={`main-menu-bar${navOpen ? ' nav-open' : ''}`}
-          aria-label="Main navigation"
-        >
-          <button
-            type="button"
-            className="nav-close"
-            aria-label="Close navigation menu"
-            onClick={closeNav}
-          >
-            ✕
-          </button>
-          <ul className="main-menu">
-            {NAV.filter((item) => canSee(item, user)).map((item) => {
-              const visibleChildren = item.children?.filter((c) => canSee(c, user)) || [];
-              const isActive = item.id === activePage;
-
-              if (visibleChildren.length) {
-                return (
-                  <li
-                    key={item.id}
-                    className={`has-submenu${isActive ? ' active' : ''}${openMenu === item.id ? ' open' : ''}`}
-                  >
-                    <a
-                      href={item.href || '#'}
-                      onClick={(e) => {
-                        if (!item.href || item.href === '#') e.preventDefault();
-                        setOpenMenu(openMenu === item.id ? null : item.id);
-                      }}
-                    >
-                      {item.label} ▾
-                    </a>
-                    <ul className="submenu">
-                      {visibleChildren.map((child) => (
-                        <li key={child.label}>
-                          <Link
-                            to={child.href}
-                            className={child.active ? 'active' : ''}
-                            onClick={closeNav}
-                          >
-                            {child.label}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </li>
-                );
-              }
-
-              return (
-                <li key={item.id} className={isActive ? 'active' : ''}>
-                  <Link to={item.href} onClick={closeNav}>{item.label}</Link>
-                </li>
-              );
-            })}
-          </ul>
-          <div className="nav-phones">{PHONES}</div>
-        </nav>
+        {children}
       </div>
-      {children}
     </div>
   );
 }

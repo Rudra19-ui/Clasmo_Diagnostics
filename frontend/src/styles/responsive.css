@@ -65,148 +65,28 @@ svg {
   font-size: clamp(12px, 2.5vw, 14px);
 }
 
-/* ===== Mobile navigation drawer ===== */
-.nav-toggle {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: var(--touch-target);
-  min-width: var(--touch-target);
-  padding: 0 14px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  background: rgba(255, 255, 255, 0.12);
-  color: var(--white);
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: var(--text-sm);
-  font-weight: 600;
-}
-
-.nav-toggle:focus-visible {
-  outline: 2px solid var(--gold);
-  outline-offset: 2px;
-}
-
-.nav-drawer-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(10, 30, 60, 0.45);
-  z-index: var(--shell-z-overlay);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s ease;
-}
-
-.nav-drawer-overlay.open {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.nav-close {
-  display: none;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  min-width: var(--touch-target);
-  min-height: var(--touch-target);
-  border: none;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.15);
-  color: var(--white);
-  font-size: 1.25rem;
-  cursor: pointer;
-}
-
-.nav-close:focus-visible {
-  outline: 2px solid var(--gold);
-  outline-offset: 2px;
-}
-
+/* ===== Sidebar navigation (mobile tweaks) ===== */
 body.nav-scroll-lock {
   overflow: hidden;
 }
 
 @media (max-width: 1023px) {
-  .nav-toggle {
-    display: inline-flex;
+  .app-sidebar {
+    width: min(88vw, 300px);
   }
 
-  .nav-drawer-overlay {
-    display: block;
-  }
-
-  .main-menu-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: var(--nav-drawer-width);
-    flex-direction: column;
-    align-items: stretch;
-    padding-top: 56px;
-    transform: translateX(-105%);
-    transition: transform 0.28s ease;
-    z-index: var(--shell-z-drawer);
-    overflow-y: auto;
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.2);
-  }
-
-  .main-menu-bar.nav-open {
-    transform: translateX(0);
-  }
-
-  .nav-close {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .main-menu {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .main-menu > li > a {
-    border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  .sidebar-menu > li > a {
     padding: 14px 16px;
     font-size: var(--text-sm);
   }
 
-  .main-menu .submenu {
-    position: static;
-    display: none;
-    box-shadow: none;
-    border: none;
-    background: rgba(0, 0, 0, 0.12);
-    min-width: 0;
-  }
-
-  .main-menu .has-submenu.open .submenu {
-    display: block;
-  }
-
-  .main-menu .has-submenu:hover .submenu {
-    display: none;
-  }
-
-  .main-menu .has-submenu.open:hover .submenu {
-    display: block;
-  }
-
-  .main-menu .submenu a {
-    padding: 12px 20px;
-    color: var(--white);
-    border-bottom-color: rgba(255, 255, 255, 0.08);
+  .sidebar-menu .submenu a {
+    padding: 12px 20px 12px 28px;
   }
 
   .nav-phones {
     padding: 16px;
     white-space: normal;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
-    margin-top: auto;
   }
 
   .dashboard-grid .dash-card.span-2 {

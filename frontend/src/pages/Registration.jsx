@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import DatePicker from '../components/DatePicker';
 import Footer from '../components/Footer';
 import Layout from '../components/Layout';
+import TestBillModal from '../components/TestBillModal';
 import { api } from '../services/api';
-import { formatDateTime } from '../utils/date';
+import { calculateAge, formatDateTime, parseDDMMYYYY } from '../utils/date';
 
 const emptyPatient = () => ({
   patient_type: 'O.P.D.',
@@ -20,13 +22,9 @@ const emptyPatient = () => ({
   age_months: 0,
   age_days: 0,
   doctor_name: '',
-  affiliation: '',
   collection_center: 'CLASMO Diagnostics pvt',
-  sample_collected_at: '',
-  collection_round_boy: '',
   send_result_sms: false,
   is_register: false,
-  home_collection: false,
 });
 
 export default function Registration() {
@@ -43,8 +41,32 @@ export default function Registration() {
   const [visiting, setVisiting] = useState(0);
   const [paid, setPaid] = useState(0);
   const [urgency, setUrgency] = useState(false);
+  const [discountTest, setDiscountTest] = useState(0);
+  const [discountRegn, setDiscountRegn] = useState(0);
+  const [showTestBill, setShowTestBill] = useState(false);
   const [trfName, setTrfName] = useState('');
-  const now = formatDateTime();
+  const [registrationDate] = useState(() => new Date());
+  const now = formatDateTime(registrationDate);
+
+  const handleDateOfBirthChange = (dateOfBirth) => {
+    const dob = parseDDMMYYYY(dateOfBirth);
+    if (!dob) {
+      setPatient((prev) => ({
+        ...prev,
+        date_of_birth: dateOfBirth,
+        ...(dateOfBirth ? {} : { age_years: 0, age_months: 0, age_days: 0 }),
+      }));
+      return;
+    }
+    const age = calculateAge(dob, registrationDate);
+    setPatient((prev) => ({
+      ...prev,
+      date_of_birth: dateOfBirth,
+      age_years: age.years,
+      age_months: age.months,
+      age_days: age.days,
+    }));
+  };
 
   useEffect(() => {
     api.getTests().then(setTests).catch(console.error);
@@ -58,7 +80,8 @@ export default function Registration() {
   }, [tests, testSearch, selected]);
 
   const total = selected.reduce((sum, t) => sum + Number(t.price), 0);
-  const net = total + Number(visiting || 0);
+  const discount = Number(discountTest || 0) + Number(discountRegn || 0);
+  const net = total + Number(visiting || 0) - discount;
   const balance = net - Number(paid || 0);
 
   const addTests = (items) => {
@@ -71,7 +94,7 @@ export default function Registration() {
   const handleSave = async () => {
     if (!patient.patient_name.trim()) {
       alert('Please enter Patient Name (required).');
-      return;
+      return false;
     }
     try {
       const result = await api.createRegistration({
@@ -85,9 +108,33 @@ export default function Registration() {
       });
       alert(`Registration saved successfully!\nLab Code: ${result.lab_code}`);
       setLabCode(result.lab_code);
+      return true;
     } catch (err) {
       alert(err.message);
+      return false;
     }
+  };
+
+  const handleProceed = () => {
+    if (!patient.patient_name.trim()) {
+      alert('Please enter Patient Name (required).');
+      return;
+    }
+    if (selected.length === 0) {
+      alert('Please select at least one test.');
+      return;
+    }
+    setShowTestBill(true);
+  };
+
+  const handleModalSave = async () => {
+    const saved = await handleSave();
+    if (saved) setShowTestBill(false);
+  };
+
+  const handleModalTestResult = async () => {
+    const saved = await handleSave();
+    if (saved) navigate('/test-result');
   };
 
   const handleClear = () => {
@@ -98,6 +145,9 @@ export default function Registration() {
     setVisiting(0);
     setPaid(0);
     setUrgency(false);
+    setDiscountTest(0);
+    setDiscountRegn(0);
+    setShowTestBill(false);
     setTrfName('');
     api.getNextLabCode().then((d) => setLabCode(d.lab_code)).catch(console.error);
   };
@@ -114,12 +164,12 @@ export default function Registration() {
               </select>
             </div>
             <div className="form-row">
-              <label>Patient Name <span className="req">*</span></label>
+              <label className="label-highlight-name">Patient Name <span className="req">*</span></label>
               <div className="name-row">
-                <select value={patient.title} onChange={(e) => setPatient({ ...patient, title: e.target.value })}>
+                <select className="field-highlight-name" value={patient.title} onChange={(e) => setPatient({ ...patient, title: e.target.value })}>
                   <option>Mr.</option><option>Mrs.</option><option>Ms.</option><option>Dr.</option>
                 </select>
-                <input type="text" required placeholder="Full name" value={patient.patient_name} onChange={(e) => setPatient({ ...patient, patient_name: e.target.value })} />
+                <input type="text" className="field-highlight-name" required placeholder="Full name" value={patient.patient_name} onChange={(e) => setPatient({ ...patient, patient_name: e.target.value })} />
               </div>
             </div>
             <div className="form-row">
@@ -134,7 +184,7 @@ export default function Registration() {
               </div>
             </div>
             <div className="form-row"><label>Address</label><input value={patient.address} onChange={(e) => setPatient({ ...patient, address: e.target.value })} /></div>
-            <div className="form-row"><label>Doctor Name</label><input value={patient.doctor_name} onChange={(e) => setPatient({ ...patient, doctor_name: e.target.value })} /><button type="button" className="btn-add">+</button></div>
+            <div className="form-row"><label className="label-highlight-doctor">Doctor Name</label><input className="field-highlight-doctor" value={patient.doctor_name} onChange={(e) => setPatient({ ...patient, doctor_name: e.target.value })} /><button type="button" className="btn-add">+</button></div>
             <div className="form-row"><label>Barcode</label><a href="#">Manage Barcode</a></div>
             <div className="form-row"><label></label><label><input type="checkbox" checked={patient.send_result_sms} onChange={(e) => setPatient({ ...patient, send_result_sms: e.target.checked })} /> Send Result in SMS</label></div>
           </div>
@@ -142,29 +192,56 @@ export default function Registration() {
           <div className="form-col">
             <div className="form-row"><label>Patient ID</label><input value={patient.patient_id} onChange={(e) => setPatient({ ...patient, patient_id: e.target.value })} /></div>
             <div className="form-row">
-              <label>Age</label>
+              <label className="label-highlight-age">Age</label>
               <div className="age-group">
-                <input type="number" className="short" value={patient.age_years} onChange={(e) => setPatient({ ...patient, age_years: e.target.value })} /><span>Y</span>
-                <input type="number" className="short" value={patient.age_months} onChange={(e) => setPatient({ ...patient, age_months: e.target.value })} /><span>M</span>
-                <input type="number" className="short" value={patient.age_days} onChange={(e) => setPatient({ ...patient, age_days: e.target.value })} /><span>D</span>
+                <input
+                  type="text"
+                  className="short age-readonly"
+                  readOnly
+                  tabIndex={-1}
+                  placeholder="0"
+                  value={patient.date_of_birth ? patient.age_years : ''}
+                />
+                <span>Y</span>
+                <input
+                  type="text"
+                  className="short age-readonly"
+                  readOnly
+                  tabIndex={-1}
+                  placeholder="0"
+                  value={patient.date_of_birth ? patient.age_months : ''}
+                />
+                <span>M</span>
+                <input
+                  type="text"
+                  className="short age-readonly"
+                  readOnly
+                  tabIndex={-1}
+                  placeholder="0"
+                  value={patient.date_of_birth ? patient.age_days : ''}
+                />
+                <span>D</span>
               </div>
             </div>
             <div className="form-row"><label>Email</label><input type="email" value={patient.email} onChange={(e) => setPatient({ ...patient, email: e.target.value })} /></div>
             <div className="form-row"><label>City</label><input value={patient.city} onChange={(e) => setPatient({ ...patient, city: e.target.value })} /></div>
             <div className="form-row"><label></label><label><input type="checkbox" checked={patient.is_register} onChange={(e) => setPatient({ ...patient, is_register: e.target.checked })} /> Is Register</label></div>
-            <div className="form-row"><label></label><label><input type="checkbox" checked={patient.home_collection} onChange={(e) => setPatient({ ...patient, home_collection: e.target.checked })} /> Home Collection</label></div>
-            <div className="form-row"><label>Sample Collected At</label><input value={patient.sample_collected_at} onChange={(e) => setPatient({ ...patient, sample_collected_at: e.target.value })} /></div>
           </div>
 
           <div className="form-col">
             <div className="form-row"><label>Lab Code</label><input value={labCode} readOnly /></div>
             <div className="form-row"><label>Registration Date</label><input value={now} readOnly /></div>
-            <div className="form-row"><label>Date of Birth</label><input placeholder="DD-MM-YYYY" value={patient.date_of_birth} onChange={(e) => setPatient({ ...patient, date_of_birth: e.target.value })} /></div>
+            <div className="form-row">
+              <label>Date of Birth</label>
+              <DatePicker
+                value={patient.date_of_birth}
+                onChange={handleDateOfBirthChange}
+                maxDate={registrationDate}
+              />
+            </div>
             <div className="form-row"><label>Mobile Number</label><input type="tel" value={patient.mobile} onChange={(e) => setPatient({ ...patient, mobile: e.target.value })} /></div>
-            <div className="form-row"><label>Collection Center</label><input value={patient.collection_center} onChange={(e) => setPatient({ ...patient, collection_center: e.target.value })} /></div>
-            <div className="form-row"><label>Affiliation / Referred Doctor</label><input value={patient.affiliation} onChange={(e) => setPatient({ ...patient, affiliation: e.target.value })} /><button type="button" className="btn-add">+</button></div>
+            <div className="form-row"><label className="label-highlight-center">Collection Center</label><input className="field-highlight-center" value={patient.collection_center} onChange={(e) => setPatient({ ...patient, collection_center: e.target.value })} /></div>
             <div className="form-row"><label>Collection Date</label><input value={now} readOnly /></div>
-            <div className="form-row"><label>Collection/Round Boy</label><input value={patient.collection_round_boy} onChange={(e) => setPatient({ ...patient, collection_round_boy: e.target.value })} /></div>
           </div>
         </section>
 
@@ -215,8 +292,8 @@ export default function Registration() {
 
         <section className="billing-section">
           <div className="billing-row">
-            <label>Discount (Test)</label><input type="number" defaultValue="0" />
-            <label>Discount (Regn)</label><input type="number" defaultValue="0" />
+            <label>Discount (Test)</label><input type="number" value={discountTest} onChange={(e) => setDiscountTest(e.target.value)} />
+            <label>Discount (Regn)</label><input type="number" value={discountRegn} onChange={(e) => setDiscountRegn(e.target.value)} />
             <select><option>Amt</option><option>%</option></select>
             <label>Reason</label><select><option>— Select —</option><option>Staff</option><option>Corporate</option><option>Camp</option></select>
             <label>Authorisation</label><select><option>— Select —</option><option>Manager</option><option>Director</option></select>
@@ -247,10 +324,25 @@ export default function Registration() {
       <div className="dash-actions">
         <Link to="/search">&lt;&lt; Test Search</Link>
         <button type="button" className="primary" onClick={handleSave}>Save</button>
-        <button type="button" onClick={() => navigate('/test-result')}>Proceed &gt;&gt;</button>
+        <button type="button" onClick={handleProceed}>Proceed &gt;&gt;</button>
         <button type="button" onClick={handleClear}>Clear</button>
       </div>
       <Footer />
+
+      <TestBillModal
+        open={showTestBill}
+        onClose={() => setShowTestBill(false)}
+        tests={selected}
+        subTotal={total}
+        discount={discount}
+        charges={0}
+        visitingCharges={visiting}
+        netAmount={net}
+        paid={paid}
+        balance={balance}
+        onSave={handleModalSave}
+        onTestResult={handleModalTestResult}
+      />
     </Layout>
   );
 }

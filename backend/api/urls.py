@@ -10,6 +10,7 @@ urlpatterns = [
     path('tests/', views.TestListView.as_view(), name='tests'),
     path('test-categories/', views.TestCategoryListView.as_view(), name='test-categories'),
     path('registrations/', views.RegistrationSearchView.as_view(), name='registrations'),
+    path('registrations/worksheet/', views.WorksheetView.as_view(), name='registration-worksheet'),
     path('registrations/create/', views.RegistrationCreateView.as_view(), name='registration-create'),
     path('registrations/next-lab-code/', views.NextLabCodeView.as_view(), name='next-lab-code'),
     path('registrations/<str:lab_code>/', views.RegistrationDetailView.as_view(), name='registration-detail'),

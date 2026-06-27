@@ -39,6 +39,7 @@ export const api = {
     const query = new URLSearchParams(params).toString();
     return request(`/registrations/${query ? `?${query}` : ''}`);
   },
+  getWorksheet: (ids) => request(`/registrations/worksheet/?ids=${ids}`),
   createRegistration: (payload) =>
     request('/registrations/create/', { method: 'POST', body: JSON.stringify(payload) }),
   getNextLabCode: () => request('/registrations/next-lab-code/'),

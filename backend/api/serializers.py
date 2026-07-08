@@ -166,14 +166,15 @@ class RegistrationSearchSerializer(serializers.ModelSerializer):
     amount = serializers.DecimalField(source='net_amount', max_digits=10, decimal_places=2, read_only=True)
     total_amount = serializers.DecimalField(source='net_amount', max_digits=10, decimal_places=2, read_only=True)
     created_by_name = serializers.CharField(source='created_by.display_name', read_only=True, default='')
+    created_by_username = serializers.CharField(source='created_by.username', read_only=True, default='')
 
     class Meta:
         model = Registration
         fields = [
             'id', 'lab_code', 'patient', 'patient_name', 'tests', 'test', 'date',
             'status', 'amount', 'total_amount', 'total', 'net_amount', 'paid', 'balance',
-            'discount_test', 'discount_regn', 'refund_amount',
-            'registration_date', 'collection_date', 'created_at', 'created_by_name',
+            'discount_test', 'discount_regn', 'refund_amount', 'payment_method', 'bill_receipt_no',
+            'registration_date', 'collection_date', 'created_at', 'created_by_name', 'created_by_username',
         ]
 
     def get_test(self, obj):

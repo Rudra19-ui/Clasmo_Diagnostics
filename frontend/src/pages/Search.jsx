@@ -1,10 +1,17 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 import Layout from '../components/Layout';
+import WorkFlowHistoryModal from '../components/WorkFlowHistoryModal';
+import SendSMSModal from '../components/SendSMSModal';
+import BulkReleaseSMSModal from '../components/BulkReleaseSMSModal';
 import { api } from '../services/api';
 import { formatDate } from '../utils/date';
 import { openWorksheetLoadingWindow, printWorksheet } from '../utils/printWorksheet';
 import { printSearchResult } from '../utils/printSearchResult';
+import { printPaymentHistory } from '../utils/printPaymentHistory';
+import { printPendingTests } from '../utils/printPendingTests';
+import { openMultipleBillReceiptLoadingWindow, printMultipleBillReceipt } from '../utils/printMultipleBillReceipt';
 
 const STATUS_TABS = [
   { id: 'All', label: 'All' },
@@ -42,7 +49,33 @@ const ACTION_BTNS_ROW2 = [
   'PC-PNDT Report', 'Pay Online', 'Zip Download',
 ];
 
-const ROWS_PER_PAGE_OPTIONS = [10, 20, 50, 100];
+const ROWS_PER_PAGE_OPTIONS = [10, 20, 50, 60, 100];
+
+function getWorkflowState(status) {
+  const normalized = (status || 'Registered').toLowerCase();
+
+  if (normalized === 'printed') {
+    return { currentState: 'Release', nextState: '', nextAction: null };
+  }
+  if (
+    normalized === 'result ready'
+    || normalized.includes('tech complete')
+    || normalized.includes('partially authorized')
+  ) {
+    return { currentState: 'Result', nextState: 'Release', nextAction: 'Release' };
+  }
+  if (normalized === 'accession') {
+    return { currentState: 'Accession', nextState: 'Result', nextAction: 'Result' };
+  }
+  if (normalized === 'collection') {
+    return { currentState: 'Collection', nextState: 'Result', nextAction: 'Result' };
+  }
+  return { currentState: 'Registration', nextState: 'Collection', nextAction: 'Collection' };
+}
+
+function getWorksheetNumber(row) {
+  return row?.bill_receipt_no || '';
+}
 
 const emptyAdvance = () => ({
   testCategory: '',
@@ -115,6 +148,7 @@ function buildParams(basic, advance, activeStatus) {
 }
 
 export default function Search() {
+  const navigate = useNavigate();
   const today = formatDate();
   const [basic, setBasic] = useState({
     patientName: '',
@@ -127,7 +161,7 @@ export default function Search() {
   });
   const [advance, setAdvance] = useState(emptyAdvance);
   const [activeStatus, setActiveStatus] = useState('All');
-  const [advOpen, setAdvOpen] = useState(true);
+  const [advOpen, setAdvOpen] = useState(false);
   const [summaryOpen, setSummaryOpen] = useState(false);
   const [rows, setRows] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(20);
@@ -136,6 +170,14 @@ export default function Search() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [printing, setPrinting] = useState(false);
+  const [workflowOpen, setWorkflowOpen] = useState(false);
+  const [workflowData, setWorkflowData] = useState(null);
+  const [workflowLoading, setWorkflowLoading] = useState(false);
+  const [workflowError, setWorkflowError] = useState('');
+  const [smsOpen, setSmsOpen] = useState(false);
+  const [smsRegistrationId, setSmsRegistrationId] = useState(null);
+  const [bulkReleaseOpen, setBulkReleaseOpen] = useState(false);
+  const [bulkReleaseIds, setBulkReleaseIds] = useState([]);
 
   useEffect(() => {
     api.getTestCategories().then(setCategories).catch(console.error);
@@ -181,6 +223,17 @@ export default function Search() {
     };
   }, [rows]);
 
+  const selectedPatient = useMemo(() => {
+    if (selectedRows.size !== 1) return null;
+    const selectedId = [...selectedRows][0];
+    return rows.find((row) => (row.lab_code || row.id) === selectedId) || null;
+  }, [selectedRows, rows]);
+
+  const workflowState = useMemo(
+    () => (selectedPatient ? getWorkflowState(selectedPatient.status) : null),
+    [selectedPatient],
+  );
+
   const toggleRow = (id) => {
     setSelectedRows((prev) => {
       const next = new Set(prev);
@@ -214,6 +267,22 @@ export default function Search() {
       ? rows.filter((row) => selectedRows.has(row.lab_code || row.id))
       : rows
   );
+
+  const handleNextStateAction = () => {
+    if (!selectedPatient || !workflowState?.nextAction) return;
+
+    const rowId = selectedPatient.lab_code || selectedPatient.id;
+    const nextStatus = workflowState.nextAction === 'Release'
+      ? 'Printed'
+      : workflowState.nextAction === 'Result'
+        ? 'Result Ready'
+        : 'Collection';
+
+    setRows((prev) => prev.map((row) => {
+      const id = row.lab_code || row.id;
+      return id === rowId ? { ...row, status: nextStatus } : row;
+    }));
+  };
 
   const handlePrintWorksheet = async () => {
     const targetRows = getTargetRows();
@@ -251,11 +320,217 @@ export default function Search() {
     printSearchResult(getTargetRows());
   };
 
+  const handlePaymentHistory = () => {
+    printPaymentHistory(getTargetRows(), {
+      fromDate: basic.fromDate,
+      toDate: basic.toDate,
+    });
+  };
+
+  const handleWorkFlowHistory = async () => {
+    if (selectedRows.size !== 1) {
+      alert('Please select exactly one patient using the checkbox, then click Work Flow History.');
+      return;
+    }
+
+    const selectedId = [...selectedRows][0];
+    const selectedRow = rows.find((row) => (row.lab_code || row.id) === selectedId);
+    if (!selectedRow?.id) {
+      alert('Selected record is missing a registration id.');
+      return;
+    }
+
+    setWorkflowOpen(true);
+    setWorkflowLoading(true);
+    setWorkflowError('');
+    setWorkflowData(null);
+
+    try {
+      const data = await api.getWorkflowHistory(selectedRow.id);
+      setWorkflowData(data);
+    } catch (err) {
+      setWorkflowError(err.message || 'Failed to load workflow history.');
+    } finally {
+      setWorkflowLoading(false);
+    }
+  };
+
+  const closeWorkFlowHistory = () => {
+    setWorkflowOpen(false);
+    setWorkflowData(null);
+    setWorkflowError('');
+  };
+
+  const handlePrintBarcode = () => {
+    if (selectedRows.size !== 1) {
+      alert('Please select exactly one patient using the checkbox, then click Print Barcode.');
+      return;
+    }
+
+    const selectedId = [...selectedRows][0];
+    const selectedRow = rows.find((row) => (row.lab_code || row.id) === selectedId);
+    if (!selectedRow?.id) {
+      alert('Selected record is missing a registration id.');
+      return;
+    }
+
+    navigate(`/barcode-print?registrationId=${selectedRow.id}`);
+  };
+
+  const handlePendingTest = () => {
+    printPendingTests(getTargetRows());
+  };
+
+  const handleSendSMS = () => {
+    if (selectedRows.size !== 1) {
+      alert('Please select exactly one patient using the checkbox, then click Send SMS.');
+      return;
+    }
+
+    const selectedId = [...selectedRows][0];
+    const selectedRow = rows.find((row) => (row.lab_code || row.id) === selectedId);
+    if (!selectedRow?.id) {
+      alert('Selected record is missing a registration id.');
+      return;
+    }
+
+    setSmsRegistrationId(selectedRow.id);
+    setSmsOpen(true);
+  };
+
+  const closeSendSMS = () => {
+    setSmsOpen(false);
+    setSmsRegistrationId(null);
+  };
+
+  const handleBulkRelease = () => {
+    const targetRows = getTargetRows();
+    if (!targetRows.length) {
+      alert('No records for bulk release. Run a search first or select rows using the checkboxes.');
+      return;
+    }
+
+    const ids = targetRows.map((row) => row.id).filter(Boolean);
+    if (!ids.length) {
+      alert('Selected records are missing registration ids.');
+      return;
+    }
+
+    setBulkReleaseIds(ids);
+    setBulkReleaseOpen(true);
+  };
+
+  const closeBulkRelease = () => {
+    setBulkReleaseOpen(false);
+    setBulkReleaseIds([]);
+  };
+
+  const handleOpenResult = () => {
+    if (selectedRows.size !== 1) {
+      alert('Please select exactly one patient using the checkbox, then click Result.');
+      return;
+    }
+
+    const selectedId = [...selectedRows][0];
+    const selectedRow = rows.find((row) => (row.lab_code || row.id) === selectedId);
+    if (!selectedRow?.id) {
+      alert('Selected record is missing a registration id.');
+      return;
+    }
+
+    navigate(`/test-result-entry?registrationId=${selectedRow.id}`, {
+      state: { registrationIds: rows.map((row) => row.id).filter(Boolean) },
+    });
+  };
+
+  const handleMultipleBillReceipt = async () => {
+    const targetRows = getTargetRows();
+
+    if (!targetRows.length) {
+      alert('Please select at least one patient using the checkboxes.');
+      return;
+    }
+
+    const ids = targetRows.map((row) => row.id).filter(Boolean);
+    if (!ids.length) {
+      alert('Selected records are missing registration ids.');
+      return;
+    }
+
+    const loadingWindow = openMultipleBillReceiptLoadingWindow();
+    if (!loadingWindow) {
+      alert('Please allow pop-ups to print the bill receipts.');
+      return;
+    }
+
+    setPrinting(true);
+    try {
+      const data = await api.getMultipleBillReceipts(ids.join(','));
+      printMultipleBillReceipt(data.receipts || [], loadingWindow);
+    } catch (err) {
+      if (!loadingWindow.closed) loadingWindow.close();
+      alert(err.message || 'Failed to generate bill receipts.');
+    } finally {
+      setPrinting(false);
+    }
+  };
+
+  const handleResultLink = (label) => {
+    if (label === 'Result') {
+      handleOpenResult();
+      return;
+    }
+    if (label === 'Registration') {
+      navigate('/registration');
+      return;
+    }
+    if (label === 'Print Report') {
+      if (selectedRows.size !== 1) {
+        alert('Please select exactly one patient to preview the report.');
+        return;
+      }
+      const selectedId = [...selectedRows][0];
+      const selectedRow = rows.find((row) => (row.lab_code || row.id) === selectedId);
+      if (selectedRow?.id) {
+        navigate(`/clinical/report-preview?id=${selectedRow.id}`);
+      }
+      return;
+    }
+    if (label === 'Bill Receipt') {
+      if (selectedRows.size !== 1) {
+        alert('Please select exactly one patient for bill receipt.');
+        return;
+      }
+      const selectedId = [...selectedRows][0];
+      const selectedRow = rows.find((row) => (row.lab_code || row.id) === selectedId);
+      if (selectedRow?.id) {
+        navigate(`/bill-receipt?registrationId=${selectedRow.id}`);
+      }
+      return;
+    }
+    if (label === 'Multiple Bill Receipt') {
+      handleMultipleBillReceipt();
+      return;
+    }
+  };
+
   const handleActionClick = (label) => {
     if (label === 'Print WorkSheet') {
       handlePrintWorksheet();
     } else if (label === 'Print') {
       handlePrintSearchResult();
+    } else if (label === 'Payment History') {
+      handlePaymentHistory();
+    } else if (label === 'Work Flow History') {
+      handleWorkFlowHistory();
+    } else if (label === 'Print Barcode') {
+      handlePrintBarcode();
+    } else if (label === 'Pending Test') {
+      handlePendingTest();
+    } else if (label === 'Send SMS') {
+      handleSendSMS();
+    } else if (label === 'Bulk Release') {
+      handleBulkRelease();
     }
   };
 
@@ -548,10 +823,31 @@ export default function Search() {
 
         {/* Results table */}
         <div className="search-results-wrap">
+          {selectedPatient && workflowState && (
+            <div className="srt-state-bar">
+              <span className="srt-state-item srt-state-item--current">
+                Current State : <strong>{workflowState.currentState}</strong>
+              </span>
+              <span className="srt-state-item srt-state-item--next">
+                Next State :
+                {workflowState.nextAction ? (
+                  <button type="button" className="srt-state-action" onClick={handleNextStateAction}>
+                    {workflowState.nextAction}
+                  </button>
+                ) : (
+                  <strong>{workflowState.nextState || '—'}</strong>
+                )}
+              </span>
+              <span className="srt-state-item srt-state-item--worksheet">
+                Worksheet Number : <strong>{getWorksheetNumber(selectedPatient) || '\u00A0'}</strong>
+              </span>
+            </div>
+          )}
+
           <div className="srt-header">
             <div className="srt-header-links">
               {['Result', 'Registration', 'Show TRF', 'Bill Receipt', 'Multiple Bill Receipt', 'Print Report', 'Re-Order to Machine'].map((lbl) => (
-                <button key={lbl} type="button" className="srt-header-link">{lbl}</button>
+                <button key={lbl} type="button" className="srt-header-link" onClick={() => handleResultLink(lbl)}>{lbl}</button>
               ))}
             </div>
             <div className="srt-header-right">
@@ -599,14 +895,14 @@ export default function Search() {
                         <td><input type="checkbox" checked={selectedRows.has(id)} onChange={() => toggleRow(id)} /></td>
                         <td className="srt-labcode"><a href="#" onClick={(e) => e.preventDefault()}>{row.lab_code}</a></td>
                         <td>{row.patient?.patient_type || 'OPD'}</td>
-                        <td>{row.patient?.patient_name || row.patient_name}</td>
+                        <td className="srt-patient">{row.patient?.patient_name || row.patient_name}</td>
                         <td>{row.patient?.affiliation || 'OPD'}</td>
                         <td className="srt-tests">{testNames}</td>
                         <td>{formatRegnDate(row)}</td>
-                        <td><span className={`srt-badge srt-badge--${(row.status || '').toLowerCase().replace(/\s/g, '-')}`}>{row.status || '—'}</span></td>
+                        <td className="srt-status"><span className={`srt-badge srt-badge--${(row.status || '').toLowerCase().replace(/\s/g, '-')}`}>{row.status || '—'}</span></td>
                         <td>{row.total_amount ?? row.amount ?? '—'}</td>
                         <td>{row.balance ?? '—'}</td>
-                        <td>{row.patient?.collection_center || '—'}</td>
+                        <td className="srt-center">{row.patient?.collection_center || '—'}</td>
                         <td>{formatAge(row.patient)}</td>
                       </tr>
                     );
@@ -618,6 +914,24 @@ export default function Search() {
         </div>
       </main>
       <Footer />
+      <WorkFlowHistoryModal
+        open={workflowOpen}
+        onClose={closeWorkFlowHistory}
+        data={workflowData}
+        loading={workflowLoading}
+        error={workflowError}
+      />
+      <SendSMSModal
+        open={smsOpen}
+        onClose={closeSendSMS}
+        registrationId={smsRegistrationId}
+      />
+      <BulkReleaseSMSModal
+        open={bulkReleaseOpen}
+        onClose={closeBulkRelease}
+        registrationIds={bulkReleaseIds}
+        recordCount={bulkReleaseIds.length}
+      />
     </Layout>
   );
 }

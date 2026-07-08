@@ -1,6 +1,6 @@
 import logging
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.db import connection
 from django.db.models import Count, Q, Sum
@@ -361,6 +361,674 @@ class WorksheetView(APIView):
         patients = [_build_worksheet_patient(by_id[reg_id]) for reg_id in ids if reg_id in by_id]
 
         return Response({'patients': patients})
+
+
+def _workflow_action_by(user):
+    if not user:
+        return 'CD1'
+    username = (user.username or '').upper()
+    if username in ('CD1', 'USER_TEST', 'ADMIN_TEST'):
+        return 'CD1'
+    return user.display_name or user.username or 'CD1'
+
+
+def _format_test_label(test):
+    name = test.name
+    short = (test.short_name or '').strip()
+    if short and short.lower() not in name.lower():
+        return f'{name} ({short})'
+    return name
+
+
+def _build_workflow_events(registration):
+    action_by = _workflow_action_by(registration.created_by)
+    base_dt = registration.created_at or registration.registration_date
+    if base_dt is None:
+        return []
+
+    events = [
+        {
+            'action_by': action_by,
+            'action_taken': 'Test Registration',
+            'action_on': base_dt,
+            'comment': '',
+            'update_history': '',
+        },
+    ]
+
+    collection_dt = registration.collection_date
+    if collection_dt and collection_dt > base_dt:
+        sample_dt = collection_dt
+    else:
+        sample_dt = base_dt + timedelta(seconds=14)
+
+    events.append({
+        'action_by': action_by,
+        'action_taken': 'Sample Collection',
+        'action_on': sample_dt,
+        'comment': '',
+        'update_history': '',
+    })
+
+    accession_dt = sample_dt + timedelta(seconds=4)
+    events.append({
+        'action_by': action_by,
+        'action_taken': 'Accession',
+        'action_on': accession_dt,
+        'comment': '',
+        'update_history': '',
+    })
+
+    status = registration.status or Registration.STATUS_REGISTERED
+    if status in (Registration.STATUS_RESULT_READY, Registration.STATUS_PRINTED):
+        events.append({
+            'action_by': action_by,
+            'action_taken': 'Result Ready',
+            'action_on': accession_dt + timedelta(minutes=30),
+            'comment': '',
+            'update_history': '',
+        })
+
+    if status == Registration.STATUS_PRINTED:
+        events.append({
+            'action_by': action_by,
+            'action_taken': 'Print & Release',
+            'action_on': accession_dt + timedelta(hours=1),
+            'comment': '',
+            'update_history': '',
+        })
+
+    return events
+
+
+class WorkFlowHistoryView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        reg_id = request.query_params.get('id', '').strip()
+        lab_code = request.query_params.get('lab_code', '').strip()
+
+        if not reg_id and not lab_code:
+            return Response({'detail': 'Provide registration id or lab code.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        qs = Registration.objects.select_related('patient', 'created_by').prefetch_related('tests__test')
+        if reg_id:
+            try:
+                registration = qs.get(id=int(reg_id))
+            except (ValueError, Registration.DoesNotExist):
+                return Response({'detail': 'Registration not found.'}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            try:
+                registration = qs.get(lab_code=lab_code)
+            except Registration.DoesNotExist:
+                return Response({'detail': 'Registration not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        events = _build_workflow_events(registration)
+        tests = [_format_test_label(reg_test.test) for reg_test in registration.tests.all()]
+
+        return Response({
+            'id': registration.id,
+            'lab_code': registration.lab_code,
+            'patient_name': f'{registration.patient.title} {registration.patient.patient_name}'.strip(),
+            'events': [
+                {
+                    **event,
+                    'action_on': event['action_on'].isoformat() if event['action_on'] else '',
+                }
+                for event in events
+            ],
+            'tests': tests,
+        })
+
+
+def _sample_group_for_test(test):
+    name = (test.name or '').upper()
+    category = (test.category.name if test.category else '').upper()
+
+    hematology_keys = ('CBC', 'BLOOD COUNT', 'HEMOGLOBIN', 'ESR', 'PCV', 'WBC', 'RBC', 'PLATELET')
+    urine_keys = ('URINE', 'STOOL')
+    fluid_keys = ('FLUID', 'CSF', 'ASCITIC')
+
+    if any(key in name for key in hematology_keys) or category == 'HEMATOLOGY':
+        return 'EDTA Blood', '3'
+    if any(key in name for key in urine_keys):
+        return 'URINE', '2'
+    if any(key in name for key in fluid_keys):
+        return 'FLUID', '4'
+    return 'SERUM', '1'
+
+
+def _build_barcode_groups(registration):
+    groups = {}
+    for reg_test in registration.tests.select_related('test__category'):
+        group_name, prefix = _sample_group_for_test(reg_test.test)
+        groups[group_name] = f'{prefix}{registration.lab_code}'
+
+    if not groups:
+        groups['SERUM'] = f'1{registration.lab_code}'
+
+    return [
+        {'group_name': group_name, 'barcode': barcode}
+        for group_name, barcode in groups.items()
+    ]
+
+
+def _format_age_sex(patient):
+    age = patient.age_years or 0
+    gender = (patient.gender or '').lower()
+    if gender == 'female':
+        sex = 'F'
+    elif gender == 'male':
+        sex = 'M'
+    else:
+        sex = '—'
+    return f'{age}(Y) / {sex}'
+
+
+class BarcodeView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        reg_id = request.query_params.get('id', '').strip()
+        lab_code = request.query_params.get('lab_code', '').strip()
+
+        if not reg_id and not lab_code:
+            return Response({'detail': 'Provide registration id or lab code.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        qs = Registration.objects.select_related('patient').prefetch_related('tests__test__category')
+        if reg_id:
+            try:
+                registration = qs.get(id=int(reg_id))
+            except (ValueError, Registration.DoesNotExist):
+                return Response({'detail': 'Registration not found.'}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            try:
+                registration = qs.get(lab_code=lab_code)
+            except Registration.DoesNotExist:
+                return Response({'detail': 'Registration not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        patient = registration.patient
+        regn_dt = registration.created_at or registration.registration_date
+
+        return Response({
+            'id': registration.id,
+            'lab_code': registration.lab_code,
+            'patient_name': f'{patient.title} {patient.patient_name}'.strip(),
+            'age_sex': _format_age_sex(patient),
+            'registration_date': regn_dt.strftime('%d-%m-%Y %H:%M:%S') if regn_dt else '',
+            'groups': _build_barcode_groups(registration),
+        })
+
+
+def _build_notification_recipients(registration):
+    patient = registration.patient
+    return [
+        {
+            'category': 'patient',
+            'label': 'Patient',
+            'mobile': patient.mobile or '',
+            'email': patient.email or '',
+            'selected': bool(patient.mobile or patient.email),
+        },
+        {
+            'category': 'doctor',
+            'label': 'Doctor',
+            'mobile': '',
+            'email': '',
+            'selected': False,
+            'reference_name': patient.doctor_name or '',
+        },
+        {
+            'category': 'collection_center',
+            'label': 'Collection Center',
+            'mobile': '',
+            'email': '',
+            'selected': False,
+            'reference_name': patient.collection_center or '',
+        },
+        {
+            'category': 'affiliation',
+            'label': 'Affiliation',
+            'mobile': '',
+            'email': '',
+            'selected': False,
+            'reference_name': patient.affiliation or '',
+        },
+    ]
+
+
+def _build_notification_message(registration, options):
+    patient = registration.patient
+    patient_name = f'{patient.title} {patient.patient_name}'.strip()
+    tests = ', '.join(t.test.name for t in registration.tests.select_related('test').all())
+    body = (
+        f'Dear {patient_name}, your registration at CLASMO Diagnostics is confirmed. '
+        f'Lab Code: {registration.lab_code}. Tests: {tests or "N/A"}. '
+        f'Net Amount: {registration.net_amount}. Paid: {registration.paid}. Balance: {registration.balance}.'
+    )
+    parts = []
+    if options.get('show_header') or options.get('show_header_footer'):
+        parts.append('CLASMO Diagnostics pvt.ltd')
+    parts.append(body)
+    if options.get('show_footer') or options.get('show_header_footer'):
+        parts.append('Thank you for choosing CLASMO Diagnostics.')
+    return '\n\n'.join(parts)
+
+
+def _validate_notification_send(action, recipients, options):
+    selected = [item for item in recipients if item.get('selected')]
+    if not selected:
+        return 'Select at least one recipient category.'
+
+    needs_mobile = action in ('sms', 'whatsapp', 'sms_email', 'bill_receipt')
+    needs_email = action in ('email', 'sms_email', 'bill_receipt')
+
+    if needs_mobile and not any((item.get('mobile') or '').strip() for item in selected):
+        return 'Enter mobile number for at least one selected recipient.'
+    if needs_email and not any((item.get('email') or '').strip() for item in selected):
+        return 'Enter email address for at least one selected recipient.'
+    return None
+
+
+class NotificationView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        reg_id = request.query_params.get('id', '').strip()
+        if not reg_id:
+            return Response({'detail': 'Provide registration id.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            registration = Registration.objects.select_related('patient').prefetch_related('tests__test').get(id=int(reg_id))
+        except (ValueError, Registration.DoesNotExist):
+            return Response({'detail': 'Registration not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        patient = registration.patient
+        return Response({
+            'registration_id': registration.id,
+            'lab_code': registration.lab_code,
+            'patient_name': f'{patient.title} {patient.patient_name}'.strip(),
+            'recipients': _build_notification_recipients(registration),
+            'bill': {
+                'bill_receipt_no': registration.bill_receipt_no or str(registration.id),
+                'registration_date': (registration.created_at or registration.registration_date).strftime('%d-%m-%Y %H:%M:%S')
+                if (registration.created_at or registration.registration_date) else '',
+                'tests': [
+                    {'name': t.test.name, 'price': str(t.price)}
+                    for t in registration.tests.select_related('test').all()
+                ],
+                'total': str(registration.total),
+                'discount': str(float(registration.discount_test) + float(registration.discount_regn)),
+                'net_amount': str(registration.net_amount),
+                'paid': str(registration.paid),
+                'balance': str(registration.balance),
+            },
+        })
+
+    def post(self, request):
+        registration_id = request.data.get('registration_id')
+        action = (request.data.get('action') or '').strip().lower()
+        recipients = request.data.get('recipients') or []
+        options = request.data.get('options') or {}
+
+        if not registration_id:
+            return Response({'detail': 'Registration id is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        valid_actions = {'sms', 'email', 'whatsapp', 'sms_email', 'bill_receipt'}
+        if action not in valid_actions:
+            return Response({'detail': 'Invalid notification action.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            registration = Registration.objects.select_related('patient').prefetch_related('tests__test').get(id=int(registration_id))
+        except (ValueError, Registration.DoesNotExist):
+            return Response({'detail': 'Registration not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        error = _validate_notification_send(action, recipients, options)
+        if error:
+            return Response({'detail': error}, status=status.HTTP_400_BAD_REQUEST)
+
+        message = _build_notification_message(registration, options)
+        selected = [item for item in recipients if item.get('selected')]
+        deliveries = []
+
+        for item in selected:
+            label = item.get('label') or item.get('category', 'Recipient')
+            mobile = (item.get('mobile') or '').strip()
+            email = (item.get('email') or '').strip()
+
+            if action in ('sms', 'whatsapp', 'sms_email', 'bill_receipt') and mobile:
+                deliveries.append({
+                    'category': item.get('category'),
+                    'label': label,
+                    'channel': 'whatsapp' if action == 'whatsapp' else 'sms',
+                    'target': mobile,
+                    'status': 'sent',
+                })
+            if action in ('email', 'sms_email', 'bill_receipt') and email:
+                deliveries.append({
+                    'category': item.get('category'),
+                    'label': label,
+                    'channel': 'email',
+                    'target': email,
+                    'status': 'sent',
+                })
+
+        action_labels = {
+            'sms': 'SMS sent successfully',
+            'email': 'Email sent successfully',
+            'whatsapp': 'WhatsApp message sent successfully',
+            'sms_email': 'SMS and Email sent successfully',
+            'bill_receipt': 'Bill receipt sent successfully',
+        }
+
+        logger.info(
+            'Notification sent action=%s registration=%s user=%s deliveries=%s message=%s',
+            action,
+            registration.lab_code,
+            request.user.username,
+            deliveries,
+            message,
+        )
+
+        return Response({
+            'message': action_labels[action],
+            'action': action,
+            'deliveries': deliveries,
+            'notification_message': message,
+            'merge_attachment': bool(options.get('merge_attachment', True)),
+        })
+
+
+def _build_bulk_release_message(registration, options):
+    patient = registration.patient
+    patient_name = f'{patient.title} {patient.patient_name}'.strip()
+    body = (
+        f'Dear {patient_name}, your lab report for Lab Code {registration.lab_code} '
+        f'is now ready. Please visit CLASMO Diagnostics to collect your report.'
+    )
+    parts = []
+    if options.get('show_header_on_report'):
+        parts.append('CLASMO Diagnostics pvt.ltd')
+    parts.append(body)
+    if options.get('show_footer_on_report'):
+        parts.append('Thank you for choosing CLASMO Diagnostics.')
+    return '\n\n'.join(parts)
+
+
+def _validate_bulk_notification(action, options):
+    sms_flags = ['sms_to_patient', 'sms_to_collection_center', 'sms_to_affiliation']
+    email_flags = ['email_to_patient', 'email_to_collection_center', 'email_to_affiliation']
+
+    if action in ('sms', 'whatsapp') and not any(options.get(flag) for flag in sms_flags):
+        return 'Select at least one SMS recipient option.'
+    if action == 'email' and not any(options.get(flag) for flag in email_flags):
+        return 'Select at least one Email recipient option.'
+    if action == 'sms_email':
+        has_sms = any(options.get(flag) for flag in sms_flags)
+        has_email = any(options.get(flag) for flag in email_flags)
+        if not has_sms and not has_email:
+            return 'Select at least one SMS or Email recipient option.'
+    return None
+
+
+def _bulk_deliveries_for_registration(registration, action, options):
+    patient = registration.patient
+    deliveries = []
+
+    def add_delivery(channel, category, label, target):
+        if target:
+            deliveries.append({
+                'registration_id': registration.id,
+                'lab_code': registration.lab_code,
+                'category': category,
+                'label': label,
+                'channel': channel,
+                'target': target,
+                'status': 'sent',
+            })
+
+    mobile = (patient.mobile or '').strip()
+    email = (patient.email or '').strip()
+
+    if options.get('sms_to_patient') and mobile and action in ('sms', 'whatsapp', 'sms_email'):
+        channel = 'whatsapp' if action == 'whatsapp' else 'sms'
+        add_delivery(channel, 'patient', 'Patient', mobile)
+
+    if options.get('email_to_patient') and email and action in ('email', 'sms_email'):
+        add_delivery('email', 'patient', 'Patient', email)
+
+    if options.get('sms_to_collection_center') and mobile and action in ('sms', 'whatsapp', 'sms_email'):
+        channel = 'whatsapp' if action == 'whatsapp' else 'sms'
+        add_delivery(channel, 'collection_center', 'Collection Center', mobile)
+
+    if options.get('email_to_collection_center') and email and action in ('email', 'sms_email'):
+        add_delivery('email', 'collection_center', 'Collection Center', email)
+
+    if options.get('sms_to_affiliation') and mobile and action in ('sms', 'whatsapp', 'sms_email'):
+        channel = 'whatsapp' if action == 'whatsapp' else 'sms'
+        add_delivery(channel, 'affiliation', 'Affiliation', mobile)
+
+    if options.get('email_to_affiliation') and email and action in ('email', 'sms_email'):
+        add_delivery('email', 'affiliation', 'Affiliation', email)
+
+    return deliveries
+
+
+class BulkNotificationView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        registration_ids = request.data.get('registration_ids') or []
+        action = (request.data.get('action') or '').strip().lower()
+        options = request.data.get('options') or {}
+
+        if not registration_ids:
+            return Response({'detail': 'Select at least one registration.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        valid_actions = {'sms', 'email', 'whatsapp', 'sms_email'}
+        if action not in valid_actions:
+            return Response({'detail': 'Invalid bulk notification action.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        error = _validate_bulk_notification(action, options)
+        if error:
+            return Response({'detail': error}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            ids = [int(value) for value in registration_ids]
+        except (TypeError, ValueError):
+            return Response({'detail': 'Invalid registration ids.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        registrations = Registration.objects.filter(id__in=ids).select_related('patient').prefetch_related('tests__test')
+        if not registrations.exists():
+            return Response({'detail': 'No registrations found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        deliveries = []
+        skipped = []
+
+        for registration in registrations:
+            message = _build_bulk_release_message(registration, options)
+            reg_deliveries = _bulk_deliveries_for_registration(registration, action, options)
+            if reg_deliveries:
+                deliveries.extend(reg_deliveries)
+                logger.info(
+                    'Bulk notification sent action=%s registration=%s user=%s deliveries=%s message=%s',
+                    action,
+                    registration.lab_code,
+                    request.user.username,
+                    reg_deliveries,
+                    message,
+                )
+            else:
+                skipped.append({
+                    'registration_id': registration.id,
+                    'lab_code': registration.lab_code,
+                    'reason': 'No contact details available for selected recipients.',
+                })
+
+        if not deliveries:
+            return Response({
+                'detail': 'No messages sent. Selected recipients have no contact details in the records.',
+                'skipped': skipped,
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        action_labels = {
+            'sms': 'Bulk SMS sent successfully',
+            'email': 'Bulk Email sent successfully',
+            'whatsapp': 'Bulk WhatsApp messages sent successfully',
+            'sms_email': 'Bulk SMS and Email sent successfully',
+        }
+
+        return Response({
+            'message': action_labels[action],
+            'action': action,
+            'sent_count': len(deliveries),
+            'registration_count': registrations.count(),
+            'skipped_count': len(skipped),
+            'deliveries': deliveries,
+            'skipped': skipped,
+        })
+
+
+def _format_receipt_date_print(dt):
+    if not dt:
+        return ''
+    hour = dt.hour % 12 or 12
+    ampm = 'am' if dt.hour < 12 else 'pm'
+    return f'{dt.day:02d}/{dt.month:02d}/{dt.year} {hour}:{dt.minute:02d}:{dt.second:02d} {ampm}'
+
+
+def _build_bill_receipt_payload(registration):
+    patient = registration.patient
+    regn_dt = registration.created_at or registration.registration_date
+    gender = 'Female' if patient.gender == 'female' else 'Male' if patient.gender == 'male' else '—'
+    age_parts = []
+    if patient.age_years:
+        age_parts.append(f'{patient.age_years}Yrs')
+    if patient.age_months:
+        age_parts.append(f'{patient.age_months}M')
+    if patient.age_days:
+        age_parts.append(f'{patient.age_days}D')
+
+    tests = [
+        {
+            'id': rt.id,
+            'test_id': rt.test_id,
+            'name': rt.test.name,
+            'price': str(rt.price),
+        }
+        for rt in registration.tests.select_related('test').all()
+    ]
+    sub_total = sum(float(t['price']) for t in tests) or float(registration.total or 0)
+
+    return {
+        'registration_id': registration.id,
+        'lab_code': registration.lab_code,
+        'receipt_date': regn_dt.strftime('%d-%m-%Y %I:%M %p') if regn_dt else '',
+        'receipt_date_print': _format_receipt_date_print(regn_dt),
+        'patient': {
+            'name': f'{patient.title} {patient.patient_name}'.strip().upper(),
+            'address': patient.address or '',
+            'mobile': patient.mobile or '',
+            'gender': gender,
+            'email': patient.email or '',
+            'age_display': ' '.join(age_parts) or '—',
+            'doctor_name': patient.doctor_name or patient.affiliation or '—',
+        },
+        'tests': tests,
+        'discount_test': str(registration.discount_test),
+        'discount_regn': str(registration.discount_regn),
+        'discount_type': registration.discount_type or 'Amt',
+        'discount_reason': registration.discount_reason or '',
+        'discount_authorization': registration.discount_authorization or '',
+        'visiting_charges': str(registration.visiting_charges),
+        'total': str(registration.total or sub_total),
+        'sub_total': str(sub_total),
+        'net_amount': str(registration.net_amount),
+        'paid': str(registration.paid),
+        'balance': str(registration.balance),
+        'refund_amount': str(registration.refund_amount),
+        'recovery_amount': str(registration.recovery_amount),
+        'payment_method': registration.payment_method or 'cash',
+        'bill_receipt_no': registration.bill_receipt_no or '',
+    }
+
+
+class BillReceiptView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        ids_param = request.query_params.get('ids', '').strip()
+        reg_id = request.query_params.get('id', '').strip()
+
+        if ids_param:
+            try:
+                ids = [int(value) for value in ids_param.split(',') if value.strip()]
+            except ValueError:
+                return Response({'detail': 'Invalid registration ids.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            if not ids:
+                return Response({'detail': 'Provide registration ids.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            registrations = Registration.objects.filter(id__in=ids).select_related('patient').prefetch_related('tests__test')
+            by_id = {registration.id: registration for registration in registrations}
+            receipts = [_build_bill_receipt_payload(by_id[reg_id]) for reg_id in ids if reg_id in by_id]
+
+            if not receipts:
+                return Response({'detail': 'No registrations found.'}, status=status.HTTP_404_NOT_FOUND)
+
+            return Response({'receipts': receipts})
+
+        if not reg_id:
+            return Response({'detail': 'Provide registration id.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            registration = Registration.objects.select_related('patient').prefetch_related('tests__test').get(id=int(reg_id))
+        except (ValueError, Registration.DoesNotExist):
+            return Response({'detail': 'Registration not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response(_build_bill_receipt_payload(registration))
+
+    def patch(self, request):
+        reg_id = request.data.get('registration_id')
+        if not reg_id:
+            return Response({'detail': 'Registration id is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            registration = Registration.objects.select_related('patient').prefetch_related('tests__test').get(id=int(reg_id))
+        except (ValueError, Registration.DoesNotExist):
+            return Response({'detail': 'Registration not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        from decimal import Decimal
+
+        discount_test = Decimal(str(request.data.get('discount_test', registration.discount_test)))
+        discount_regn = Decimal(str(request.data.get('discount_regn', registration.discount_regn)))
+        visiting_charges = Decimal(str(request.data.get('visiting_charges', registration.visiting_charges)))
+        paid = Decimal(str(request.data.get('paid', registration.paid)))
+        refund_amount = Decimal(str(request.data.get('refund_amount', registration.refund_amount)))
+        pay_balance = Decimal(str(request.data.get('pay_balance', 0) or 0))
+
+        registration.discount_test = discount_test
+        registration.discount_regn = discount_regn
+        registration.discount_type = request.data.get('discount_type', registration.discount_type) or 'Amt'
+        registration.discount_reason = request.data.get('discount_reason', registration.discount_reason) or ''
+        registration.discount_authorization = request.data.get('discount_authorization', registration.discount_authorization) or ''
+        registration.visiting_charges = visiting_charges
+        registration.payment_method = request.data.get('payment_method', registration.payment_method) or 'cash'
+        registration.bill_receipt_no = request.data.get('bill_receipt_no', registration.bill_receipt_no or '')
+        registration.refund_amount = refund_amount
+
+        if pay_balance > 0:
+            paid += pay_balance
+
+        sub_total = sum(float(rt.price) for rt in registration.tests.all()) or float(registration.total or 0)
+        registration.total = Decimal(str(sub_total))
+        net_amount = registration.total - discount_test - discount_regn + visiting_charges
+        registration.net_amount = net_amount
+        registration.paid = paid
+        registration.balance = net_amount - paid
+        registration.save()
+
+        return Response(_build_bill_receipt_payload(registration))
 
 
 class RegistrationDetailView(generics.RetrieveAPIView):

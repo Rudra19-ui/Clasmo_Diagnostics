@@ -1339,7 +1339,11 @@ input, select, textarea, button {
 }
 
 /* ===== Search Page ===== */
-.search-page { padding-bottom: 60px; }
+.search-page {
+  padding-bottom: 60px;
+  min-width: 0;
+  width: 100%;
+}
 
 .search-page-title {
   font-size: 20px;
@@ -1690,6 +1694,67 @@ input, select, textarea, button {
   border: 1px solid var(--gray-border);
 }
 
+.srt-state-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px 28px;
+  padding: 8px 12px;
+  background: #f8fbfd;
+  border-bottom: 1px solid #d0dde8;
+  font-size: 13px;
+}
+
+.srt-state-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.srt-state-item--current {
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.srt-state-item--current strong {
+  color: #1b5e20;
+}
+
+.srt-state-item--next {
+  color: #c62828;
+  font-weight: 600;
+}
+
+.srt-state-item--next strong {
+  color: #b71c1c;
+}
+
+.srt-state-item--worksheet {
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.srt-state-item--worksheet strong {
+  color: #1b5e20;
+  min-width: 24px;
+}
+
+.srt-state-action {
+  border: 1px solid #c62828;
+  background: #fff;
+  color: #c62828;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 10px;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.srt-state-action:hover {
+  background: #ffebee;
+}
+
 .srt-header {
   display: flex;
   align-items: center;
@@ -1737,12 +1802,19 @@ input, select, textarea, button {
   border-radius: 2px;
 }
 
-.srt-table-wrap { overflow-x: auto; }
+.srt-table-wrap {
+  overflow-x: auto;
+  width: 100%;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
 
 .srt-table {
   width: 100%;
+  min-width: 1280px;
   border-collapse: collapse;
   font-size: 12px;
+  table-layout: auto;
 }
 
 .srt-table th,
@@ -1750,7 +1822,9 @@ input, select, textarea, button {
   border: 1px solid #dce8f0;
   padding: 7px 10px;
   text-align: left;
-  white-space: nowrap;
+  vertical-align: top;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .srt-table th {
@@ -1759,6 +1833,49 @@ input, select, textarea, button {
   color: #1a3d5c;
   position: sticky;
   top: 0;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+.srt-table td {
+  white-space: nowrap;
+  max-width: 140px;
+}
+
+.srt-table td.srt-tests,
+.srt-table td.srt-patient,
+.srt-table td.srt-center {
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  text-overflow: clip;
+  overflow: visible;
+}
+
+.srt-table td.srt-tests {
+  min-width: 220px;
+  max-width: 320px;
+}
+
+.srt-table td.srt-patient {
+  min-width: 140px;
+  max-width: 200px;
+}
+
+.srt-table td.srt-center {
+  min-width: 140px;
+  max-width: 180px;
+}
+
+.srt-table td.srt-labcode {
+  min-width: 96px;
+  max-width: 110px;
+}
+
+.srt-table td.srt-status {
+  min-width: 110px;
+  max-width: 130px;
+  overflow: visible;
 }
 
 .srt-table tbody tr:hover { background: #f0f7fc; }
@@ -1770,12 +1887,6 @@ input, select, textarea, button {
   text-decoration: none;
 }
 .srt-labcode a:hover { text-decoration: underline; }
-
-.srt-tests {
-  max-width: 260px;
-  white-space: normal;
-  word-break: break-word;
-}
 
 .srt-badge {
   display: inline-block;
@@ -2207,5 +2318,488 @@ input, select, textarea, button {
   .test-bill-actions button {
     flex: 1 1 calc(50% - 8px);
     min-width: 0;
+  }
+}
+
+/* ===== Work Flow History modal ===== */
+.workflow-history-modal {
+  width: min(980px, 96vw);
+  max-height: min(88vh, 720px);
+  background: var(--white);
+  border: 1px solid #9eb6cc;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.workflow-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: linear-gradient(180deg, #d8e4ef 0%, #c5d5e4 100%);
+  border-bottom: 1px solid #9eb6cc;
+}
+
+.workflow-history-header h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a3d5c;
+}
+
+.workflow-history-close {
+  border: none;
+  background: transparent;
+  color: #1a3d5c;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 6px;
+}
+
+.workflow-history-body {
+  padding: 14px 16px 18px;
+  overflow: auto;
+}
+
+.workflow-history-message {
+  margin: 0;
+  padding: 12px 0;
+  color: #1a4a7a;
+}
+
+.workflow-history-message--error {
+  color: #b42318;
+}
+
+.workflow-history-table-wrap {
+  overflow-x: auto;
+}
+
+.workflow-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.workflow-history-table th,
+.workflow-history-table td {
+  border: 1px solid #9eb6cc;
+  padding: 7px 8px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.workflow-history-table th {
+  background: #eef4f9;
+  font-weight: 700;
+  color: #1a3d5c;
+}
+
+.workflow-history-empty {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+}
+
+.workflow-test-history {
+  margin-top: 18px;
+}
+
+.workflow-test-history h3 {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a3d5c;
+}
+
+.workflow-test-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.workflow-test-item {
+  background: #e8edf2;
+  border: 1px solid #c5d0db;
+  padding: 8px 10px;
+  font-size: 12px;
+  color: #1a3d5c;
+}
+
+@media (max-width: 767px) {
+  .workflow-history-modal {
+    width: 100%;
+    max-height: 92vh;
+  }
+}
+
+/* ===== Barcode Printing page ===== */
+.barcode-print-page {
+  min-height: 100vh;
+  background: #fff;
+  padding: 18px 24px 32px;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #111;
+}
+
+.barcode-print-toolbar {
+  margin-bottom: 12px;
+}
+
+.barcode-print-back {
+  color: #1a4a7a;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.barcode-print-back:hover {
+  text-decoration: underline;
+}
+
+.barcode-print-title {
+  margin: 0 0 16px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.barcode-print-message {
+  margin: 12px 0;
+  color: #1a4a7a;
+}
+
+.barcode-print-message--error {
+  color: #b42318;
+}
+
+.barcode-print-info {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+
+.barcode-print-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 14px;
+  font-size: 13px;
+}
+
+.barcode-print-controls label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.barcode-print-controls input[type='number'] {
+  width: 64px;
+  padding: 4px 6px;
+  border: 1px solid #9eb6cc;
+}
+
+.barcode-print-controls select {
+  padding: 4px 6px;
+  border: 1px solid #9eb6cc;
+}
+
+.barcode-print-remember {
+  gap: 6px !important;
+}
+
+.barcode-print-table-wrap {
+  max-width: 520px;
+  margin-bottom: 16px;
+}
+
+.barcode-print-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.barcode-print-table th,
+.barcode-print-table td {
+  border: 1px solid #111;
+  padding: 6px 8px;
+  text-align: left;
+}
+
+.barcode-print-table th {
+  background: #1a4a7a;
+  color: #fff;
+  font-weight: 700;
+}
+
+.barcode-print-table tbody tr:nth-child(even) {
+  background: #f7f9fb;
+}
+
+.barcode-print-btn {
+  padding: 6px 14px;
+  border: 1px solid #666;
+  background: linear-gradient(180deg, #f5f5f5 0%, #e3e3e3 100%);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.barcode-print-btn:hover {
+  background: linear-gradient(180deg, #fff 0%, #ececec 100%);
+}
+
+/* ===== Send SMS modal ===== */
+.send-sms-modal {
+  width: min(760px, 96vw);
+  max-height: min(88vh, 680px);
+  background: var(--white);
+  border: 1px solid #9eb6cc;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.send-sms-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: linear-gradient(180deg, #d8e4ef 0%, #c5d5e4 100%);
+  border-bottom: 1px solid #9eb6cc;
+}
+
+.send-sms-header h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a3d5c;
+}
+
+.send-sms-close {
+  border: none;
+  background: transparent;
+  color: #1a3d5c;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 6px;
+}
+
+.send-sms-body {
+  padding: 14px 16px 18px;
+  overflow: auto;
+}
+
+.send-sms-message {
+  margin: 0 0 10px;
+  color: #1a4a7a;
+}
+
+.send-sms-message--error {
+  color: #b42318;
+}
+
+.send-sms-table-wrap {
+  overflow-x: auto;
+  margin-bottom: 12px;
+}
+
+.send-sms-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.send-sms-table th,
+.send-sms-table td {
+  border: 1px solid #9eb6cc;
+  padding: 6px 8px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.send-sms-table th {
+  background: #eef4f9;
+  font-weight: 700;
+  color: #1a3d5c;
+}
+
+.send-sms-table input[type='text'],
+.send-sms-table input[type='email'] {
+  width: 100%;
+  min-width: 140px;
+  padding: 4px 6px;
+  border: 1px solid #9eb6cc;
+  font-size: 12px;
+}
+
+.send-sms-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 18px;
+  margin-bottom: 14px;
+  font-size: 12px;
+}
+
+.send-sms-options label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.send-sms-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.send-sms-actions--row2 {
+  margin-top: 8px;
+}
+
+.send-sms-actions button {
+  padding: 5px 12px;
+  border: 1px solid #1a4a7a;
+  background: #fff;
+  color: #1a4a7a;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.send-sms-actions button:hover:not(:disabled) {
+  background: #eef4f9;
+}
+
+.send-sms-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 767px) {
+  .send-sms-modal {
+    width: 100%;
+    max-height: 92vh;
+  }
+
+  .send-sms-table input[type='text'],
+  .send-sms-table input[type='email'] {
+    min-width: 110px;
+  }
+}
+
+/* ===== Bulk Release SMS modal ===== */
+.bulk-release-modal {
+  width: min(620px, 96vw);
+  background: var(--white);
+  border: 1px solid #9eb6cc;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.bulk-release-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: linear-gradient(180deg, #d8e4ef 0%, #c5d5e4 100%);
+  border-bottom: 1px solid #9eb6cc;
+}
+
+.bulk-release-header h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a3d5c;
+}
+
+.bulk-release-close {
+  border: none;
+  background: transparent;
+  color: #1a3d5c;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 6px;
+}
+
+.bulk-release-body {
+  padding: 16px 18px 18px;
+}
+
+.bulk-release-count {
+  margin: 0 0 14px;
+  font-size: 12px;
+  color: #1a4a7a;
+}
+
+.bulk-release-message {
+  margin: 0 0 10px;
+  color: #1a4a7a;
+}
+
+.bulk-release-message--error {
+  color: #b42318;
+}
+
+.bulk-release-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 28px;
+  margin-bottom: 18px;
+}
+
+.bulk-release-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 12px;
+}
+
+.bulk-release-column label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bulk-release-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.bulk-release-actions--row2 {
+  margin-top: 8px;
+}
+
+.bulk-release-actions button {
+  padding: 5px 12px;
+  border: 1px solid #1a4a7a;
+  background: #fff;
+  color: #1a4a7a;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bulk-release-actions button:hover:not(:disabled) {
+  background: #eef4f9;
+}
+
+.bulk-release-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 767px) {
+  .bulk-release-options {
+    grid-template-columns: 1fr;
   }
 }

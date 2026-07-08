@@ -7,7 +7,6 @@ from rest_framework.views import APIView
 
 from .clinical_permissions import (
     IsPathologistOrAdmin,
-    IsTechnicianOrAdmin,
     TestParameterPermission,
 )
 from .clinical_serializers import (
@@ -50,13 +49,36 @@ class TestParameterDetailView(generics.RetrieveUpdateDestroyAPIView):
         instance.save()
 
 
+def _patient_details_payload(registration):
+    patient = registration.patient
+    gender = 'M' if patient.gender == 'male' else 'F' if patient.gender == 'female' else '—'
+    regn_dt = registration.created_at or registration.registration_date
+    return {
+        'title': patient.title,
+        'patient_name': patient.patient_name,
+        'full_name': f'{patient.title} {patient.patient_name}'.strip(),
+        'lab_code': registration.lab_code,
+        'gender_display': gender,
+        'age_years': patient.age_years,
+        'age_months': patient.age_months,
+        'age_days': patient.age_days,
+        'age_display': f'{gender}-{patient.age_years}(Y){patient.age_months}(M){patient.age_days}(D)',
+        'collection_center': patient.collection_center or '—',
+        'doctor_name': patient.doctor_name or '—',
+        'affiliation': patient.affiliation or patient.patient_type or '—',
+        'patient_type': patient.patient_type or 'O.P.D.',
+        'mobile': patient.mobile or '',
+        'registration_date': regn_dt.strftime('%d-%m-%Y %H:%M:%S') if regn_dt else '',
+    }
+
+
 class ReportDetailView(APIView):
     """GET and POST /api/reports/{registration_id}/"""
 
     def get_permissions(self):
         if self.request.method == 'GET':
             return [permissions.IsAuthenticated()]
-        return [IsTechnicianOrAdmin()]
+        return [permissions.IsAuthenticated()]
 
     def get(self, request, registration_id):
         registration = get_object_or_404(
@@ -77,6 +99,7 @@ class ReportDetailView(APIView):
                 'patient_name': registration.patient.patient_name,
                 'patient_gender': registration.patient.gender,
                 'patient_age': registration.patient.age_years,
+                'patient_details': _patient_details_payload(registration),
                 'status': Report.STATUS_PENDING,
                 'ordered_tests': [
                     {'id': rt.test_id, 'name': rt.test.name}
@@ -90,6 +113,7 @@ class ReportDetailView(APIView):
 
         serializer = ReportSerializer(report, context={'patient': registration.patient})
         data = serializer.data
+        data['patient_details'] = _patient_details_payload(registration)
         data['parameters'] = TestParameterSerializer(
             self._parameters_for_registration(registration),
             many=True,

@@ -40,6 +40,17 @@ export const api = {
     return request(`/registrations/${query ? `?${query}` : ''}`);
   },
   getWorksheet: (ids) => request(`/registrations/worksheet/?ids=${ids}`),
+  getWorkflowHistory: (id) => request(`/registrations/workflow/?id=${id}`),
+  getBarcodeData: (id) => request(`/registrations/barcode/?id=${id}`),
+  getBillReceipt: (id) => request(`/registrations/bill-receipt/?id=${id}`),
+  getMultipleBillReceipts: (ids) => request(`/registrations/bill-receipt/?ids=${ids}`),
+  saveBillReceipt: (payload) =>
+    request('/registrations/bill-receipt/', { method: 'PATCH', body: JSON.stringify(payload) }),
+  getNotificationPrefill: (id) => request(`/registrations/notifications/?id=${id}`),
+  sendNotification: (payload) =>
+    request('/registrations/notifications/', { method: 'POST', body: JSON.stringify(payload) }),
+  sendBulkNotification: (payload) =>
+    request('/registrations/notifications/bulk/', { method: 'POST', body: JSON.stringify(payload) }),
   createRegistration: (payload) =>
     request('/registrations/create/', { method: 'POST', body: JSON.stringify(payload) }),
   getNextLabCode: () => request('/registrations/next-lab-code/'),

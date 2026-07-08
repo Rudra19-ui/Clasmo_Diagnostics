@@ -1,0 +1,265 @@
+.tre-page {
+  min-height: 100vh;
+  background: #eef2f6;
+  padding: 10px 14px 24px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  color: #111;
+}
+
+.tre-topbar {
+  margin-bottom: 8px;
+}
+
+.tre-back {
+  color: #1a4a7a;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.tre-back:hover {
+  text-decoration: underline;
+}
+
+.tre-message {
+  margin: 8px 0;
+  padding: 8px 10px;
+  background: #fff;
+  border: 1px solid #d0dde8;
+}
+
+.tre-message--error {
+  color: #b42318;
+  border-color: #f5c2c7;
+  background: #fff5f5;
+}
+
+.tre-message--success {
+  color: #1b5e20;
+  border-color: #c8e6c9;
+  background: #f1f8f4;
+}
+
+.tre-patient-banner {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px 16px;
+  background: #d9dee3;
+  border: 1px solid #b8c0c8;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+
+.tre-patient-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.tre-patient-id,
+.tre-patient-age {
+  color: #333;
+}
+
+.tre-patient-meta {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  color: #222;
+}
+
+.tre-patient-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: start;
+}
+
+.tre-patient-actions button,
+.tre-toolbar button,
+.tre-test-select-actions button,
+.tre-footer-actions button,
+.tre-group-bar button,
+.tre-mini-btn {
+  border: 1px solid #7a8a98;
+  background: linear-gradient(180deg, #f7f7f7 0%, #e3e3e3 100%);
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.tre-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  background: #fff;
+  border: 1px solid #c5d0db;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+}
+
+.tre-toolbar input[type='text'] {
+  margin-left: 6px;
+  padding: 3px 6px;
+  border: 1px solid #9eb6cc;
+}
+
+.tre-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tre-test-select {
+  background: #fff;
+  border: 1px solid #c5d0db;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+}
+
+.tre-test-select-title {
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.tre-test-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 8px;
+}
+
+.tre-test-checkboxes label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tre-test-select-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.tre-results {
+  background: #fff;
+  border: 1px solid #c5d0db;
+  overflow-x: auto;
+  margin-bottom: 10px;
+}
+
+.tre-table {
+  width: 100%;
+  min-width: 980px;
+  border-collapse: collapse;
+}
+
+.tre-table th,
+.tre-table td {
+  border: 1px solid #b8c4cf;
+  padding: 5px 7px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.tre-table th {
+  background: #dce8f2;
+  font-weight: 700;
+}
+
+.tre-group-header td {
+  background: #c5d9ea;
+  padding: 6px 8px;
+}
+
+.tre-group-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.tre-normal-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.tre-row-abnormal td {
+  background: #ffd9a8;
+}
+
+.tre-value-input {
+  width: 100%;
+  min-width: 70px;
+  padding: 3px 5px;
+  border: 1px solid #9eb6cc;
+}
+
+.tre-interpretation-row td {
+  background: #f7f9fb;
+}
+
+.tre-interpretation-row label {
+  display: block;
+  font-weight: 700;
+  margin: 6px 0 4px;
+}
+
+.tre-interpretation-row textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 6px;
+  border: 1px solid #9eb6cc;
+  resize: vertical;
+  margin-bottom: 6px;
+}
+
+.tre-empty {
+  text-align: center;
+  color: #666;
+  padding: 24px;
+  font-style: italic;
+}
+
+.tre-footer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid #c5d0db;
+  padding: 10px;
+}
+
+.tre-mini-btn {
+  min-width: 28px;
+  padding: 2px 6px;
+}
+
+.print-only {
+  display: none;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: inline !important;
+  }
+
+  .tre-page {
+    background: #fff;
+    padding: 0;
+  }
+
+  .tre-results,
+  .tre-table {
+    min-width: 0;
+  }
+}

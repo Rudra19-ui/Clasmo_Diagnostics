@@ -10,6 +10,9 @@ import Landing from './pages/Landing';
 import Registration from './pages/Registration';
 import Reports from './pages/Reports';
 import Search from './pages/Search';
+import BarcodePrinting from './pages/BarcodePrinting';
+import BillReceipt from './pages/BillReceipt';
+import TestResultEntry from './pages/TestResultEntry';
 import TestResult from './pages/TestResult';
 import ReportPreview from './pages/clinical/ReportPreview';
 import ResultEntry from './pages/clinical/ResultEntry';
@@ -27,6 +30,9 @@ export default function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/search" element={<ProtectedRoute><Search /></ProtectedRoute>} />
+          <Route path="/barcode-print" element={<ProtectedRoute><BarcodePrinting /></ProtectedRoute>} />
+          <Route path="/bill-receipt" element={<ProtectedRoute><BillReceipt /></ProtectedRoute>} />
+          <Route path="/test-result-entry" element={<ProtectedRoute><TestResultEntry /></ProtectedRoute>} />
           <Route path="/registration" element={<ProtectedRoute><Registration /></ProtectedRoute>} />
           <Route path="/test-result" element={<ProtectedRoute><TestResult /></ProtectedRoute>} />
           <Route path="/administration" element={<ProtectedRoute adminOnly><Administration /></ProtectedRoute>} />

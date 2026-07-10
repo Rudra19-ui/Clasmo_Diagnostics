@@ -1,3 +1,4 @@
+from .utils import get_lab_config
 from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
@@ -137,6 +138,8 @@ class ReportDetailView(APIView):
         submit_serializer.is_valid(raise_exception=True)
         values_data = submit_serializer.validated_data['values']
         should_verify = submit_serializer.validated_data.get('verify', False)
+        if get_lab_config().test_auto_approval:
+            should_verify = True
 
         report, _ = Report.objects.get_or_create(
             registration=registration,

@@ -73,6 +73,33 @@ export default function BillReceipt() {
   const [billReceiptNo, setBillReceiptNo] = useState('');
   const [showTestDetails, setShowTestDetails] = useState(true);
   const [showHeader, setShowHeader] = useState(true);
+  const [discountReasonOptions, setDiscountReasonOptions] = useState(DISCOUNT_REASONS);
+  const [authorizationOptions, setAuthorizationOptions] = useState(AUTHORIZATIONS);
+
+  useEffect(() => {
+    api.getDiscountReasons()
+      .then((reasons) => {
+        if (!reasons.length) return;
+        setDiscountReasonOptions([
+          { value: '', label: 'Select Discount Reason...' },
+          ...reasons.map((item) => ({ value: item.reason, label: item.reason })),
+        ]);
+      })
+      .catch(() => {});
+
+    api.getDiscountAuthorities()
+      .then((authorities) => {
+        if (!authorities.length) return;
+        setAuthorizationOptions([
+          { value: '', label: 'Select Authorized By' },
+          ...authorities.map((item) => ({
+            value: item.authorization_name,
+            label: item.authorization_name,
+          })),
+        ]);
+      })
+      .catch(() => {});
+  }, []);
 
   const loadBillReceipt = useCallback(async (id) => {
     if (!id) return;
@@ -263,7 +290,7 @@ export default function BillReceipt() {
               <label>
                 Reason:
                 <select value={discountReason} onChange={(e) => setDiscountReason(e.target.value)}>
-                  {DISCOUNT_REASONS.map((option) => (
+                  {discountReasonOptions.map((option) => (
                     <option key={option.value || 'empty'} value={option.value}>{option.label}</option>
                   ))}
                 </select>
@@ -271,7 +298,7 @@ export default function BillReceipt() {
               <label>
                 Authorisation:
                 <select value={discountAuthorization} onChange={(e) => setDiscountAuthorization(e.target.value)}>
-                  {AUTHORIZATIONS.map((option) => (
+                  {authorizationOptions.map((option) => (
                     <option key={option.value || 'empty'} value={option.value}>{option.label}</option>
                   ))}
                 </select>

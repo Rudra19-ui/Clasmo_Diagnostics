@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import NavIcon from './NavIcon';
+import AdminSidebar from './AdminSidebar';
 import { NAV } from '../utils/nav';
 
 const PHONES = '+91-8975273383 / +91-9146188320';
@@ -40,8 +41,10 @@ function SidebarLink({ item, isActive, onClick, asButton, showCaret, caretOpen }
 export default function Layout({ activePage, children }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [openMenu, setOpenMenu] = useState(null);
   const [navOpen, setNavOpen] = useState(false);
+  const isAdminRoute = activePage === 'administration' || location.pathname.startsWith('/admin/');
 
   const closeNav = useCallback(() => {
     setNavOpen(false);
@@ -102,7 +105,15 @@ export default function Layout({ activePage, children }) {
         <ul className="sidebar-menu">
           {navItems.map((item) => {
             const visibleChildren = item.children?.filter((c) => canSee(c, user)) || [];
-            const isActive = item.id === activePage;
+            const isActive = item.id === activePage || (item.id === 'administration' && isAdminRoute);
+
+            if (item.megaMenu && item.id === 'administration') {
+              return (
+                <li key={item.id} className={isActive ? 'active' : ''}>
+                  <SidebarLink item={item} isActive={isActive} onClick={closeNav} />
+                </li>
+              );
+            }
 
             if (visibleChildren.length) {
               return (
@@ -177,7 +188,14 @@ export default function Layout({ activePage, children }) {
             <li><button type="button" className="icon-btn" onClick={handleLogout} title="Logout">⏻</button></li>
           </ul>
         </div>
-        {children}
+        {isAdminRoute ? (
+          <div className="admin-page-shell">
+            <AdminSidebar />
+            <div className="admin-page-content">{children}</div>
+          </div>
+        ) : (
+          children
+        )}
       </div>
     </div>
   );

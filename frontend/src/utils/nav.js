@@ -3,28 +3,10 @@ export const NAV = [
   { id: 'registration', label: 'Test Registration', href: '/registration' },
   { id: 'test-result', label: 'Test Result', href: '/test-result' },
   {
-    id: 'clinical',
-    label: 'Clinical',
-    href: '/clinical/result-entry',
-    children: [
-      { label: 'Test Parameter Master', href: '/clinical/test-parameters', roles: ['admin'] },
-      { label: 'Result Entry', href: '/clinical/result-entry', roles: ['admin', 'technician'] },
-      { label: 'Report Preview', href: '/clinical/report-preview', roles: ['admin', 'technician', 'pathologist', 'user'] },
-    ],
-  },
-  {
     id: 'administration',
     label: 'Administration',
     href: '/administration',
-    adminOnly: true,
-    children: [
-      { label: 'User Management', href: '/administration#users' },
-      { label: 'Test Master', href: '/administration#tests' },
-      { label: 'Test Parameter Master', href: '/clinical/test-parameters' },
-      { label: 'Collection Center', href: '/administration#centers' },
-      { label: 'Doctor Master', href: '/administration#doctors' },
-      { label: 'Rate Master', href: '/administration#rates' },
-    ],
+    megaMenu: true,
   },
   {
     id: 'reports',
@@ -56,7 +38,7 @@ export const NAV = [
     label: 'ChangeLab',
     children: [
       { label: 'CLASMO DIAGNOSTICS PVT.LTD.', href: '/search', active: true },
-      { label: 'Admin', href: '/administration', adminOnly: true },
+      { label: 'Administration', href: '/administration' },
     ],
   },
   { id: 'dashboard', label: 'Dashboard', href: '/dashboard' },

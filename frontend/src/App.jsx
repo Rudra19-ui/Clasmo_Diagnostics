@@ -2,6 +2,23 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
 import Administration from './pages/Administration';
+import AdminModule from './pages/admin/AdminModule';
+import ChangePassword from './pages/admin/ChangePassword';
+import RoleManagement from './pages/admin/RoleManagement';
+import Membership from './pages/admin/Membership';
+import CollectionCenterBoy from './pages/admin/CollectionCenterBoy';
+import DiscountReason from './pages/admin/DiscountReason';
+import DiscountAuthority from './pages/admin/DiscountAuthority';
+import WhatsAppLogger from './pages/admin/WhatsAppLogger';
+import ExpenseType from './pages/admin/ExpenseType';
+import CollectionCenterManagement from './pages/admin/CollectionCenterManagement';
+import DoctorManagement from './pages/admin/DoctorManagement';
+import PatientManagement from './pages/admin/PatientManagement';
+import LabConfiguration from './pages/admin/LabConfiguration';
+import ServicesInArea from './pages/admin/ServicesInArea';
+import CreateActivity from './pages/admin/CreateActivity';
+import Activities from './pages/admin/Activities';
+import { getAllAdminModules } from './utils/adminModules';
 import Dashboard from './pages/Dashboard';
 import ElabPay from './pages/ElabPay';
 import Help from './pages/Help';
@@ -18,7 +35,7 @@ import ReportPreview from './pages/clinical/ReportPreview';
 import ResultEntry from './pages/clinical/ResultEntry';
 import TestParameterMaster from './pages/clinical/TestParameterMaster';
 import DeviceStub from './pages/device/DeviceStub';
-import { ROLES } from './utils/roles';
+import { ROLES, ALL_ROLES } from './utils/roles';
 import MessageToLab from './pages/device/MessageToLab';
 import PickupRequest from './pages/device/PickupRequest';
 
@@ -35,7 +52,35 @@ export default function App() {
           <Route path="/test-result-entry" element={<ProtectedRoute><TestResultEntry /></ProtectedRoute>} />
           <Route path="/registration" element={<ProtectedRoute><Registration /></ProtectedRoute>} />
           <Route path="/test-result" element={<ProtectedRoute><TestResult /></ProtectedRoute>} />
-          <Route path="/administration" element={<ProtectedRoute adminOnly><Administration /></ProtectedRoute>} />
+          <Route path="/administration" element={<ProtectedRoute allowedRoles={ALL_ROLES}><Administration /></ProtectedRoute>} />
+          <Route path="/admin/change-password" element={<ProtectedRoute allowedRoles={ALL_ROLES}><ChangePassword /></ProtectedRoute>} />
+          <Route path="/admin/role-management" element={<ProtectedRoute allowedRoles={ALL_ROLES}><RoleManagement /></ProtectedRoute>} />
+          <Route path="/admin/membership" element={<ProtectedRoute allowedRoles={ALL_ROLES}><Membership /></ProtectedRoute>} />
+          <Route path="/admin/collection-center-boy" element={<ProtectedRoute allowedRoles={ALL_ROLES}><CollectionCenterBoy /></ProtectedRoute>} />
+          <Route path="/admin/discount-reason" element={<ProtectedRoute allowedRoles={ALL_ROLES}><DiscountReason /></ProtectedRoute>} />
+          <Route path="/admin/discount-authority" element={<ProtectedRoute allowedRoles={ALL_ROLES}><DiscountAuthority /></ProtectedRoute>} />
+          <Route path="/admin/whatsapp-logger" element={<ProtectedRoute allowedRoles={ALL_ROLES}><WhatsAppLogger /></ProtectedRoute>} />
+          <Route path="/admin/expense-type" element={<ProtectedRoute allowedRoles={ALL_ROLES}><ExpenseType /></ProtectedRoute>} />
+          <Route path="/admin/collection-center-management" element={<ProtectedRoute allowedRoles={ALL_ROLES}><CollectionCenterManagement /></ProtectedRoute>} />
+          <Route path="/admin/doctor-management" element={<ProtectedRoute allowedRoles={ALL_ROLES}><DoctorManagement /></ProtectedRoute>} />
+          <Route path="/admin/patient-management" element={<ProtectedRoute allowedRoles={ALL_ROLES}><PatientManagement /></ProtectedRoute>} />
+          <Route path="/admin/lab-configuration" element={<ProtectedRoute allowedRoles={ALL_ROLES}><LabConfiguration /></ProtectedRoute>} />
+          <Route path="/admin/services-in-area" element={<ProtectedRoute allowedRoles={ALL_ROLES}><ServicesInArea /></ProtectedRoute>} />
+          <Route path="/admin/create-activity" element={<ProtectedRoute allowedRoles={ALL_ROLES}><CreateActivity /></ProtectedRoute>} />
+          <Route path="/admin/activities" element={<ProtectedRoute allowedRoles={ALL_ROLES}><Activities /></ProtectedRoute>} />
+          {getAllAdminModules()
+            .filter((module) => !['change-password', 'role-management', 'membership', 'collection-center-boy', 'discount-reason', 'discount-authority', 'whatsapp-logger', 'expense-type', 'collection-center-management', 'doctor-management', 'patient-management', 'lab-configuration', 'services-in-area', 'create-activity', 'activities'].includes(module.slug))
+            .map((module) => (
+            <Route
+              key={module.slug}
+              path={module.path}
+              element={(
+                <ProtectedRoute allowedRoles={ALL_ROLES}>
+                  <AdminModule module={module} />
+                </ProtectedRoute>
+              )}
+            />
+          ))}
           <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/elab-pay" element={<ProtectedRoute><ElabPay /></ProtectedRoute>} />

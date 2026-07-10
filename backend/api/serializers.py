@@ -1,8 +1,14 @@
 from django.contrib.auth import authenticate
+from django.utils import timezone
 from rest_framework import serializers
+
+from .role_permissions import ALL_PERMISSION_KEYS, ROLE_PERMISSION_SCHEMA
 
 from .models import (
     LabMessage,
+    LabRole,
+    Membership,
+    MembershipType,
     Patient,
     PickupRequest,
     Registration,
@@ -10,13 +16,81 @@ from .models import (
     Test,
     TestCategory,
     User,
+    CollectionCenter,
+    CollectionCenterBoy,
+    Area,
+    RateMaster,
+    DiscountReason,
+    DiscountAuthority,
+    WhatsAppMessageLog,
+    ExpenseType,
+    Affiliation,
+    SalesReference,
+    Doctor,
+    PatientAddress,
+    LabConfiguration,
+    ServiceAreaPincode,
+    LabActivity,
 )
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'role', 'display_name', 'lab_code']
+        fields = ['id', 'username', 'role', 'display_name', 'lab_code', 'is_active']
+
+
+class UserRoleUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['role']
+
+    def validate_role(self, value):
+        valid_roles = {choice[0] for choice in User.ROLE_CHOICES}
+        if value not in valid_roles:
+            raise serializers.ValidationError('Invalid role selected.')
+        return value
+
+
+class LabRoleSerializer(serializers.ModelSerializer):
+    user_count = serializers.SerializerMethodField()
+    permission_schema = serializers.SerializerMethodField()
+
+    class Meta:
+        model = LabRole
+        fields = [
+            'id', 'code', 'name', 'description', 'permissions',
+            'is_system', 'user_count', 'permission_schema', 'updated_at',
+        ]
+        read_only_fields = ['code', 'is_system', 'user_count', 'permission_schema', 'updated_at']
+
+    def get_user_count(self, obj):
+        return User.objects.filter(role=obj.code).count()
+
+    def get_permission_schema(self, obj):
+        return ROLE_PERMISSION_SCHEMA
+
+    def validate_permissions(self, value):
+        if not isinstance(value, dict):
+            raise serializers.ValidationError('Permissions must be an object.')
+        cleaned = {}
+        for key in ALL_PERMISSION_KEYS:
+            cleaned[key] = bool(value.get(key, False))
+        return cleaned
+
+
+class LabRoleUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LabRole
+        fields = ['name', 'description', 'permissions']
+
+    def validate_permissions(self, value):
+        if not isinstance(value, dict):
+            raise serializers.ValidationError('Permissions must be an object.')
+        cleaned = {}
+        for key in ALL_PERMISSION_KEYS:
+            cleaned[key] = bool(value.get(key, False))
+        return cleaned
 
 
 class LoginSerializer(serializers.Serializer):
@@ -32,6 +106,28 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError('Invalid username or password.')
         attrs['user'] = user
         return attrs
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True, min_length=8)
+
+    def validate_old_password(self, value):
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError('Old password is incorrect.')
+        return value
+
+    def validate(self, attrs):
+        if attrs['old_password'] == attrs['new_password']:
+            raise serializers.ValidationError({'new_password': 'New password must be different from old password.'})
+        return attrs
+
+    def save(self):
+        user = self.context['request'].user
+        user.set_password(self.validated_data['new_password'])
+        user.save(update_fields=['password'])
+        return user
 
 
 class TestCategorySerializer(serializers.ModelSerializer):
@@ -54,6 +150,140 @@ class RegistrationTestSerializer(serializers.ModelSerializer):
     class Meta:
         model = RegistrationTest
         fields = ['id', 'test', 'test_name', 'price', 'discount', 'refund']
+
+
+class PatientAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PatientAddress
+        fields = [
+            'id', 'address_line1', 'address_line2', 'address_line3', 'country', 'state',
+            'city', 'pincode', 'address_type', 'is_default', 'sort_order',
+        ]
+        read_only_fields = ['id']
+
+
+class PatientMasterSerializer(serializers.ModelSerializer):
+    addresses = PatientAddressSerializer(many=True, required=False)
+    display_name = serializers.SerializerMethodField()
+    family_doctor_name = serializers.SerializerMethodField()
+    gender_display = serializers.CharField(source='get_gender_display', read_only=True)
+    age = serializers.IntegerField(required=False, allow_null=True)
+
+    class Meta:
+        model = Patient
+        fields = [
+            'id', 'medical_record_no', 'bar_code', 'title', 'first_name', 'middle_name', 'last_name',
+            'short_name', 'display_name', 'patient_name', 'gender', 'gender_display', 'age', 'age_unit',
+            'date_of_birth', 'marital_status', 'blood_group', 'family_doctor', 'family_doctor_name',
+            'religion', 'telephone_office', 'telephone_residence', 'mobile', 'primary_tel_type',
+            'send_result_sms', 'email', 'email2', 'master_comment', 'addresses',
+            'insurance_id', 'insurance_company', 'insurance_start_date', 'insurance_expiry_date',
+            'other_data_comment', 'is_active', 'created_at', 'updated_at',
+        ]
+        read_only_fields = ['created_at', 'updated_at', 'display_name', 'patient_name', 'family_doctor_name', 'gender_display']
+
+    def get_display_name(self, obj):
+        return obj.display_name
+
+    def get_family_doctor_name(self, obj):
+        if obj.family_doctor_id:
+            return obj.family_doctor.full_name
+        return obj.doctor_name or ''
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        if instance.age_unit == 'month':
+            data['age'] = instance.age_months
+        elif instance.age_unit == 'day':
+            data['age'] = instance.age_days
+        else:
+            data['age'] = instance.age_years
+        return data
+
+    def validate(self, attrs):
+        instance = self.instance
+        medical_record_no = attrs.get('medical_record_no', getattr(instance, 'medical_record_no', ''))
+        title = attrs.get('title', getattr(instance, 'title', ''))
+        first_name = attrs.get('first_name', getattr(instance, 'first_name', ''))
+        last_name = attrs.get('last_name', getattr(instance, 'last_name', ''))
+        gender = attrs.get('gender', getattr(instance, 'gender', ''))
+        mobile = attrs.get('mobile', getattr(instance, 'mobile', ''))
+        email = attrs.get('email', getattr(instance, 'email', ''))
+        primary_tel_type = attrs.get('primary_tel_type', getattr(instance, 'primary_tel_type', ''))
+        family_doctor = attrs.get('family_doctor', getattr(instance, 'family_doctor', None))
+        age = self.initial_data.get('age', getattr(instance, 'age_years', None) if instance else None)
+
+        if not (medical_record_no or '').strip():
+            raise serializers.ValidationError({'medical_record_no': 'Medical record number is required.'})
+        if not (title or '').strip():
+            raise serializers.ValidationError({'title': 'Title is required.'})
+        if not (first_name or '').strip():
+            raise serializers.ValidationError({'first_name': 'First name is required.'})
+        if not (last_name or '').strip():
+            raise serializers.ValidationError({'last_name': 'Last name is required.'})
+        if not (gender or '').strip():
+            raise serializers.ValidationError({'gender': 'Sex is required.'})
+        if age in (None, ''):
+            raise serializers.ValidationError({'age': 'Age is required.'})
+        if not family_doctor:
+            raise serializers.ValidationError({'family_doctor': 'Family doctor is required.'})
+        if not (mobile or '').strip():
+            raise serializers.ValidationError({'mobile': 'Telephone mobile is required.'})
+        if not (primary_tel_type or '').strip():
+            raise serializers.ValidationError({'primary_tel_type': 'Primary tel type is required.'})
+        if not (email or '').strip():
+            raise serializers.ValidationError({'email': 'Email ID 1 is required.'})
+        return attrs
+
+    def _apply_age(self, validated_data):
+        age_value = validated_data.pop('age', None)
+        if age_value is None:
+            age_value = self.initial_data.get('age')
+        try:
+            age_value = int(age_value)
+        except (TypeError, ValueError):
+            age_value = 0
+        unit = validated_data.get('age_unit', 'yr')
+        validated_data['age_years'] = 0
+        validated_data['age_months'] = 0
+        validated_data['age_days'] = 0
+        if unit == 'month':
+            validated_data['age_months'] = age_value
+        elif unit == 'day':
+            validated_data['age_days'] = age_value
+        else:
+            validated_data['age_years'] = age_value
+
+    def _sync_addresses(self, patient, addresses_data):
+        patient.addresses.all().delete()
+        for index, address_data in enumerate(addresses_data):
+            address_data = dict(address_data)
+            address_data.pop('id', None)
+            PatientAddress.objects.create(patient=patient, sort_order=index, **address_data)
+
+    def create(self, validated_data):
+        addresses_data = validated_data.pop('addresses', [])
+        self._apply_age(validated_data)
+        patient = Patient.objects.create(**validated_data)
+        patient.sync_computed_fields()
+        patient.save()
+        self._sync_addresses(patient, addresses_data)
+        patient.sync_computed_fields()
+        patient.save()
+        return patient
+
+    def update(self, instance, validated_data):
+        addresses_data = validated_data.pop('addresses', None)
+        self._apply_age(validated_data)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.sync_computed_fields()
+        instance.save()
+        if addresses_data is not None:
+            self._sync_addresses(instance, addresses_data)
+            instance.sync_computed_fields()
+            instance.save()
+        return instance
 
 
 class PatientSerializer(serializers.ModelSerializer):
@@ -199,6 +429,297 @@ class LabMessageSerializer(serializers.ModelSerializer):
         model = LabMessage
         fields = ['id', 'message', 'created_by_name', 'created_at']
         read_only_fields = ['created_at']
+
+
+class MembershipTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MembershipType
+        fields = ['id', 'name', 'duration_months', 'description']
+
+
+class MembershipSerializer(serializers.ModelSerializer):
+    membership_type_name = serializers.CharField(source='membership_type.name', read_only=True)
+    profile_image_url = serializers.SerializerMethodField()
+    created_by_name = serializers.CharField(source='created_by.display_name', read_only=True, default='')
+
+    class Meta:
+        model = Membership
+        fields = [
+            'id', 'patient_name', 'membership_type', 'membership_type_name',
+            'profile_image', 'profile_image_url', 'membership_validation',
+            'membership_number', 'created_by_name', 'created_at',
+        ]
+        read_only_fields = ['membership_number', 'created_at', 'profile_image_url', 'created_by_name']
+
+    def get_profile_image_url(self, obj):
+        if not obj.profile_image:
+            return None
+        request = self.context.get('request')
+        url = obj.profile_image.url
+        if request:
+            return request.build_absolute_uri(url)
+        return url
+
+    def validate_membership_type(self, value):
+        if not value.is_active:
+            raise serializers.ValidationError('Selected membership type is not active.')
+        return value
+
+
+class CollectionCenterSerializer(serializers.ModelSerializer):
+    center_type_display = serializers.CharField(source='get_center_type_display', read_only=True)
+    party_type_display = serializers.CharField(source='get_party_type_display', read_only=True)
+    frequency_display = serializers.CharField(source='get_frequency_display', read_only=True)
+    billing_type_display = serializers.CharField(source='get_billing_type_display', read_only=True)
+
+    class Meta:
+        model = CollectionCenter
+        fields = [
+            'id', 'name', 'center_type', 'center_type_display', 'party_type', 'party_type_display',
+            'is_default', 'has_result_sms', 'report_print_exception', 'comment', 'mobile', 'email',
+            'address_line1', 'address_line2', 'address_line3', 'country', 'state', 'city', 'area',
+            'pincode', 'voucher_type', 'ledger_name', 'labcode_short_name', 'labcode', 'labcode_start',
+            'frequency', 'frequency_display', 'auto_increment', 'rate_master',
+            'credit_balance', 'credit_limit', 'invoice_payment_period_days',
+            'billing_type', 'billing_type_display', 'is_active', 'created_at', 'updated_at',
+        ]
+        read_only_fields = [
+            'created_at', 'updated_at', 'center_type_display', 'party_type_display',
+            'frequency_display', 'billing_type_display',
+        ]
+
+    def validate(self, attrs):
+        name = attrs.get('name', getattr(self.instance, 'name', ''))
+        center_type = attrs.get('center_type', getattr(self.instance, 'center_type', ''))
+        address_line1 = attrs.get('address_line1', getattr(self.instance, 'address_line1', ''))
+
+        if not (name or '').strip():
+            raise serializers.ValidationError({'name': 'Collection center name is required.'})
+        if not (center_type or '').strip():
+            raise serializers.ValidationError({'center_type': 'Type is required.'})
+        if not (address_line1 or '').strip():
+            raise serializers.ValidationError({'address_line1': 'Address line 1 is required.'})
+        return attrs
+
+
+class AreaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Area
+        fields = ['id', 'name']
+
+
+class RateMasterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RateMaster
+        fields = ['id', 'name']
+
+
+class CollectionCenterBoySerializer(serializers.ModelSerializer):
+    collection_center_name = serializers.CharField(source='collection_center.name', read_only=True)
+    sex = serializers.CharField(source='get_gender_display', read_only=True)
+
+    class Meta:
+        model = CollectionCenterBoy
+        fields = [
+            'id', 'first_name', 'middle_name', 'last_name', 'short_name',
+            'age', 'gender', 'sex', 'email', 'mobile', 'address',
+            'collection_center', 'collection_center_name', 'is_active',
+            'created_at', 'updated_at',
+        ]
+        read_only_fields = ['created_at', 'updated_at', 'collection_center_name', 'sex']
+
+
+class DiscountReasonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DiscountReason
+        fields = ['id', 'reason', 'comment', 'is_active', 'created_at', 'updated_at']
+        read_only_fields = ['created_at', 'updated_at']
+
+
+class WhatsAppMessageLogSerializer(serializers.ModelSerializer):
+    user = serializers.CharField(source='sent_by.username', read_only=True, default='')
+    message_date = serializers.DateTimeField(format='%d-%m-%Y %H:%M:%S', read_only=True)
+
+    class Meta:
+        model = WhatsAppMessageLog
+        fields = [
+            'id', 'message_date', 'lab_code', 'patient_name', 'mobile_no',
+            'referred_by', 'user', 'status', 'message_text',
+        ]
+
+
+class DoctorSerializer(serializers.ModelSerializer):
+    full_name = serializers.SerializerMethodField()
+    gender_display = serializers.CharField(source='get_gender_display', read_only=True)
+    default_contact_display = serializers.CharField(source='get_default_contact_display', read_only=True)
+    address_type_display = serializers.CharField(source='get_address_type_display', read_only=True)
+
+    class Meta:
+        model = Doctor
+        fields = [
+            'id', 'registration_number', 'first_name', 'middle_name', 'last_name', 'short_name',
+            'full_name', 'gender', 'gender_display', 'age', 'date_of_birth', 'specialization',
+            'telephone_office', 'telephone_residence', 'mobile', 'default_contact',
+            'default_contact_display', 'email', 'alternate_email', 'address_line1', 'address_line2',
+            'address_line3', 'country', 'state', 'city', 'pincode', 'address_type',
+            'address_type_display', 'is_default_address', 'affiliation', 'sales_reference',
+            'commission_applicable', 'is_postpaid', 'invoice_payment_period_days', 'credit_limit',
+            'communication_language', 'comment', 'report_print_exception', 'is_active',
+            'created_at', 'updated_at',
+        ]
+        read_only_fields = [
+            'created_at', 'updated_at', 'full_name', 'gender_display',
+            'default_contact_display', 'address_type_display',
+        ]
+
+    def validate(self, attrs):
+        registration_number = attrs.get(
+            'registration_number', getattr(self.instance, 'registration_number', '')
+        )
+        first_name = attrs.get('first_name', getattr(self.instance, 'first_name', ''))
+        last_name = attrs.get('last_name', getattr(self.instance, 'last_name', ''))
+        mobile = attrs.get('mobile', getattr(self.instance, 'mobile', ''))
+        email = attrs.get('email', getattr(self.instance, 'email', ''))
+        address_line1 = attrs.get('address_line1', getattr(self.instance, 'address_line1', ''))
+        age = attrs.get('age', getattr(self.instance, 'age', None))
+
+        if not (registration_number or '').strip():
+            raise serializers.ValidationError({'registration_number': 'Registration number is required.'})
+        if not (first_name or '').strip():
+            raise serializers.ValidationError({'first_name': 'First name is required.'})
+        if not (last_name or '').strip():
+            raise serializers.ValidationError({'last_name': 'Last name is required.'})
+        if age is None:
+            raise serializers.ValidationError({'age': 'Age is required.'})
+        if not (mobile or '').strip():
+            raise serializers.ValidationError({'mobile': 'Mobile is required.'})
+        if not (email or '').strip():
+            raise serializers.ValidationError({'email': 'Email is required.'})
+        if not (address_line1 or '').strip():
+            raise serializers.ValidationError({'address_line1': 'Address line 1 is required.'})
+        return attrs
+
+    def get_full_name(self, obj):
+        return obj.full_name
+
+
+class AffiliationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Affiliation
+        fields = ['id', 'name']
+
+
+class SalesReferenceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SalesReference
+        fields = ['id', 'name']
+
+
+class LabActivitySerializer(serializers.ModelSerializer):
+    activity_type_display = serializers.CharField(source='get_activity_type_display', read_only=True)
+    status_display = serializers.CharField(source='get_status_display', read_only=True)
+    created_by_name = serializers.CharField(source='created_by.username', read_only=True, default='')
+    completed_at_display = serializers.SerializerMethodField()
+
+    class Meta:
+        model = LabActivity
+        fields = [
+            'id', 'title', 'description', 'creation_date', 'activity_date', 'activity_type',
+            'activity_type_display', 'eta', 'remark', 'notes', 'status', 'status_display',
+            'completed_at', 'completed_at_display', 'is_active', 'created_by', 'created_by_name',
+            'created_at', 'updated_at',
+        ]
+        read_only_fields = [
+            'created_at', 'updated_at', 'activity_type_display', 'status_display',
+            'created_by_name', 'completed_at_display', 'activity_date',
+        ]
+
+    def get_completed_at_display(self, obj):
+        if not obj.completed_at:
+            return '-'
+        return obj.completed_at.strftime('%d-%b-%y %I:%M %p')
+
+    def validate_title(self, value):
+        if not (value or '').strip():
+            raise serializers.ValidationError('Title is required.')
+        return value.strip()
+
+    def validate_creation_date(self, value):
+        if not (value or '').strip():
+            raise serializers.ValidationError('Creation date is required.')
+        return value.strip()
+
+    def update(self, instance, validated_data):
+        status = validated_data.get('status', instance.status)
+        if status == LabActivity.STATUS_COMPLETED and not instance.completed_at:
+            validated_data['completed_at'] = timezone.now()
+        if status == LabActivity.STATUS_PENDING:
+            validated_data['completed_at'] = None
+        return super().update(instance, validated_data)
+
+
+class ServiceAreaPincodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServiceAreaPincode
+        fields = ['id', 'pincode', 'created_at']
+        read_only_fields = ['created_at']
+
+    def validate_pincode(self, value):
+        pincode = (value or '').strip()
+        if not pincode:
+            raise serializers.ValidationError('Pincode is required.')
+        if not pincode.isdigit():
+            raise serializers.ValidationError('Pincode must contain digits only.')
+        return pincode
+
+
+class LabConfigurationSerializer(serializers.ModelSerializer):
+    lab_qr_code_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = LabConfiguration
+        fields = [
+            'id', 'sms_to_patient', 'sms_to_doctor', 'sms_to_lab', 'sms_to_lab_mobile',
+            'sms_to_other', 'sms_to_other_mobile', 'sms_to_pathologist_appointment',
+            'sms_to_pathologist_mobile', 'sms_to_collection_center', 'sms_to_affiliation',
+            'email_to_patient', 'email_to_doctor', 'email_to_lab', 'email_to_lab_address',
+            'email_to_collection_center', 'email_to_affiliation',
+            'whatsapp_to_patient', 'whatsapp_to_doctor', 'whatsapp_to_affiliation',
+            'whatsapp_to_autorelease',
+            'lab_code_prefix', 'lab_code_start', 'lab_code_frequency', 'lab_code_auto_increment',
+            'report_show_header', 'report_show_footer', 'allow_print_without_approve',
+            'reprint_report_roles', 'test_auto_approval', 'auto_registration_transfer',
+            'mera_batuva_token_id', 'mera_batuva_instance_id', 'lab_qr_code', 'lab_qr_code_url',
+            'updated_at',
+        ]
+        read_only_fields = ['id', 'updated_at', 'lab_qr_code_url']
+
+    def get_lab_qr_code_url(self, obj):
+        if not obj.lab_qr_code:
+            return ''
+        request = self.context.get('request')
+        if request:
+            return request.build_absolute_uri(obj.lab_qr_code.url)
+        return obj.lab_qr_code.url
+
+
+class ExpenseTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExpenseType
+        fields = ['id', 'name', 'is_active', 'created_at', 'updated_at']
+        read_only_fields = ['created_at', 'updated_at']
+
+
+class DiscountAuthoritySerializer(serializers.ModelSerializer):
+    authorization_uid = serializers.CharField(source='authorized_user.username', read_only=True, default='')
+
+    class Meta:
+        model = DiscountAuthority
+        fields = [
+            'id', 'authorization_name', 'authorized_user', 'authorization_uid',
+            'mobile', 'is_active', 'created_at', 'updated_at',
+        ]
+        read_only_fields = ['created_at', 'updated_at', 'authorization_uid']
 
 
 class DashboardSummarySerializer(serializers.Serializer):

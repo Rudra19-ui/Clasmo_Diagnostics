@@ -2,6 +2,8 @@ import logging
 import os
 from datetime import datetime, timedelta
 
+from django.shortcuts import get_object_or_404
+
 from django.db import connection
 from django.db.models import Count, Q, Sum
 from django.db.utils import OperationalError, ProgrammingError
@@ -10,23 +12,49 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, permissions, status
 from rest_framework.exceptions import ValidationError as DRFValidationError
 from rest_framework.authtoken.models import Token
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import LabMessage, PickupRequest, Registration, Test, TestCategory, User
+from .models import (
+    LabMessage, PickupRequest, Registration, Test, TestCategory, User, LabRole,
+    Membership, MembershipType, CollectionCenter, CollectionCenterBoy, DiscountReason, DiscountAuthority,
+    WhatsAppMessageLog, ExpenseType, Area, RateMaster, Affiliation, SalesReference, Doctor, Patient, PatientAddress, LabConfiguration, ServiceAreaPincode, LabActivity,
+)
 from .serializers import (
+    ChangePasswordSerializer,
+    CollectionCenterBoySerializer,
+    CollectionCenterSerializer,
+    AreaSerializer,
+    RateMasterSerializer,
     DashboardSummarySerializer,
+    DiscountAuthoritySerializer,
+    DiscountReasonSerializer,
+    WhatsAppMessageLogSerializer,
+    ExpenseTypeSerializer,
+    DoctorSerializer,
+    AffiliationSerializer,
+    SalesReferenceSerializer,
+    PatientMasterSerializer,
+    LabConfigurationSerializer,
+    ServiceAreaPincodeSerializer,
+    LabActivitySerializer,
     LabMessageSerializer,
+    LabRoleSerializer,
+    LabRoleUpdateSerializer,
     LoginSerializer,
+    MembershipSerializer,
+    MembershipTypeSerializer,
     PickupRequestSerializer,
     RegistrationCreateSerializer,
     RegistrationSearchSerializer,
     RegistrationSerializer,
     TestCategorySerializer,
     TestSerializer,
+    UserRoleUpdateSerializer,
     UserSerializer,
 )
-from .utils import generate_lab_code
+from .utils import generate_lab_code, get_lab_config
 
 logger = logging.getLogger(__name__)
 
@@ -111,6 +139,21 @@ class LogoutView(APIView):
 class MeView(APIView):
     def get(self, request):
         return Response(UserSerializer(request.user).data)
+
+
+class ChangePasswordView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        serializer = ChangePasswordSerializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        Token.objects.filter(user=request.user).delete()
+        token = Token.objects.create(user=request.user)
+        return Response({
+            'detail': 'Password changed successfully.',
+            'token': token.key,
+        })
 
 
 class TestListView(generics.ListAPIView):
@@ -561,43 +604,55 @@ class BarcodeView(APIView):
 
 
 def _build_notification_recipients(registration):
+    config = get_lab_config()
     patient = registration.patient
+    patient_selected = (
+        (config.sms_to_patient and bool(patient.mobile))
+        or (config.email_to_patient and bool(patient.email))
+        or (config.whatsapp_to_patient and bool(patient.mobile))
+    )
+    doctor_selected = config.sms_to_doctor or config.email_to_doctor or config.whatsapp_to_doctor
+    collection_selected = config.sms_to_collection_center or config.email_to_collection_center
+    affiliation_selected = (
+        config.sms_to_affiliation or config.email_to_affiliation or config.whatsapp_to_affiliation
+    )
     return [
         {
             'category': 'patient',
             'label': 'Patient',
             'mobile': patient.mobile or '',
             'email': patient.email or '',
-            'selected': bool(patient.mobile or patient.email),
+            'selected': patient_selected,
         },
         {
             'category': 'doctor',
             'label': 'Doctor',
-            'mobile': '',
+            'mobile': config.sms_to_pathologist_mobile if config.sms_to_pathologist_appointment else '',
             'email': '',
-            'selected': False,
+            'selected': doctor_selected,
             'reference_name': patient.doctor_name or '',
         },
         {
             'category': 'collection_center',
             'label': 'Collection Center',
-            'mobile': '',
-            'email': '',
-            'selected': False,
+            'mobile': config.sms_to_lab_mobile if config.sms_to_lab else '',
+            'email': config.email_to_lab_address if config.email_to_lab else '',
+            'selected': collection_selected,
             'reference_name': patient.collection_center or '',
         },
         {
             'category': 'affiliation',
             'label': 'Affiliation',
-            'mobile': '',
+            'mobile': config.sms_to_other_mobile if config.sms_to_other else '',
             'email': '',
-            'selected': False,
+            'selected': affiliation_selected,
             'reference_name': patient.affiliation or '',
         },
     ]
 
 
 def _build_notification_message(registration, options):
+    config = get_lab_config()
     patient = registration.patient
     patient_name = f'{patient.title} {patient.patient_name}'.strip()
     tests = ', '.join(t.test.name for t in registration.tests.select_related('test').all())
@@ -607,10 +662,12 @@ def _build_notification_message(registration, options):
         f'Net Amount: {registration.net_amount}. Paid: {registration.paid}. Balance: {registration.balance}.'
     )
     parts = []
-    if options.get('show_header') or options.get('show_header_footer'):
+    show_header = options.get('show_header') or options.get('show_header_footer') or config.report_show_header
+    show_footer = options.get('show_footer') or options.get('show_header_footer') or config.report_show_footer
+    if show_header:
         parts.append('CLASMO Diagnostics pvt.ltd')
     parts.append(body)
-    if options.get('show_footer') or options.get('show_header_footer'):
+    if show_footer:
         parts.append('Thank you for choosing CLASMO Diagnostics.')
     return '\n\n'.join(parts)
 
@@ -730,6 +787,10 @@ class NotificationView(APIView):
             message,
         )
 
+        whatsapp_deliveries = [item for item in deliveries if item.get('channel') == 'whatsapp']
+        if whatsapp_deliveries:
+            _log_whatsapp_deliveries(registration, request.user, whatsapp_deliveries, message)
+
         return Response({
             'message': action_labels[action],
             'action': action,
@@ -739,7 +800,41 @@ class NotificationView(APIView):
         })
 
 
+def _parse_filter_date(value):
+    value = (value or '').strip()
+    if not value:
+        return None
+    for fmt in ('%d-%m-%Y', '%Y-%m-%d'):
+        try:
+            return datetime.strptime(value, fmt).date()
+        except ValueError:
+            continue
+    return None
+
+
+def _log_whatsapp_deliveries(registration, user, deliveries, message=''):
+    patient = registration.patient
+    patient_name = f'{patient.title} {patient.patient_name}'.strip()
+    referred_by = patient.doctor_name or ''
+    for item in deliveries:
+        if item.get('channel') != 'whatsapp':
+            continue
+        status_value = (item.get('status') or 'sent').lower()
+        status = WhatsAppMessageLog.STATUS_SENT if status_value == 'sent' else status_value.title()
+        WhatsAppMessageLog.objects.create(
+            registration=registration,
+            lab_code=registration.lab_code,
+            patient_name=patient_name,
+            mobile_no=(item.get('target') or '').strip(),
+            referred_by=referred_by,
+            sent_by=user,
+            status=status,
+            message_text=message,
+        )
+
+
 def _build_bulk_release_message(registration, options):
+    config = get_lab_config()
     patient = registration.patient
     patient_name = f'{patient.title} {patient.patient_name}'.strip()
     body = (
@@ -747,10 +842,10 @@ def _build_bulk_release_message(registration, options):
         f'is now ready. Please visit CLASMO Diagnostics to collect your report.'
     )
     parts = []
-    if options.get('show_header_on_report'):
+    if options.get('show_header_on_report', config.report_show_header):
         parts.append('CLASMO Diagnostics pvt.ltd')
     parts.append(body)
-    if options.get('show_footer_on_report'):
+    if options.get('show_footer_on_report', config.report_show_footer):
         parts.append('Thank you for choosing CLASMO Diagnostics.')
     return '\n\n'.join(parts)
 
@@ -772,6 +867,7 @@ def _validate_bulk_notification(action, options):
 
 
 def _bulk_deliveries_for_registration(registration, action, options):
+    config = get_lab_config()
     patient = registration.patient
     deliveries = []
 
@@ -790,21 +886,21 @@ def _bulk_deliveries_for_registration(registration, action, options):
     mobile = (patient.mobile or '').strip()
     email = (patient.email or '').strip()
 
-    if options.get('sms_to_patient') and mobile and action in ('sms', 'whatsapp', 'sms_email'):
+    if options.get('sms_to_patient', config.sms_to_patient) and mobile and action in ('sms', 'whatsapp', 'sms_email'):
         channel = 'whatsapp' if action == 'whatsapp' else 'sms'
         add_delivery(channel, 'patient', 'Patient', mobile)
 
-    if options.get('email_to_patient') and email and action in ('email', 'sms_email'):
+    if options.get('email_to_patient', config.email_to_patient) and email and action in ('email', 'sms_email'):
         add_delivery('email', 'patient', 'Patient', email)
 
-    if options.get('sms_to_collection_center') and mobile and action in ('sms', 'whatsapp', 'sms_email'):
+    if options.get('sms_to_collection_center', config.sms_to_collection_center) and mobile and action in ('sms', 'whatsapp', 'sms_email'):
         channel = 'whatsapp' if action == 'whatsapp' else 'sms'
         add_delivery(channel, 'collection_center', 'Collection Center', mobile)
 
-    if options.get('email_to_collection_center') and email and action in ('email', 'sms_email'):
+    if options.get('email_to_collection_center', config.email_to_collection_center) and email and action in ('email', 'sms_email'):
         add_delivery('email', 'collection_center', 'Collection Center', email)
 
-    if options.get('sms_to_affiliation') and mobile and action in ('sms', 'whatsapp', 'sms_email'):
+    if options.get('sms_to_affiliation', config.sms_to_affiliation) and mobile and action in ('sms', 'whatsapp', 'sms_email'):
         channel = 'whatsapp' if action == 'whatsapp' else 'sms'
         add_delivery(channel, 'affiliation', 'Affiliation', mobile)
 
@@ -850,6 +946,9 @@ class BulkNotificationView(APIView):
             reg_deliveries = _bulk_deliveries_for_registration(registration, action, options)
             if reg_deliveries:
                 deliveries.extend(reg_deliveries)
+                whatsapp_deliveries = [item for item in reg_deliveries if item.get('channel') == 'whatsapp']
+                if whatsapp_deliveries:
+                    _log_whatsapp_deliveries(registration, request.user, whatsapp_deliveries, message)
                 logger.info(
                     'Bulk notification sent action=%s registration=%s user=%s deliveries=%s message=%s',
                     action,
@@ -1141,9 +1240,466 @@ class ReportSummaryView(APIView):
 
 
 class UserListView(generics.ListAPIView):
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by('username')
     serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class UserRoleUpdateView(APIView):
     permission_classes = [IsAdmin]
+
+    def patch(self, request, pk):
+        target = get_object_or_404(User, pk=pk)
+        if target.id == request.user.id:
+            return Response(
+                {'detail': 'You cannot change your own role.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        serializer = UserRoleUpdateSerializer(target, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        if user.role == User.ROLE_ADMIN:
+            user.is_staff = True
+        else:
+            user.is_staff = False
+        user.save(update_fields=['role', 'is_staff'])
+        return Response(UserSerializer(user).data)
+
+
+class RoleListView(generics.ListAPIView):
+    queryset = LabRole.objects.all()
+    serializer_class = LabRoleSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class RoleDetailView(APIView):
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [permissions.IsAuthenticated()]
+        return [IsAdmin()]
+
+    def get(self, request, code):
+        role = get_object_or_404(LabRole, code=code)
+        return Response(LabRoleSerializer(role).data)
+
+    def patch(self, request, code):
+        role = get_object_or_404(LabRole, code=code)
+        serializer = LabRoleUpdateSerializer(role, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(LabRoleSerializer(role).data)
+
+
+class MembershipTypeListView(generics.ListAPIView):
+    queryset = MembershipType.objects.filter(is_active=True)
+    serializer_class = MembershipTypeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class MembershipListCreateView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def get(self, request):
+        memberships = Membership.objects.select_related('membership_type', 'created_by').order_by('-created_at')[:50]
+        serializer = MembershipSerializer(memberships, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = MembershipSerializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        membership = serializer.save(created_by=request.user)
+        return Response(
+            MembershipSerializer(membership, context={'request': request}).data,
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class CollectionCenterListCreateView(generics.ListCreateAPIView):
+    serializer_class = CollectionCenterSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        qs = CollectionCenter.objects.filter(is_active=True)
+        name = self.request.query_params.get('name', '').strip()
+        center_type = self.request.query_params.get('center_type', '').strip()
+        area = self.request.query_params.get('area', '').strip()
+        if name:
+            qs = qs.filter(name__icontains=name)
+        if center_type:
+            qs = qs.filter(center_type=center_type)
+        if area:
+            qs = qs.filter(area__icontains=area)
+        return qs.order_by('name')
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        if instance.is_default:
+            CollectionCenter.objects.exclude(pk=instance.pk).update(is_default=False)
+
+
+class CollectionCenterDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = CollectionCenter.objects.all()
+    serializer_class = CollectionCenterSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        if instance.is_default:
+            CollectionCenter.objects.exclude(pk=instance.pk).update(is_default=False)
+
+    def perform_destroy(self, instance):
+        instance.is_active = False
+        instance.save(update_fields=['is_active', 'updated_at'])
+
+
+class AreaListView(generics.ListAPIView):
+    queryset = Area.objects.filter(is_active=True)
+    serializer_class = AreaSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class RateMasterListView(generics.ListAPIView):
+    queryset = RateMaster.objects.filter(is_active=True)
+    serializer_class = RateMasterSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class CollectionCenterBoyListCreateView(generics.ListCreateAPIView):
+    serializer_class = CollectionCenterBoySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        qs = CollectionCenterBoy.objects.filter(is_active=True).select_related('collection_center')
+        params = self.request.query_params
+        filters = {
+            'first_name__icontains': params.get('first_name', '').strip(),
+            'middle_name__icontains': params.get('middle_name', '').strip(),
+            'last_name__icontains': params.get('last_name', '').strip(),
+            'short_name__icontains': params.get('short_name', '').strip(),
+            'mobile__icontains': params.get('mobile', '').strip(),
+            'email__icontains': params.get('email', '').strip(),
+            'address__icontains': params.get('address', '').strip(),
+            'collection_center__name__icontains': params.get('collection_center', '').strip(),
+        }
+        for field, value in filters.items():
+            if value:
+                qs = qs.filter(**{field: value})
+        age = params.get('age', '').strip()
+        if age.isdigit():
+            qs = qs.filter(age=int(age))
+        gender = params.get('gender', '').strip()
+        if gender:
+            qs = qs.filter(gender=gender)
+        return qs.order_by('first_name', 'last_name')
+
+
+class CollectionCenterBoyDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = CollectionCenterBoy.objects.select_related('collection_center')
+    serializer_class = CollectionCenterBoySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_destroy(self, instance):
+        instance.is_active = False
+        instance.save(update_fields=['is_active', 'updated_at'])
+
+
+class DiscountReasonListCreateView(generics.ListCreateAPIView):
+    serializer_class = DiscountReasonSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        qs = DiscountReason.objects.filter(is_active=True)
+        reason = self.request.query_params.get('reason', '').strip()
+        comment = self.request.query_params.get('comment', '').strip()
+        if reason:
+            qs = qs.filter(reason__icontains=reason)
+        if comment:
+            qs = qs.filter(comment__icontains=comment)
+        return qs.order_by('reason')
+
+
+class DiscountReasonDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = DiscountReason.objects.all()
+    serializer_class = DiscountReasonSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_destroy(self, instance):
+        instance.is_active = False
+        instance.save(update_fields=['is_active', 'updated_at'])
+
+
+class DiscountAuthorityListCreateView(generics.ListCreateAPIView):
+    serializer_class = DiscountAuthoritySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        qs = DiscountAuthority.objects.filter(is_active=True).select_related('authorized_user')
+        name = self.request.query_params.get('authorization_name', '').strip()
+        uid = self.request.query_params.get('authorization_uid', '').strip()
+        mobile = self.request.query_params.get('mobile', '').strip()
+        if name:
+            qs = qs.filter(authorization_name__icontains=name)
+        if uid:
+            qs = qs.filter(authorized_user__username__icontains=uid)
+        if mobile:
+            qs = qs.filter(mobile__icontains=mobile)
+        return qs.order_by('authorization_name')
+
+
+class DiscountAuthorityDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = DiscountAuthority.objects.select_related('authorized_user')
+    serializer_class = DiscountAuthoritySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_destroy(self, instance):
+        instance.is_active = False
+        instance.save(update_fields=['is_active', 'updated_at'])
+
+
+class WhatsAppLogListView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        start_date = _parse_filter_date(request.query_params.get('start_date'))
+        end_date = _parse_filter_date(request.query_params.get('end_date'))
+
+        try:
+            page = max(1, int(request.query_params.get('page', 1)))
+        except (TypeError, ValueError):
+            page = 1
+        try:
+            page_size = min(100, max(1, int(request.query_params.get('page_size', 20))))
+        except (TypeError, ValueError):
+            page_size = 20
+
+        qs = WhatsAppMessageLog.objects.select_related('sent_by').all()
+
+        if start_date:
+            qs = qs.filter(message_date__date__gte=start_date)
+        if end_date:
+            qs = qs.filter(message_date__date__lte=end_date)
+
+        filter_map = {
+            'lab_code': 'lab_code__icontains',
+            'patient_name': 'patient_name__icontains',
+            'mobile_no': 'mobile_no__icontains',
+            'referred_by': 'referred_by__icontains',
+            'user': 'sent_by__username__icontains',
+            'status': 'status__icontains',
+        }
+        for param, lookup in filter_map.items():
+            value = request.query_params.get(param, '').strip()
+            if value:
+                qs = qs.filter(**{lookup: value})
+
+        total = qs.count()
+        offset = (page - 1) * page_size
+        rows = qs.order_by('-message_date')[offset:offset + page_size]
+        serializer = WhatsAppMessageLogSerializer(rows, many=True)
+
+        return Response({
+            'count': total,
+            'page': page,
+            'page_size': page_size,
+            'results': serializer.data,
+        })
+
+
+class ExpenseTypeListCreateView(generics.ListCreateAPIView):
+    serializer_class = ExpenseTypeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        qs = ExpenseType.objects.filter(is_active=True)
+        name = self.request.query_params.get('name', '').strip()
+        if name:
+            qs = qs.filter(name__icontains=name)
+        return qs.order_by('name')
+
+
+class ExpenseTypeDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ExpenseType.objects.all()
+    serializer_class = ExpenseTypeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_destroy(self, instance):
+        instance.is_active = False
+        instance.save(update_fields=['is_active', 'updated_at'])
+
+
+class DoctorListCreateView(generics.ListCreateAPIView):
+    serializer_class = DoctorSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        qs = Doctor.objects.filter(is_active=True)
+        params = self.request.query_params
+        filters = {
+            'registration_number__icontains': params.get('registration_number', '').strip(),
+            'first_name__icontains': params.get('first_name', '').strip(),
+            'last_name__icontains': params.get('last_name', '').strip(),
+            'mobile__icontains': params.get('mobile', '').strip(),
+            'specialization__icontains': params.get('specialization', '').strip(),
+            'affiliation__icontains': params.get('affiliation', '').strip(),
+        }
+        for lookup, value in filters.items():
+            if value:
+                qs = qs.filter(**{lookup: value})
+        search = params.get('search', '').strip()
+        if search:
+            qs = qs.filter(
+                Q(registration_number__icontains=search)
+                | Q(first_name__icontains=search)
+                | Q(last_name__icontains=search)
+                | Q(short_name__icontains=search)
+                | Q(mobile__icontains=search)
+            )
+        return qs.order_by('first_name', 'last_name')
+
+
+class DoctorDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Doctor.objects.all()
+    serializer_class = DoctorSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_destroy(self, instance):
+        instance.is_active = False
+        instance.save(update_fields=['is_active', 'updated_at'])
+
+
+class AffiliationListView(generics.ListAPIView):
+    queryset = Affiliation.objects.filter(is_active=True)
+    serializer_class = AffiliationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class SalesReferenceListView(generics.ListAPIView):
+    queryset = SalesReference.objects.filter(is_active=True)
+    serializer_class = SalesReferenceSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class PatientMasterListCreateView(generics.ListCreateAPIView):
+    serializer_class = PatientMasterSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        qs = Patient.objects.filter(is_active=True).select_related('family_doctor').prefetch_related('addresses')
+        search = self.request.query_params.get('search', '').strip()
+        medical_record_no = self.request.query_params.get('medical_record_no', '').strip()
+        if medical_record_no:
+            qs = qs.filter(medical_record_no__icontains=medical_record_no)
+        if search:
+            qs = qs.filter(
+                Q(medical_record_no__icontains=search)
+                | Q(first_name__icontains=search)
+                | Q(last_name__icontains=search)
+                | Q(patient_name__icontains=search)
+                | Q(mobile__icontains=search)
+            )
+        return qs.order_by('first_name', 'last_name', 'patient_name')
+
+
+class PatientMasterDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Patient.objects.select_related('family_doctor').prefetch_related('addresses')
+    serializer_class = PatientMasterSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_destroy(self, instance):
+        instance.is_active = False
+        instance.save(update_fields=['is_active', 'updated_at'])
+
+
+class LabConfigurationView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        config = LabConfiguration.get_solo()
+        return Response(LabConfigurationSerializer(config, context={'request': request}).data)
+
+    def patch(self, request):
+        config = LabConfiguration.get_solo()
+        serializer = LabConfigurationSerializer(
+            config, data=request.data, partial=True, context={'request': request}
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(LabConfigurationSerializer(config, context={'request': request}).data)
+
+
+class LabQrCodeUploadView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request):
+        config = LabConfiguration.get_solo()
+        qr_file = request.FILES.get('lab_qr_code')
+        if not qr_file:
+            return Response({'detail': 'QR code file is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        config.lab_qr_code = qr_file
+        config.save(update_fields=['lab_qr_code', 'updated_at'])
+        return Response(LabConfigurationSerializer(config, context={'request': request}).data)
+
+
+class ServiceAreaPincodeListCreateView(generics.ListCreateAPIView):
+    serializer_class = ServiceAreaPincodeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        qs = ServiceAreaPincode.objects.filter(is_active=True)
+        pincode = self.request.query_params.get('pincode', '').strip()
+        if pincode:
+            qs = qs.filter(pincode__icontains=pincode)
+        return qs.order_by('pincode')
+
+
+class ServiceAreaPincodeDetailView(generics.DestroyAPIView):
+    queryset = ServiceAreaPincode.objects.all()
+    serializer_class = ServiceAreaPincodeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_destroy(self, instance):
+        instance.is_active = False
+        instance.save(update_fields=['is_active'])
+
+
+class LabActivityListCreateView(generics.ListCreateAPIView):
+    serializer_class = LabActivitySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        qs = LabActivity.objects.filter(is_active=True).select_related('created_by')
+        title = self.request.query_params.get('title', '').strip() or self.request.query_params.get('search', '').strip()
+        activity_type = self.request.query_params.get('activity_type', '').strip()
+        status = self.request.query_params.get('status', '').strip()
+        from_date = LabActivity.parse_creation_date(self.request.query_params.get('from_date', ''))
+        to_date = LabActivity.parse_creation_date(self.request.query_params.get('to_date', ''))
+
+        if title:
+            qs = qs.filter(title__icontains=title)
+        if activity_type:
+            qs = qs.filter(activity_type=activity_type)
+        if status:
+            qs = qs.filter(status=status)
+        if from_date:
+            qs = qs.filter(activity_date__gte=from_date)
+        if to_date:
+            qs = qs.filter(activity_date__lte=to_date)
+        return qs.order_by('-activity_date', '-created_at')
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user, status=LabActivity.STATUS_PENDING)
+
+
+class LabActivityDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = LabActivity.objects.select_related('created_by')
+    serializer_class = LabActivitySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_destroy(self, instance):
+        instance.is_active = False
+        instance.save(update_fields=['is_active', 'updated_at'])
 
 
 class GlobalSearchView(APIView):

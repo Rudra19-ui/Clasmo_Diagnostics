@@ -5,6 +5,20 @@ export const ROLES = {
   PATHOLOGIST: 'pathologist',
 };
 
+export const ALL_ROLES = Object.values(ROLES);
+
+export const ROLE_LABELS = {
+  [ROLES.USER]: 'User',
+  [ROLES.ADMIN]: 'Admin',
+  [ROLES.TECHNICIAN]: 'Technician',
+  [ROLES.PATHOLOGIST]: 'Pathologist',
+};
+
+export const ROLE_OPTIONS = ALL_ROLES.map((value) => ({
+  value,
+  label: ROLE_LABELS[value],
+}));
+
 export const CLINICAL_ROLES = [ROLES.ADMIN, ROLES.TECHNICIAN, ROLES.PATHOLOGIST];
 
 export function hasRole(user, roles) {

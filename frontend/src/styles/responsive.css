@@ -273,6 +273,45 @@ body.nav-scroll-lock {
     grid-template-columns: 1fr;
   }
 
+  .admin-mega-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-page-shell {
+    flex-direction: column;
+  }
+
+  .admin-sidebar {
+    width: 100%;
+    max-height: none;
+    position: static;
+    border-right: none;
+    border-bottom: 1px solid var(--gray-border);
+  }
+
+  .admin-sidebar-nav {
+    max-height: 280px;
+  }
+
+  .role-management-layout,
+  .role-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .membership-form-row {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .ccb-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .master-form-grid,
+  .master-form-grid-3 {
+    grid-template-columns: 1fr;
+  }
+
   .page-title-bar {
     align-items: flex-start;
   }

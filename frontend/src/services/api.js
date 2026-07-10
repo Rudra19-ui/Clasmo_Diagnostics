@@ -25,11 +25,35 @@ async function request(path, options = {}) {
   return data;
 }
 
+async function requestForm(path, formData, method = 'POST') {
+  const headers = {};
+  const token = getToken();
+  if (token) headers.Authorization = `Token ${token}`;
+
+  const response = await fetch(`${API_BASE}${path}`, {
+    method,
+    headers,
+    body: formData,
+  });
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const message = data.detail || data.non_field_errors?.[0] || Object.values(data)[0]?.[0] || 'Request failed';
+    throw new Error(typeof message === 'string' ? message : JSON.stringify(message));
+  }
+  return data;
+}
+
 export const api = {
   login: (username, password) =>
     request('/auth/login/', { method: 'POST', body: JSON.stringify({ username, password }) }),
   logout: () => request('/auth/logout/', { method: 'POST' }),
   me: () => request('/auth/me/'),
+  changePassword: (oldPassword, newPassword) =>
+    request('/auth/change-password/', {
+      method: 'POST',
+      body: JSON.stringify({ old_password: oldPassword, new_password: newPassword }),
+    }),
   getTests: (params = {}) => {
     const query = new URLSearchParams(params).toString();
     return request(`/tests/${query ? `?${query}` : ''}`);
@@ -64,6 +88,141 @@ export const api = {
   getMessages: () => request('/messages/'),
   globalSearch: (q) => request(`/search/global/?q=${encodeURIComponent(q)}`),
   getUsers: () => request('/users/'),
+  getRoles: () => request('/roles/'),
+  getRole: (code) => request(`/roles/${code}/`),
+  updateRole: (code, payload) =>
+    request(`/roles/${code}/`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    }),
+  updateUserRole: (userId, role) =>
+    request(`/users/${userId}/role/`, {
+      method: 'PATCH',
+      body: JSON.stringify({ role }),
+    }),
+  getMembershipTypes: () => request('/membership-types/'),
+  getMemberships: () => request('/memberships/'),
+  createMembership: (formData) => requestForm('/memberships/', formData),
+  getCollectionCenters: (params = {}) => {
+    const query = new URLSearchParams(
+      Object.fromEntries(Object.entries(params).filter(([, value]) => value)),
+    ).toString();
+    return request(`/collection-centers/${query ? `?${query}` : ''}`);
+  },
+  createCollectionCenter: (payload) =>
+    request('/collection-centers/', { method: 'POST', body: JSON.stringify(payload) }),
+  updateCollectionCenter: (id, payload) =>
+    request(`/collection-centers/${id}/`, { method: 'PATCH', body: JSON.stringify(payload) }),
+  deleteCollectionCenter: (id) =>
+    request(`/collection-centers/${id}/`, { method: 'DELETE' }),
+  getAreas: () => request('/areas/'),
+  getRateMasters: () => request('/rate-masters/'),
+  getCollectionCenterBoys: (params = {}) => {
+    const query = new URLSearchParams(
+      Object.fromEntries(Object.entries(params).filter(([, value]) => value)),
+    ).toString();
+    return request(`/collection-center-boys/${query ? `?${query}` : ''}`);
+  },
+  createCollectionCenterBoy: (payload) =>
+    request('/collection-center-boys/', { method: 'POST', body: JSON.stringify(payload) }),
+  updateCollectionCenterBoy: (id, payload) =>
+    request(`/collection-center-boys/${id}/`, { method: 'PATCH', body: JSON.stringify(payload) }),
+  deleteCollectionCenterBoy: (id) =>
+    request(`/collection-center-boys/${id}/`, { method: 'DELETE' }),
+  getDiscountReasons: (params = {}) => {
+    const query = new URLSearchParams(
+      Object.fromEntries(Object.entries(params).filter(([, value]) => value)),
+    ).toString();
+    return request(`/discount-reasons/${query ? `?${query}` : ''}`);
+  },
+  createDiscountReason: (payload) =>
+    request('/discount-reasons/', { method: 'POST', body: JSON.stringify(payload) }),
+  updateDiscountReason: (id, payload) =>
+    request(`/discount-reasons/${id}/`, { method: 'PATCH', body: JSON.stringify(payload) }),
+  deleteDiscountReason: (id) =>
+    request(`/discount-reasons/${id}/`, { method: 'DELETE' }),
+  getDiscountAuthorities: (params = {}) => {
+    const query = new URLSearchParams(
+      Object.fromEntries(Object.entries(params).filter(([, value]) => value)),
+    ).toString();
+    return request(`/discount-authorities/${query ? `?${query}` : ''}`);
+  },
+  createDiscountAuthority: (payload) =>
+    request('/discount-authorities/', { method: 'POST', body: JSON.stringify(payload) }),
+  updateDiscountAuthority: (id, payload) =>
+    request(`/discount-authorities/${id}/`, { method: 'PATCH', body: JSON.stringify(payload) }),
+  deleteDiscountAuthority: (id) =>
+    request(`/discount-authorities/${id}/`, { method: 'DELETE' }),
+  getWhatsAppLogs: (params = {}) => {
+    const query = new URLSearchParams(
+      Object.fromEntries(Object.entries(params).filter(([, value]) => value !== '' && value != null)),
+    ).toString();
+    return request(`/whatsapp-logs/${query ? `?${query}` : ''}`);
+  },
+  getExpenseTypes: (params = {}) => {
+    const query = new URLSearchParams(
+      Object.fromEntries(Object.entries(params).filter(([, value]) => value)),
+    ).toString();
+    return request(`/expense-types/${query ? `?${query}` : ''}`);
+  },
+  createExpenseType: (payload) =>
+    request('/expense-types/', { method: 'POST', body: JSON.stringify(payload) }),
+  updateExpenseType: (id, payload) =>
+    request(`/expense-types/${id}/`, { method: 'PATCH', body: JSON.stringify(payload) }),
+  deleteExpenseType: (id) =>
+    request(`/expense-types/${id}/`, { method: 'DELETE' }),
+  getDoctors: (params = {}) => {
+    const query = new URLSearchParams(
+      Object.fromEntries(Object.entries(params).filter(([, value]) => value)),
+    ).toString();
+    return request(`/doctors/${query ? `?${query}` : ''}`);
+  },
+  createDoctor: (payload) =>
+    request('/doctors/', { method: 'POST', body: JSON.stringify(payload) }),
+  updateDoctor: (id, payload) =>
+    request(`/doctors/${id}/`, { method: 'PATCH', body: JSON.stringify(payload) }),
+  deleteDoctor: (id) =>
+    request(`/doctors/${id}/`, { method: 'DELETE' }),
+  getAffiliations: () => request('/affiliations/'),
+  getSalesReferences: () => request('/sales-references/'),
+  getPatients: (params = {}) => {
+    const query = new URLSearchParams(
+      Object.fromEntries(Object.entries(params).filter(([, value]) => value)),
+    ).toString();
+    return request(`/patients/${query ? `?${query}` : ''}`);
+  },
+  getPatient: (id) => request(`/patients/${id}/`),
+  createPatient: (payload) =>
+    request('/patients/', { method: 'POST', body: JSON.stringify(payload) }),
+  updatePatient: (id, payload) =>
+    request(`/patients/${id}/`, { method: 'PATCH', body: JSON.stringify(payload) }),
+  deletePatient: (id) =>
+    request(`/patients/${id}/`, { method: 'DELETE' }),
+  getLabConfiguration: () => request('/lab-configuration/'),
+  updateLabConfiguration: (payload) =>
+    request('/lab-configuration/', { method: 'PATCH', body: JSON.stringify(payload) }),
+  uploadLabQrCode: (formData) => requestForm('/lab-configuration/qr-code/', formData),
+  getServiceAreaPincodes: (params = {}) => {
+    const query = new URLSearchParams(
+      Object.fromEntries(Object.entries(params).filter(([, value]) => value)),
+    ).toString();
+    return request(`/service-area-pincodes/${query ? `?${query}` : ''}`);
+  },
+  createServiceAreaPincode: (payload) =>
+    request('/service-area-pincodes/', { method: 'POST', body: JSON.stringify(payload) }),
+  deleteServiceAreaPincode: (id) =>
+    request(`/service-area-pincodes/${id}/`, { method: 'DELETE' }),
+
+  getActivities: (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return request(`/activities/${query ? `?${query}` : ''}`);
+  },
+  createActivity: (payload) =>
+    request('/activities/', { method: 'POST', body: JSON.stringify(payload) }),
+  updateActivity: (id, payload) =>
+    request(`/activities/${id}/`, { method: 'PATCH', body: JSON.stringify(payload) }),
+  deleteActivity: (id) =>
+    request(`/activities/${id}/`, { method: 'DELETE' }),
 
   // Clinical module
   getTestParameters: (params = {}) => {

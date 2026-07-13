@@ -723,6 +723,18 @@ class DiscountAuthoritySerializer(serializers.ModelSerializer):
 
 
 class DashboardSummarySerializer(serializers.Serializer):
+    from_date = serializers.CharField(allow_blank=True)
+    to_date = serializers.CharField(allow_blank=True)
+    metric = serializers.CharField()
+    summary_cards = serializers.DictField()
+    test_status_summary = serializers.ListField(child=serializers.DictField())
+    tat_summary = serializers.ListField(child=serializers.DictField())
+    department_wise = serializers.DictField()
+    collection_center_wise = serializers.ListField(child=serializers.DictField())
+    affiliation_wise = serializers.ListField(child=serializers.DictField())
+    affiliation_history = serializers.ListField(child=serializers.DictField())
+    filter_options = serializers.DictField()
+    # Legacy fields kept for compatibility
     total_registrations = serializers.IntegerField()
     total_revenue = serializers.DecimalField(max_digits=12, decimal_places=2)
     status_breakdown = serializers.DictField(child=serializers.IntegerField())

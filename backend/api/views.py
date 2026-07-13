@@ -17,7 +17,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import (
-    LabMessage, PickupRequest, Registration, Test, TestCategory, User, LabRole,
+    LabMessage, PickupRequest, Registration, RegistrationTest, Test, TestCategory, User, LabRole,
     Membership, MembershipType, CollectionCenter, CollectionCenterBoy, DiscountReason, DiscountAuthority,
     WhatsAppMessageLog, ExpenseType, Area, RateMaster, Affiliation, SalesReference, Doctor, Patient, PatientAddress, LabConfiguration, ServiceAreaPincode, LabActivity,
 )
@@ -1203,21 +1203,58 @@ class DashboardSummaryView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        qs = Registration.objects.all()
+        from . import dashboard_utils as dash
+
+        from_date = dash.parse_dashboard_date(request.query_params.get('from_date', ''))
+        to_date = dash.parse_dashboard_date(request.query_params.get('to_date', ''))
+        metric = request.query_params.get('metric', 'mrp_net_amount')
+        test_id = request.query_params.get('test_id')
+        department_ids = [int(x) for x in request.query_params.getlist('department') if str(x).isdigit()]
+        category_ids = [int(x) for x in request.query_params.getlist('category') if str(x).isdigit()]
+        affiliation = request.query_params.get('affiliation', '').strip()
+        affiliation_mode = request.query_params.get('affiliation_mode', 'registration')
+        history_period = request.query_params.get('history_period', '1m')
+
+        cards = dash.summary_cards(from_date, to_date)
+        reg_qs = dash.registration_queryset(from_date, to_date)
         status_breakdown = {
             item['status']: item['count']
-            for item in qs.values('status').annotate(count=Count('id'))
+            for item in reg_qs.values('status').annotate(count=Count('id'))
         }
-        from .models import RegistrationTest
         department_summary = []
         for cat in TestCategory.objects.all():
-            count = RegistrationTest.objects.filter(test__category=cat).count()
+            count = RegistrationTest.objects.filter(
+                registration__in=reg_qs,
+                test__category=cat,
+            ).count()
             if count:
                 department_summary.append({'department': cat.name, 'count': count})
 
+        dept_data = dash.department_wise_summary(
+            from_date, to_date,
+            department_ids=department_ids or None,
+            category_ids=category_ids or None,
+        )
+
         data = {
-            'total_registrations': qs.count(),
-            'total_revenue': qs.aggregate(total=Sum('net_amount'))['total'] or 0,
+            'from_date': request.query_params.get('from_date', ''),
+            'to_date': request.query_params.get('to_date', ''),
+            'metric': metric,
+            'summary_cards': cards,
+            'test_status_summary': dash.test_status_summary(from_date, to_date),
+            'tat_summary': dash.tat_summary(
+                from_date, to_date,
+                test_id=int(test_id) if test_id and str(test_id).isdigit() else None,
+            ),
+            'department_wise': dept_data,
+            'collection_center_wise': dash.collection_center_summary(from_date, to_date),
+            'affiliation_wise': dash.affiliation_wise_summary(
+                from_date, to_date, mode=affiliation_mode, affiliation=affiliation,
+            ),
+            'affiliation_history': dash.affiliation_history(from_date, to_date, period=history_period),
+            'filter_options': dash.filter_options(),
+            'total_registrations': cards['all']['registrations'],
+            'total_revenue': cards['all']['amount_after_discount'],
             'status_breakdown': status_breakdown,
             'department_summary': department_summary,
         }

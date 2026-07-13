@@ -4,6 +4,13 @@ function getToken() {
   return localStorage.getItem('clasmo_token');
 }
 
+function handleUnauthorized() {
+  localStorage.removeItem('clasmo_token');
+  if (!window.location.pathname.startsWith('/login')) {
+    window.location.href = '/login';
+  }
+}
+
 async function request(path, options = {}) {
   const headers = {
     'Content-Type': 'application/json',
@@ -19,6 +26,9 @@ async function request(path, options = {}) {
 
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
+    if (response.status === 401) {
+      handleUnauthorized();
+    }
     const message = data.detail || data.non_field_errors?.[0] || Object.values(data)[0]?.[0] || 'Request failed';
     throw new Error(typeof message === 'string' ? message : JSON.stringify(message));
   }
@@ -38,6 +48,9 @@ async function requestForm(path, formData, method = 'POST') {
 
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
+    if (response.status === 401) {
+      handleUnauthorized();
+    }
     const message = data.detail || data.non_field_errors?.[0] || Object.values(data)[0]?.[0] || 'Request failed';
     throw new Error(typeof message === 'string' ? message : JSON.stringify(message));
   }
@@ -78,7 +91,19 @@ export const api = {
   createRegistration: (payload) =>
     request('/registrations/create/', { method: 'POST', body: JSON.stringify(payload) }),
   getNextLabCode: () => request('/registrations/next-lab-code/'),
-  getDashboardSummary: () => request('/dashboard/summary/'),
+  getDashboardSummary: (params = {}) => {
+    const query = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value === undefined || value === null || value === '') return;
+      if (Array.isArray(value)) {
+        value.forEach((item) => query.append(key, item));
+      } else {
+        query.append(key, value);
+      }
+    });
+    const qs = query.toString();
+    return request(`/dashboard/summary/${qs ? `?${qs}` : ''}`);
+  },
   getReportSummary: (type) => request(`/reports/summary/?type=${type}`),
   createPickupRequest: (payload) =>
     request('/pickup-requests/', { method: 'POST', body: JSON.stringify(payload) }),

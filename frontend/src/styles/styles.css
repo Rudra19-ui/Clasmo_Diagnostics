@@ -3307,7 +3307,205 @@ input, select, textarea, button {
 .card-placeholder.tall { min-height: 200px; }
 .chart-placeholder { min-height: 180px; }
 
-.page-registration .dash-main { padding-bottom: 100px; }
+.elab-dashboard-main { max-width: 1520px; }
+.elab-dashboard-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
+.elab-dashboard-loading { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+
+.elab-summary-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.elab-summary-card {
+  background: var(--white);
+  border: 1px solid var(--gray-border);
+  padding: 12px 14px;
+}
+
+.elab-summary-card h3 {
+  color: var(--blue-deep);
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #e6edf5;
+  padding-bottom: 6px;
+}
+
+.elab-summary-card table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.elab-summary-card th,
+.elab-summary-card td { padding: 5px 0; text-align: left; vertical-align: top; }
+.elab-summary-card th { color: #333; font-weight: 600; width: 58%; }
+.elab-summary-card td { color: #111; font-weight: 700; }
+
+.elab-dashboard-grid .dash-card { min-height: 280px; }
+
+.elab-donut-wrap { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.elab-donut-legend { list-style: none; margin: 0; padding: 0; font-size: 12px; }
+.elab-donut-legend li { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.elab-donut-legend strong { margin-left: auto; }
+.elab-legend-swatch { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+
+.elab-chart-empty,
+.elab-chart-empty-text { color: var(--text-muted); font-size: 12px; text-align: center; }
+.elab-chart-empty { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+
+.elab-bar-chart { display: flex; flex-direction: column; gap: 8px; overflow: auto; }
+.elab-bar-row { display: grid; grid-template-columns: 120px 1fr 48px; gap: 8px; align-items: center; font-size: 11px; }
+.elab-bar-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.elab-bar-track { height: 18px; background: #eef3f8; border-radius: 2px; overflow: hidden; }
+.elab-bar-fill { height: 100%; border-radius: 2px; min-width: 2px; }
+.elab-bar-value { text-align: right; font-weight: 700; }
+
+.elab-stacked-chart { display: grid; grid-template-columns: 48px 1fr; gap: 12px; min-height: 260px; }
+.elab-stacked-axis { display: flex; flex-direction: column; justify-content: space-between; font-size: 11px; color: #666; padding: 8px 0 28px; }
+.elab-stacked-body { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-height: 220px; }
+.elab-stacked-bar {
+  width: 120px;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-start;
+  border: 1px solid #d5e0ea;
+  background: #f8fafc;
+  position: relative;
+  min-height: 40px;
+}
+.elab-stacked-segment { width: 100%; min-height: 2px; }
+.elab-stacked-total {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--blue-deep);
+}
+.elab-stacked-month { margin-top: 8px; font-size: 12px; font-weight: 600; }
+.elab-stacked-legend {
+  grid-column: 1 / -1;
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  font-size: 11px;
+}
+.elab-stacked-legend li { display: flex; align-items: center; gap: 6px; }
+
+.elab-collection-meta { margin-top: 12px; font-size: 12px; }
+.elab-collection-row { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; padding: 6px 0; border-top: 1px solid #eef3f8; }
+.elab-collection-row em { color: #666; font-style: normal; }
+
+.elab-aff-controls label { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; }
+.elab-aff-controls input[type="text"] { min-width: 180px; padding: 4px 8px; border: 1px solid var(--gray-border); }
+
+.elab-combo-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 28px;
+  min-height: 220px;
+  padding: 12px 8px 28px;
+  position: relative;
+}
+.elab-combo-group {
+  position: relative;
+  flex: 1;
+  min-width: 80px;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+.elab-combo-bar-wrap {
+  width: 72px;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.elab-combo-bar {
+  width: 56px;
+  background: #2e86c1;
+  min-height: 4px;
+  border-radius: 2px 2px 0 0;
+}
+.elab-combo-line-point {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #27ae60;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.elab-combo-label {
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+.elab-combo-legend {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  gap: 14px;
+  font-size: 11px;
+}
+.elab-combo-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.elab-legend-bar,
+.elab-legend-line {
+  display: inline-block;
+  width: 14px;
+  height: 10px;
+}
+.elab-legend-bar { background: #2e86c1; }
+.elab-legend-line { background: #27ae60; border-radius: 50%; height: 8px; width: 8px; }
+
+.elab-history-card { padding-bottom: 16px; }
+.elab-history-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  background: #f3f6f9;
+  border: 1px solid #e1e8ef;
+}
+.elab-history-label { font-size: 12px; font-weight: 700; color: #333; }
+.elab-history-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  min-height: 180px;
+  padding: 8px 4px;
+}
+.elab-history-item {
+  flex: 1;
+  min-width: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+}
+.elab-history-bar {
+  width: 42px;
+  background: #2e86c1;
+  min-height: 8px;
+  border-radius: 2px 2px 0 0;
+}
+
+@media (max-width: 991px) {
+  .elab-summary-row { grid-template-columns: 1fr; }
+  .elab-bar-row { grid-template-columns: 90px 1fr 40px; }
+  .elab-combo-chart { gap: 12px; overflow-x: auto; }
+}
+
 
 .simple-form .form-row { max-width: 480px; margin-bottom: 10px; }
 

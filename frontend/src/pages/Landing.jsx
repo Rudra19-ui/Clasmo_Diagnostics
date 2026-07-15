@@ -1,217 +1,232 @@
 import { Link } from 'react-router-dom';
-import { useCallback, useEffect, useState } from 'react';
-import heroImage from '../assets/hero.png';
+import { useRef, useState } from 'react';
+import clasmoLogo from '../assets/clasmo-logo.png';
+import haematologyImg from '../assets/haematology.jpg';
+import biochemistryImg from '../assets/biochemistry.jpg';
+import { api } from '../services/api';
 import '../styles/landing.css';
 
-const FEATURES = [
+const BRANCHES = ['MUMBAI', 'PUNE', 'NASHIK', 'DHULE', 'RATNAGIRI'];
+
+const EXPERTISE = [
   {
-    icon: '🔍',
-    title: 'Search & Patient Lookup',
-    description: 'Instantly find patients, lab codes, and registration history across your network.',
+    title: 'HAEMATOLOGY',
+    image: haematologyImg,
+    description:
+      'Haematology is the study of blood, blood-forming organs, and blood diseases. Our laboratory utilizes advanced diagnostic technology to perform comprehensive blood counts, coagulation studies, and morphology analysis to aid in the precise diagnosis and monitoring of various conditions.',
   },
   {
-    icon: '📋',
-    title: 'Test Registration & Billing',
-    description: 'Streamline test orders, pricing, payments, and billing workflows in one place.',
-  },
-  {
-    icon: '✅',
-    title: 'Test Result & Authorization',
-    description: 'Enter, review, and authorize results with role-based clinical workflows.',
-  },
-  {
-    icon: '⚙️',
-    title: 'Advanced Administration & Analytics',
-    description: 'Manage users, parameters, permissions, and lab-wide configuration with ease.',
-  },
-  {
-    icon: '📊',
-    title: 'Reports & Interactive Dashboards',
-    description: 'Real-time dashboards and exportable reports for smarter operational decisions.',
-  },
-  {
-    icon: '🏠',
-    title: 'Device Request & Home Sample Collection',
-    description: 'Coordinate pickup requests, home visits, and field collection seamlessly.',
+    title: 'BIOCHEMISTRY',
+    image: biochemistryImg,
+    description:
+      'Biochemistry testing analyzes the chemical components of bodily fluids to evaluate the function of vital organs such as the liver, kidneys, and heart. We provide accurate metabolic profiles, enzyme assays, and electrolyte testing to support clinical decision-making and patient care.',
   },
 ];
 
-const AUDIENCES = [
-  {
-    title: 'Independent Labs',
-    description: 'Digitize end-to-end operations without enterprise complexity or cost.',
-  },
-  {
-    title: 'Hospital Labs',
-    description: 'Integrate registration, results, and reporting within your hospital workflow.',
-  },
-  {
-    title: 'Diagnostic Networks',
-    description: 'Scale across multiple collection centers with centralized control and visibility.',
-  },
-];
+const EMPTY_FORM = {
+  name: '',
+  phone: '',
+  email: '',
+  organization: '',
+  city: '',
+  message: '',
+};
 
 export default function Landing() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const closeMenu = useCallback(() => setMenuOpen(false), []);
+  const [formOpen, setFormOpen] = useState(false);
+  const [form, setForm] = useState(EMPTY_FORM);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const formRef = useRef(null);
 
-  useEffect(() => {
-    document.body.classList.toggle('nav-scroll-lock', menuOpen);
-    return () => document.body.classList.remove('nav-scroll-lock');
-  }, [menuOpen]);
+  const openForm = (event) => {
+    event.preventDefault();
+    setFormOpen(true);
+    setSubmitted(false);
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+  };
 
-  useEffect(() => {
-    if (!menuOpen) return undefined;
-    const onKeyDown = (event) => {
-      if (event.key === 'Escape') closeMenu();
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [menuOpen, closeMenu]);
+  const setField = (field) => (event) => {
+    setForm((prev) => ({ ...prev, [field]: event.target.value }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setError('');
+    if (!form.name.trim()) {
+      setError('Please enter your name.');
+      return;
+    }
+    if (!form.phone.trim()) {
+      setError('Please enter your contact number.');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await api.submitJoinRequest({
+        name: form.name.trim(),
+        phone: form.phone.trim(),
+        email: form.email.trim(),
+        organization: form.organization.trim(),
+        city: form.city.trim(),
+        message: form.message.trim(),
+      });
+      setSubmitted(true);
+      setForm(EMPTY_FORM);
+    } catch (err) {
+      setError(err.message || 'Something went wrong. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
-    <div className="landing-page">
-      <div
-        className={`landing-nav-overlay${menuOpen ? ' open' : ''}`}
-        onClick={closeMenu}
-        aria-hidden={!menuOpen}
-      />
-      <header className="landing-navbar">
-        <Link to="/" className="landing-brand">
-          <span className="logo-mark landing-logo-mark">C</span>
-          <span>
-            <strong>Clasmo Diagnostics</strong>
-            <small>Laboratory Information Management System</small>
-          </span>
-        </Link>
-        <button
-          type="button"
-          className="landing-menu-toggle"
-          aria-expanded={menuOpen}
-          aria-controls="landing-nav-drawer"
-          onClick={() => setMenuOpen((open) => !open)}
-        >
-          ☰
-        </button>
-        <nav className="landing-nav-actions" aria-label="Landing navigation">
-          <a href="#features" className="landing-nav-link">Features</a>
-          <a href="#audience" className="landing-nav-link">Who It&apos;s For</a>
-          <a href="#contact" className="landing-nav-link">Contact</a>
-          <Link to="/login" className="btn-landing-login">Login</Link>
-        </nav>
-        <nav
-          id="landing-nav-drawer"
-          className={`landing-nav-drawer${menuOpen ? ' open' : ''}`}
-          aria-label="Mobile navigation"
-        >
-          <a href="#features" className="landing-nav-link" onClick={closeMenu}>Features</a>
-          <a href="#audience" className="landing-nav-link" onClick={closeMenu}>Who It&apos;s For</a>
-          <a href="#contact" className="landing-nav-link" onClick={closeMenu}>Contact</a>
-          <Link to="/login" className="btn-landing-login" onClick={closeMenu}>Login</Link>
-        </nav>
+    <div className="landing-page landing-sketch">
+      <header className="landing-sketch-header">
+        <img src={clasmoLogo} alt="Clasmo Diagnostics logo" className="landing-sketch-logo" />
+        <h1 className="landing-sketch-brand">CLASMO DIAGNOSTICS PVT LTD</h1>
+        <span className="landing-iso-badge" title="ISO Certified">ISO<br />logo</span>
       </header>
 
-      <section className="landing-hero">
-        <div className="landing-hero-inner">
-          <div className="landing-hero-copy">
-            <span className="landing-eyebrow">B2B LIMS Platform for Diagnostic Labs</span>
-            <h1>Streamline Your Diagnostic Lab Operations</h1>
-            <p>
-              Clasmo Diagnostics is a cloud-ready LIMS built for labs that want faster registrations,
-              accurate results, and smarter reporting — subscribe and go live without heavy IT overhead.
-            </p>
-            <div className="landing-hero-cta">
-              <Link to="/login" className="btn-landing-primary">Partner With Us</Link>
-              <a href="#features" className="btn-landing-secondary">Explore Modules</a>
-            </div>
-            <ul className="landing-hero-stats">
-              <li><strong>6+</strong> integrated modules</li>
-              <li><strong>Multi-role</strong> access control</li>
-              <li><strong>Cloud</strong> deployment ready</li>
-            </ul>
-          </div>
-          <div className="landing-hero-visual">
-            <img src={heroImage} alt="Clasmo Diagnostics lab management dashboard preview" />
-          </div>
-        </div>
+      <p className="landing-sketch-tagline">Where Accuracy Saves Lives</p>
+      <hr className="landing-sketch-rule" />
+
+      <section className="landing-sketch-actions">
+        <Link to="/test-quorum" className="btn-test-quorum">★ TEST QUORUM</Link>
+        <Link to="/login" className="btn-landing-login landing-login-big">LOG IN / SIGN IN</Link>
       </section>
 
-      <section id="features" className="landing-section landing-features">
-        <div className="landing-section-head">
-          <span className="landing-eyebrow">Platform Modules</span>
-          <h2>Everything your lab needs in one system</h2>
-          <p>From patient lookup to home collection — manage the full diagnostic lifecycle.</p>
-        </div>
-        <div className="landing-features-grid">
-          {FEATURES.map((feature) => (
-            <article key={feature.title} className="landing-feature-card">
-              <span className="landing-feature-icon" aria-hidden="true">{feature.icon}</span>
-              <h3>{feature.title}</h3>
-              <p>{feature.description}</p>
+      <section id="branches" className="landing-section landing-branches">
+        <h2 className="landing-plain-heading">OUR BRANCHES</h2>
+        <ul className="landing-branches-row">
+          {BRANCHES.map((city) => (
+            <li key={city}>{city}</li>
+          ))}
+        </ul>
+      </section>
+
+      <section id="expertise" className="landing-section landing-expertise">
+        <h2 className="landing-plain-heading">OUR EXPERTISE</h2>
+        <div className="landing-expertise-grid">
+          {EXPERTISE.map((item) => (
+            <article key={item.title} className="landing-expertise-card">
+              <div className="landing-expertise-img">
+                <img src={item.image} alt={item.title} loading="lazy" />
+              </div>
+              <div className="landing-expertise-body">
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </div>
             </article>
           ))}
         </div>
       </section>
 
-      <section id="audience" className="landing-section landing-audience">
-        <div className="landing-section-head">
-          <span className="landing-eyebrow">Built For Growth</span>
-          <h2>Who Clasmo Diagnostics is for</h2>
-          <p>Whether you run a single lab or a multi-center network, our platform scales with you.</p>
-        </div>
-        <div className="landing-audience-grid">
-          {AUDIENCES.map((item) => (
-            <article key={item.title} className="landing-audience-card">
-              <h3>{item.title}</h3>
-              <p>{item.description}</p>
-            </article>
-          ))}
-        </div>
-      </section>
+      <a href="#join-form" className="landing-join-band" onClick={openForm}>
+        <span>Come and Join With Clasmo</span>
+        <span aria-hidden="true">→</span>
+      </a>
 
-      <section className="landing-cta-band">
-        <div className="landing-cta-band-inner">
-          <div>
-            <h2>Ready to modernize your lab?</h2>
-            <p>Start with a trial login or reach out to partner with our team.</p>
+      {formOpen && (
+        <section id="join-form" ref={formRef} className="landing-join-form-section">
+          <div className="landing-join-form-card">
+            <h2 className="landing-plain-heading">JOIN WITH CLASMO</h2>
+            {submitted ? (
+              <div className="landing-join-success">
+                <p>Thank you! Your details have been submitted.</p>
+                <p>Our team will contact you soon.</p>
+              </div>
+            ) : (
+              <form className="landing-join-form" onSubmit={handleSubmit}>
+                <div className="landing-join-form-grid">
+                  <label>
+                    Name *
+                    <input
+                      type="text"
+                      value={form.name}
+                      onChange={setField('name')}
+                      placeholder="Your full name"
+                      required
+                    />
+                  </label>
+                  <label>
+                    Contact Number *
+                    <input
+                      type="tel"
+                      value={form.phone}
+                      onChange={setField('phone')}
+                      placeholder="Mobile / phone number"
+                      required
+                    />
+                  </label>
+                  <label>
+                    Email
+                    <input
+                      type="email"
+                      value={form.email}
+                      onChange={setField('email')}
+                      placeholder="you@example.com"
+                    />
+                  </label>
+                  <label>
+                    Lab / Organization
+                    <input
+                      type="text"
+                      value={form.organization}
+                      onChange={setField('organization')}
+                      placeholder="Lab or organization name"
+                    />
+                  </label>
+                  <label>
+                    City
+                    <input
+                      type="text"
+                      value={form.city}
+                      onChange={setField('city')}
+                      placeholder="Your city"
+                    />
+                  </label>
+                </div>
+                <label className="landing-join-form-message">
+                  Message
+                  <textarea
+                    rows={3}
+                    value={form.message}
+                    onChange={setField('message')}
+                    placeholder="Tell us how we can help you"
+                  />
+                </label>
+                {error && <p className="landing-join-error">{error}</p>}
+                <div className="landing-join-form-actions">
+                  <button type="submit" className="btn-landing-login landing-login-big" disabled={submitting}>
+                    {submitting ? 'SUBMITTING…' : 'SUBMIT'}
+                  </button>
+                  <button
+                    type="button"
+                    className="landing-join-cancel"
+                    onClick={() => setFormOpen(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
-          <Link to="/login" className="btn-landing-primary">Get Started</Link>
-        </div>
-      </section>
+        </section>
+      )}
 
-      <footer id="contact" className="landing-footer">
-        <div className="landing-footer-grid">
-          <div>
-            <div className="landing-brand landing-brand-footer">
-              <span className="logo-mark landing-logo-mark">C</span>
-              <span>
-                <strong>Clasmo Diagnostics</strong>
-                <small>Diagnostic Lab Management Platform</small>
-              </span>
-            </div>
-            <p className="landing-footer-tagline">
-              Laboratory Information Management System for diagnostic labs across India.
-            </p>
-          </div>
-          <div>
-            <h4>Contact</h4>
-            <ul className="landing-footer-links">
-              <li><a href="tel:+918975273383">+91-8975273383</a></li>
-              <li><a href="tel:+919146188320">+91-9146188320</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4>Quick Links</h4>
-            <ul className="landing-footer-links">
-              <li><Link to="/login">Login</Link></li>
-              <li><a href="#features">Features</a></li>
-              <li><a href="#audience">Who It&apos;s For</a></li>
-            </ul>
-          </div>
+      <footer id="contact" className="landing-footer landing-footer-simple">
+        <div className="landing-footer-simple-inner">
+          <p className="landing-footer-company">© CLASMO DIAGNOSTICS PVT LTD.</p>
+          <ul className="landing-footer-details">
+            <li><span>Address:</span> -</li>
+            <li><span>Contacts:</span> -</li>
+            <li><span>Bank Details:</span> -</li>
+          </ul>
         </div>
-        <p className="landing-footer-copy">
-          © 2026 Clasmo Diagnostics · Empowering labs with smarter, faster operations.
-        </p>
       </footer>
     </div>
   );

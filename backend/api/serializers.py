@@ -31,6 +31,7 @@ from .models import (
     LabConfiguration,
     ServiceAreaPincode,
     LabActivity,
+    JoinRequest,
 )
 
 
@@ -739,3 +740,34 @@ class DashboardSummarySerializer(serializers.Serializer):
     total_revenue = serializers.DecimalField(max_digits=12, decimal_places=2)
     status_breakdown = serializers.DictField(child=serializers.IntegerField())
     department_summary = serializers.ListField(child=serializers.DictField())
+
+
+class JoinRequestSerializer(serializers.ModelSerializer):
+    created_at_display = serializers.SerializerMethodField()
+
+    class Meta:
+        model = JoinRequest
+        fields = [
+            'id', 'name', 'email', 'phone', 'organization', 'city', 'message',
+            'is_handled', 'created_at', 'created_at_display',
+        ]
+        read_only_fields = ['created_at', 'created_at_display']
+
+    def get_created_at_display(self, obj):
+        if not obj.created_at:
+            return '-'
+        return obj.created_at.strftime('%d-%b-%y %I:%M %p')
+
+    def validate_name(self, value):
+        if not (value or '').strip():
+            raise serializers.ValidationError('Name is required.')
+        return value.strip()
+
+    def validate_phone(self, value):
+        cleaned = (value or '').strip()
+        if not cleaned:
+            raise serializers.ValidationError('Contact number is required.')
+        digits = ''.join(ch for ch in cleaned if ch.isdigit())
+        if len(digits) < 10:
+            raise serializers.ValidationError('Enter a valid contact number.')
+        return cleaned

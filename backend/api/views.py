@@ -20,6 +20,7 @@ from .models import (
     LabMessage, PickupRequest, Registration, RegistrationTest, Test, TestCategory, User, LabRole,
     Membership, MembershipType, CollectionCenter, CollectionCenterBoy, DiscountReason, DiscountAuthority,
     WhatsAppMessageLog, ExpenseType, Area, RateMaster, Affiliation, SalesReference, Doctor, Patient, PatientAddress, LabConfiguration, ServiceAreaPincode, LabActivity,
+    JoinRequest,
 )
 from .serializers import (
     ChangePasswordSerializer,
@@ -39,6 +40,7 @@ from .serializers import (
     LabConfigurationSerializer,
     ServiceAreaPincodeSerializer,
     LabActivitySerializer,
+    JoinRequestSerializer,
     LabMessageSerializer,
     LabRoleSerializer,
     LabRoleUpdateSerializer,
@@ -1737,6 +1739,39 @@ class LabActivityDetailView(generics.RetrieveUpdateDestroyAPIView):
     def perform_destroy(self, instance):
         instance.is_active = False
         instance.save(update_fields=['is_active', 'updated_at'])
+
+
+class JoinRequestListCreateView(generics.ListCreateAPIView):
+    """POST is public (landing page form); GET requires login (admin enquiries page)."""
+
+    serializer_class = JoinRequestSerializer
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
+
+    def get_queryset(self):
+        qs = JoinRequest.objects.all()
+        search = self.request.query_params.get('search', '').strip()
+        handled = self.request.query_params.get('is_handled', '').strip()
+        if search:
+            qs = qs.filter(
+                Q(name__icontains=search)
+                | Q(phone__icontains=search)
+                | Q(email__icontains=search)
+                | Q(organization__icontains=search)
+                | Q(city__icontains=search)
+            )
+        if handled in ('true', 'false'):
+            qs = qs.filter(is_handled=(handled == 'true'))
+        return qs
+
+
+class JoinRequestDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = JoinRequest.objects.all()
+    serializer_class = JoinRequestSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class GlobalSearchView(APIView):

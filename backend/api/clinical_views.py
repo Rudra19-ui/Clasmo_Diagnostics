@@ -199,6 +199,70 @@ class ReportDetailView(APIView):
         ).select_related('test').order_by('test__name', 'parameter_name')
 
 
+class PublicPatientReportView(APIView):
+    """Public Test Quorum lookup: lab code + registered mobile returns a verified report."""
+
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        lab_code = str(request.data.get('lab_code', '')).strip()
+        mobile = str(request.data.get('mobile', '')).strip()
+        digits = ''.join(ch for ch in mobile if ch.isdigit())
+
+        if not lab_code or len(digits) < 10:
+            return Response(
+                {'detail': 'Enter your lab code and 10-digit registered mobile number.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        registration = (
+            Registration.objects.select_related('patient')
+            .filter(lab_code__iexact=lab_code)
+            .first()
+        )
+        patient_digits = ''
+        if registration:
+            patient_digits = ''.join(
+                ch for ch in (registration.patient.mobile or '') if ch.isdigit()
+            )
+        if not registration or not patient_digits.endswith(digits[-10:]):
+            return Response(
+                {'detail': 'No record found for the given lab code and mobile number.'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        report = (
+            Report.objects.filter(
+                registration=registration, status=Report.STATUS_VERIFIED
+            )
+            .select_related('verified_by')
+            .prefetch_related('values__parameter__test')
+            .first()
+        )
+        if not report:
+            return Response(
+                {'detail': 'Your report is not ready yet. Please check again later.'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        patient = registration.patient
+        values = ReportSerializer(report, context={'patient': patient}).data['values']
+        tests = {}
+        for row in values:
+            tests.setdefault(row['test_name'], []).append(row)
+
+        return Response({
+            'lab_code': registration.lab_code,
+            'patient_details': _patient_details_payload(registration),
+            'verified_by': report.verified_by.display_name if report.verified_by else '',
+            'reported_at': report.updated_at.strftime('%d-%b-%Y %I:%M %p'),
+            'tests': [
+                {'test_name': name, 'rows': rows}
+                for name, rows in tests.items()
+            ],
+        })
+
+
 class ReportVerifyView(APIView):
     permission_classes = [IsPathologistOrAdmin]
 

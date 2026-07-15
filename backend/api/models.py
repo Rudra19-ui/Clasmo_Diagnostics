@@ -832,3 +832,23 @@ class LabActivity(models.Model):
             self.activity_date = parsed
         super().save(*args, **kwargs)
 
+
+class JoinRequest(models.Model):
+    """Public 'Come N Join With Clasmo' enquiries from the landing page."""
+
+    name = models.CharField(max_length=150)
+    email = models.EmailField(blank=True)
+    phone = models.CharField(max_length=20)
+    organization = models.CharField(max_length=200, blank=True)
+    city = models.CharField(max_length=100, blank=True)
+    message = models.TextField(blank=True)
+    is_handled = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Join request'
+
+    def __str__(self):
+        return f'{self.name} ({self.phone})'
+

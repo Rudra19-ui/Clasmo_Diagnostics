@@ -18,6 +18,8 @@ import LabConfiguration from './pages/admin/LabConfiguration';
 import ServicesInArea from './pages/admin/ServicesInArea';
 import CreateActivity from './pages/admin/CreateActivity';
 import Activities from './pages/admin/Activities';
+import Enquiries from './pages/admin/Enquiries';
+import TestQuorum from './pages/TestQuorum';
 import { getAllAdminModules } from './utils/adminModules';
 import Dashboard from './pages/Dashboard';
 import ElabPay from './pages/ElabPay';
@@ -45,6 +47,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Landing />} />
+          <Route path="/test-quorum" element={<TestQuorum />} />
           <Route path="/login" element={<Login />} />
           <Route path="/search" element={<ProtectedRoute><Search /></ProtectedRoute>} />
           <Route path="/barcode-print" element={<ProtectedRoute><BarcodePrinting /></ProtectedRoute>} />
@@ -68,8 +71,9 @@ export default function App() {
           <Route path="/admin/services-in-area" element={<ProtectedRoute allowedRoles={ALL_ROLES}><ServicesInArea /></ProtectedRoute>} />
           <Route path="/admin/create-activity" element={<ProtectedRoute allowedRoles={ALL_ROLES}><CreateActivity /></ProtectedRoute>} />
           <Route path="/admin/activities" element={<ProtectedRoute allowedRoles={ALL_ROLES}><Activities /></ProtectedRoute>} />
+          <Route path="/admin/enquiries" element={<ProtectedRoute allowedRoles={ALL_ROLES}><Enquiries /></ProtectedRoute>} />
           {getAllAdminModules()
-            .filter((module) => !['change-password', 'role-management', 'membership', 'collection-center-boy', 'discount-reason', 'discount-authority', 'whatsapp-logger', 'expense-type', 'collection-center-management', 'doctor-management', 'patient-management', 'lab-configuration', 'services-in-area', 'create-activity', 'activities'].includes(module.slug))
+            .filter((module) => !['change-password', 'role-management', 'membership', 'collection-center-boy', 'discount-reason', 'discount-authority', 'whatsapp-logger', 'expense-type', 'collection-center-management', 'doctor-management', 'patient-management', 'lab-configuration', 'services-in-area', 'create-activity', 'activities', 'enquiries'].includes(module.slug))
             .map((module) => (
             <Route
               key={module.slug}

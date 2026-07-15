@@ -238,6 +238,21 @@ export const api = {
   deleteServiceAreaPincode: (id) =>
     request(`/service-area-pincodes/${id}/`, { method: 'DELETE' }),
 
+  submitJoinRequest: (payload) =>
+    request('/join-requests/', { method: 'POST', body: JSON.stringify(payload) }),
+  getPublicPatientReport: (payload) =>
+    request('/public/patient-report/', { method: 'POST', body: JSON.stringify(payload) }),
+  getJoinRequests: (params = {}) => {
+    const query = new URLSearchParams(
+      Object.fromEntries(Object.entries(params).filter(([, value]) => value !== '' && value != null)),
+    ).toString();
+    return request(`/join-requests/${query ? `?${query}` : ''}`);
+  },
+  updateJoinRequest: (id, payload) =>
+    request(`/join-requests/${id}/`, { method: 'PATCH', body: JSON.stringify(payload) }),
+  deleteJoinRequest: (id) =>
+    request(`/join-requests/${id}/`, { method: 'DELETE' }),
+
   getActivities: (params = {}) => {
     const query = new URLSearchParams(params).toString();
     return request(`/activities/${query ? `?${query}` : ''}`);

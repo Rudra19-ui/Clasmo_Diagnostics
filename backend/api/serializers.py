@@ -789,29 +789,82 @@ class DashboardSummarySerializer(serializers.Serializer):
 
 class JoinRequestSerializer(serializers.ModelSerializer):
     created_at_display = serializers.SerializerMethodField()
+    request_type_display = serializers.CharField(source='get_request_type_display', read_only=True)
+    letterhead_photo_url = serializers.SerializerMethodField()
+    lab_interior_photo_url = serializers.SerializerMethodField()
+    resume_url = serializers.SerializerMethodField()
 
     class Meta:
         model = JoinRequest
         fields = [
-            'id', 'name', 'email', 'phone', 'organization', 'city', 'message',
-            'is_handled', 'created_at', 'created_at_display',
+            'id', 'request_type', 'request_type_display', 'name', 'email', 'phone',
+            'organization', 'city', 'message', 'partnership_type', 'contact_person',
+            'full_address', 'pincode', 'proof_of_address', 'letterhead_photo',
+            'letterhead_photo_url', 'lab_interior_photo', 'lab_interior_photo_url',
+            'branch', 'experience_type', 'current_employer', 'total_experience',
+            'last_salary', 'resume', 'resume_url', 'is_handled', 'created_at',
+            'created_at_display',
         ]
-        read_only_fields = ['created_at', 'created_at_display']
+        read_only_fields = ['created_at', 'created_at_display', 'request_type_display']
 
     def get_created_at_display(self, obj):
         if not obj.created_at:
             return '-'
         return obj.created_at.strftime('%d-%b-%y %I:%M %p')
 
-    def validate_name(self, value):
-        if not (value or '').strip():
-            raise serializers.ValidationError('Name is required.')
-        return value.strip()
+    def _file_url(self, obj, field_name):
+        file_field = getattr(obj, field_name, None)
+        if not file_field:
+            return ''
+        request = self.context.get('request')
+        if request:
+            return request.build_absolute_uri(file_field.url)
+        return file_field.url
+
+    def get_letterhead_photo_url(self, obj):
+        return self._file_url(obj, 'letterhead_photo')
+
+    def get_lab_interior_photo_url(self, obj):
+        return self._file_url(obj, 'lab_interior_photo')
+
+    def get_resume_url(self, obj):
+        return self._file_url(obj, 'resume')
+
+    def validate(self, attrs):
+        request_type = (attrs.get('request_type') or self.initial_data.get('request_type') or '').strip()
+        if request_type not in {JoinRequest.TYPE_FRANCHISE, JoinRequest.TYPE_JOB}:
+            raise serializers.ValidationError({'request_type': 'Select franchise or job vacancy.'})
+
+        name = (attrs.get('name') or '').strip()
+        if not name:
+            raise serializers.ValidationError({'name': 'Name is required.'})
+
+        if request_type == JoinRequest.TYPE_FRANCHISE:
+            if not (attrs.get('partnership_type') or '').strip():
+                raise serializers.ValidationError({'partnership_type': 'Select Brand or Self partnership.'})
+            if not (attrs.get('contact_person') or '').strip():
+                raise serializers.ValidationError({'contact_person': 'Contact person is required.'})
+            if not (attrs.get('full_address') or '').strip():
+                raise serializers.ValidationError({'full_address': 'Full address is required.'})
+            if not (attrs.get('pincode') or '').strip():
+                raise serializers.ValidationError({'pincode': 'Pincode is required.'})
+
+        if request_type == JoinRequest.TYPE_JOB:
+            phone = (attrs.get('phone') or '').strip()
+            digits = ''.join(ch for ch in phone if ch.isdigit())
+            if len(digits) < 10:
+                raise serializers.ValidationError({'phone': 'Enter a valid contact number.'})
+            if not (attrs.get('branch') or '').strip():
+                raise serializers.ValidationError({'branch': 'Select a branch.'})
+            if not (attrs.get('experience_type') or '').strip():
+                raise serializers.ValidationError({'experience_type': 'Select Fresher or Experienced.'})
+
+        return attrs
 
     def validate_phone(self, value):
         cleaned = (value or '').strip()
         if not cleaned:
-            raise serializers.ValidationError('Contact number is required.')
+            return cleaned
         digits = ''.join(ch for ch in cleaned if ch.isdigit())
         if len(digits) < 10:
             raise serializers.ValidationError('Enter a valid contact number.')

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import clasmoLogo from '../assets/clasmo-logo.png';
 import '../styles/landing.css';
@@ -15,7 +15,7 @@ const EMPTY_REGISTER = {
 };
 
 export default function Login() {
-  const { user, login, register } = useAuth();
+  const { login, register } = useAuth();
   const navigate = useNavigate();
   const [mode, setMode] = useState('login');
   const [username, setUsername] = useState('');
@@ -34,8 +34,6 @@ export default function Login() {
     const shouldSaveInfo = localStorage.getItem(SAVE_INFO_KEY) === 'true';
     setSaveInfo(shouldSaveInfo);
   }, []);
-
-  if (user) return <Navigate to="/search" replace />;
 
   const switchMode = (nextMode) => {
     setMode(nextMode);

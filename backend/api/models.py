@@ -861,12 +861,50 @@ class LabActivity(models.Model):
 class JoinRequest(models.Model):
     """Public 'Come N Join With Clasmo' enquiries from the landing page."""
 
+    TYPE_FRANCHISE = 'franchise'
+    TYPE_JOB = 'job'
+    REQUEST_TYPE_CHOICES = [
+        (TYPE_FRANCHISE, 'Franchise'),
+        (TYPE_JOB, 'Job Vacancy'),
+    ]
+
+    PARTNERSHIP_BRAND = 'brand'
+    PARTNERSHIP_SELF = 'self'
+    PARTNERSHIP_CHOICES = [
+        (PARTNERSHIP_BRAND, 'Brand'),
+        (PARTNERSHIP_SELF, 'Self'),
+    ]
+
+    EXPERIENCE_FRESHER = 'fresher'
+    EXPERIENCE_EXPERIENCED = 'experienced'
+    EXPERIENCE_CHOICES = [
+        (EXPERIENCE_FRESHER, 'Fresher'),
+        (EXPERIENCE_EXPERIENCED, 'Experienced'),
+    ]
+
+    request_type = models.CharField(max_length=20, choices=REQUEST_TYPE_CHOICES, blank=True)
     name = models.CharField(max_length=150)
     email = models.EmailField(blank=True)
-    phone = models.CharField(max_length=20)
+    phone = models.CharField(max_length=20, blank=True)
     organization = models.CharField(max_length=200, blank=True)
     city = models.CharField(max_length=100, blank=True)
     message = models.TextField(blank=True)
+
+    partnership_type = models.CharField(max_length=10, choices=PARTNERSHIP_CHOICES, blank=True)
+    contact_person = models.CharField(max_length=150, blank=True)
+    full_address = models.TextField(blank=True)
+    pincode = models.CharField(max_length=12, blank=True)
+    proof_of_address = models.CharField(max_length=200, blank=True)
+    letterhead_photo = models.FileField(upload_to='join/franchise/', blank=True, null=True)
+    lab_interior_photo = models.FileField(upload_to='join/franchise/', blank=True, null=True)
+
+    branch = models.CharField(max_length=100, blank=True)
+    experience_type = models.CharField(max_length=20, choices=EXPERIENCE_CHOICES, blank=True)
+    current_employer = models.CharField(max_length=200, blank=True)
+    total_experience = models.CharField(max_length=50, blank=True)
+    last_salary = models.CharField(max_length=50, blank=True)
+    resume = models.FileField(upload_to='join/job/', blank=True, null=True)
+
     is_handled = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -875,5 +913,6 @@ class JoinRequest(models.Model):
         verbose_name = 'Join request'
 
     def __str__(self):
-        return f'{self.name} ({self.phone})'
+        label = self.get_request_type_display() if self.request_type else 'Enquiry'
+        return f'{label}: {self.name} ({self.phone or "-"})'
 

@@ -65,7 +65,23 @@ export default function Enquiries() {
   };
 
   const handleShowMessage = (row) => {
-    const text = (row.message || '').trim() || 'No message provided.';
+    const lines = [];
+    if (row.request_type_display) lines.push(`Type: ${row.request_type_display}`);
+    if (row.partnership_type) lines.push(`Partnership: ${row.partnership_type}`);
+    if (row.contact_person) lines.push(`Contact person: ${row.contact_person}`);
+    if (row.full_address) lines.push(`Address: ${row.full_address}`);
+    if (row.pincode) lines.push(`Pincode: ${row.pincode}`);
+    if (row.proof_of_address) lines.push(`Proof: ${row.proof_of_address}`);
+    if (row.branch) lines.push(`Branch: ${row.branch}`);
+    if (row.experience_type) lines.push(`Experience: ${row.experience_type}`);
+    if (row.current_employer) lines.push(`Employer: ${row.current_employer}`);
+    if (row.total_experience) lines.push(`Total experience: ${row.total_experience}`);
+    if (row.last_salary) lines.push(`Last salary: ${row.last_salary}`);
+    if (row.message) lines.push(`Message: ${row.message}`);
+    if (row.letterhead_photo_url) lines.push(`Letterhead/ID: ${row.letterhead_photo_url}`);
+    if (row.lab_interior_photo_url) lines.push(`Lab photo: ${row.lab_interior_photo_url}`);
+    if (row.resume_url) lines.push(`Resume: ${row.resume_url}`);
+    const text = lines.length ? lines.join('\n') : 'No additional details.';
     setMessagePreview({ title: row.name, text });
   };
 
@@ -122,26 +138,28 @@ export default function Enquiries() {
                 <thead>
                   <tr>
                     <th>Received</th>
+                    <th>Type</th>
                     <th>Name</th>
                     <th>Contact</th>
                     <th>Email</th>
                     <th>Lab / Organization</th>
                     <th>City</th>
-                    <th>Message</th>
+                    <th>Details</th>
                     <th>Status</th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {loading && (
-                    <tr><td colSpan={9} className="empty-msg">Loading...</td></tr>
+                    <tr><td colSpan={10} className="empty-msg">Loading...</td></tr>
                   )}
                   {!loading && rows.length === 0 && (
-                    <tr><td colSpan={9} className="empty-msg">No enquiries found.</td></tr>
+                    <tr><td colSpan={10} className="empty-msg">No enquiries found.</td></tr>
                   )}
                   {!loading && rows.map((row) => (
                     <tr key={row.id}>
                       <td>{row.created_at_display}</td>
+                      <td>{row.request_type_display || 'General'}</td>
                       <td>{row.name}</td>
                       <td>{row.phone}</td>
                       <td>{row.email || '-'}</td>
@@ -151,9 +169,9 @@ export default function Enquiries() {
                         <button
                           type="button"
                           className="activity-notes-btn"
-                          title="View message"
+                          title="View details"
                           onClick={() => handleShowMessage(row)}
-                          aria-label={`View message from ${row.name}`}
+                          aria-label={`View details for ${row.name}`}
                         >
                           ...
                         </button>
@@ -180,8 +198,8 @@ export default function Enquiries() {
         {messagePreview && (
           <div className="activity-notes-modal" role="dialog" aria-modal="true" aria-labelledby="enquiry-message-title">
             <div className="activity-notes-modal-content">
-              <h3 id="enquiry-message-title">Message — {messagePreview.title}</h3>
-              <p>{messagePreview.text}</p>
+              <h3 id="enquiry-message-title">Details — {messagePreview.title}</h3>
+              <p style={{ whiteSpace: 'pre-wrap' }}>{messagePreview.text}</p>
               <button type="button" className="btn-outline btn-sm" onClick={() => setMessagePreview(null)}>
                 Close
               </button>

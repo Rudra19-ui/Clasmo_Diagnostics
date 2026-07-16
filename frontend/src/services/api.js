@@ -250,6 +250,7 @@ export const api = {
 
   submitJoinRequest: (payload) =>
     request('/join-requests/', { method: 'POST', body: JSON.stringify(payload) }),
+  submitJoinRequestForm: (formData) => requestForm('/join-requests/', formData),
   getPublicPatientReport: (payload) =>
     request('/public/patient-report/', { method: 'POST', body: JSON.stringify(payload) }),
   getJoinRequests: (params = {}) => {

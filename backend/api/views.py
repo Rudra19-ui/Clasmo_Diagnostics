@@ -1805,6 +1805,7 @@ class JoinRequestListCreateView(generics.ListCreateAPIView):
     """POST is public (landing page form); GET requires login (admin enquiries page)."""
 
     serializer_class = JoinRequestSerializer
+    parser_classes = [MultiPartParser, FormParser]
 
     def get_permissions(self):
         if self.request.method == 'POST':
@@ -1815,6 +1816,7 @@ class JoinRequestListCreateView(generics.ListCreateAPIView):
         qs = JoinRequest.objects.all()
         search = self.request.query_params.get('search', '').strip()
         handled = self.request.query_params.get('is_handled', '').strip()
+        request_type = self.request.query_params.get('request_type', '').strip()
         if search:
             qs = qs.filter(
                 Q(name__icontains=search)
@@ -1822,10 +1824,19 @@ class JoinRequestListCreateView(generics.ListCreateAPIView):
                 | Q(email__icontains=search)
                 | Q(organization__icontains=search)
                 | Q(city__icontains=search)
+                | Q(branch__icontains=search)
+                | Q(contact_person__icontains=search)
             )
         if handled in ('true', 'false'):
             qs = qs.filter(is_handled=(handled == 'true'))
+        if request_type in (JoinRequest.TYPE_FRANCHISE, JoinRequest.TYPE_JOB):
+            qs = qs.filter(request_type=request_type)
         return qs
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
 
 
 class JoinRequestDetailView(generics.RetrieveUpdateDestroyAPIView):

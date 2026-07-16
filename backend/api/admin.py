@@ -51,6 +51,6 @@ admin.site.register(ReportValue)
 
 @admin.register(JoinRequest)
 class JoinRequestAdmin(admin.ModelAdmin):
-    list_display = ['name', 'phone', 'email', 'organization', 'city', 'is_handled', 'created_at']
-    list_filter = ['is_handled']
-    search_fields = ['name', 'phone', 'email', 'organization']
+    list_display = ['request_type', 'name', 'phone', 'branch', 'contact_person', 'is_handled', 'created_at']
+    list_filter = ['request_type', 'is_handled', 'created_at']
+    search_fields = ['name', 'phone', 'email', 'organization', 'branch', 'contact_person']

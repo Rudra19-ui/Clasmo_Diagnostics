@@ -5,6 +5,7 @@ from . import clinical_views, views
 urlpatterns = [
     path('health/', views.HealthView.as_view(), name='health'),
     path('auth/login/', views.LoginView.as_view(), name='login'),
+    path('auth/register/', views.RegisterView.as_view(), name='register'),
     path('auth/logout/', views.LogoutView.as_view(), name='logout'),
     path('auth/me/', views.MeView.as_view(), name='me'),
     path('auth/change-password/', views.ChangePasswordView.as_view(), name='change-password'),

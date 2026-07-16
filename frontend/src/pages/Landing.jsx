@@ -1,27 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useRef, useState } from 'react';
 import clasmoLogo from '../assets/clasmo-logo.png';
-import haematologyImg from '../assets/haematology.jpg';
-import biochemistryImg from '../assets/biochemistry.jpg';
+import DepartmentGrid from '../components/landing/DepartmentGrid';
 import { api } from '../services/api';
 import '../styles/landing.css';
 
 const BRANCHES = ['MUMBAI', 'PUNE', 'NASHIK', 'DHULE', 'RATNAGIRI'];
-
-const EXPERTISE = [
-  {
-    title: 'HAEMATOLOGY',
-    image: haematologyImg,
-    description:
-      'Haematology is the study of blood, blood-forming organs, and blood diseases. Our laboratory utilizes advanced diagnostic technology to perform comprehensive blood counts, coagulation studies, and morphology analysis to aid in the precise diagnosis and monitoring of various conditions.',
-  },
-  {
-    title: 'BIOCHEMISTRY',
-    image: biochemistryImg,
-    description:
-      'Biochemistry testing analyzes the chemical components of bodily fluids to evaluate the function of vital organs such as the liver, kidneys, and heart. We provide accurate metabolic profiles, enzyme assays, and electrolyte testing to support clinical decision-making and patient care.',
-  },
-];
 
 const EMPTY_FORM = {
   name: '',
@@ -96,7 +80,7 @@ export default function Landing() {
 
       <section className="landing-sketch-actions">
         <Link to="/test-quorum" className="btn-test-quorum">★ TEST QUORUM</Link>
-        <Link to="/login" className="btn-landing-login landing-login-big">LOG IN / SIGN IN</Link>
+        <Link to="/login" className="btn-landing-login landing-login-big">LOG IN</Link>
       </section>
 
       <section id="branches" className="landing-section landing-branches">
@@ -110,19 +94,7 @@ export default function Landing() {
 
       <section id="expertise" className="landing-section landing-expertise">
         <h2 className="landing-plain-heading">OUR EXPERTISE</h2>
-        <div className="landing-expertise-grid">
-          {EXPERTISE.map((item) => (
-            <article key={item.title} className="landing-expertise-card">
-              <div className="landing-expertise-img">
-                <img src={item.image} alt={item.title} loading="lazy" />
-              </div>
-              <div className="landing-expertise-body">
-                <h3>{item.title}</h3>
-                <p>{item.description}</p>
-              </div>
-            </article>
-          ))}
-        </div>
+        <DepartmentGrid />
       </section>
 
       <a href="#join-form" className="landing-join-band" onClick={openForm}>

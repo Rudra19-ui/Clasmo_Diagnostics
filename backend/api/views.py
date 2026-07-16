@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.db import connection
 from django.db.models import Count, Q, Sum
 from django.db.utils import OperationalError, ProgrammingError
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, permissions, status
@@ -20,7 +21,7 @@ from .models import (
     LabMessage, PickupRequest, Registration, RegistrationTest, Test, TestCategory, User, LabRole,
     Membership, MembershipType, CollectionCenter, CollectionCenterBoy, DiscountReason, DiscountAuthority,
     WhatsAppMessageLog, ExpenseType, Area, RateMaster, Affiliation, SalesReference, Doctor, Patient, PatientAddress, LabConfiguration, ServiceAreaPincode, LabActivity,
-    JoinRequest,
+    JoinRequest, LoginLog,
 )
 from .serializers import (
     ChangePasswordSerializer,
@@ -48,6 +49,7 @@ from .serializers import (
     MembershipSerializer,
     MembershipTypeSerializer,
     PickupRequestSerializer,
+    RegisterSerializer,
     RegistrationCreateSerializer,
     RegistrationSearchSerializer,
     RegistrationSerializer,
@@ -59,6 +61,30 @@ from .serializers import (
 from .utils import generate_lab_code, get_lab_config
 
 logger = logging.getLogger(__name__)
+
+
+def _client_ip(request):
+    forwarded = request.META.get('HTTP_X_FORWARDED_FOR')
+    if forwarded:
+        return forwarded.split(',')[0].strip()
+    return request.META.get('REMOTE_ADDR')
+
+
+def _record_login_attempt(request, username, user=None, success=False):
+    LoginLog.objects.create(
+        user=user,
+        username_attempt=(username or '')[:150],
+        success=success,
+        ip_address=_client_ip(request),
+        user_agent=(request.META.get('HTTP_USER_AGENT') or '')[:255],
+    )
+
+
+def _persist_login_preferences(user, payload):
+    user.save_credentials = bool(payload.get('save_credentials'))
+    user.save_info = bool(payload.get('save_info'))
+    user.last_login = timezone.now()
+    user.save(update_fields=['save_credentials', 'save_info', 'last_login'])
 
 
 class HealthView(APIView):
@@ -107,16 +133,20 @@ class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
+        username = (request.data.get('username') or '').strip()
         try:
             serializer = LoginSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             user = serializer.validated_data['user']
+            _persist_login_preferences(user, request.data)
             token, _ = Token.objects.get_or_create(user=user)
+            _record_login_attempt(request, username, user, success=True)
             return Response({
                 'token': token.key,
                 'user': UserSerializer(user).data,
             })
         except DRFValidationError:
+            _record_login_attempt(request, username, success=False)
             raise
         except (OperationalError, ProgrammingError):
             logger.exception('Login database error')
@@ -128,6 +158,36 @@ class LoginView(APIView):
             logger.exception('Login failed')
             return Response(
                 {'detail': 'Login failed due to a server error.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class RegisterView(APIView):
+    authentication_classes = []
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        try:
+            serializer = RegisterSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            user = serializer.save()
+            return Response({
+                'detail': 'Account created successfully. Please login with your username and password.',
+                'user': UserSerializer(user).data,
+            }, status=status.HTTP_201_CREATED)
+        except DRFValidationError:
+            raise
+        except (OperationalError, ProgrammingError):
+            logger.exception('Register database error')
+            return Response(
+                {'detail': 'Database is not ready. Please retry in a moment.'},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
+        except Exception:
+            logger.exception('Register failed')
+            return Response(
+                {'detail': 'Registration failed due to a server error.'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 

@@ -18,7 +18,32 @@ class User(AbstractUser):
 
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=ROLE_USER)
     display_name = models.CharField(max_length=100, blank=True)
+    mobile = models.CharField(max_length=20, blank=True)
     lab_code = models.CharField(max_length=20, default='202505017')
+    save_credentials = models.BooleanField(default=False)
+    save_info = models.BooleanField(default=False)
+
+
+class LoginLog(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='login_logs',
+    )
+    username_attempt = models.CharField(max_length=150)
+    success = models.BooleanField(default=False)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.CharField(max_length=255, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        status = 'success' if self.success else 'failed'
+        return f'{self.username_attempt} ({status})'
 
 
 class LabRole(models.Model):

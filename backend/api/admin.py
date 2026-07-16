@@ -3,6 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 
 from .models import (
     JoinRequest,
+    LoginLog,
     LabMessage,
     Patient,
     PickupRequest,
@@ -20,12 +21,20 @@ from .models import (
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
     fieldsets = UserAdmin.fieldsets + (
-        ('Clasmo', {'fields': ('role', 'display_name', 'lab_code')}),
+        ('Clasmo', {'fields': ('role', 'display_name', 'mobile', 'lab_code', 'save_credentials', 'save_info')}),
     )
     add_fieldsets = UserAdmin.add_fieldsets + (
-        ('Clasmo', {'fields': ('role', 'display_name', 'lab_code')}),
+        ('Clasmo', {'fields': ('role', 'display_name', 'mobile', 'lab_code')}),
     )
-    list_display = ['username', 'display_name', 'role', 'lab_code', 'is_staff']
+    list_display = ['username', 'display_name', 'role', 'mobile', 'lab_code', 'is_staff', 'last_login']
+
+
+@admin.register(LoginLog)
+class LoginLogAdmin(admin.ModelAdmin):
+    list_display = ['username_attempt', 'user', 'success', 'ip_address', 'created_at']
+    list_filter = ['success', 'created_at']
+    search_fields = ['username_attempt', 'user__username', 'ip_address']
+    readonly_fields = ['user', 'username_attempt', 'success', 'ip_address', 'user_agent', 'created_at']
 
 
 admin.site.register(TestCategory)

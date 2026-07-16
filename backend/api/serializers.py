@@ -38,7 +38,50 @@ from .models import (
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'role', 'display_name', 'lab_code', 'is_active']
+        fields = [
+            'id', 'username', 'role', 'display_name', 'mobile', 'lab_code',
+            'is_active', 'save_credentials', 'save_info', 'last_login',
+        ]
+        read_only_fields = ['last_login']
+
+
+class RegisterSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=150)
+    password = serializers.CharField(write_only=True, min_length=8)
+    full_name = serializers.CharField(max_length=100)
+    mobile = serializers.CharField(max_length=20)
+
+    def validate_username(self, value):
+        username = value.strip()
+        if not username:
+            raise serializers.ValidationError('Username is required.')
+        if User.objects.filter(username__iexact=username).exists():
+            raise serializers.ValidationError('This username is already taken.')
+        return username
+
+    def validate_full_name(self, value):
+        cleaned = (value or '').strip()
+        if not cleaned:
+            raise serializers.ValidationError('Full name is required.')
+        return cleaned
+
+    def validate_mobile(self, value):
+        cleaned = (value or '').strip()
+        if not cleaned:
+            raise serializers.ValidationError('Mobile number is required.')
+        digits = ''.join(ch for ch in cleaned if ch.isdigit())
+        if len(digits) < 10:
+            raise serializers.ValidationError('Enter a valid 10-digit mobile number.')
+        return cleaned
+
+    def create(self, validated_data):
+        return User.objects.create_user(
+            username=validated_data['username'],
+            password=validated_data['password'],
+            display_name=validated_data['full_name'],
+            mobile=validated_data['mobile'],
+            role=User.ROLE_USER,
+        )
 
 
 class UserRoleUpdateSerializer(serializers.ModelSerializer):
@@ -105,6 +148,8 @@ class LoginSerializer(serializers.Serializer):
             user = authenticate(username=username.lower(), password=attrs['password'])
         if not user:
             raise serializers.ValidationError('Invalid username or password.')
+        if not user.is_active:
+            raise serializers.ValidationError('This account is disabled. Contact your administrator.')
         attrs['user'] = user
         return attrs
 

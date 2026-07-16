@@ -1321,6 +1321,75 @@ input, select, textarea, button {
   font-weight: 600;
 }
 
+.utility-profile-wrap {
+  position: relative;
+}
+
+.utility-profile-btn {
+  font-weight: 700;
+  color: var(--blue-deep);
+}
+
+.utility-profile-initial {
+  font-size: 13px;
+  line-height: 1;
+}
+
+.utility-profile-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 130;
+  min-width: 220px;
+  padding: 12px 14px;
+  background: var(--white);
+  border: 1px solid var(--gray-border);
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(10, 61, 107, 0.12);
+}
+
+.utility-profile-title {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.utility-profile-name {
+  margin: 0 0 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--blue-deep);
+}
+
+.utility-profile-details {
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.utility-profile-details div {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.utility-profile-details dt {
+  margin: 0;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.utility-profile-details dd {
+  margin: 0;
+  color: var(--text);
+  font-weight: 600;
+  word-break: break-word;
+}
+
 .main-menu-bar {
   background: var(--blue-nav);
   display: flex;

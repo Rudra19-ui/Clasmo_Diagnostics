@@ -58,8 +58,18 @@ async function requestForm(path, formData, method = 'POST') {
 }
 
 export const api = {
-  login: (username, password) =>
-    request('/auth/login/', { method: 'POST', body: JSON.stringify({ username, password }) }),
+  login: (username, password, options = {}) =>
+    request('/auth/login/', {
+      method: 'POST',
+      body: JSON.stringify({
+        username,
+        password,
+        save_credentials: Boolean(options.saveCredentials),
+        save_info: Boolean(options.saveInfo),
+      }),
+    }),
+  register: (payload) =>
+    request('/auth/register/', { method: 'POST', body: JSON.stringify(payload) }),
   logout: () => request('/auth/logout/', { method: 'POST' }),
   me: () => request('/auth/me/'),
   changePassword: (oldPassword, newPassword) =>

@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import NavIcon from './NavIcon';
 import AdminSidebar from './AdminSidebar';
 import { NAV } from '../utils/nav';
+import { ROLE_LABELS } from '../utils/roles';
 
 const LANGUAGE_OPTIONS = [
   { code: 'en', label: 'English' },
@@ -55,8 +56,10 @@ export default function Layout({ activePage, children }) {
   const [globalQuery, setGlobalQuery] = useState('');
   const [language, setLanguage] = useState(readStoredLanguage);
   const [languageOpen, setLanguageOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const [utilityNote, setUtilityNote] = useState('');
   const languageRef = useRef(null);
+  const profileRef = useRef(null);
   const isAdminRoute = activePage === 'administration' || location.pathname.startsWith('/admin/');
 
   const closeNav = useCallback(() => {
@@ -64,9 +67,10 @@ export default function Layout({ activePage, children }) {
     setOpenMenu(null);
   }, []);
 
-  const handleLogout = async () => {
-    await logout();
-    navigate('/login');
+  const handleLogout = () => {
+    setProfileOpen(false);
+    logout();
+    navigate('/login', { replace: true });
   };
 
   const showUtilityNote = (message) => {
@@ -107,17 +111,20 @@ export default function Layout({ activePage, children }) {
   }, [language]);
 
   useEffect(() => {
-    if (!languageOpen) return undefined;
+    if (!languageOpen && !profileOpen) return undefined;
 
     const onPointerDown = (event) => {
       if (languageRef.current && !languageRef.current.contains(event.target)) {
         setLanguageOpen(false);
       }
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setProfileOpen(false);
+      }
     };
 
     document.addEventListener('mousedown', onPointerDown);
     return () => document.removeEventListener('mousedown', onPointerDown);
-  }, [languageOpen]);
+  }, [languageOpen, profileOpen]);
 
   useEffect(() => {
     document.body.classList.toggle('nav-scroll-lock', navOpen);
@@ -136,6 +143,8 @@ export default function Layout({ activePage, children }) {
   }, [navOpen, closeNav]);
 
   const navItems = NAV.filter((item) => canSee(item, user));
+  const profileName = user?.display_name || user?.username || 'User';
+  const profileInitial = profileName.charAt(0).toUpperCase();
 
   return (
     <div className="dashboard app-with-sidebar">
@@ -291,6 +300,46 @@ export default function Layout({ activePage, children }) {
               <button type="button" className="icon-btn" title="Dashboard & calendar" onClick={handleCalendar}>
                 📅
               </button>
+            </li>
+            <li className="utility-profile-wrap" ref={profileRef}>
+              <button
+                type="button"
+                className="icon-btn utility-profile-btn"
+                title="Profile"
+                aria-expanded={profileOpen}
+                aria-haspopup="dialog"
+                onClick={() => setProfileOpen((open) => !open)}
+              >
+                <span className="utility-profile-initial" aria-hidden="true">{profileInitial}</span>
+              </button>
+              {profileOpen && (
+                <div className="utility-profile-panel" role="dialog" aria-label="Logged in user profile">
+                  <p className="utility-profile-title">Logged in as</p>
+                  <p className="utility-profile-name">{profileName}</p>
+                  <dl className="utility-profile-details">
+                    <div>
+                      <dt>Username</dt>
+                      <dd>{user?.username || '—'}</dd>
+                    </div>
+                    <div>
+                      <dt>Role</dt>
+                      <dd>{ROLE_LABELS[user?.role] || user?.role || '—'}</dd>
+                    </div>
+                    {user?.mobile ? (
+                      <div>
+                        <dt>Mobile</dt>
+                        <dd>{user.mobile}</dd>
+                      </div>
+                    ) : null}
+                    {user?.lab_code ? (
+                      <div>
+                        <dt>Lab Code</dt>
+                        <dd>{user.lab_code}</dd>
+                      </div>
+                    ) : null}
+                  </dl>
+                </div>
+              )}
             </li>
             <li>
               <button type="button" className="icon-btn" onClick={handleLogout} title="Logout">

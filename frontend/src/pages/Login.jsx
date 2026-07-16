@@ -1,38 +1,65 @@
-import { useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import clasmoLogo from '../assets/clasmo-logo.png';
+import '../styles/landing.css';
+import '../styles/login.css';
+
+const SAVE_INFO_KEY = 'clasmo_save_info';
+
+const EMPTY_REGISTER = {
+  fullName: '',
+  mobile: '',
+  username: '',
+  password: '',
+};
 
 export default function Login() {
-  const { user, login, logout } = useAuth();
+  const { user, login, register } = useAuth();
   const navigate = useNavigate();
-  const [role, setRole] = useState('user');
+  const [mode, setMode] = useState('login');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [registerForm, setRegisterForm] = useState(EMPTY_REGISTER);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
+  const [saveInfo, setSaveInfo] = useState(false);
+  const [forgotPassword, setForgotPassword] = useState(false);
+  const [resetMobile, setResetMobile] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    const shouldSaveInfo = localStorage.getItem(SAVE_INFO_KEY) === 'true';
+    setSaveInfo(shouldSaveInfo);
+  }, []);
 
   if (user) return <Navigate to="/search" replace />;
 
-  const fillCredentials = (userName, pass, userRole) => {
-    setUsername(userName);
-    setPassword(pass);
-    setRole(userRole);
+  const switchMode = (nextMode) => {
+    setMode(nextMode);
+    setError('');
+    setSuccess('');
+    setForgotPassword(false);
   };
 
-  const handleSubmit = async (e) => {
+  const setRegisterField = (field) => (event) => {
+    setRegisterForm((prev) => ({ ...prev, [field]: event.target.value }));
+  };
+
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
+    if (forgotPassword) return;
+
     setError('');
+    setSuccess('');
     setSubmitting(true);
     try {
-      const loggedIn = await login(username, password);
-      const roleOk =
-        (role === 'admin' && loggedIn.role === 'admin')
-        || (role === 'user' && loggedIn.role !== 'admin');
-      if (!roleOk) {
-        await logout();
-        setError(`This account is not a ${role}. Switch tab or use correct trial login.`);
-        return;
-      }
+      await login(username, password, { saveInfo });
+
+      localStorage.setItem(SAVE_INFO_KEY, saveInfo ? 'true' : 'false');
+
       navigate('/search');
     } catch (err) {
       setError(err.message);
@@ -41,98 +68,260 @@ export default function Login() {
     }
   };
 
+  const handleRegisterSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+    setSubmitting(true);
+    const newUsername = registerForm.username.trim();
+    try {
+      const data = await register({
+        full_name: registerForm.fullName.trim(),
+        mobile: registerForm.mobile.trim(),
+        username: newUsername,
+        password: registerForm.password,
+      });
+      setRegisterForm(EMPTY_REGISTER);
+      setShowRegisterPassword(false);
+      setUsername(newUsername);
+      setPassword('');
+      setMode('login');
+      setSuccess(data.detail || 'Account created successfully. Please login with your credentials.');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
-    <div className="login-page">
-      <header className="login-header">
-        <div className="login-logo">
-          <div className="logo-mark">C</div>
-          <div>
-            <h1>Clasmo Diagnostics</h1>
-            <p>Laboratory Information Management System</p>
-          </div>
-        </div>
-        <p className="login-contact">+91-8975273383 / +91-9146188320</p>
+    <div className="landing-page landing-sketch signin-page">
+      <header className="landing-sketch-header">
+        <Link to="/">
+          <img src={clasmoLogo} alt="Clasmo Diagnostics logo" className="landing-sketch-logo" />
+        </Link>
+        <h1 className="landing-sketch-brand">CLASMO DIAGNOSTICS PVT LTD</h1>
+        <Link to="/" className="landing-nav-link signin-back-link">← Back to Home</Link>
       </header>
 
-      <main className="login-main">
-        <section className="login-card">
-          <ul className="login-tabs" role="tablist">
-            <li>
-              <button type="button" className={role === 'user' ? 'active' : ''} onClick={() => setRole('user')}>User Login</button>
-            </li>
-            <li>
-              <button type="button" className={role === 'admin' ? 'active' : ''} onClick={() => setRole('admin')}>Admin Login</button>
-            </li>
-          </ul>
+      <p className="landing-sketch-tagline">Where Accuracy Saves Lives</p>
+      <hr className="landing-sketch-rule" />
 
-          <form className="login-form-card" onSubmit={handleSubmit}>
-            <div className="field">
-              <label htmlFor="username">Username *</label>
-              <input id="username" value={username} onChange={(e) => setUsername(e.target.value)} required autoComplete="username" placeholder="Enter username" />
+      <section className="signin-section">
+        <div className="landing-join-form-card signin-card">
+          <div className="signin-mode-switch" role="tablist" aria-label="Authentication mode">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mode === 'login'}
+              className={mode === 'login' ? 'signin-mode-btn is-active' : 'signin-mode-btn'}
+              onClick={() => switchMode('login')}
+            >
+              LOGIN
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mode === 'register'}
+              className={mode === 'register' ? 'signin-mode-btn is-active' : 'signin-mode-btn'}
+              onClick={() => switchMode('register')}
+            >
+              NEW USER SIGN UP
+            </button>
+          </div>
+
+          {mode === 'login' ? (
+            <>
+              <h2 className="landing-plain-heading">LOGIN</h2>
+
+              <form className="signin-form" onSubmit={handleLoginSubmit}>
+                <div className="signin-form-box">
+                  <div className="signin-field">
+                    <label htmlFor="username">Username</label>
+                    <input
+                      id="username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      required
+                      autoComplete="username"
+                      placeholder="Enter your username"
+                      disabled={forgotPassword}
+                    />
+                  </div>
+
+                  <div className="signin-field">
+                    <label htmlFor="password">Password</label>
+                    <input
+                      id="password"
+                      type={showPassword ? 'text' : 'password'}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required={!forgotPassword}
+                      autoComplete="current-password"
+                      placeholder="Enter your password"
+                      disabled={forgotPassword}
+                    />
+                  </div>
+
+                  <label className="signin-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={showPassword}
+                      onChange={(e) => setShowPassword(e.target.checked)}
+                      disabled={forgotPassword}
+                    />
+                    <span>show password</span>
+                  </label>
+                </div>
+
+                <div className="signin-options">
+                  <label className="signin-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={saveInfo}
+                      onChange={(e) => setSaveInfo(e.target.checked)}
+                      disabled={forgotPassword}
+                    />
+                    <span>save info</span>
+                  </label>
+
+                  <div className="signin-forgot">
+                    <label className="signin-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={forgotPassword}
+                        onChange={(e) => setForgotPassword(e.target.checked)}
+                      />
+                      <span>forgot password</span>
+                    </label>
+                    <p className="signin-forgot-hint">(with mobile number OTP)</p>
+
+                    {forgotPassword && (
+                      <div className="signin-otp-panel">
+                        <label htmlFor="reset-mobile">Mobile number</label>
+                        <input
+                          id="reset-mobile"
+                          type="tel"
+                          value={resetMobile}
+                          onChange={(e) => setResetMobile(e.target.value)}
+                          placeholder="Enter registered mobile number"
+                          autoComplete="tel"
+                        />
+                        <p className="signin-otp-note">
+                          OTP password recovery will be sent to this number once the service is enabled.
+                        </p>
+                        <button type="button" className="btn-test-quorum signin-otp-btn" disabled>
+                          Send OTP
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {error && <p className="landing-join-error signin-error">{error}</p>}
+                {success && <p className="signin-success">{success}</p>}
+
+                {!forgotPassword && (
+                  <div className="signin-form-actions">
+                    <button type="submit" className="btn-landing-login landing-login-big" disabled={submitting}>
+                      {submitting ? 'LOGGING IN…' : 'LOGIN'}
+                    </button>
+                  </div>
+                )}
+              </form>
+            </>
+          ) : (
+            <>
+              <h2 className="landing-plain-heading">NEW USER SIGN UP</h2>
+
+              <form className="signin-form" onSubmit={handleRegisterSubmit}>
+                <div className="signin-form-box">
+                  <div className="signin-field">
+                    <label htmlFor="full-name">Full Name</label>
+                    <input
+                      id="full-name"
+                      value={registerForm.fullName}
+                      onChange={setRegisterField('fullName')}
+                      required
+                      autoComplete="name"
+                      placeholder="Enter your full name"
+                    />
+                  </div>
+
+                  <div className="signin-field">
+                    <label htmlFor="register-mobile">Mobile Number</label>
+                    <input
+                      id="register-mobile"
+                      type="tel"
+                      value={registerForm.mobile}
+                      onChange={setRegisterField('mobile')}
+                      required
+                      autoComplete="tel"
+                      placeholder="Enter your mobile number"
+                    />
+                  </div>
+
+                  <div className="signin-field">
+                    <label htmlFor="register-username">Username</label>
+                    <input
+                      id="register-username"
+                      value={registerForm.username}
+                      onChange={setRegisterField('username')}
+                      required
+                      autoComplete="username"
+                      placeholder="Choose a username"
+                    />
+                  </div>
+
+                  <div className="signin-field signin-field-last">
+                    <label htmlFor="register-password">Password</label>
+                    <input
+                      id="register-password"
+                      type={showRegisterPassword ? 'text' : 'password'}
+                      value={registerForm.password}
+                      onChange={setRegisterField('password')}
+                      required
+                      minLength={8}
+                      autoComplete="new-password"
+                      placeholder="Create a password (min. 8 characters)"
+                    />
+                  </div>
+
+                  <label className="signin-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={showRegisterPassword}
+                      onChange={(e) => setShowRegisterPassword(e.target.checked)}
+                    />
+                    <span>show password</span>
+                  </label>
+                </div>
+
+                {error && <p className="landing-join-error signin-error">{error}</p>}
+                {success && <p className="signin-success">{success}</p>}
+
+                <div className="signin-form-actions">
+                  <button type="submit" className="btn-landing-login landing-login-big" disabled={submitting}>
+                    {submitting ? 'CREATING ACCOUNT…' : 'SIGN UP'}
+                  </button>
+                </div>
+              </form>
+            </>
+          )}
+        </div>
+      </section>
+
+      <footer className="landing-footer landing-footer-simple signin-footer">
+        <div className="landing-footer-simple-inner signin-footer-inner">
+          <div className="signin-footer-top">
+            <div className="signin-footer-links">
+              <a href="#">Terms of Service</a>
+              <a href="#">Privacy Policy</a>
             </div>
-            <div className="field">
-              <label htmlFor="password">Password *</label>
-              <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" placeholder="Enter password" />
-            </div>
-            {error && <p className="login-error">{error}</p>}
-            <button type="submit" className="btn-login-full" disabled={submitting}>{submitting ? 'Logging in...' : 'Login'}</button>
-            <label className="remember"><input type="checkbox" /> Remember Me</label>
-          </form>
-
-          <aside className="trial-box">
-            <h2>Trial login (for testing)</h2>
-            <ul className="trial-credentials">
-              <li>
-                <strong>User</strong>
-                <ul>
-                  <li>Username: <code>user_test</code></li>
-                  <li>Password: <code>password123</code></li>
-                </ul>
-                <button type="button" className="btn-fill" onClick={() => fillCredentials('user_test', 'password123', 'user')}>Use User credentials</button>
-              </li>
-          <li>
-            <strong>Admin</strong>
-            <ul>
-              <li>Username: <code>admin_test</code></li>
-              <li>Password: <code>admin123</code></li>
-            </ul>
-            <button type="button" className="btn-fill" onClick={() => fillCredentials('admin_test', 'admin123', 'admin')}>Use Admin credentials</button>
-          </li>
-          <li>
-            <strong>Technician</strong>
-            <ul>
-              <li>Username: <code>technician_test</code></li>
-              <li>Password: <code>tech123</code></li>
-            </ul>
-            <button type="button" className="btn-fill" onClick={() => fillCredentials('technician_test', 'tech123', 'user')}>Use Technician credentials</button>
-          </li>
-          <li>
-            <strong>Pathologist</strong>
-            <ul>
-              <li>Username: <code>pathologist_test</code></li>
-              <li>Password: <code>patho123</code></li>
-            </ul>
-            <button type="button" className="btn-fill" onClick={() => fillCredentials('pathologist_test', 'patho123', 'user')}>Use Pathologist credentials</button>
-          </li>
-        </ul>
-          </aside>
-        </section>
-
-        <section className="login-features">
-          <h2>Modules</h2>
-          <ul className="module-list">
-            <li>Search &amp; patient lookup</li>
-            <li>Test Registration &amp; billing</li>
-            <li>Test Result &amp; authorization</li>
-            <li>Administration <em>(Admin only)</em></li>
-            <li>Reports &amp; Dashboard</li>
-            <li>Device Request &amp; home collection</li>
-          </ul>
-        </section>
-      </main>
-
-      <footer className="dash-footer login-footer">
-        © 2026 Clasmo Diagnostics · Empowering labs with smarter, faster operations.
+            <img src={clasmoLogo} alt="" className="signin-footer-logo" aria-hidden="true" />
+          </div>
+          <p className="landing-footer-company">© CLASMO DIAGNOSTICS PVT LTD.</p>
+        </div>
       </footer>
     </div>
   );

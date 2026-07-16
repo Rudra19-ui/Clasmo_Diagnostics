@@ -26,18 +26,17 @@ export function AuthProvider({ children }) {
     user,
     loading,
     isAdmin: user?.role === 'admin',
-    async login(username, password) {
-      const data = await api.login(username, password);
+    async login(username, password, options = {}) {
+      const data = await api.login(username, password, options);
       localStorage.setItem('clasmo_token', data.token);
       setUser(data.user);
       return data.user;
     },
-    async logout() {
-      try {
-        await api.logout();
-      } catch {
-        // ignore logout errors
-      }
+    async register(payload) {
+      return api.register(payload);
+    },
+    logout() {
+      void api.logout().catch(() => {});
       localStorage.removeItem('clasmo_token');
       setUser(null);
     },

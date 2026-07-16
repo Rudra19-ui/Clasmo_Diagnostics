@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import FilterPanel from '../components/FilterPanel';
 import Footer from '../components/Footer';
 import Layout from '../components/Layout';
@@ -22,6 +22,13 @@ export default function Reports() {
     setReport(data);
     setActiveType(type);
   };
+
+  useEffect(() => {
+    const hashType = window.location.hash.replace('#', '');
+    if (hashType && REPORTS.some((item) => item.id === hashType)) {
+      generate(hashType);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Layout activePage="reports">

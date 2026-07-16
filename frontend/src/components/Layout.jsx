@@ -1,11 +1,19 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import NavIcon from './NavIcon';
 import AdminSidebar from './AdminSidebar';
 import { NAV } from '../utils/nav';
 
-const PHONES = '+91-8975273383 / +91-9146188320';
+const LANGUAGE_OPTIONS = [
+  { code: 'en', label: 'English' },
+  { code: 'hi', label: 'Hindi' },
+  { code: 'mr', label: 'Marathi' },
+];
+
+function readStoredLanguage() {
+  return localStorage.getItem('clasmo_ui_lang') || 'en';
+}
 
 function canSee(item, user) {
   if (item.adminOnly && user?.role !== 'admin') return false;
@@ -44,6 +52,11 @@ export default function Layout({ activePage, children }) {
   const location = useLocation();
   const [openMenu, setOpenMenu] = useState(null);
   const [navOpen, setNavOpen] = useState(false);
+  const [globalQuery, setGlobalQuery] = useState('');
+  const [language, setLanguage] = useState(readStoredLanguage);
+  const [languageOpen, setLanguageOpen] = useState(false);
+  const [utilityNote, setUtilityNote] = useState('');
+  const languageRef = useRef(null);
   const isAdminRoute = activePage === 'administration' || location.pathname.startsWith('/admin/');
 
   const closeNav = useCallback(() => {
@@ -55,6 +68,56 @@ export default function Layout({ activePage, children }) {
     await logout();
     navigate('/login');
   };
+
+  const showUtilityNote = (message) => {
+    setUtilityNote(message);
+    window.setTimeout(() => setUtilityNote(''), 2500);
+  };
+
+  const handleGlobalSearch = (event) => {
+    event.preventDefault();
+    const query = globalQuery.trim();
+    if (!query) return;
+    navigate(`/search?q=${encodeURIComponent(query)}`);
+  };
+
+  const handlePayments = () => {
+    navigate('/reports#outstanding');
+  };
+
+  const handleMail = () => {
+    navigate('/device/message-to-lab');
+  };
+
+  const handleCalendar = () => {
+    navigate('/dashboard');
+  };
+
+  const handleLanguageSelect = (code) => {
+    setLanguage(code);
+    localStorage.setItem('clasmo_ui_lang', code);
+    document.documentElement.lang = code;
+    setLanguageOpen(false);
+    const label = LANGUAGE_OPTIONS.find((item) => item.code === code)?.label || code;
+    showUtilityNote(`Language set to ${label}`);
+  };
+
+  useEffect(() => {
+    document.documentElement.lang = language;
+  }, [language]);
+
+  useEffect(() => {
+    if (!languageOpen) return undefined;
+
+    const onPointerDown = (event) => {
+      if (languageRef.current && !languageRef.current.contains(event.target)) {
+        setLanguageOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', onPointerDown);
+    return () => document.removeEventListener('mousedown', onPointerDown);
+  }, [languageOpen]);
 
   useEffect(() => {
     document.body.classList.toggle('nav-scroll-lock', navOpen);
@@ -153,8 +216,6 @@ export default function Layout({ activePage, children }) {
             );
           })}
         </ul>
-
-        <div className="nav-phones">{PHONES}</div>
       </aside>
 
       <div className="app-main">
@@ -171,21 +232,71 @@ export default function Layout({ activePage, children }) {
             <span className="hamburger-line" />
             <span className="hamburger-line" />
           </button>
-          <div className="global-search">
-            <input type="search" placeholder="Search by Name, Labcode, Mobile Number, Adhar Number" aria-label="Global search" />
-          </div>
+          <form className="global-search" onSubmit={handleGlobalSearch}>
+            <input
+              type="search"
+              value={globalQuery}
+              onChange={(event) => setGlobalQuery(event.target.value)}
+              placeholder="Search by Name, Labcode, Mobile Number, Adhar Number"
+              aria-label="Global search"
+            />
+          </form>
           <div className="brand-title">
-            CLASMO DIAGNOSTICS PVT.LTD.{' '}
-            <span className="brand-sub">(CLASMO Diagnostics pvt.ltd) — {user?.lab_code}</span>
+            CLASMO DIAGNOSTICS PVT.LTD.
           </div>
+          {utilityNote && (
+            <div className="utility-note" role="status" aria-live="polite">{utilityNote}</div>
+          )}
           <ul className="utility-icons">
-            <li><span className="util-label">{user?.display_name}</span></li>
-            <li><button type="button" className="icon-btn" title="Payments">$</button></li>
-            <li><button type="button" className="icon-btn" title="Mail">✉</button></li>
-            <li><button type="button" className="icon-btn badge" title="Notifications">🔔<span>4</span></button></li>
-            <li><button type="button" className="icon-btn" title="Language">🌐</button></li>
-            <li><button type="button" className="icon-btn" title="Calendar">📅</button></li>
-            <li><button type="button" className="icon-btn" onClick={handleLogout} title="Logout">⏻</button></li>
+            <li>
+              <button type="button" className="icon-btn" title="Payments & outstanding" onClick={handlePayments}>
+                $
+              </button>
+            </li>
+            <li>
+              <button type="button" className="icon-btn" title="Message to lab" onClick={handleMail}>
+                ✉
+              </button>
+            </li>
+            <li className="utility-language-wrap" ref={languageRef}>
+              <button
+                type="button"
+                className="icon-btn"
+                title="Language"
+                aria-expanded={languageOpen}
+                aria-haspopup="listbox"
+                onClick={() => setLanguageOpen((open) => !open)}
+              >
+                🌐
+              </button>
+              {languageOpen && (
+                <ul className="utility-language-menu" role="listbox" aria-label="Select language">
+                  {LANGUAGE_OPTIONS.map((option) => (
+                    <li key={option.code}>
+                      <button
+                        type="button"
+                        role="option"
+                        aria-selected={language === option.code}
+                        className={language === option.code ? 'active' : ''}
+                        onClick={() => handleLanguageSelect(option.code)}
+                      >
+                        {option.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+            <li>
+              <button type="button" className="icon-btn" title="Dashboard & calendar" onClick={handleCalendar}>
+                📅
+              </button>
+            </li>
+            <li>
+              <button type="button" className="icon-btn" onClick={handleLogout} title="Logout">
+                ⏻
+              </button>
+            </li>
           </ul>
         </div>
         {isAdminRoute ? (

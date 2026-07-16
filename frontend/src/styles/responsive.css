@@ -340,10 +340,6 @@ body.nav-scroll-lock {
     font-size: clamp(3rem, 18vw, 4.5rem);
   }
 
-  .utility-icons li:nth-child(n+3):nth-child(-n+6) {
-    display: none;
-  }
-
   .trial-box {
     max-height: none;
   }

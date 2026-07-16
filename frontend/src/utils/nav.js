@@ -42,6 +42,5 @@ export const NAV = [
     ],
   },
   { id: 'dashboard', label: 'Dashboard', href: '/dashboard' },
-  { id: 'elab-pay', label: 'Elab-PAY', href: '/elab-pay' },
   { id: 'help', label: 'Help', href: '/help' },
 ];

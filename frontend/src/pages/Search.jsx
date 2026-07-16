@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import Footer from '../components/Footer';
 import Layout from '../components/Layout';
 import WorkFlowHistoryModal from '../components/WorkFlowHistoryModal';
@@ -149,6 +149,7 @@ function buildParams(basic, advance, activeStatus) {
 
 export default function Search() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const today = formatDate();
   const [basic, setBasic] = useState({
     patientName: '',
@@ -183,6 +184,41 @@ export default function Search() {
     api.getTestCategories().then(setCategories).catch(console.error);
     api.getUsers().then(setUsers).catch(console.error);
   }, []);
+
+  useEffect(() => {
+    const query = (searchParams.get('q') || '').trim();
+    if (!query) return;
+
+    const digits = query.replace(/\D/g, '');
+    let nextBasic = { ...basic, patientName: '', fromLabcode: '', toLabcode: '' };
+    let nextAdvance = { ...advance, mobile: '' };
+
+    if (/^\d{6,}$/.test(query)) {
+      nextBasic = { ...nextBasic, fromLabcode: query, toLabcode: query };
+    } else if (digits.length >= 10) {
+      nextAdvance = { ...nextAdvance, mobile: query };
+    } else {
+      nextBasic = { ...nextBasic, patientName: query };
+    }
+
+    setBasic(nextBasic);
+    setAdvance(nextAdvance);
+
+    (async () => {
+      setLoading(true);
+      try {
+        const params = buildParams(nextBasic, nextAdvance, activeStatus);
+        const data = await api.searchRegistrations(params);
+        setRows(data);
+        setSelectedRows(new Set());
+      } catch (err) {
+        console.error(err);
+        setRows([]);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const setAdv = (key, value) => setAdvance((prev) => ({ ...prev, [key]: value }));
   const setBasicField = (key, value) => setBasic((prev) => ({ ...prev, [key]: value }));

@@ -164,8 +164,7 @@ class LoginView(APIView):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class RegisterView(APIView):
-    authentication_classes = []
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated, IsAdmin]
 
     def post(self, request):
         try:

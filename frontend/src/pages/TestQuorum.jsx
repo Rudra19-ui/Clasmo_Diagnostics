@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import clasmoLogo from '../assets/clasmo-logo.png';
+import LandingBrandTitle from '../components/landing/LandingBrandTitle';
 import { api } from '../services/api';
 import '../styles/landing.css';
 
@@ -41,7 +42,7 @@ export default function TestQuorum() {
         <Link to="/">
           <img src={clasmoLogo} alt="Clasmo Diagnostics logo" className="landing-sketch-logo" />
         </Link>
-        <h1 className="landing-sketch-brand">CLASMO DIAGNOSTICS PVT LTD</h1>
+        <LandingBrandTitle />
         <Link to="/" className="landing-nav-link quorum-back-link">← Back to Home</Link>
       </header>
       <hr className="landing-sketch-rule quorum-no-print" />
@@ -138,11 +139,6 @@ export default function TestQuorum() {
         </section>
       )}
 
-      <footer className="landing-footer landing-footer-simple quorum-no-print">
-        <div className="landing-footer-simple-inner">
-          <p className="landing-footer-company">© CLASMO DIAGNOSTICS PVT LTD.</p>
-        </div>
-      </footer>
     </div>
   );
 }

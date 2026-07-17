@@ -3,8 +3,22 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import NavIcon from './NavIcon';
 import AdminSidebar from './AdminSidebar';
+import AppBrandHeader from './AppBrandHeader';
 import { NAV } from '../utils/nav';
 import { ROLE_LABELS } from '../utils/roles';
+
+function formatUserDateTime(value) {
+  if (!value) return '—';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
 
 const LANGUAGE_OPTIONS = [
   { code: 'en', label: 'English' },
@@ -60,7 +74,8 @@ export default function Layout({ activePage, children }) {
   const [utilityNote, setUtilityNote] = useState('');
   const languageRef = useRef(null);
   const profileRef = useRef(null);
-  const isAdminRoute = activePage === 'administration' || location.pathname.startsWith('/admin/');
+  const isStandalonePage = activePage === 'enquire-box' || activePage === 'user-signup';
+  const isAdminRoute = !isStandalonePage && (activePage === 'administration' || location.pathname.startsWith('/admin/'));
 
   const closeNav = useCallback(() => {
     setNavOpen(false);
@@ -229,18 +244,22 @@ export default function Layout({ activePage, children }) {
 
       <div className="app-main">
         <div className="top-utility">
-          <button
-            type="button"
-            className="nav-toggle hamburger-btn"
-            aria-expanded={navOpen}
-            aria-controls="main-navigation"
-            aria-label={navOpen ? 'Close menu' : 'Open menu'}
-            onClick={() => setNavOpen((open) => !open)}
-          >
-            <span className="hamburger-line" />
-            <span className="hamburger-line" />
-            <span className="hamburger-line" />
-          </button>
+          <div className="top-utility-start">
+            <button
+              type="button"
+              className="nav-toggle hamburger-btn"
+              aria-expanded={navOpen}
+              aria-controls="main-navigation"
+              aria-label={navOpen ? 'Close menu' : 'Open menu'}
+              onClick={() => setNavOpen((open) => !open)}
+            >
+              <span className="hamburger-line" />
+              <span className="hamburger-line" />
+              <span className="hamburger-line" />
+            </button>
+            <AppBrandHeader compact />
+          </div>
+
           <form className="global-search" onSubmit={handleGlobalSearch}>
             <input
               type="search"
@@ -250,13 +269,12 @@ export default function Layout({ activePage, children }) {
               aria-label="Global search"
             />
           </form>
-          <div className="brand-title">
-            CLASMO DIAGNOSTICS PVT.LTD.
-          </div>
-          {utilityNote && (
-            <div className="utility-note" role="status" aria-live="polite">{utilityNote}</div>
-          )}
-          <ul className="utility-icons">
+
+          <div className="top-utility-end">
+            {utilityNote && (
+              <div className="utility-note" role="status" aria-live="polite">{utilityNote}</div>
+            )}
+            <ul className="utility-icons">
             <li>
               <button type="button" className="icon-btn" title="Payments & outstanding" onClick={handlePayments}>
                 $
@@ -314,9 +332,18 @@ export default function Layout({ activePage, children }) {
               </button>
               {profileOpen && (
                 <div className="utility-profile-panel" role="dialog" aria-label="Logged in user profile">
-                  <p className="utility-profile-title">Logged in as</p>
-                  <p className="utility-profile-name">{profileName}</p>
+                  <div className="utility-profile-panel-header">
+                    <div className="utility-profile-avatar" aria-hidden="true">{profileInitial}</div>
+                    <div>
+                      <p className="utility-profile-title">Logged in as</p>
+                      <p className="utility-profile-name">{profileName}</p>
+                    </div>
+                  </div>
                   <dl className="utility-profile-details">
+                    <div>
+                      <dt>Full Name</dt>
+                      <dd>{user?.display_name || '—'}</dd>
+                    </div>
                     <div>
                       <dt>Username</dt>
                       <dd>{user?.username || '—'}</dd>
@@ -325,18 +352,22 @@ export default function Layout({ activePage, children }) {
                       <dt>Role</dt>
                       <dd>{ROLE_LABELS[user?.role] || user?.role || '—'}</dd>
                     </div>
-                    {user?.mobile ? (
-                      <div>
-                        <dt>Mobile</dt>
-                        <dd>{user.mobile}</dd>
-                      </div>
-                    ) : null}
-                    {user?.lab_code ? (
-                      <div>
-                        <dt>Lab Code</dt>
-                        <dd>{user.lab_code}</dd>
-                      </div>
-                    ) : null}
+                    <div>
+                      <dt>Mobile</dt>
+                      <dd>{user?.mobile || '—'}</dd>
+                    </div>
+                    <div>
+                      <dt>Lab Code</dt>
+                      <dd>{user?.lab_code || '—'}</dd>
+                    </div>
+                    <div>
+                      <dt>Last Login</dt>
+                      <dd>{formatUserDateTime(user?.last_login)}</dd>
+                    </div>
+                    <div>
+                      <dt>Account Status</dt>
+                      <dd>{user?.is_active === false ? 'Inactive' : 'Active'}</dd>
+                    </div>
                   </dl>
                 </div>
               )}
@@ -347,6 +378,7 @@ export default function Layout({ activePage, children }) {
               </button>
             </li>
           </ul>
+          </div>
         </div>
         {isAdminRoute ? (
           <div className="admin-page-shell">

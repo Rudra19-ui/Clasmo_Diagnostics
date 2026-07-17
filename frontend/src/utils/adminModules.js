@@ -31,7 +31,6 @@ export const ADMIN_COLUMNS = [
       { slug: 'checklist', label: 'CheckList', desc: 'Operational checklists.' },
       { slug: 'create-activity', label: 'Create Activity', desc: 'Schedule new activities.' },
       { slug: 'activities', label: 'Activities', desc: 'View scheduled activities.' },
-      { slug: 'enquiries', label: 'Enquiries', desc: 'Website join requests.' },
       { slug: 'machine-mapping', label: 'Machine Mapping', desc: 'Analyzer to test mapping.' },
       { slug: 'area-master', label: 'Area Master', desc: 'Geographic area master.' },
       { slug: 'sales-reference-master', label: 'Sales Reference Master', desc: 'Sales reference contacts.' },

@@ -4,10 +4,13 @@ const ICON_COLORS = {
   'test-result': '#e53935',
   clinical: '#00acc1',
   administration: '#7e57c2',
+  'user-signup': '#5c6bc0',
+  'enquire-box': '#00838f',
   reports: '#8e24aa',
   'device-request': '#fb8c00',
   changelab: '#fbc02d',
   dashboard: '#c9a66b',
+  profile: '#4a90e2',
   'elab-pay': '#29b6f6',
   help: '#9e9e9e',
 };
@@ -48,6 +51,19 @@ export default function NavIcon({ id }) {
         <path d="M17 6l2-2M19 10h2" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
       </svg>
     ),
+    'user-signup': (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+        <circle cx="9" cy="8" r="3" stroke={color} strokeWidth="2" />
+        <path d="M4 19c0-3 2.5-5 5-5" stroke={color} strokeWidth="2" strokeLinecap="round" />
+        <path d="M16 11v6M13 14h6" stroke={color} strokeWidth="2" strokeLinecap="round" />
+      </svg>
+    ),
+    'enquire-box': (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+        <rect x="4" y="6" width="16" height="13" rx="2" stroke={color} strokeWidth="2" />
+        <path d="M8 10h8M8 14h5" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
+      </svg>
+    ),
     reports: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden>
         <path d="M6 5h10l4 4v11a1 1 0 01-1 1H6a1 1 0 01-1-1V6a1 1 0 011-1z" stroke={color} strokeWidth="2" />
@@ -72,6 +88,12 @@ export default function NavIcon({ id }) {
         <path d="M12 5a7 7 0 107 7" stroke={color} strokeWidth="2" strokeLinecap="round" />
         <path d="M12 12l4-2" stroke={color} strokeWidth="2" strokeLinecap="round" />
         <circle cx="12" cy="12" r="1.8" fill={color} />
+      </svg>
+    ),
+    profile: (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+        <circle cx="12" cy="8" r="3.2" stroke={color} strokeWidth="2" />
+        <path d="M6 19c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke={color} strokeWidth="2" strokeLinecap="round" />
       </svg>
     ),
     'elab-pay': (

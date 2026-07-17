@@ -1,8 +1,10 @@
 export const ROLES = {
   USER: 'user',
   ADMIN: 'admin',
-  TECHNICIAN: 'technician',
+  HR: 'hr',
   PATHOLOGIST: 'pathologist',
+  TECHNICIAN: 'technician',
+  RECEPTIONIST: 'receptionist',
 };
 
 export const ALL_ROLES = Object.values(ROLES);
@@ -10,9 +12,20 @@ export const ALL_ROLES = Object.values(ROLES);
 export const ROLE_LABELS = {
   [ROLES.USER]: 'User',
   [ROLES.ADMIN]: 'Admin',
-  [ROLES.TECHNICIAN]: 'Technician',
+  [ROLES.HR]: 'HR',
   [ROLES.PATHOLOGIST]: 'Pathologist',
+  [ROLES.TECHNICIAN]: 'Technician',
+  [ROLES.RECEPTIONIST]: 'Receptionist',
 };
+
+export const SIGNUP_ROLE_OPTIONS = [
+  { value: ROLES.ADMIN, label: 'Admin' },
+  { value: ROLES.HR, label: 'HR' },
+  { value: ROLES.PATHOLOGIST, label: 'Pathologist' },
+  { value: ROLES.TECHNICIAN, label: 'Technician' },
+  { value: ROLES.USER, label: 'User' },
+  { value: ROLES.RECEPTIONIST, label: 'Receptionist' },
+];
 
 export const ROLE_OPTIONS = ALL_ROLES.map((value) => ({
   value,

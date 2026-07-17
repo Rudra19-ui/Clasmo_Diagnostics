@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import clasmoLogo from '../../assets/clasmo-logo.png';
 import { api } from '../../services/api';
 
@@ -8,6 +8,9 @@ const EMPTY_FRANCHISE = {
   partnershipType: 'brand',
   name: '',
   contactPerson: '',
+  phone: '',
+  email: '',
+  city: '',
   fullAddress: '',
   pincode: '',
   proofOfAddress: '',
@@ -19,44 +22,16 @@ const EMPTY_JOB = {
   experienceType: 'fresher',
   currentEmployer: '',
   phone: '',
+  email: '',
+  city: '',
   totalExperience: '',
   lastSalary: '',
 };
-
-function FileUploadBox({ id, label, hint, file, onChange }) {
-  const inputRef = useRef(null);
-
-  return (
-    <div className="join-upload-box">
-      <button
-        type="button"
-        className="join-upload-trigger"
-        onClick={() => inputRef.current?.click()}
-      >
-        <span className="join-upload-icon" aria-hidden="true">📄</span>
-        <span className="join-upload-label">{label}</span>
-        {hint && <span className="join-upload-hint">{hint}</span>}
-        {file && <span className="join-upload-filename">{file.name}</span>}
-      </button>
-      <input
-        ref={inputRef}
-        id={id}
-        type="file"
-        accept="image/*,.pdf,.doc,.docx"
-        className="join-upload-input"
-        onChange={(event) => onChange(event.target.files?.[0] || null)}
-      />
-    </div>
-  );
-}
 
 export default function JoinWithClasmo({ onClose }) {
   const [step, setStep] = useState(null);
   const [franchise, setFranchise] = useState(EMPTY_FRANCHISE);
   const [job, setJob] = useState(EMPTY_JOB);
-  const [letterheadPhoto, setLetterheadPhoto] = useState(null);
-  const [labInteriorPhoto, setLabInteriorPhoto] = useState(null);
-  const [resume, setResume] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -80,12 +55,14 @@ export default function JoinWithClasmo({ onClose }) {
     formData.append('request_type', 'franchise');
     formData.append('partnership_type', franchise.partnershipType);
     formData.append('name', franchise.name.trim());
+    formData.append('organization', franchise.name.trim());
     formData.append('contact_person', franchise.contactPerson.trim());
+    formData.append('phone', franchise.phone.trim());
+    formData.append('email', franchise.email.trim());
+    formData.append('city', franchise.city.trim());
     formData.append('full_address', franchise.fullAddress.trim());
     formData.append('pincode', franchise.pincode.trim());
     formData.append('proof_of_address', franchise.proofOfAddress.trim());
-    if (letterheadPhoto) formData.append('letterhead_photo', letterheadPhoto);
-    if (labInteriorPhoto) formData.append('lab_interior_photo', labInteriorPhoto);
     return formData;
   };
 
@@ -96,10 +73,12 @@ export default function JoinWithClasmo({ onClose }) {
     formData.append('name', job.name.trim());
     formData.append('experience_type', job.experienceType);
     formData.append('current_employer', job.currentEmployer.trim());
+    formData.append('organization', job.currentEmployer.trim());
     formData.append('phone', job.phone.trim());
+    formData.append('email', job.email.trim());
+    formData.append('city', job.city.trim());
     formData.append('total_experience', job.totalExperience.trim());
     formData.append('last_salary', job.lastSalary.trim());
-    if (resume) formData.append('resume', resume);
     return formData;
   };
 
@@ -111,8 +90,6 @@ export default function JoinWithClasmo({ onClose }) {
       await api.submitJoinRequestForm(buildFranchiseFormData());
       setSubmitted(true);
       setFranchise(EMPTY_FRANCHISE);
-      setLetterheadPhoto(null);
-      setLabInteriorPhoto(null);
     } catch (err) {
       setError(err.message || 'Unable to submit franchise application.');
     } finally {
@@ -128,7 +105,6 @@ export default function JoinWithClasmo({ onClose }) {
       await api.submitJoinRequestForm(buildJobFormData());
       setSubmitted(true);
       setJob(EMPTY_JOB);
-      setResume(null);
     } catch (err) {
       setError(err.message || 'Unable to submit job application.');
     } finally {
@@ -209,6 +185,18 @@ export default function JoinWithClasmo({ onClose }) {
               <input type="text" value={franchise.contactPerson} onChange={setFranchiseField('contactPerson')} required placeholder="Contact person name" />
             </label>
             <label>
+              Contact Number *
+              <input type="tel" value={franchise.phone} onChange={setFranchiseField('phone')} required placeholder="Mobile number" />
+            </label>
+            <label>
+              Email
+              <input type="email" value={franchise.email} onChange={setFranchiseField('email')} placeholder="Email address" />
+            </label>
+            <label>
+              City *
+              <input type="text" value={franchise.city} onChange={setFranchiseField('city')} required placeholder="City" />
+            </label>
+            <label>
               Full Address *
               <textarea rows={2} value={franchise.fullAddress} onChange={setFranchiseField('fullAddress')} required placeholder="Complete address" />
             </label>
@@ -220,24 +208,6 @@ export default function JoinWithClasmo({ onClose }) {
               Proof of Address / ID
               <input type="text" value={franchise.proofOfAddress} onChange={setFranchiseField('proofOfAddress')} placeholder="ID proof details" />
             </label>
-
-            <div className="join-upload-panel">
-              <p className="join-upload-heading">Required Documents</p>
-              <div className="join-upload-grid">
-                <FileUploadBox
-                  id="letterhead-photo"
-                  label="Letterhead / Photo / ID"
-                  file={letterheadPhoto}
-                  onChange={setLetterheadPhoto}
-                />
-                <FileUploadBox
-                  id="lab-interior-photo"
-                  label="Lab Interior / Home Photo"
-                  file={labInteriorPhoto}
-                  onChange={setLabInteriorPhoto}
-                />
-              </div>
-            </div>
 
             {error && <p className="landing-join-error">{error}</p>}
             <button type="submit" className="btn-landing-login landing-login-big join-clasmo-submit" disabled={submitting}>
@@ -281,6 +251,14 @@ export default function JoinWithClasmo({ onClose }) {
               <input type="tel" value={job.phone} onChange={setJobField('phone')} required placeholder="Mobile number" />
             </label>
             <label>
+              Email
+              <input type="email" value={job.email} onChange={setJobField('email')} placeholder="Email address" />
+            </label>
+            <label>
+              City
+              <input type="text" value={job.city} onChange={setJobField('city')} placeholder="City" />
+            </label>
+            <label>
               Total Experience (in years)
               <input type="text" value={job.totalExperience} onChange={setJobField('totalExperience')} placeholder="Experience in years" />
             </label>
@@ -288,16 +266,6 @@ export default function JoinWithClasmo({ onClose }) {
               Last Salary Drawn
               <input type="text" value={job.lastSalary} onChange={setJobField('lastSalary')} placeholder="Last drawn salary" />
             </label>
-
-            <div className="join-upload-panel">
-              <p className="join-upload-heading">Required Documents</p>
-              <FileUploadBox
-                id="resume-upload"
-                label="Resume / CV Upload"
-                file={resume}
-                onChange={setResume}
-              />
-            </div>
 
             {error && <p className="landing-join-error">{error}</p>}
             <button type="submit" className="btn-landing-login landing-login-big join-clasmo-submit" disabled={submitting}>

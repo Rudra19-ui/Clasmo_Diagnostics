@@ -50,6 +50,12 @@ class RegisterSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True, min_length=8)
     full_name = serializers.CharField(max_length=100)
     mobile = serializers.CharField(max_length=20)
+    role = serializers.ChoiceField(choices=User.ROLE_CHOICES, default=User.ROLE_USER)
+
+    def validate_role(self, value):
+        if value not in User.SIGNUP_ROLES:
+            raise serializers.ValidationError('Select a valid user type.')
+        return value
 
     def validate_username(self, value):
         username = value.strip()
@@ -80,7 +86,7 @@ class RegisterSerializer(serializers.Serializer):
             password=validated_data['password'],
             display_name=validated_data['full_name'],
             mobile=validated_data['mobile'],
-            role=User.ROLE_USER,
+            role=validated_data.get('role', User.ROLE_USER),
         )
 
 
@@ -470,11 +476,17 @@ class PickupRequestSerializer(serializers.ModelSerializer):
 
 class LabMessageSerializer(serializers.ModelSerializer):
     created_by_name = serializers.CharField(source='created_by.display_name', read_only=True, default='')
+    created_at_display = serializers.SerializerMethodField()
 
     class Meta:
         model = LabMessage
-        fields = ['id', 'message', 'created_by_name', 'created_at']
-        read_only_fields = ['created_at']
+        fields = ['id', 'message', 'created_by_name', 'created_at', 'created_at_display']
+        read_only_fields = ['created_at', 'created_at_display']
+
+    def get_created_at_display(self, obj):
+        if not obj.created_at:
+            return '-'
+        return obj.created_at.strftime('%d-%b-%y %I:%M %p')
 
 
 class MembershipTypeSerializer(serializers.ModelSerializer):
@@ -844,6 +856,12 @@ class JoinRequestSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({'partnership_type': 'Select Brand or Self partnership.'})
             if not (attrs.get('contact_person') or '').strip():
                 raise serializers.ValidationError({'contact_person': 'Contact person is required.'})
+            phone = (attrs.get('phone') or '').strip()
+            digits = ''.join(ch for ch in phone if ch.isdigit())
+            if len(digits) < 10:
+                raise serializers.ValidationError({'phone': 'Enter a valid contact number.'})
+            if not (attrs.get('city') or '').strip():
+                raise serializers.ValidationError({'city': 'City is required.'})
             if not (attrs.get('full_address') or '').strip():
                 raise serializers.ValidationError({'full_address': 'Full address is required.'})
             if not (attrs.get('pincode') or '').strip():

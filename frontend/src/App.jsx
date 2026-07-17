@@ -18,7 +18,8 @@ import LabConfiguration from './pages/admin/LabConfiguration';
 import ServicesInArea from './pages/admin/ServicesInArea';
 import CreateActivity from './pages/admin/CreateActivity';
 import Activities from './pages/admin/Activities';
-import Enquiries from './pages/admin/Enquiries';
+import EnquireBox from './pages/EnquireBox';
+import UserSignUp from './pages/UserSignUp';
 import TestQuorum from './pages/TestQuorum';
 import { getAllAdminModules } from './utils/adminModules';
 import Dashboard from './pages/Dashboard';
@@ -49,12 +50,16 @@ export default function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/test-quorum" element={<TestQuorum />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/search" element={<ProtectedRoute><Search /></ProtectedRoute>} />
           <Route path="/barcode-print" element={<ProtectedRoute><BarcodePrinting /></ProtectedRoute>} />
           <Route path="/bill-receipt" element={<ProtectedRoute><BillReceipt /></ProtectedRoute>} />
           <Route path="/test-result-entry" element={<ProtectedRoute><TestResultEntry /></ProtectedRoute>} />
           <Route path="/registration" element={<ProtectedRoute><Registration /></ProtectedRoute>} />
           <Route path="/test-result" element={<ProtectedRoute><TestResult /></ProtectedRoute>} />
+          <Route path="/user-signup" element={<ProtectedRoute adminOnly><UserSignUp /></ProtectedRoute>} />
+          <Route path="/enquire-box" element={<ProtectedRoute adminOnly><EnquireBox /></ProtectedRoute>} />
+          <Route path="/admin/enquiries" element={<Navigate to="/enquire-box" replace />} />
           <Route path="/administration" element={<ProtectedRoute allowedRoles={ALL_ROLES}><Administration /></ProtectedRoute>} />
           <Route path="/admin/change-password" element={<ProtectedRoute allowedRoles={ALL_ROLES}><ChangePassword /></ProtectedRoute>} />
           <Route path="/admin/role-management" element={<ProtectedRoute allowedRoles={ALL_ROLES}><RoleManagement /></ProtectedRoute>} />
@@ -71,9 +76,8 @@ export default function App() {
           <Route path="/admin/services-in-area" element={<ProtectedRoute allowedRoles={ALL_ROLES}><ServicesInArea /></ProtectedRoute>} />
           <Route path="/admin/create-activity" element={<ProtectedRoute allowedRoles={ALL_ROLES}><CreateActivity /></ProtectedRoute>} />
           <Route path="/admin/activities" element={<ProtectedRoute allowedRoles={ALL_ROLES}><Activities /></ProtectedRoute>} />
-          <Route path="/admin/enquiries" element={<ProtectedRoute allowedRoles={ALL_ROLES}><Enquiries /></ProtectedRoute>} />
           {getAllAdminModules()
-            .filter((module) => !['change-password', 'role-management', 'membership', 'collection-center-boy', 'discount-reason', 'discount-authority', 'whatsapp-logger', 'expense-type', 'collection-center-management', 'doctor-management', 'patient-management', 'lab-configuration', 'services-in-area', 'create-activity', 'activities', 'enquiries'].includes(module.slug))
+            .filter((module) => !['change-password', 'role-management', 'membership', 'collection-center-boy', 'discount-reason', 'discount-authority', 'whatsapp-logger', 'expense-type', 'collection-center-management', 'doctor-management', 'patient-management', 'lab-configuration', 'services-in-area', 'create-activity', 'activities'].includes(module.slug))
             .map((module) => (
             <Route
               key={module.slug}
@@ -86,7 +90,6 @@ export default function App() {
             />
           ))}
           <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
-          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/elab-pay" element={<ProtectedRoute><ElabPay /></ProtectedRoute>} />
           <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
           <Route path="/clinical/test-parameters" element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]}><TestParameterMaster /></ProtectedRoute>} />

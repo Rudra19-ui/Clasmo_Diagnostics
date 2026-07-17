@@ -17,6 +17,7 @@
   min-height: 100vh;
   background: var(--white);
   color: var(--text);
+  overflow-x: hidden;
 }
 
 .landing-nav-link {
@@ -100,23 +101,46 @@
 }
 
 .landing-sketch-logo {
-  width: 52px;
-  height: 52px;
+  width: 78px;
+  height: 78px;
   object-fit: contain;
   border: 1px solid #dce8f2;
-  border-radius: 10px;
+  border-radius: 12px;
   background: var(--white);
-  padding: 4px;
+  padding: 5px;
   flex-shrink: 0;
 }
 
 .landing-sketch-brand {
   flex: 1;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  line-height: 1.1;
+}
+
+.landing-brand-clasmo {
   color: var(--blue-deep);
-  font-size: clamp(1.05rem, 2.4vw, 1.4rem);
+  font-size: clamp(1.55rem, 3.8vw, 2.25rem);
   font-weight: 800;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
+}
+
+.landing-brand-diagnostics {
+  color: var(--blue-deep);
+  font-size: clamp(0.82rem, 1.7vw, 1rem);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.landing-brand-pvt {
+  color: var(--blue-deep);
+  font-size: clamp(0.68rem, 1.4vw, 0.82rem);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  opacity: 0.92;
 }
 
 .landing-iso-badge {
@@ -138,12 +162,12 @@
 
 .landing-sketch-tagline {
   text-align: center;
-  margin: 6px 0 10px;
+  margin: 8px 0 12px;
   color: var(--teal-dark);
-  font-size: clamp(0.9rem, 1.9vw, 1.05rem);
-  font-weight: 600;
-  font-style: italic;
-  letter-spacing: 0.1em;
+  font-size: clamp(1.15rem, 2.6vw, 1.45rem);
+  font-weight: 800;
+  font-style: normal;
+  letter-spacing: 0.08em;
 }
 
 .landing-sketch-rule {
@@ -161,6 +185,35 @@
   gap: 14px;
   padding: 22px 20px 26px;
   border-bottom: 2px solid var(--blue-deep);
+}
+
+.landing-sketch-actions.join-open {
+  border-bottom: none;
+  padding-bottom: 14px;
+}
+
+.landing-join-band-inline {
+  margin: 0;
+  width: min(100%, 420px);
+  padding: 10px 28px;
+  font-size: 13px;
+}
+
+.landing-join-inline-wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 8px 20px 28px;
+  border-bottom: 2px solid var(--blue-deep);
+}
+
+.landing-join-inline-wrap .join-clasmo-section {
+  margin-top: 0;
+}
+
+.landing-login-section {
+  display: flex;
+  justify-content: center;
+  padding: 28px 20px 32px;
 }
 
 .landing-login-big {
@@ -259,6 +312,7 @@
   font-weight: 800;
   line-height: 1.35;
   letter-spacing: 0.02em;
+  text-wrap: balance;
 }
 
 .landing-join-band {
@@ -346,25 +400,21 @@
   padding: 20px 24px 24px;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 900px) {
   .landing-department-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
   }
 }
 
 @media (max-width: 720px) {
-  .landing-department-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 22px 16px;
-  }
-
   .landing-department-panel {
-    padding: 0 8px;
+    padding: 0 12px;
   }
 
   .landing-department-item {
-    padding: 14px 14px;
-    min-height: 78px;
+    padding: 14px 16px;
+    min-height: 76px;
   }
 
   .landing-department-icon {
@@ -383,8 +433,12 @@
   }
 
   .landing-sketch-logo {
-    width: 56px;
-    height: 56px;
+    width: 72px;
+    height: 72px;
+  }
+
+  .landing-brand-clasmo {
+    font-size: clamp(1.35rem, 6vw, 1.85rem);
   }
 
   .landing-iso-badge {
@@ -395,6 +449,84 @@
 
   .landing-join-band {
     margin-inline: 20px;
+  }
+
+  .landing-sketch .landing-section {
+    padding: 28px 16px 32px;
+  }
+
+  .landing-sketch .landing-expertise {
+    padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .landing-sketch .landing-branches-row {
+    justify-content: center;
+    gap: 10px 12px;
+  }
+
+  .landing-sketch .landing-branches-row li {
+    padding: 8px 18px;
+    font-size: 0.82rem;
+  }
+
+  .landing-sketch .landing-plain-heading {
+    gap: 10px;
+    font-size: 1rem;
+    margin-bottom: 18px;
+  }
+
+  .landing-sketch .landing-plain-heading::before,
+  .landing-sketch .landing-plain-heading::after {
+    width: clamp(24px, 6vw, 56px);
+  }
+
+  .landing-login-section {
+    padding: 24px 16px calc(28px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .join-clasmo-section {
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (max-width: 640px) {
+  .landing-department-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .landing-department-item {
+    min-height: auto;
+    padding: 14px 16px;
+  }
+
+  .landing-department-label {
+    font-size: 0.95rem;
+    line-height: 1.3;
+  }
+
+  .landing-department-panel {
+    padding: 0 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-sketch .landing-section {
+    padding: 24px 12px 28px;
+  }
+
+  .landing-join-band-inline {
+    width: 100%;
+    max-width: 340px;
+    padding: 10px 16px;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  .btn-test-quorum,
+  .landing-login-section .btn-landing-login {
+    width: 100%;
+    max-width: 340px;
   }
 }
 
@@ -978,6 +1110,66 @@
   max-width: 1180px;
   margin: 0 auto;
   text-align: left;
+}
+
+.landing-footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.landing-footer-brand-logo {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.96);
+  padding: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  flex-shrink: 0;
+}
+
+.landing-footer-brand-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  line-height: 1.1;
+}
+
+.landing-footer-brand-heading {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.landing-footer-brand-copy {
+  font-size: 1rem;
+  color: #9fdcec;
+  font-weight: 800;
+}
+
+.landing-footer-brand-clasmo {
+  font-size: clamp(1.3rem, 2.8vw, 1.75rem);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--white);
+}
+
+.landing-footer-brand-diagnostics {
+  font-size: clamp(0.78rem, 1.6vw, 0.95rem);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.landing-footer-brand-pvt {
+  font-size: clamp(0.66rem, 1.35vw, 0.8rem);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.88);
 }
 
 .landing-footer-company {

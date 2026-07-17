@@ -1,4 +1,5 @@
 export const NAV = [
+  { id: 'dashboard', label: 'Dashboard', href: '/dashboard' },
   { id: 'search', label: 'Search', href: '/search' },
   { id: 'registration', label: 'Test Registration', href: '/registration' },
   { id: 'test-result', label: 'Test Result', href: '/test-result' },
@@ -7,6 +8,12 @@ export const NAV = [
     label: 'Administration',
     href: '/administration',
     megaMenu: true,
+  },
+  {
+    id: 'user-signup',
+    label: 'New User Sign Up',
+    href: '/user-signup',
+    adminOnly: true,
   },
   {
     id: 'reports',
@@ -38,9 +45,7 @@ export const NAV = [
     label: 'ChangeLab',
     children: [
       { label: 'CLASMO DIAGNOSTICS PVT.LTD.', href: '/search', active: true },
-      { label: 'Administration', href: '/administration' },
     ],
   },
-  { id: 'dashboard', label: 'Dashboard', href: '/dashboard' },
   { id: 'help', label: 'Help', href: '/help' },
 ];

@@ -85,4 +85,32 @@ DEFAULT_ROLE_DEFINITIONS = [
             test_parameters=True,
         ),
     },
+    {
+        'code': 'hr',
+        'name': 'HR',
+        'description': 'Human resources, enquiries, and staff administration.',
+        'permissions': build_permissions(
+            search=True,
+            administration=True,
+            reports=True,
+            dashboard=True,
+            help=True,
+            manage_users=True,
+        ),
+    },
+    {
+        'code': 'receptionist',
+        'name': 'Receptionist',
+        'description': 'Front desk, patient registration, and search.',
+        'permissions': build_permissions(
+            search=True,
+            registration=True,
+            test_result=True,
+            reports=True,
+            device_request=True,
+            dashboard=True,
+            help=True,
+            report_preview=True,
+        ),
+    },
 ]

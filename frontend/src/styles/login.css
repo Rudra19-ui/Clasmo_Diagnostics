@@ -84,7 +84,8 @@
   letter-spacing: 0.03em;
 }
 
-.signin-field input {
+.signin-field input,
+.signin-field select {
   width: 100%;
   padding: 9px 12px;
   border: 1px solid #c5d9ea;
@@ -95,11 +96,16 @@
   font-family: inherit;
 }
 
+.signin-field select {
+  cursor: pointer;
+}
+
 .signin-field input::placeholder {
   color: var(--text-muted);
 }
 
-.signin-field input:focus {
+.signin-field input:focus,
+.signin-field select:focus {
   outline: 2px solid var(--teal);
   outline-offset: 1px;
   border-color: var(--teal);

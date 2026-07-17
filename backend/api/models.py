@@ -8,13 +8,25 @@ class User(AbstractUser):
     ROLE_ADMIN = 'admin'
     ROLE_TECHNICIAN = 'technician'
     ROLE_PATHOLOGIST = 'pathologist'
+    ROLE_HR = 'hr'
+    ROLE_RECEPTIONIST = 'receptionist'
     ROLE_CHOICES = [
         (ROLE_USER, 'User'),
         (ROLE_ADMIN, 'Admin'),
-        (ROLE_TECHNICIAN, 'Technician'),
+        (ROLE_HR, 'HR'),
         (ROLE_PATHOLOGIST, 'Pathologist'),
+        (ROLE_TECHNICIAN, 'Technician'),
+        (ROLE_RECEPTIONIST, 'Receptionist'),
     ]
     CLINICAL_ROLES = {ROLE_ADMIN, ROLE_TECHNICIAN, ROLE_PATHOLOGIST}
+    SIGNUP_ROLES = {
+        ROLE_ADMIN,
+        ROLE_HR,
+        ROLE_PATHOLOGIST,
+        ROLE_TECHNICIAN,
+        ROLE_USER,
+        ROLE_RECEPTIONIST,
+    }
 
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=ROLE_USER)
     display_name = models.CharField(max_length=100, blank=True)

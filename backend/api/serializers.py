@@ -32,6 +32,7 @@ from .models import (
     ServiceAreaPincode,
     LabActivity,
     JoinRequest,
+    SelfPatientQuery,
 )
 
 
@@ -887,3 +888,40 @@ class JoinRequestSerializer(serializers.ModelSerializer):
         if len(digits) < 10:
             raise serializers.ValidationError('Enter a valid contact number.')
         return cleaned
+
+
+class SelfPatientQuerySerializer(serializers.ModelSerializer):
+    created_at_display = serializers.SerializerMethodField()
+    photo_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SelfPatientQuery
+        fields = [
+            'id', 'test_name', 'description', 'photo', 'photo_url',
+            'is_handled', 'created_at', 'created_at_display',
+        ]
+        read_only_fields = ['created_at', 'created_at_display', 'photo_url']
+
+    def get_created_at_display(self, obj):
+        if not obj.created_at:
+            return '-'
+        return obj.created_at.strftime('%d-%b-%y %I:%M %p')
+
+    def get_photo_url(self, obj):
+        if not obj.photo:
+            return ''
+        request = self.context.get('request')
+        if request:
+            return request.build_absolute_uri(obj.photo.url)
+        return obj.photo.url
+
+    def validate_test_name(self, value):
+        cleaned = (value or '').strip()
+        if not cleaned:
+            raise serializers.ValidationError('Test name is required.')
+        return cleaned
+
+    def validate(self, attrs):
+        if self.instance is None and not attrs.get('photo'):
+            raise serializers.ValidationError({'photo': 'Photo is required.'})
+        return attrs

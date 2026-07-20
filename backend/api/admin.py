@@ -5,6 +5,7 @@ from .models import (
     JoinRequest,
     LoginLog,
     LabMessage,
+    SelfPatientQuery,
     Patient,
     PickupRequest,
     Registration,
@@ -54,3 +55,10 @@ class JoinRequestAdmin(admin.ModelAdmin):
     list_display = ['request_type', 'name', 'phone', 'branch', 'contact_person', 'is_handled', 'created_at']
     list_filter = ['request_type', 'is_handled', 'created_at']
     search_fields = ['name', 'phone', 'email', 'organization', 'branch', 'contact_person']
+
+
+@admin.register(SelfPatientQuery)
+class SelfPatientQueryAdmin(admin.ModelAdmin):
+    list_display = ['test_name', 'is_handled', 'created_at']
+    list_filter = ['is_handled', 'created_at']
+    search_fields = ['test_name', 'description']

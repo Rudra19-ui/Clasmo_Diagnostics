@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-import clasmoLogo from '../assets/clasmo-logo.png';
 import DepartmentGrid from '../components/landing/DepartmentGrid';
 import JoinWithClasmo from '../components/landing/JoinWithClasmo';
 import LandingBrandTitle from '../components/landing/LandingBrandTitle';
@@ -31,8 +30,7 @@ export default function Landing() {
   return (
     <div className="landing-page landing-sketch">
       <header className="landing-sketch-header">
-        <img src={clasmoLogo} alt="Clasmo Diagnostics logo" className="landing-sketch-logo" />
-        <LandingBrandTitle />
+        <LandingBrandTitle showLogo />
         <span className="landing-iso-badge" title="ISO Certified">ISO<br />logo</span>
       </header>
 

@@ -20,8 +20,10 @@ import CreateActivity from './pages/admin/CreateActivity';
 import Activities from './pages/admin/Activities';
 import EnquireBox from './pages/EnquireBox';
 import UserSignUp from './pages/UserSignUp';
+import SelfPatientQuery from './pages/SelfPatientQuery';
 import TestQuorum from './pages/TestQuorum';
 import { getAllAdminModules } from './utils/adminModules';
+import GiveFeedback from './pages/GiveFeedback';
 import Dashboard from './pages/Dashboard';
 import ElabPay from './pages/ElabPay';
 import Help from './pages/Help';
@@ -59,6 +61,8 @@ export default function App() {
           <Route path="/test-result" element={<ProtectedRoute><TestResult /></ProtectedRoute>} />
           <Route path="/user-signup" element={<ProtectedRoute adminOnly><UserSignUp /></ProtectedRoute>} />
           <Route path="/enquire-box" element={<ProtectedRoute adminOnly><EnquireBox /></ProtectedRoute>} />
+          <Route path="/self-patient-query" element={<ProtectedRoute><SelfPatientQuery /></ProtectedRoute>} />
+          <Route path="/give-feedback" element={<ProtectedRoute><GiveFeedback /></ProtectedRoute>} />
           <Route path="/admin/enquiries" element={<Navigate to="/enquire-box" replace />} />
           <Route path="/administration" element={<ProtectedRoute allowedRoles={ALL_ROLES}><Administration /></ProtectedRoute>} />
           <Route path="/admin/change-password" element={<ProtectedRoute allowedRoles={ALL_ROLES}><ChangePassword /></ProtectedRoute>} />

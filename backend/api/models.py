@@ -928,3 +928,21 @@ class JoinRequest(models.Model):
         label = self.get_request_type_display() if self.request_type else 'Enquiry'
         return f'{label}: {self.name} ({self.phone or "-"})'
 
+
+class SelfPatientQuery(models.Model):
+    """Public patient query from Test Quorum with photo upload."""
+
+    test_name = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    photo = models.ImageField(upload_to='patient-queries/')
+    is_handled = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Self patient query'
+        verbose_name_plural = 'Self patient queries'
+
+    def __str__(self):
+        return f'{self.test_name} ({self.created_at:%d-%b-%Y})'
+

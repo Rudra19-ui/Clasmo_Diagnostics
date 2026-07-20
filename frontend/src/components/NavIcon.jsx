@@ -13,6 +13,7 @@ const ICON_COLORS = {
   profile: '#4a90e2',
   'elab-pay': '#29b6f6',
   help: '#9e9e9e',
+  'give-feedback': '#0288d1',
 };
 
 export default function NavIcon({ id }) {
@@ -108,6 +109,12 @@ export default function NavIcon({ id }) {
         <circle cx="12" cy="12" r="8" stroke={color} strokeWidth="2" />
         <path d="M9.5 9a2.6 2.6 0 014.7 1c0 1.7-2.2 1.8-2.2 3.2" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
         <circle cx="12" cy="16.2" r="1" fill={color} />
+      </svg>
+    ),
+    'give-feedback': (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+        <path d="M4 6h16v10a2 2 0 01-2 2H8l-4 3V6z" stroke={color} strokeWidth="2" strokeLinejoin="round" />
+        <path d="M8 10h8M8 13h5" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
       </svg>
     ),
   };

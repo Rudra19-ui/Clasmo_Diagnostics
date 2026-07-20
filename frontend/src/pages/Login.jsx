@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import clasmoLogo from '../assets/clasmo-logo.png';
 import LandingBrandTitle from '../components/landing/LandingBrandTitle';
 import '../styles/landing.css';
 import '../styles/login.css';
@@ -48,12 +47,12 @@ export default function Login() {
 
   return (
     <div className="landing-page landing-sketch signin-page">
-      <header className="landing-sketch-header">
-        <Link to="/">
-          <img src={clasmoLogo} alt="Clasmo Diagnostics logo" className="landing-sketch-logo" />
-        </Link>
-        <LandingBrandTitle />
+      <div className="landing-sketch-topbar">
         <Link to="/" className="landing-nav-link signin-back-link">← Back to Home</Link>
+      </div>
+      <header className="landing-sketch-header landing-sketch-header--toolbar">
+        <LandingBrandTitle showLogo />
+        <span className="landing-iso-badge" title="ISO Certified">ISO<br />logo</span>
       </header>
 
       <p className="landing-sketch-tagline">Where Accuracy Saves Lives</p>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import clasmoLogo from '../../assets/clasmo-logo.png';
+import LandingBrandTitle from './LandingBrandTitle';
 import { api } from '../../services/api';
 
 const BRANCHES = ['MUMBAI', 'PUNE', 'NASHIK', 'DHULE', 'RATNAGIRI'];
@@ -115,7 +115,7 @@ export default function JoinWithClasmo({ onClose }) {
   return (
     <section id="join-form" className="landing-join-form-section join-clasmo-section">
       <div className="join-clasmo-header">
-        <img src={clasmoLogo} alt="" className="join-clasmo-logo" aria-hidden="true" />
+        <LandingBrandTitle showLogo compact variant="join" />
         <h2 className="join-clasmo-title">COME N JOIN WITH CLASMO</h2>
       </div>
 

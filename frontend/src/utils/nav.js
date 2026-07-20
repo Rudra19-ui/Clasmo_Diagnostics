@@ -47,5 +47,6 @@ export const NAV = [
       { label: 'CLASMO DIAGNOSTICS PVT.LTD.', href: '/search', active: true },
     ],
   },
+  { id: 'give-feedback', label: 'Give Feedback', href: '/give-feedback' },
   { id: 'help', label: 'Help', href: '/help' },
 ];

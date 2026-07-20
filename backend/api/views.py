@@ -21,7 +21,7 @@ from .models import (
     LabMessage, PickupRequest, Registration, RegistrationTest, Test, TestCategory, User, LabRole,
     Membership, MembershipType, CollectionCenter, CollectionCenterBoy, DiscountReason, DiscountAuthority,
     WhatsAppMessageLog, ExpenseType, Area, RateMaster, Affiliation, SalesReference, Doctor, Patient, PatientAddress, LabConfiguration, ServiceAreaPincode, LabActivity,
-    JoinRequest, LoginLog,
+    JoinRequest, LoginLog, SelfPatientQuery,
 )
 from .serializers import (
     ChangePasswordSerializer,
@@ -42,6 +42,7 @@ from .serializers import (
     ServiceAreaPincodeSerializer,
     LabActivitySerializer,
     JoinRequestSerializer,
+    SelfPatientQuerySerializer,
     LabMessageSerializer,
     LabRoleSerializer,
     LabRoleUpdateSerializer,
@@ -1842,6 +1843,48 @@ class JoinRequestDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = JoinRequest.objects.all()
     serializer_class = JoinRequestSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+class SelfPatientQueryListCreateView(generics.ListCreateAPIView):
+    """POST is public (Test Quorum form); GET requires login (Self Patient Query page)."""
+
+    serializer_class = SelfPatientQuerySerializer
+    parser_classes = [MultiPartParser, FormParser]
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
+
+    def get_queryset(self):
+        qs = SelfPatientQuery.objects.all()
+        search = self.request.query_params.get('search', '').strip()
+        handled = self.request.query_params.get('is_handled', '').strip()
+        if search:
+            qs = qs.filter(
+                Q(test_name__icontains=search)
+                | Q(description__icontains=search)
+            )
+        if handled in ('true', 'false'):
+            qs = qs.filter(is_handled=(handled == 'true'))
+        return qs
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+
+
+class SelfPatientQueryDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = SelfPatientQuery.objects.all()
+    serializer_class = SelfPatientQuerySerializer
+    permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
 
 
 class GlobalSearchView(APIView):

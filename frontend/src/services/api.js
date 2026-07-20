@@ -264,6 +264,16 @@ export const api = {
   deleteJoinRequest: (id) =>
     request(`/join-requests/${id}/`, { method: 'DELETE' }),
 
+  submitSelfPatientQuery: (formData) => requestForm('/self-patient-queries/', formData),
+  getSelfPatientQueries: (params = {}) => {
+    const query = new URLSearchParams(
+      Object.fromEntries(Object.entries(params).filter(([, value]) => value !== '' && value != null)),
+    ).toString();
+    return request(`/self-patient-queries/${query ? `?${query}` : ''}`);
+  },
+  updateSelfPatientQuery: (id, payload) =>
+    request(`/self-patient-queries/${id}/`, { method: 'PATCH', body: JSON.stringify(payload) }),
+
   getActivities: (params = {}) => {
     const query = new URLSearchParams(params).toString();
     return request(`/activities/${query ? `?${query}` : ''}`);

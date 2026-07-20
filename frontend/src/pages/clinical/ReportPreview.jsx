@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Layout from '../../components/Layout';
+import LandingBrandTitle from '../../components/landing/LandingBrandTitle';
 import { api } from '../../services/api';
 import { flagClass } from '../../utils/roles';
 import '../../styles/clinical.css';
@@ -94,8 +95,8 @@ export default function ReportPreview() {
         {report && !loading && (
           <section className="clinical-panel">
             <div className="report-header">
+              <LandingBrandTitle showLogo compact />
               <div>
-                <h3>CLASMO DIAGNOSTICS PVT.LTD.</h3>
                 <p style={{ margin: '4px 0', color: '#666' }}>Laboratory Report</p>
                 <div className="report-meta">
                   <span><strong>Lab Code:</strong> {report.lab_code}</span>

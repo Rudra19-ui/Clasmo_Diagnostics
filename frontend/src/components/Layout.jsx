@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import NavIcon from './NavIcon';
 import AdminSidebar from './AdminSidebar';
-import AppBrandHeader from './AppBrandHeader';
+import LandingBrandTitle from './landing/LandingBrandTitle';
 import { NAV } from '../utils/nav';
 import { ROLE_LABELS } from '../utils/roles';
 
@@ -74,7 +74,7 @@ export default function Layout({ activePage, children }) {
   const [utilityNote, setUtilityNote] = useState('');
   const languageRef = useRef(null);
   const profileRef = useRef(null);
-  const isStandalonePage = activePage === 'enquire-box' || activePage === 'user-signup';
+  const isStandalonePage = activePage === 'enquire-box' || activePage === 'user-signup' || activePage === 'self-patient-query' || activePage === 'give-feedback';
   const isAdminRoute = !isStandalonePage && (activePage === 'administration' || location.pathname.startsWith('/admin/'));
 
   const closeNav = useCallback(() => {
@@ -176,8 +176,7 @@ export default function Layout({ activePage, children }) {
       >
         <div className="sidebar-header">
           <div className="sidebar-brand">
-            <span className="sidebar-brand-title">CLASMO</span>
-            <span className="sidebar-brand-sub">Diagnostics Pvt. Ltd.</span>
+            <LandingBrandTitle showLogo compact variant="sidebar" />
           </div>
           <button
             type="button"
@@ -257,7 +256,7 @@ export default function Layout({ activePage, children }) {
               <span className="hamburger-line" />
               <span className="hamburger-line" />
             </button>
-            <AppBrandHeader compact />
+            <LandingBrandTitle showLogo compact className="app-brand-header app-brand-header-compact" />
           </div>
 
           <form className="global-search" onSubmit={handleGlobalSearch}>

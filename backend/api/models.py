@@ -85,7 +85,9 @@ class Test(models.Model):
     name = models.CharField(max_length=200)
     short_name = models.CharField(max_length=50, blank=True)
     test_code = models.CharField(max_length=50, blank=True)
+    mrp = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    sample_type = models.CharField(max_length=150, blank=True)
     category = models.ForeignKey(
         TestCategory, on_delete=models.SET_NULL, null=True, blank=True, related_name='tests'
     )

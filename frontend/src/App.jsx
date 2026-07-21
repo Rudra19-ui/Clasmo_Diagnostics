@@ -40,6 +40,7 @@ import ReportPreview from './pages/clinical/ReportPreview';
 import ResultEntry from './pages/clinical/ResultEntry';
 import TestParameterMaster from './pages/clinical/TestParameterMaster';
 import DeviceStub from './pages/device/DeviceStub';
+import ResponsiveProvider from './components/ResponsiveProvider';
 import { ROLES, ALL_ROLES } from './utils/roles';
 import MessageToLab from './pages/device/MessageToLab';
 import PickupRequest from './pages/device/PickupRequest';
@@ -48,6 +49,7 @@ export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <ResponsiveProvider>
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/test-quorum" element={<TestQuorum />} />
@@ -108,6 +110,7 @@ export default function App() {
           <Route path="/device/test-result-batch" element={<ProtectedRoute><DeviceStub title="Test Result Batch" description="Batch import of analyzer results."><input type="file" /></DeviceStub></ProtectedRoute>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </ResponsiveProvider>
       </BrowserRouter>
     </AuthProvider>
   );

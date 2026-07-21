@@ -155,30 +155,30 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
-  line-height: 1.1;
+  gap: 1px;
+  line-height: 1.05;
 }
 
 .clasmo-brand-clasmo {
   color: var(--blue-deep);
-  font-size: clamp(1.55rem, 3.8vw, 2.25rem);
-  font-weight: 800;
-  letter-spacing: 0.12em;
+  font-size: clamp(2rem, 4.8vw, 2.85rem);
+  font-weight: 900;
+  letter-spacing: 0.14em;
 }
 
 .clasmo-brand-diagnostics {
   color: var(--blue-deep);
-  font-size: clamp(0.82rem, 1.7vw, 1rem);
+  font-size: clamp(0.62rem, 1.2vw, 0.74rem);
   font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
 }
 
 .clasmo-brand-pvt {
   color: var(--blue-deep);
-  font-size: clamp(0.68rem, 1.4vw, 0.82rem);
+  font-size: clamp(0.48rem, 0.95vw, 0.56rem);
   font-weight: 700;
-  letter-spacing: 0.14em;
-  opacity: 0.92;
+  letter-spacing: 0.16em;
+  opacity: 0.9;
 }
 
 .clasmo-brand-stack--compact.clasmo-brand-stack--with-logo {
@@ -193,18 +193,18 @@
 }
 
 .clasmo-brand-stack--compact .clasmo-brand-clasmo {
-  font-size: 0.95rem;
-  letter-spacing: 0.1em;
+  font-size: 1.08rem;
+  letter-spacing: 0.11em;
 }
 
 .clasmo-brand-stack--compact .clasmo-brand-diagnostics {
-  font-size: 0.62rem;
-  letter-spacing: 0.12em;
+  font-size: 0.48rem;
+  letter-spacing: 0.13em;
 }
 
 .clasmo-brand-stack--compact .clasmo-brand-pvt {
-  font-size: 0.55rem;
-  letter-spacing: 0.1em;
+  font-size: 0.38rem;
+  letter-spacing: 0.11em;
 }
 
 .clasmo-brand-stack--sidebar.clasmo-brand-stack--with-logo {
@@ -230,6 +230,30 @@
 .clasmo-brand-stack--sidebar .clasmo-brand-diagnostics,
 .clasmo-brand-stack--sidebar .clasmo-brand-pvt {
   opacity: 0.88;
+}
+
+.clasmo-brand-stack--sidebar.clasmo-brand-stack--compact .clasmo-brand-clasmo {
+  font-size: 1rem;
+}
+
+.clasmo-brand-stack--sidebar.clasmo-brand-stack--compact .clasmo-brand-diagnostics {
+  font-size: 0.46rem;
+}
+
+.clasmo-brand-stack--sidebar.clasmo-brand-stack--compact .clasmo-brand-pvt {
+  font-size: 0.36rem;
+}
+
+.clasmo-brand-stack--footer .clasmo-brand-clasmo {
+  font-size: clamp(1.75rem, 3.5vw, 2.35rem);
+}
+
+.clasmo-brand-stack--footer .clasmo-brand-diagnostics {
+  font-size: clamp(0.58rem, 1.1vw, 0.7rem);
+}
+
+.clasmo-brand-stack--footer .clasmo-brand-pvt {
+  font-size: clamp(0.44rem, 0.9vw, 0.54rem);
 }
 
 .clasmo-brand-stack--footer .clasmo-brand-clasmo,
@@ -552,7 +576,15 @@
   }
 
   .clasmo-brand-clasmo {
-    font-size: clamp(1.35rem, 6vw, 1.85rem);
+    font-size: clamp(1.85rem, 7vw, 2.35rem);
+  }
+
+  .clasmo-brand-diagnostics {
+    font-size: clamp(0.58rem, 2.4vw, 0.68rem);
+  }
+
+  .clasmo-brand-pvt {
+    font-size: clamp(0.44rem, 2vw, 0.52rem);
   }
 
   .landing-join-band {

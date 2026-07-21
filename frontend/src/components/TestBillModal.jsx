@@ -35,7 +35,9 @@ export default function TestBillModal({
             {tests.map((test) => (
               <div key={test.id} className="test-bill-row">
                 <span className="test-bill-name">{test.name}</span>
-                <span className="test-bill-price">{Number(test.price).toFixed(2)}</span>
+                <span className="test-bill-price">
+                  MRP {Number(test.mrp || 0).toFixed(2)} · {Number(test.price).toFixed(2)}
+                </span>
               </div>
             ))}
           </div>

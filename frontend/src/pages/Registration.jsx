@@ -27,6 +27,13 @@ const emptyPatient = () => ({
   is_register: false,
 });
 
+const formatTestOption = (test, { selected = false } = {}) => {
+  const mrp = Number(test.mrp || 0).toFixed(selected ? 2 : 0);
+  const price = Number(test.price).toFixed(selected ? 2 : 0);
+  const label = `${test.name} | MRP ₹${mrp} | ₹${price}${test.sample_type ? ` | ${test.sample_type}` : ''}`;
+  return { label, title: label };
+};
+
 export default function Registration() {
   const navigate = useNavigate();
   const [patient, setPatient] = useState(emptyPatient());
@@ -261,7 +268,14 @@ export default function Registration() {
               <div className="list-tabs"><button type="button" className="active">Favourite Tests</button><button type="button">Test List</button></div>
               <h4>Test List</h4>
               <select multiple size="12" value={selectedAvailable} onChange={(e) => setSelectedAvailable([...e.target.selectedOptions].map((o) => Number(o.value)))}>
-                {filteredAvailable.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
+                {filteredAvailable.map((t) => {
+                  const { label, title } = formatTestOption(t);
+                  return (
+                    <option key={t.id} value={t.id} title={title}>
+                      {label}
+                    </option>
+                  );
+                })}
               </select>
             </div>
             <div className="list-actions">
@@ -272,9 +286,16 @@ export default function Registration() {
             </div>
             <div className="list-panel">
               <h4>Selected Test List</h4>
-              <div className="selected-header"><span>Test Name</span><span>Price</span><span>Discount</span><span>Refund</span></div>
+              <div className="selected-header"><span>Test Name</span><span>MRP</span><span>Price</span><span>Discount</span><span>Refund</span></div>
               <select multiple size="12" value={selectedChosen.map(String)} onChange={(e) => setSelectedChosen([...e.target.selectedOptions].map((o) => Number(o.value)))}>
-                {selected.map((t) => <option key={t.id} value={t.id}>{t.name} | ₹{Number(t.price).toFixed(2)} | 0 | 0</option>)}
+                {selected.map((t) => {
+                  const { label, title } = formatTestOption(t, { selected: true });
+                  return (
+                    <option key={t.id} value={t.id} title={title}>
+                      {label} | 0 | 0
+                    </option>
+                  );
+                })}
               </select>
             </div>
           </div>

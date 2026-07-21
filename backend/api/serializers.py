@@ -194,7 +194,10 @@ class TestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Test
-        fields = ['id', 'name', 'short_name', 'test_code', 'price', 'category', 'category_name']
+        fields = [
+            'id', 'name', 'short_name', 'test_code', 'mrp', 'price',
+            'sample_type', 'category', 'category_name',
+        ]
 
 
 class RegistrationTestSerializer(serializers.ModelSerializer):
@@ -910,9 +913,6 @@ class SelfPatientQuerySerializer(serializers.ModelSerializer):
     def get_photo_url(self, obj):
         if not obj.photo:
             return ''
-        request = self.context.get('request')
-        if request:
-            return request.build_absolute_uri(obj.photo.url)
         return obj.photo.url
 
     def validate_test_name(self, value):
@@ -925,3 +925,10 @@ class SelfPatientQuerySerializer(serializers.ModelSerializer):
         if self.instance is None and not attrs.get('photo'):
             raise serializers.ValidationError({'photo': 'Photo is required.'})
         return attrs
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        url = self.get_photo_url(instance)
+        data['photo_url'] = url
+        data['photo'] = url
+        return data

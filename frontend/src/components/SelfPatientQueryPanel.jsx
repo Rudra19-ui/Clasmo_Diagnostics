@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { api } from '../services/api';
+import { getSelfPatientQueryPhotoUrl } from '../utils/media';
 
 const STATUS_OPTIONS = [
   { value: '', label: 'All' },
@@ -127,19 +128,26 @@ export default function SelfPatientQueryPanel({ title = 'Self Patient Query' }) 
               {!loading && rows.length === 0 && (
                 <tr><td colSpan={6} className="empty-msg">No patient queries yet.</td></tr>
               )}
-              {!loading && rows.map((row) => (
+              {!loading && rows.map((row) => {
+                const photoUrl = getSelfPatientQueryPhotoUrl(row);
+                return (
                 <tr key={row.id}>
                   <td>{row.created_at_display || '-'}</td>
                   <td>{row.test_name}</td>
                   <td className="self-patient-query-desc">{row.description || '-'}</td>
                   <td>
-                    {row.photo_url ? (
+                    {photoUrl ? (
                       <button
                         type="button"
-                        className="btn-outline btn-sm"
-                        onClick={() => setPreview(row)}
+                        className="self-patient-query-photo-btn"
+                        onClick={() => setPreview({ ...row, photo_url: photoUrl })}
+                        title="View photo"
                       >
-                        View Photo
+                        <img
+                          src={photoUrl}
+                          alt={`${row.test_name} query photo`}
+                          className="self-patient-query-thumb"
+                        />
                       </button>
                     ) : '-'}
                   </td>
@@ -157,7 +165,7 @@ export default function SelfPatientQueryPanel({ title = 'Self Patient Query' }) 
                     )}
                   </td>
                 </tr>
-              ))}
+              );})}
             </tbody>
           </table>
         </div>
@@ -169,7 +177,17 @@ export default function SelfPatientQueryPanel({ title = 'Self Patient Query' }) 
             <h3>{preview.test_name}</h3>
             <p className="self-patient-query-desc">{preview.description || 'No description provided.'}</p>
             {preview.photo_url && (
-              <img src={preview.photo_url} alt={preview.test_name} className="self-patient-query-photo" />
+              <img
+                src={getSelfPatientQueryPhotoUrl(preview)}
+                alt={preview.test_name}
+                className="self-patient-query-photo"
+                onError={(event) => {
+                  event.currentTarget.replaceWith(Object.assign(document.createElement('p'), {
+                    className: 'self-patient-query-photo-missing',
+                    textContent: 'Photo file is unavailable. Please ask the patient to resubmit from Test Quorum.',
+                  }));
+                }}
+              />
             )}
             <button type="button" className="btn-outline btn-sm" onClick={() => setPreview(null)}>
               Close

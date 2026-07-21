@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useIsDesktop } from '../hooks/useBreakpoint';
 import NavIcon from './NavIcon';
 import AdminSidebar from './AdminSidebar';
 import LandingBrandTitle from './landing/LandingBrandTitle';
@@ -74,6 +75,7 @@ export default function Layout({ activePage, children }) {
   const [utilityNote, setUtilityNote] = useState('');
   const languageRef = useRef(null);
   const profileRef = useRef(null);
+  const isDesktop = useIsDesktop();
   const isStandalonePage = activePage === 'enquire-box' || activePage === 'user-signup' || activePage === 'self-patient-query' || activePage === 'give-feedback';
   const isAdminRoute = !isStandalonePage && (activePage === 'administration' || location.pathname.startsWith('/admin/'));
 
@@ -142,9 +144,13 @@ export default function Layout({ activePage, children }) {
   }, [languageOpen, profileOpen]);
 
   useEffect(() => {
-    document.body.classList.toggle('nav-scroll-lock', navOpen);
+    if (isDesktop) closeNav();
+  }, [isDesktop, closeNav]);
+
+  useEffect(() => {
+    document.body.classList.toggle('nav-scroll-lock', navOpen && !isDesktop);
     return () => document.body.classList.remove('nav-scroll-lock');
-  }, [navOpen]);
+  }, [navOpen, isDesktop]);
 
   useEffect(() => {
     if (!navOpen) return undefined;

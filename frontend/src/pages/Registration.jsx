@@ -31,11 +31,7 @@ const emptyPatient = () => ({
   is_register: false,
 });
 
-const formatTestOption = (test) => {
-  const mrp = Number(test.mrp || 0).toFixed(0);
-  const price = Number(test.price).toFixed(0);
-  return `${test.name} | MRP ₹${mrp} | ₹${price}${test.sample_type ? ` | ${test.sample_type}` : ''}`;
-};
+const formatTestOption = (test) => test.name;
 
 function getPrimarySampleType(sampleType) {
   const raw = (sampleType || 'General').trim();
@@ -585,7 +581,7 @@ export default function Registration() {
                   >
                     {selected.map((t) => (
                       <option key={t.id} value={t.id}>
-                        {t.name} | ₹{Number(t.price).toFixed(0)}
+                        {t.name}
                       </option>
                     ))}
                   </select>

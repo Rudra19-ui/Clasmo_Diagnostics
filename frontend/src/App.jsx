@@ -33,6 +33,9 @@ import Registration from './pages/Registration';
 import Reports from './pages/Reports';
 import Search from './pages/Search';
 import BarcodePrinting from './pages/BarcodePrinting';
+import BarcodeLink from './pages/BarcodeLink';
+import SampleScan from './pages/SampleScan';
+import OpenBarcode from './pages/OpenBarcode';
 import BillReceipt from './pages/BillReceipt';
 import TestResultEntry from './pages/TestResultEntry';
 import TestResult from './pages/TestResult';
@@ -41,6 +44,7 @@ import ResultEntry from './pages/clinical/ResultEntry';
 import TestParameterMaster from './pages/clinical/TestParameterMaster';
 import DeviceStub from './pages/device/DeviceStub';
 import ResponsiveProvider from './components/ResponsiveProvider';
+import { NavProvider } from './context/NavContext';
 import { ROLES, ALL_ROLES } from './utils/roles';
 import MessageToLab from './pages/device/MessageToLab';
 import PickupRequest from './pages/device/PickupRequest';
@@ -49,6 +53,7 @@ export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <NavProvider>
         <ResponsiveProvider>
         <Routes>
           <Route path="/" element={<Landing />} />
@@ -56,7 +61,17 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/search" element={<ProtectedRoute><Search /></ProtectedRoute>} />
+          <Route path="/open" element={<ProtectedRoute><OpenBarcode /></ProtectedRoute>} />
           <Route path="/barcode-print" element={<ProtectedRoute><BarcodePrinting /></ProtectedRoute>} />
+          <Route path="/barcode-link" element={<ProtectedRoute><BarcodeLink /></ProtectedRoute>} />
+          <Route
+            path="/sample-scan"
+            element={(
+              <ProtectedRoute allowedRoles={[ROLES.ADMIN, ROLES.TECHNICIAN, ROLES.PATHOLOGIST]}>
+                <SampleScan />
+              </ProtectedRoute>
+            )}
+          />
           <Route path="/bill-receipt" element={<ProtectedRoute><BillReceipt /></ProtectedRoute>} />
           <Route path="/test-result-entry" element={<ProtectedRoute><TestResultEntry /></ProtectedRoute>} />
           <Route path="/registration" element={<ProtectedRoute><Registration /></ProtectedRoute>} />
@@ -111,6 +126,7 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         </ResponsiveProvider>
+        </NavProvider>
       </BrowserRouter>
     </AuthProvider>
   );

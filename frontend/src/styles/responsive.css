@@ -176,6 +176,26 @@ body.nav-scroll-lock {
     width: 100%;
   }
 
+  .form-row--gender {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .form-row--gender > label:first-child {
+    min-width: 110px;
+    flex-shrink: 0;
+    text-align: left;
+  }
+
+  .form-row--gender input[type='radio'] {
+    width: auto;
+  }
+
+  .gender-radio-group {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
   .name-row {
     flex-direction: column;
   }

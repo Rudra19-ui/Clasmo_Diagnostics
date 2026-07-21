@@ -33,6 +33,7 @@ from .models import (
     LabActivity,
     JoinRequest,
     SelfPatientQuery,
+    PatientSampleBarcode,
 )
 
 
@@ -202,10 +203,11 @@ class TestSerializer(serializers.ModelSerializer):
 
 class RegistrationTestSerializer(serializers.ModelSerializer):
     test_name = serializers.CharField(source='test.name', read_only=True)
+    sample_type = serializers.CharField(source='test.sample_type', read_only=True)
 
     class Meta:
         model = RegistrationTest
-        fields = ['id', 'test', 'test_name', 'price', 'discount', 'refund']
+        fields = ['id', 'test', 'test_name', 'sample_type', 'price', 'discount', 'refund']
 
 
 class PatientAddressSerializer(serializers.ModelSerializer):
@@ -407,22 +409,69 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return instance
 
     def _sync_tests(self, registration, tests_data):
+        if not tests_data:
+            registration.total = 0
+            registration.net_amount = float(registration.visiting_charges)
+            registration.balance = registration.net_amount - float(registration.paid)
+            registration.save()
+            return
+
+        test_ids = [item['test_id'] for item in tests_data]
+        tests_by_id = {test.id: test for test in Test.objects.filter(id__in=test_ids)}
+
         total = 0
+        registration_tests = []
         for item in tests_data:
-            test = Test.objects.get(pk=item['test_id'])
+            test = tests_by_id[item['test_id']]
             price = item.get('price', test.price)
-            RegistrationTest.objects.create(
-                registration=registration,
-                test=test,
-                price=price,
-                discount=item.get('discount', 0),
-                refund=item.get('refund', 0),
+            registration_tests.append(
+                RegistrationTest(
+                    registration=registration,
+                    test=test,
+                    price=price,
+                    discount=item.get('discount', 0),
+                    refund=item.get('refund', 0),
+                )
             )
             total += float(price)
+
+        RegistrationTest.objects.bulk_create(registration_tests)
+        discount_total = float(registration.discount_test) + float(registration.discount_regn)
         registration.total = total
-        registration.net_amount = total + float(registration.visiting_charges)
+        registration.net_amount = total + float(registration.visiting_charges) - discount_total
         registration.balance = registration.net_amount - float(registration.paid)
         registration.save()
+
+
+class SampleBarcodeInputSerializer(serializers.Serializer):
+    sample_type = serializers.CharField(max_length=100, required=False, allow_blank=True, default='')
+    barcode = serializers.CharField(max_length=100)
+    confirm_barcode = serializers.CharField(max_length=100)
+
+
+class PatientSampleBarcodeSerializer(serializers.ModelSerializer):
+    patient_id = serializers.CharField(source='patient.patient_id', read_only=True)
+    patient_name = serializers.SerializerMethodField()
+    lab_code = serializers.CharField(source='registration.lab_code', read_only=True, default='')
+    linked_by_name = serializers.CharField(source='linked_by.display_name', read_only=True, default='')
+
+    class Meta:
+        model = PatientSampleBarcode
+        fields = [
+            'id', 'barcode', 'patient', 'patient_id', 'patient_name', 'registration', 'lab_code',
+            'sample_type', 'is_active', 'linked_by', 'linked_by_name', 'linked_at', 'updated_at',
+        ]
+        read_only_fields = ['id', 'linked_at', 'updated_at', 'linked_by']
+
+    def get_patient_name(self, obj):
+        return f'{obj.patient.title} {obj.patient.patient_name}'.strip()
+
+
+class PatientBarcodeLinkSerializer(serializers.Serializer):
+    patient_id = serializers.CharField(required=False, allow_blank=True, default='')
+    lab_code = serializers.CharField(required=False, allow_blank=True, default='')
+    registration_id = serializers.IntegerField(required=False, allow_null=True)
+    barcodes = SampleBarcodeInputSerializer(many=True)
 
 
 class RegistrationCreateSerializer(serializers.Serializer):
@@ -441,6 +490,8 @@ class RegistrationCreateSerializer(serializers.Serializer):
     recovery_amount = serializers.DecimalField(max_digits=10, decimal_places=2, required=False, default=0)
     bill_receipt_no = serializers.CharField(required=False, allow_blank=True, default='')
     tests = serializers.ListField(child=serializers.DictField(), allow_empty=True)
+    sample_barcodes = SampleBarcodeInputSerializer(many=True, required=False, default=list)
+    registration_barcode = serializers.CharField(required=False, allow_blank=True, default='')
 
 
 class RegistrationSearchSerializer(serializers.ModelSerializer):

@@ -1,13 +1,43 @@
+import { ROLES } from './roles';
+
 export const NAV = [
   { id: 'dashboard', label: 'Dashboard', href: '/dashboard' },
-  { id: 'search', label: 'Search', href: '/search' },
-  { id: 'registration', label: 'Test Registration', href: '/registration' },
-  { id: 'test-result', label: 'Test Result', href: '/test-result' },
+  {
+    id: 'search',
+    label: 'Search',
+    href: '/search',
+    excludeRoles: [ROLES.PATHOLOGIST],
+  },
+  {
+    id: 'registration',
+    label: 'Test Registration',
+    href: '/registration',
+    excludeRoles: [ROLES.PATHOLOGIST],
+  },
+  {
+    id: 'barcode-link',
+    label: 'Link Barcode',
+    href: '/barcode-link',
+    excludeRoles: [ROLES.PATHOLOGIST],
+  },
+  {
+    id: 'sample-scan',
+    label: 'Sample Scan',
+    href: '/sample-scan',
+    roles: [ROLES.ADMIN, ROLES.TECHNICIAN],
+  },
+  {
+    id: 'test-result',
+    label: 'Test Result',
+    href: '/test-result',
+    excludeRoles: [ROLES.PATHOLOGIST],
+  },
   {
     id: 'administration',
     label: 'Administration',
     href: '/administration',
     megaMenu: true,
+    excludeRoles: [ROLES.PATHOLOGIST],
   },
   {
     id: 'user-signup',
@@ -19,6 +49,7 @@ export const NAV = [
     id: 'reports',
     label: 'Reports',
     href: '/reports',
+    excludeRoles: [ROLES.PATHOLOGIST],
     children: [
       { label: 'Daily Summary', href: '/reports#daily' },
       { label: 'Collection Report', href: '/reports#collection' },
@@ -30,6 +61,7 @@ export const NAV = [
     id: 'device-request',
     label: 'Device Request',
     href: '/device/pickup-request',
+    excludeRoles: [ROLES.PATHOLOGIST],
     children: [
       { label: 'Pickup Request Page', href: '/device/pickup-request' },
       { label: 'Patient Appointment', href: '/device/patient-appointment' },
@@ -43,10 +75,11 @@ export const NAV = [
   {
     id: 'changelab',
     label: 'ChangeLab',
+    excludeRoles: [ROLES.PATHOLOGIST],
     children: [
       { label: 'CLASMO DIAGNOSTICS PVT.LTD.', href: '/search', active: true },
     ],
   },
-  { id: 'give-feedback', label: 'Give Feedback', href: '/give-feedback' },
+  { id: 'give-feedback', label: 'Give Feedback', href: '/give-feedback', excludeRoles: [ROLES.PATHOLOGIST] },
   { id: 'help', label: 'Help', href: '/help' },
 ];

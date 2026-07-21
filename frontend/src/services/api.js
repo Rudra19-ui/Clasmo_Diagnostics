@@ -101,6 +101,18 @@ export const api = {
   createRegistration: (payload) =>
     request('/registrations/create/', { method: 'POST', body: JSON.stringify(payload) }),
   getNextLabCode: () => request('/registrations/next-lab-code/'),
+  getNextPatientId: () => request('/registrations/next-patient-id/'),
+  getRegistration: (labCode) => request(`/registrations/${encodeURIComponent(labCode)}/`),
+  getPatientBarcodes: (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return request(`/patient-barcodes/${query ? `?${query}` : ''}`);
+  },
+  lookupPatientBarcode: (barcode) =>
+    request(`/patient-barcodes/lookup/?barcode=${encodeURIComponent(barcode)}`),
+  scanSampleBarcode: (barcode) =>
+    request(`/patient-barcodes/scan/?barcode=${encodeURIComponent(barcode)}`),
+  linkPatientBarcodes: (payload) =>
+    request('/patient-barcodes/link/', { method: 'POST', body: JSON.stringify(payload) }),
   getDashboardSummary: (params = {}) => {
     const query = new URLSearchParams();
     Object.entries(params).forEach(([key, value]) => {

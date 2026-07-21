@@ -7,6 +7,7 @@ from .models import (
     LabMessage,
     SelfPatientQuery,
     Patient,
+    PatientSampleBarcode,
     PickupRequest,
     Registration,
     RegistrationTest,
@@ -43,6 +44,15 @@ admin.site.register(Test)
 admin.site.register(Patient)
 admin.site.register(Registration)
 admin.site.register(RegistrationTest)
+
+
+@admin.register(PatientSampleBarcode)
+class PatientSampleBarcodeAdmin(admin.ModelAdmin):
+    list_display = ['barcode', 'patient', 'registration', 'sample_type', 'is_active', 'linked_at']
+    list_filter = ['is_active', 'sample_type', 'linked_at']
+    search_fields = ['barcode', 'patient__patient_id', 'patient__patient_name', 'registration__lab_code']
+
+
 admin.site.register(PickupRequest)
 admin.site.register(LabMessage)
 admin.site.register(TestParameter)

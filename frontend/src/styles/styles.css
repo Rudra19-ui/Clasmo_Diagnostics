@@ -455,6 +455,18 @@ input, select, textarea, button {
 }
 .field-highlight-center::placeholder { color: #ab47bc; opacity: 1; }
 
+.field-highlight-age {
+  background: #e3f2fd !important;
+  border-color: #90caf9 !important;
+}
+.field-highlight-age::placeholder { color: #64b5f6; opacity: 1; }
+
+.field-highlight-barcode {
+  background: #fff8e1 !important;
+  border-color: #ffca28 !important;
+}
+.field-highlight-barcode::placeholder { color: #f9a825; opacity: 1; }
+
 .date-picker {
   position: relative;
   flex: 1;
@@ -560,6 +572,43 @@ input, select, textarea, button {
 
 .radio-group { display: flex; gap: 12px; align-items: center; }
 .radio-group label { min-width: auto; display: flex; align-items: center; gap: 4px; }
+
+.form-row--gender {
+  align-items: center;
+}
+
+.gender-radio-group {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex: 1;
+  min-width: 0;
+}
+
+.gender-radio-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #333;
+  cursor: pointer;
+  min-width: auto;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.gender-radio-option input[type='radio'] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  flex: none;
+  accent-color: #1a73e8;
+  cursor: pointer;
+}
+
+.gender-radio-option span {
+  line-height: 1.2;
+}
 
 .btn-add {
   background: var(--blue-accent);
@@ -747,6 +796,1045 @@ input, select, textarea, button {
   display: flex;
   gap: 16px;
   flex-wrap: wrap;
+}
+
+/* ===== Registration sketch layout ===== */
+.page-registration-sketch {
+  max-width: 1180px;
+}
+
+.reg-sketch-panel {
+  background: var(--white);
+  border: 1px solid var(--gray-border);
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+.reg-sketch-patient-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px 28px;
+}
+
+.reg-sketch-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.reg-sketch-name-row {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.reg-sketch-name-row > label {
+  font-size: 12px;
+  text-align: left;
+}
+
+.reg-sketch-name-row .name-row {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  gap: 4px;
+}
+
+.reg-sketch-name-row .name-row select {
+  flex: 0 0 70px;
+  max-width: 70px;
+  padding: 6px 4px;
+  border-radius: 2px;
+  font-size: 13px;
+}
+
+.reg-sketch-name-row .name-row input {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 8px;
+  border-radius: 2px;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.reg-sketch-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: #333;
+}
+
+.reg-sketch-field > span {
+  font-weight: 600;
+}
+
+.reg-sketch-field input,
+.reg-sketch-field select,
+.reg-sketch-field textarea {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #9ab8d0;
+  border-radius: 2px;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.reg-sketch-field textarea {
+  resize: vertical;
+  min-height: 88px;
+}
+
+.reg-sketch-datetime-auto {
+  background: #fafafa;
+  color: #333;
+  cursor: default;
+}
+
+.reg-sketch-age-row .age-gender-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.reg-sketch-age-row .age-group input {
+  width: 44px;
+  padding: 6px 4px;
+  border-radius: 2px;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.reg-sketch-age-row .age-group input.reg-sketch-age-years {
+  width: 72px;
+}
+
+.reg-sketch-upload-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.reg-sketch-upload-box button {
+  padding: 6px 12px;
+  border: 1px dashed var(--gray-border);
+  background: #f8fafc;
+  cursor: pointer;
+}
+
+.reg-sketch-upload-box span {
+  font-size: 11px;
+  color: #666;
+}
+
+.reg-sketch-search {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.reg-sketch-search input {
+  max-width: 360px;
+  padding: 6px 8px;
+  border: 1px solid #9ab8d0;
+}
+
+.reg-sketch-test-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) auto minmax(0, 1.2fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.reg-sketch-test-list h4 {
+  margin: 0 0 6px;
+  font-size: 12px;
+  color: var(--blue-deep);
+}
+
+.reg-sketch-test-list select {
+  width: 100%;
+  min-height: 220px;
+  border: 1px solid #9ab8d0;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+.reg-sketch-test-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 28px;
+}
+
+.reg-sketch-test-actions button {
+  min-width: 92px;
+  padding: 8px 10px;
+  border: 1px solid #9ab8d0;
+  background: #eef4fb;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.reg-sketch-sample-table-wrap {
+  min-width: 0;
+}
+
+.reg-sketch-sample-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.reg-sketch-sample-table th,
+.reg-sketch-sample-table td {
+  border: 1px solid #9ab8d0;
+  padding: 8px;
+  vertical-align: top;
+  text-align: left;
+}
+
+.reg-sketch-sample-table th {
+  background: #eef4fb;
+  font-weight: 700;
+}
+
+.reg-sketch-sample-tests {
+  margin-top: 4px;
+  font-size: 11px;
+  color: #666;
+  line-height: 1.35;
+}
+
+.reg-sketch-barcode-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 8px;
+}
+
+.reg-sketch-barcode-field:last-child {
+  margin-bottom: 0;
+}
+
+.reg-sketch-barcode-field span {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.reg-sketch-barcode-field input {
+  width: 100%;
+  padding: 5px 6px;
+  border: 1px solid #9ab8d0;
+  box-sizing: border-box;
+}
+
+.reg-sketch-barcode-help {
+  margin: 0 0 10px;
+  font-size: 12px;
+  color: #555;
+  line-height: 1.45;
+}
+
+.reg-sketch-barcode-scan-row--matched .reg-sketch-barcode-field input {
+  border-color: #43a047;
+  background: #f1f8e9;
+}
+
+.reg-sketch-barcode-scan-row--mismatch .reg-sketch-barcode-field input {
+  border-color: #e53935;
+  background: #ffebee;
+}
+
+.reg-sketch-barcode-scan-row--pending .reg-sketch-barcode-field input:focus {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.15);
+}
+
+.reg-sketch-barcode-status {
+  margin: 2px 0 0;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.reg-sketch-barcode-scan-row--matched .reg-sketch-barcode-status {
+  color: #2e7d32;
+}
+
+.reg-sketch-barcode-scan-row--mismatch .reg-sketch-barcode-status {
+  color: #c62828;
+}
+
+.reg-sketch-barcode-scan-row--pending .reg-sketch-barcode-status {
+  color: #1565c0;
+}
+
+.reg-sketch-barcode-status--linked {
+  color: #2e7d32;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.reg-sketch-barcode-open {
+  padding: 4px 10px;
+  border: 1px solid #2e7d32;
+  background: #fff;
+  color: #2e7d32;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.reg-sketch-barcode-input-row,
+.sfb-barcode-row {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.reg-sketch-barcode-input-row input,
+.sfb-barcode-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.qr-scan-btn {
+  flex-shrink: 0;
+  padding: 6px 10px;
+  border: 1px solid #1565c0;
+  background: #e3f2fd;
+  color: #1565c0;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.qr-scan-btn:hover {
+  background: #bbdefb;
+}
+
+.qr-scanner-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.qr-scanner-modal {
+  width: min(420px, 100%);
+  background: #fff;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.qr-scanner-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.qr-scanner-header h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.qr-scanner-close {
+  border: none;
+  background: transparent;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  color: #555;
+}
+
+.qr-scanner-hint {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: #666;
+}
+
+.qr-scanner-region {
+  width: 100%;
+  min-height: 280px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #111;
+}
+
+.qr-scanner-error {
+  margin: 10px 0 0;
+  color: #c62828;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.reg-sketch-barcode-url-help {
+  margin-top: 8px;
+  padding: 8px;
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 6px;
+  font-size: 11px;
+  color: #5d4037;
+}
+
+.reg-sketch-barcode-url-help p {
+  margin: 0 0 6px;
+}
+
+.reg-sketch-barcode-url {
+  display: block;
+  word-break: break-all;
+  font-size: 10px;
+  background: #fff;
+  padding: 6px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.reg-sketch-barcode-copy {
+  padding: 4px 10px;
+  border: 1px solid #f57f17;
+  background: #fff;
+  color: #e65100;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.open-barcode-page {
+  padding: 16px;
+}
+
+.open-barcode-panel {
+  max-width: 560px;
+  margin: 0 auto;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.open-barcode-title {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+.open-barcode-intro {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: #555;
+}
+
+.open-barcode-input-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.open-barcode-input-row input {
+  flex: 1 1 180px;
+  min-width: 0;
+}
+
+.open-barcode-lookup-btn,
+.open-barcode-open-btn {
+  padding: 8px 14px;
+  border: 1px solid #1565c0;
+  background: #1565c0;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.open-barcode-open-btn {
+  margin-top: 12px;
+}
+
+.open-barcode-message {
+  margin: 12px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.open-barcode-message--error { color: #c62828; }
+.open-barcode-message--success { color: #2e7d32; }
+.open-barcode-message--warn { color: #e65100; }
+
+.open-barcode-details {
+  margin: 8px 0 0;
+  display: grid;
+  gap: 8px;
+}
+
+.open-barcode-details div {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.open-barcode-details dt {
+  font-weight: 700;
+  color: #555;
+}
+
+.reg-sketch-barcode-help-inline {
+  margin: 6px 0 0;
+  font-size: 11px;
+  color: #555;
+  line-height: 1.4;
+}
+
+.sample-scan-page {
+  padding: 16px;
+}
+
+.sample-scan-panel {
+  max-width: 920px;
+  margin: 0 auto;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.sample-scan-title {
+  margin: 0 0 8px;
+  font-size: 22px;
+  color: #1a237e;
+}
+
+.sample-scan-intro {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.sample-scan-input-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.sample-scan-input {
+  flex: 1 1 240px;
+  min-width: 0;
+  font-size: 16px;
+  padding: 10px 12px;
+}
+
+.sample-scan-submit,
+.sample-scan-action-btn {
+  padding: 10px 16px;
+  border: 1px solid #1565c0;
+  background: #1565c0;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.sample-scan-action-btn--secondary {
+  background: #fff;
+  color: #1565c0;
+}
+
+.sample-scan-message {
+  margin: 12px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.sample-scan-message--error { color: #c62828; }
+.sample-scan-message--warn { color: #e65100; }
+
+.sample-scan-result {
+  margin-top: 20px;
+  border-top: 2px solid #e3f2fd;
+  padding-top: 16px;
+}
+
+.sample-scan-result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.sample-scan-result-header h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.sample-scan-subtitle {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #555;
+}
+
+.sample-scan-status-badge {
+  padding: 6px 12px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.sample-scan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.sample-scan-grid div {
+  background: #f5f7fb;
+  border: 1px solid #e0e6ef;
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.sample-scan-grid span {
+  display: block;
+  font-size: 11px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.sample-scan-grid strong {
+  font-size: 13px;
+  color: #222;
+}
+
+.sample-scan-tests-title {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.sample-scan-table-wrap {
+  overflow-x: auto;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.sample-scan-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.sample-scan-table th,
+.sample-scan-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+.sample-scan-table th {
+  background: #f5f5f5;
+  font-size: 12px;
+}
+
+.sample-scan-linked {
+  margin-top: 14px;
+  font-size: 12px;
+}
+
+.sample-scan-linked ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+.sample-scan-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.pathologist-dashboard-intro {
+  margin: 0 0 20px;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.pathologist-action-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.pathologist-action-btn {
+  min-height: 110px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  font-size: 22px;
+  font-weight: 800;
+  cursor: pointer;
+  color: #fff;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pathologist-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.pathologist-action-btn--scan {
+  background: linear-gradient(135deg, #1565c0, #0d47a1);
+}
+
+.pathologist-action-btn--report {
+  background: linear-gradient(135deg, #2e7d32, #1b5e20);
+}
+
+.pathologist-action-btn--submit {
+  background: linear-gradient(135deg, #ef6c00, #e65100);
+}
+
+.pathologist-scan-panel {
+  background: #f8fbff;
+  border: 1px solid #bbdefb;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.pathologist-scan-panel h2 {
+  margin: 0 0 6px;
+  font-size: 18px;
+}
+
+.pathologist-scan-panel p {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: #555;
+}
+
+.pathologist-scan-input-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pathologist-scan-input {
+  flex: 1 1 240px;
+  min-width: 0;
+  font-size: 18px;
+  padding: 12px;
+}
+
+.pathologist-scan-lookup {
+  padding: 10px 16px;
+  border: 1px solid #1565c0;
+  background: #1565c0;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.pathologist-message {
+  margin: 10px 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.pathologist-message--error { color: #c62828; }
+.pathologist-message--success { color: #2e7d32; }
+.pathologist-message--warn { color: #e65100; }
+
+.pathologist-scan-result {
+  margin-top: 16px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 16px;
+  background: #fff;
+}
+
+.pathologist-scan-result-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.pathologist-scan-result-header h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.pathologist-scan-subtitle {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #555;
+}
+
+.pathologist-scan-badge {
+  padding: 6px 12px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.pathologist-scan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.pathologist-scan-grid div {
+  background: #f5f7fb;
+  border: 1px solid #e0e6ef;
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.pathologist-scan-grid span {
+  display: block;
+  font-size: 11px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.pathologist-tests-title {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.pathologist-table-wrap {
+  overflow-x: auto;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.pathologist-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.pathologist-table th,
+.pathologist-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+.pathologist-table th {
+  background: #f5f5f5;
+}
+
+@media (max-width: 720px) {
+  .pathologist-action-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pathologist-action-btn {
+    min-height: 72px;
+    font-size: 18px;
+  }
+}
+
+.reg-sketch-empty {
+  text-align: center;
+  color: #666;
+  padding: 18px 8px;
+}
+
+.reg-sketch-selected-tests {
+  margin-top: 10px;
+}
+
+.reg-sketch-selected-tests strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+
+.reg-sketch-selected-tests select {
+  width: 100%;
+  border: 1px solid #9ab8d0;
+  font-size: 12px;
+}
+
+.reg-sketch-total-bill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid #9ab8d0;
+  background: #fafcfe;
+  max-width: 220px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.reg-sketch-tally h3 {
+  margin: 0 0 12px;
+  font-size: 16px;
+  color: var(--blue-deep);
+}
+
+.reg-sketch-discount-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  align-items: flex-end;
+  margin-bottom: 14px;
+  padding: 12px;
+  border: 1px solid #dce8f0;
+  background: #f8fbfe;
+}
+
+.reg-sketch-discount-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  min-width: 120px;
+}
+
+.reg-sketch-discount-item--type {
+  min-width: 72px;
+}
+
+.reg-sketch-discount-item input,
+.reg-sketch-discount-item select {
+  padding: 5px 6px;
+  border: 1px solid #9ab8d0;
+  font-size: 13px;
+  min-width: 0;
+}
+
+.reg-sketch-discount-item input {
+  width: 88px;
+}
+
+.reg-sketch-discount-item select {
+  min-width: 140px;
+}
+
+.reg-sketch-discount-note {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: #555;
+}
+
+.reg-sketch-tally-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px 14px;
+  margin-bottom: 16px;
+}
+
+.reg-sketch-tally-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.reg-sketch-tally-grid input,
+.reg-sketch-tally-grid select {
+  padding: 5px 6px;
+  border: 1px solid #9ab8d0;
+  font-size: 13px;
+}
+
+.reg-sketch-submit-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.reg-sketch-submit {
+  min-width: 160px;
+  padding: 10px 24px;
+  border: 1px solid #2a6a9a;
+  background: #4a90c2;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.reg-sketch-submit:disabled,
+.reg-sketch-clear:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.reg-sketch-clear {
+  padding: 10px 18px;
+  border: 1px solid #9ab8d0;
+  background: #fff;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .reg-sketch-patient-grid,
+  .reg-sketch-test-layout,
+  .reg-sketch-tally-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reg-sketch-discount-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .reg-sketch-discount-item input,
+  .reg-sketch-discount-item select {
+    width: 100%;
+  }
+
+  .reg-sketch-test-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding-top: 0;
+  }
 }
 
 .payment-methods label {
@@ -1076,8 +2164,6 @@ input, select, textarea, button {
 .sidebar-header {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
   padding: 22px 20px 18px;
   flex-shrink: 0;
 }
@@ -4665,6 +5751,109 @@ input, select, textarea, button {
 
 .barcode-print-btn:hover {
   background: linear-gradient(180deg, #fff 0%, #ececec 100%);
+}
+
+/* ===== Link Preprinted Barcode page ===== */
+.page-barcode-link {
+  padding: 16px;
+}
+
+.barcode-link-panel {
+  max-width: 980px;
+  margin: 0 auto;
+  background: var(--white);
+  border: 1px solid #b8cfe0;
+  padding: 20px;
+}
+
+.barcode-link-title {
+  margin: 0 0 8px;
+  font-size: 22px;
+  color: #1a5276;
+}
+
+.barcode-link-intro {
+  margin: 0 0 16px;
+  color: #555;
+  font-size: 13px;
+}
+
+.barcode-link-lookup {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 12px;
+  align-items: end;
+  margin-bottom: 16px;
+}
+
+.barcode-link-patient {
+  margin: 16px 0;
+  padding: 12px;
+  background: #f3f8fc;
+  border: 1px solid #cfe0ee;
+}
+
+.barcode-link-patient h2 {
+  margin: 0 0 10px;
+  font-size: 16px;
+}
+
+.barcode-link-patient-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 16px;
+  font-size: 13px;
+}
+
+.barcode-link-existing {
+  margin: 12px 0 16px;
+  padding: 10px 12px;
+  background: #fafafa;
+  border: 1px dashed #ccc;
+}
+
+.barcode-link-existing ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+
+.barcode-link-form {
+  margin-top: 12px;
+}
+
+.barcode-link-submit {
+  margin-top: 12px;
+  padding: 10px 18px;
+  border: 1px solid #2a6a9a;
+  background: #4a90c2;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.barcode-link-submit:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.barcode-link-message {
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+.barcode-link-message--error {
+  color: #c62828;
+}
+
+.barcode-link-message--success {
+  color: #2e7d32;
+}
+
+@media (max-width: 768px) {
+  .barcode-link-lookup,
+  .barcode-link-patient-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ===== Send SMS modal ===== */

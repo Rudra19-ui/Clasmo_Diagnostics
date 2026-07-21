@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useNav } from '../context/NavContext';
 import NavIcon from './NavIcon';
 import AdminSidebar from './AdminSidebar';
 import LandingBrandTitle from './landing/LandingBrandTitle';
@@ -32,11 +33,12 @@ function readStoredLanguage() {
 
 function canSee(item, user) {
   if (item.adminOnly && user?.role !== 'admin') return false;
+  if (item.excludeRoles?.includes(user?.role)) return false;
   if (item.roles?.length && !item.roles.includes(user?.role)) return false;
   return true;
 }
 
-function SidebarLink({ item, isActive, onClick, asButton, showCaret, caretOpen }) {
+function SidebarLink({ item, isActive, onClose, onClick, asButton, showCaret, caretOpen }) {
   const className = `sidebar-nav-link${isActive ? ' is-active' : ''}`;
   const content = (
     <>
@@ -46,16 +48,23 @@ function SidebarLink({ item, isActive, onClick, asButton, showCaret, caretOpen }
     </>
   );
 
+  const handleClick = (event) => {
+    if (!asButton) {
+      onClose?.();
+    }
+    onClick?.(event);
+  };
+
   if (asButton) {
     return (
-      <button type="button" className={className} onClick={onClick}>
+      <button type="button" className={className} onClick={handleClick}>
         {content}
       </button>
     );
   }
 
   return (
-    <Link to={item.href} className={className} onClick={onClick}>
+    <Link to={item.href} className={className} onClick={handleClick}>
       {content}
     </Link>
   );
@@ -65,11 +74,7 @@ export default function Layout({ activePage, children }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [openMenu, setOpenMenu] = useState(null);
-  const [navOpen, setNavOpen] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return window.innerWidth >= 1024;
-  });
+  const { navOpen, openMenu, setOpenMenu, closeNav, toggleNav } = useNav();
   const [globalQuery, setGlobalQuery] = useState('');
   const [language, setLanguage] = useState(readStoredLanguage);
   const [languageOpen, setLanguageOpen] = useState(false);
@@ -79,11 +84,12 @@ export default function Layout({ activePage, children }) {
   const profileRef = useRef(null);
   const isStandalonePage = activePage === 'enquire-box' || activePage === 'user-signup' || activePage === 'self-patient-query' || activePage === 'give-feedback';
   const isAdminRoute = !isStandalonePage && (activePage === 'administration' || location.pathname.startsWith('/admin/'));
+  const isPathologist = user?.role === 'pathologist';
 
-  const closeNav = useCallback(() => {
-    setNavOpen(false);
-    setOpenMenu(null);
-  }, []);
+  const handleSidebarClick = useCallback((event) => {
+    const link = event.target.closest('#main-navigation a[href]');
+    if (link) closeNav();
+  }, [closeNav]);
 
   const handleLogout = () => {
     setProfileOpen(false);
@@ -160,6 +166,14 @@ export default function Layout({ activePage, children }) {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [navOpen, closeNav]);
 
+  const previousLocation = useRef(`${location.pathname}${location.search}${location.hash}`);
+  useEffect(() => {
+    const currentLocation = `${location.pathname}${location.search}${location.hash}`;
+    if (previousLocation.current === currentLocation) return;
+    previousLocation.current = currentLocation;
+    closeNav();
+  }, [location.pathname, location.search, location.hash, closeNav]);
+
   const navItems = NAV.filter((item) => canSee(item, user));
   const profileName = user?.display_name || user?.username || 'User';
   const profileInitial = profileName.charAt(0).toUpperCase();
@@ -176,19 +190,12 @@ export default function Layout({ activePage, children }) {
         id="main-navigation"
         className={`app-sidebar${navOpen ? ' nav-open' : ''}`}
         aria-label="Main navigation"
+        onClick={handleSidebarClick}
       >
         <div className="sidebar-header">
           <div className="sidebar-brand">
             <LandingBrandTitle showLogo compact variant="sidebar" />
           </div>
-          <button
-            type="button"
-            className="nav-close"
-            aria-label="Close navigation menu"
-            onClick={closeNav}
-          >
-            ✕
-          </button>
         </div>
 
         <ul className="sidebar-menu">
@@ -199,7 +206,7 @@ export default function Layout({ activePage, children }) {
             if (item.megaMenu && item.id === 'administration') {
               return (
                 <li key={item.id} className={isActive ? 'active' : ''}>
-                  <SidebarLink item={item} isActive={isActive} onClick={closeNav} />
+                  <SidebarLink item={item} isActive={isActive} onClose={closeNav} />
                 </li>
               );
             }
@@ -237,7 +244,7 @@ export default function Layout({ activePage, children }) {
 
             return (
               <li key={item.id} className={isActive ? 'active' : ''}>
-                <SidebarLink item={item} isActive={isActive} onClick={closeNav} />
+                <SidebarLink item={item} isActive={isActive} onClose={closeNav} />
               </li>
             );
           })}
@@ -253,7 +260,10 @@ export default function Layout({ activePage, children }) {
               aria-expanded={navOpen}
               aria-controls="main-navigation"
               aria-label={navOpen ? 'Close menu' : 'Open menu'}
-              onClick={() => setNavOpen((open) => !open)}
+              onClick={(event) => {
+                event.stopPropagation();
+                toggleNav();
+              }}
             >
               <span className="hamburger-line" />
               <span className="hamburger-line" />
@@ -262,65 +272,71 @@ export default function Layout({ activePage, children }) {
             <LandingBrandTitle showLogo compact className="app-brand-header app-brand-header-compact" />
           </div>
 
-          <form className="global-search" onSubmit={handleGlobalSearch}>
-            <input
-              type="search"
-              value={globalQuery}
-              onChange={(event) => setGlobalQuery(event.target.value)}
-              placeholder="Search by Name, Labcode, Mobile Number, Adhar Number"
-              aria-label="Global search"
-            />
-          </form>
+          {!isPathologist && (
+            <form className="global-search" onSubmit={handleGlobalSearch}>
+              <input
+                type="search"
+                value={globalQuery}
+                onChange={(event) => setGlobalQuery(event.target.value)}
+                placeholder="Search by Name, Labcode, Mobile Number, Adhar Number"
+                aria-label="Global search"
+              />
+            </form>
+          )}
 
           <div className="top-utility-end">
             {utilityNote && (
               <div className="utility-note" role="status" aria-live="polite">{utilityNote}</div>
             )}
             <ul className="utility-icons">
-            <li>
-              <button type="button" className="icon-btn" title="Payments & outstanding" onClick={handlePayments}>
-                $
-              </button>
-            </li>
-            <li>
-              <button type="button" className="icon-btn" title="Message to lab" onClick={handleMail}>
-                ✉
-              </button>
-            </li>
-            <li className="utility-language-wrap" ref={languageRef}>
-              <button
-                type="button"
-                className="icon-btn"
-                title="Language"
-                aria-expanded={languageOpen}
-                aria-haspopup="listbox"
-                onClick={() => setLanguageOpen((open) => !open)}
-              >
-                🌐
-              </button>
-              {languageOpen && (
-                <ul className="utility-language-menu" role="listbox" aria-label="Select language">
-                  {LANGUAGE_OPTIONS.map((option) => (
-                    <li key={option.code}>
-                      <button
-                        type="button"
-                        role="option"
-                        aria-selected={language === option.code}
-                        className={language === option.code ? 'active' : ''}
-                        onClick={() => handleLanguageSelect(option.code)}
-                      >
-                        {option.label}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-            <li>
-              <button type="button" className="icon-btn" title="Dashboard & calendar" onClick={handleCalendar}>
-                📅
-              </button>
-            </li>
+            {!isPathologist && (
+              <>
+                <li>
+                  <button type="button" className="icon-btn" title="Payments & outstanding" onClick={handlePayments}>
+                    $
+                  </button>
+                </li>
+                <li>
+                  <button type="button" className="icon-btn" title="Message to lab" onClick={handleMail}>
+                    ✉
+                  </button>
+                </li>
+                <li className="utility-language-wrap" ref={languageRef}>
+                  <button
+                    type="button"
+                    className="icon-btn"
+                    title="Language"
+                    aria-expanded={languageOpen}
+                    aria-haspopup="listbox"
+                    onClick={() => setLanguageOpen((open) => !open)}
+                  >
+                    🌐
+                  </button>
+                  {languageOpen && (
+                    <ul className="utility-language-menu" role="listbox" aria-label="Select language">
+                      {LANGUAGE_OPTIONS.map((option) => (
+                        <li key={option.code}>
+                          <button
+                            type="button"
+                            role="option"
+                            aria-selected={language === option.code}
+                            className={language === option.code ? 'active' : ''}
+                            onClick={() => handleLanguageSelect(option.code)}
+                          >
+                            {option.label}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+                <li>
+                  <button type="button" className="icon-btn" title="Dashboard & calendar" onClick={handleCalendar}>
+                    📅
+                  </button>
+                </li>
+              </>
+            )}
             <li className="utility-profile-wrap" ref={profileRef}>
               <button
                 type="button"

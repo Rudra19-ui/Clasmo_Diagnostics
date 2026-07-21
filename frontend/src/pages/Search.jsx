@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { sanitizeBarcodeScannedValue } from '../utils/barcodeScan';
 import Footer from '../components/Footer';
 import Layout from '../components/Layout';
+import { QrScanButton } from '../components/QrCameraScanner';
 import WorkFlowHistoryModal from '../components/WorkFlowHistoryModal';
 import SendSMSModal from '../components/SendSMSModal';
 import BulkReleaseSMSModal from '../components/BulkReleaseSMSModal';
@@ -187,18 +189,29 @@ export default function Search() {
 
   useEffect(() => {
     const query = (searchParams.get('q') || '').trim();
-    if (!query) return;
+    const barcodeParam = sanitizeBarcodeScannedValue(searchParams.get('barcode') || '');
+    const labCodeParam = (searchParams.get('lab_code') || '').trim();
+    if (!query && !barcodeParam && !labCodeParam) return;
 
-    const digits = query.replace(/\D/g, '');
-    let nextBasic = { ...basic, patientName: '', fromLabcode: '', toLabcode: '' };
+    let nextBasic = { ...basic, patientName: '', fromLabcode: '', toLabcode: '', barcode: '' };
     let nextAdvance = { ...advance, mobile: '' };
 
-    if (/^\d{6,}$/.test(query)) {
-      nextBasic = { ...nextBasic, fromLabcode: query, toLabcode: query };
-    } else if (digits.length >= 10) {
-      nextAdvance = { ...nextAdvance, mobile: query };
-    } else {
-      nextBasic = { ...nextBasic, patientName: query };
+    if (barcodeParam) {
+      nextBasic = { ...nextBasic, barcode: barcodeParam };
+    }
+    if (labCodeParam) {
+      nextBasic = { ...nextBasic, fromLabcode: labCodeParam, toLabcode: labCodeParam };
+    }
+
+    if (query) {
+      const digits = query.replace(/\D/g, '');
+      if (/^\d{6,}$/.test(query)) {
+        nextBasic = { ...nextBasic, fromLabcode: query, toLabcode: query };
+      } else if (digits.length >= 10) {
+        nextAdvance = { ...nextAdvance, mobile: query };
+      } else {
+        nextBasic = { ...nextBasic, patientName: query };
+      }
     }
 
     setBasic(nextBasic);
@@ -227,6 +240,24 @@ export default function Search() {
     setLoading(true);
     try {
       const params = buildParams(basic, advance, activeStatus);
+      const data = await api.searchRegistrations(params);
+      setRows(data);
+      setSelectedRows(new Set());
+    } catch (err) {
+      console.error(err);
+      setRows([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [basic, advance, activeStatus]);
+
+  const handleBarcodeCameraScan = useCallback(async (value) => {
+    const cleaned = sanitizeBarcodeScannedValue(value);
+    const nextBasic = { ...basic, barcode: cleaned };
+    setBasic(nextBasic);
+    setLoading(true);
+    try {
+      const params = buildParams(nextBasic, advance, activeStatus);
       const data = await api.searchRegistrations(params);
       setRows(data);
       setSelectedRows(new Set());
@@ -605,7 +636,19 @@ export default function Search() {
             </div>
             <div className="sfb-field">
               <label>Test/Sample Barcode</label>
-              <input type="text" value={basic.barcode} onChange={(e) => setBasicField('barcode', e.target.value)} />
+              <div className="sfb-barcode-row">
+                <input
+                  type="text"
+                  value={basic.barcode}
+                  onChange={(e) => setBasicField('barcode', sanitizeBarcodeScannedValue(e.target.value))}
+                  onKeyDown={(e) => e.key === 'Enter' && loadData()}
+                />
+                <QrScanButton
+                  label="Scan QR"
+                  title="Scan barcode with phone camera to find patient"
+                  onScan={handleBarcodeCameraScan}
+                />
+              </div>
             </div>
             <div className="sfb-field">
               <label>Select State</label>

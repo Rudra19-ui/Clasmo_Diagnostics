@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 from django.shortcuts import get_object_or_404
 
-from django.db import connection
+from django.db import connection, transaction
 from django.db.models import Count, Q, Sum
 from django.db.utils import OperationalError, ProgrammingError
 from django.utils import timezone
@@ -21,7 +21,7 @@ from .models import (
     LabMessage, PickupRequest, Registration, RegistrationTest, Test, TestCategory, User, LabRole,
     Membership, MembershipType, CollectionCenter, CollectionCenterBoy, DiscountReason, DiscountAuthority,
     WhatsAppMessageLog, ExpenseType, Area, RateMaster, Affiliation, SalesReference, Doctor, Patient, PatientAddress, LabConfiguration, ServiceAreaPincode, LabActivity,
-    JoinRequest, LoginLog, SelfPatientQuery,
+    JoinRequest, LoginLog, SelfPatientQuery, PatientSampleBarcode,
 )
 from .serializers import (
     ChangePasswordSerializer,
@@ -54,12 +54,23 @@ from .serializers import (
     RegistrationCreateSerializer,
     RegistrationSearchSerializer,
     RegistrationSerializer,
+    PatientBarcodeLinkSerializer,
+    PatientSampleBarcodeSerializer,
     TestCategorySerializer,
     TestSerializer,
     UserRoleUpdateSerializer,
     UserSerializer,
 )
-from .utils import generate_lab_code, get_lab_config
+from .utils import get_lab_config, peek_lab_code, peek_patient_id
+from .barcode_service import (
+    BarcodeLinkError,
+    filter_registrations_by_barcode,
+    link_sample_barcodes,
+    lookup_patient_by_barcode,
+    normalize_barcode,
+    resolve_patient_for_link,
+    scan_sample_by_barcode,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -261,6 +272,7 @@ class RegistrationSearchView(generics.ListAPIView):
         params = self.request.query_params
 
         patient_name = params.get('patient_name', '').strip()
+        patient_id = params.get('patient_id', '').strip()
         from_date = params.get('from_date', '').strip()
         to_date = params.get('to_date', '').strip()
         from_labcode = params.get('from_labcode', '').strip()
@@ -292,6 +304,8 @@ class RegistrationSearchView(generics.ListAPIView):
 
         if patient_name:
             qs = qs.filter(patient__patient_name__icontains=patient_name)
+        if patient_id:
+            qs = qs.filter(patient__patient_id=patient_id)
         if from_labcode:
             qs = qs.filter(lab_code__gte=from_labcode)
         if to_labcode:
@@ -318,13 +332,9 @@ class RegistrationSearchView(generics.ListAPIView):
             qs = qs.filter(created_by_id=user_id)
 
         if barcode:
-            qs = qs.filter(
-                Q(lab_code__icontains=barcode) | Q(patient__patient_id__icontains=barcode)
-            )
+            qs = filter_registrations_by_barcode(qs, barcode)
         if external_barcode:
-            qs = qs.filter(
-                Q(lab_code__icontains=external_barcode) | Q(patient__patient_id__icontains=external_barcode)
-            )
+            qs = filter_registrations_by_barcode(qs, external_barcode)
 
         if status_filter and status_filter != 'All':
             qs = qs.filter(status=status_filter)
@@ -604,16 +614,25 @@ def _sample_group_for_test(test):
 
 
 def _build_barcode_groups(registration):
+    linked = {
+        item.sample_type: item.barcode
+        for item in registration.linked_barcodes.filter(is_active=True)
+        if item.sample_type
+    }
     groups = {}
     for reg_test in registration.tests.select_related('test__category'):
         group_name, prefix = _sample_group_for_test(reg_test.test)
-        groups[group_name] = f'{prefix}{registration.lab_code}'
+        groups[group_name] = linked.get(group_name) or f'{prefix}{registration.lab_code}'
 
     if not groups:
-        groups['SERUM'] = f'1{registration.lab_code}'
+        groups['SERUM'] = linked.get('SERUM') or f'1{registration.lab_code}'
 
     return [
-        {'group_name': group_name, 'barcode': barcode}
+        {
+            'group_name': group_name,
+            'barcode': barcode,
+            'is_preprinted': group_name in linked,
+        }
         for group_name, barcode in groups.items()
     ]
 
@@ -1202,18 +1221,24 @@ class RegistrationDetailView(generics.RetrieveAPIView):
 class RegistrationCreateView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
+    @transaction.atomic
     def post(self, request):
         from .models import Patient
+        from .utils import _lock_lab_config
 
         serializer = RegistrationCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
         tests_data = data.pop('tests', [])
+        sample_barcodes = data.pop('sample_barcodes', [])
+        registration_barcode = normalize_barcode(data.pop('registration_barcode', ''))
         patient_data = data.pop('patient')
 
+        _lock_lab_config()
+        patient_data['patient_id'] = peek_patient_id()
         patient = Patient.objects.create(**patient_data)
         registration = Registration.objects.create(
-            lab_code=generate_lab_code(),
+            lab_code=peek_lab_code(),
             patient=patient,
             created_by=request.user,
             **data,
@@ -1228,15 +1253,49 @@ class RegistrationCreateView(APIView):
             }
             for t in tests_data
         ])
-        registration.refresh_from_db()
-        return Response(RegistrationSerializer(registration).data, status=status.HTTP_201_CREATED)
+
+        linked_barcodes = []
+        barcodes_to_link = list(sample_barcodes)
+        if registration_barcode:
+            barcodes_to_link.insert(0, {
+                'sample_type': 'Primary',
+                'barcode': registration_barcode,
+                'confirm_barcode': registration_barcode,
+            })
+        if barcodes_to_link:
+            try:
+                linked_barcodes = link_sample_barcodes(
+                    patient=patient,
+                    registration=registration,
+                    barcodes_data=barcodes_to_link,
+                    user=request.user,
+                )
+            except BarcodeLinkError as exc:
+                raise DRFValidationError({exc.field or 'sample_barcodes': exc.message})
+
+        return Response(
+            {
+                'id': registration.id,
+                'lab_code': registration.lab_code,
+                'patient': {'patient_id': patient.patient_id, 'bar_code': patient.bar_code},
+                'linked_barcodes': PatientSampleBarcodeSerializer(linked_barcodes, many=True).data,
+            },
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class NextLabCodeView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        return Response({'lab_code': generate_lab_code()})
+        return Response({'lab_code': peek_lab_code()})
+
+
+class NextPatientIdView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        return Response({'patient_id': peek_patient_id()})
 
 
 class PickupRequestListCreateView(generics.ListCreateAPIView):
@@ -1900,3 +1959,107 @@ class GlobalSearchView(APIView):
             | Q(patient__mobile__icontains=q)
         ).select_related('patient')[:20]
         return Response(RegistrationSearchSerializer(qs, many=True).data)
+
+
+class PatientBarcodeListView(generics.ListAPIView):
+    serializer_class = PatientSampleBarcodeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        qs = PatientSampleBarcode.objects.filter(is_active=True).select_related(
+            'patient', 'registration', 'linked_by'
+        )
+        patient_id = self.request.query_params.get('patient_id', '').strip()
+        lab_code = self.request.query_params.get('lab_code', '').strip()
+        registration_id = self.request.query_params.get('registration_id', '').strip()
+        barcode = self.request.query_params.get('barcode', '').strip()
+
+        if patient_id:
+            qs = qs.filter(patient__patient_id=patient_id)
+        if lab_code:
+            qs = qs.filter(registration__lab_code=lab_code)
+        if registration_id:
+            qs = qs.filter(registration_id=registration_id)
+        if barcode:
+            qs = qs.filter(barcode__iexact=normalize_barcode(barcode))
+        return qs.order_by('-linked_at')
+
+
+class PatientBarcodeLookupView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        barcode = request.query_params.get('barcode', '')
+        link = lookup_patient_by_barcode(barcode)
+        if not link:
+            return Response({
+                'found': False,
+                'barcode': normalize_barcode(barcode),
+            })
+
+        patient = link.patient
+        registration = link.registration
+        return Response({
+            'found': True,
+            'barcode': link.barcode,
+            'sample_type': link.sample_type,
+            'patient_id': patient.patient_id,
+            'patient_name': f'{patient.title} {patient.patient_name}'.strip(),
+            'lab_code': registration.lab_code if registration else '',
+            'registration_id': registration.id if registration else None,
+        })
+
+
+class PatientSampleScanView(APIView):
+    """Full patient + test details for pathologist sample tube scan."""
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        barcode = request.query_params.get('barcode', '')
+        return Response(scan_sample_by_barcode(barcode))
+
+
+class PatientBarcodeLinkView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    @transaction.atomic
+    def post(self, request):
+        serializer = PatientBarcodeLinkSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        payload = serializer.validated_data
+
+        try:
+            patient, registration = resolve_patient_for_link(
+                patient_id=payload.get('patient_id', ''),
+                lab_code=payload.get('lab_code', ''),
+                registration_id=payload.get('registration_id'),
+            )
+            linked = link_sample_barcodes(
+                patient=patient,
+                registration=registration,
+                barcodes_data=payload.get('barcodes', []),
+                user=request.user,
+            )
+        except BarcodeLinkError as exc:
+            raise DRFValidationError({exc.field or 'barcodes': exc.message})
+
+        return Response(
+            {
+                'patient_id': patient.patient_id,
+                'patient_name': f'{patient.title} {patient.patient_name}'.strip(),
+                'lab_code': registration.lab_code if registration else '',
+                'registration_id': registration.id if registration else None,
+                'linked_barcodes': PatientSampleBarcodeSerializer(linked, many=True).data,
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class PatientBarcodeDetailView(generics.RetrieveDestroyAPIView):
+    queryset = PatientSampleBarcode.objects.select_related('patient', 'registration', 'linked_by')
+    serializer_class = PatientSampleBarcodeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_destroy(self, instance):
+        instance.is_active = False
+        instance.save(update_fields=['is_active', 'updated_at'])

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import LandingBrandTitle from '../components/landing/LandingBrandTitle';
+import { ROLES } from '../utils/roles';
 import '../styles/landing.css';
 import '../styles/login.css';
 
@@ -10,6 +11,8 @@ const SAVE_INFO_KEY = 'clasmo_save_info';
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const nextPath = searchParams.get('next');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -37,7 +40,11 @@ export default function Login() {
 
       localStorage.setItem(SAVE_INFO_KEY, saveInfo ? 'true' : 'false');
 
-      navigate(loggedInUser?.role === 'admin' ? '/dashboard' : '/search');
+      const fallback = loggedInUser?.role === ROLES.ADMIN || loggedInUser?.role === ROLES.PATHOLOGIST
+        ? '/dashboard'
+        : '/search';
+      const destination = nextPath && nextPath.startsWith('/') ? nextPath : fallback;
+      navigate(destination);
     } catch (err) {
       setError(err.message);
     } finally {

@@ -274,6 +274,41 @@ class RegistrationTest(models.Model):
         return f'{self.registration.lab_code} - {self.test.name}'
 
 
+class PatientSampleBarcode(models.Model):
+    """Links a preprinted physical barcode label to a patient / registration sample."""
+
+    barcode = models.CharField(max_length=100, unique=True, db_index=True)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='sample_barcodes')
+    registration = models.ForeignKey(
+        Registration,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='linked_barcodes',
+    )
+    sample_type = models.CharField(max_length=100, blank=True)
+    is_active = models.BooleanField(default=True)
+    linked_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='linked_sample_barcodes',
+    )
+    linked_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-linked_at']
+        indexes = [
+            models.Index(fields=['patient', 'sample_type']),
+            models.Index(fields=['registration', 'sample_type']),
+        ]
+
+    def __str__(self):
+        return f'{self.barcode} → {self.patient.patient_id or self.patient_id}'
+
+
 class PickupRequest(models.Model):
     patient_name = models.CharField(max_length=200)
     mobile = models.CharField(max_length=20)

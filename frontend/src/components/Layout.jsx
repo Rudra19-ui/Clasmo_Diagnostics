@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useIsDesktop } from '../hooks/useBreakpoint';
 import NavIcon from './NavIcon';
 import AdminSidebar from './AdminSidebar';
 import LandingBrandTitle from './landing/LandingBrandTitle';
@@ -67,7 +66,10 @@ export default function Layout({ activePage, children }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [openMenu, setOpenMenu] = useState(null);
-  const [navOpen, setNavOpen] = useState(false);
+  const [navOpen, setNavOpen] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.innerWidth >= 1024;
+  });
   const [globalQuery, setGlobalQuery] = useState('');
   const [language, setLanguage] = useState(readStoredLanguage);
   const [languageOpen, setLanguageOpen] = useState(false);
@@ -75,7 +77,6 @@ export default function Layout({ activePage, children }) {
   const [utilityNote, setUtilityNote] = useState('');
   const languageRef = useRef(null);
   const profileRef = useRef(null);
-  const isDesktop = useIsDesktop();
   const isStandalonePage = activePage === 'enquire-box' || activePage === 'user-signup' || activePage === 'self-patient-query' || activePage === 'give-feedback';
   const isAdminRoute = !isStandalonePage && (activePage === 'administration' || location.pathname.startsWith('/admin/'));
 
@@ -144,13 +145,9 @@ export default function Layout({ activePage, children }) {
   }, [languageOpen, profileOpen]);
 
   useEffect(() => {
-    if (isDesktop) closeNav();
-  }, [isDesktop, closeNav]);
-
-  useEffect(() => {
-    document.body.classList.toggle('nav-scroll-lock', navOpen && !isDesktop);
+    document.body.classList.toggle('nav-scroll-lock', navOpen && window.innerWidth < 1024);
     return () => document.body.classList.remove('nav-scroll-lock');
-  }, [navOpen, isDesktop]);
+  }, [navOpen]);
 
   useEffect(() => {
     if (!navOpen) return undefined;
@@ -168,7 +165,7 @@ export default function Layout({ activePage, children }) {
   const profileInitial = profileName.charAt(0).toUpperCase();
 
   return (
-    <div className="dashboard app-with-sidebar">
+    <div className={`dashboard app-with-sidebar${navOpen ? ' sidebar-open' : ''}`}>
       <div
         className={`nav-drawer-overlay${navOpen ? ' open' : ''}`}
         onClick={closeNav}

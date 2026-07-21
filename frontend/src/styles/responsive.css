@@ -537,24 +537,23 @@ textarea {
   max-width: 100%;
 }
 
-/* ===== Desktop shell: persistent sidebar ===== */
+/* ===== Desktop shell: collapsible sidebar with toggle ===== */
 @media (min-width: 1024px) {
-  .app-sidebar {
+  .dashboard.app-with-sidebar.sidebar-open .app-sidebar {
     transform: translateX(0);
     box-shadow: none;
   }
 
-  .app-main {
+  .dashboard.app-with-sidebar.sidebar-open .app-main {
     margin-left: var(--sidebar-width, 300px);
+  }
+
+  .app-main {
+    transition: margin-left 0.28s ease;
   }
 
   .nav-drawer-overlay {
     display: none !important;
-  }
-
-  .nav-toggle.hamburger-btn,
-  .nav-close {
-    display: none;
   }
 
   body.nav-scroll-lock {

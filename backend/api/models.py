@@ -10,6 +10,9 @@ class User(AbstractUser):
     ROLE_PATHOLOGIST = 'pathologist'
     ROLE_HR = 'hr'
     ROLE_RECEPTIONIST = 'receptionist'
+    ROLE_SUPER_FRANCHISEE = 'super_franchisee'
+    ROLE_FRANCHISEE = 'franchisee'
+    ROLE_SUB_FRANCHISE = 'sub_franchise'
     ROLE_CHOICES = [
         (ROLE_USER, 'User'),
         (ROLE_ADMIN, 'Admin'),
@@ -17,8 +20,13 @@ class User(AbstractUser):
         (ROLE_PATHOLOGIST, 'Pathologist'),
         (ROLE_TECHNICIAN, 'Technician'),
         (ROLE_RECEPTIONIST, 'Receptionist'),
+        (ROLE_SUPER_FRANCHISEE, 'Super Franchisee'),
+        (ROLE_FRANCHISEE, 'Franchisee'),
+        (ROLE_SUB_FRANCHISE, 'Sub-Franchise'),
     ]
     CLINICAL_ROLES = {ROLE_ADMIN, ROLE_TECHNICIAN, ROLE_PATHOLOGIST}
+    FRANCHISE_ROLES = {ROLE_SUPER_FRANCHISEE, ROLE_FRANCHISEE, ROLE_SUB_FRANCHISE}
+    PARENT_REQUIRED_ROLES = {ROLE_FRANCHISEE, ROLE_SUB_FRANCHISE}
     SIGNUP_ROLES = {
         ROLE_ADMIN,
         ROLE_HR,
@@ -26,14 +34,35 @@ class User(AbstractUser):
         ROLE_TECHNICIAN,
         ROLE_USER,
         ROLE_RECEPTIONIST,
+        ROLE_SUPER_FRANCHISEE,
+        ROLE_FRANCHISEE,
+        ROLE_SUB_FRANCHISE,
     }
 
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=ROLE_USER)
+    role = models.CharField(max_length=30, choices=ROLE_CHOICES, default=ROLE_USER)
     display_name = models.CharField(max_length=100, blank=True)
     mobile = models.CharField(max_length=20, blank=True)
     lab_code = models.CharField(max_length=20, default='202505017')
     save_credentials = models.BooleanField(default=False)
     save_info = models.BooleanField(default=False)
+    parent_franchisee = models.ForeignKey(
+        'self',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='franchise_children',
+        help_text='Parent Super Franchisee or Franchisee in the management chain.',
+    )
+
+    def expected_parent_role(self):
+        if self.role == self.ROLE_FRANCHISEE:
+            return self.ROLE_SUPER_FRANCHISEE
+        if self.role == self.ROLE_SUB_FRANCHISE:
+            return self.ROLE_FRANCHISEE
+        return None
+
+    def __str__(self):
+        return self.display_name or self.username
 
 
 class LoginLog(models.Model):
@@ -59,7 +88,7 @@ class LoginLog(models.Model):
 
 
 class LabRole(models.Model):
-    code = models.CharField(max_length=20, unique=True)
+    code = models.CharField(max_length=30, unique=True)
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     permissions = models.JSONField(default=dict)
@@ -287,6 +316,7 @@ class PatientSampleBarcode(models.Model):
         related_name='linked_barcodes',
     )
     sample_type = models.CharField(max_length=100, blank=True)
+    linked_test_ids = models.JSONField(default=list, blank=True)
     is_active = models.BooleanField(default=True)
     linked_by = models.ForeignKey(
         User,

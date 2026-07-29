@@ -38,13 +38,28 @@ from .models import (
 
 
 class UserSerializer(serializers.ModelSerializer):
+    parent_franchisee_id = serializers.IntegerField(source='parent_franchisee.id', read_only=True, allow_null=True)
+    parent_franchisee_name = serializers.SerializerMethodField()
+    parent_franchisee_role = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = [
             'id', 'username', 'role', 'display_name', 'mobile', 'lab_code',
             'is_active', 'save_credentials', 'save_info', 'last_login',
+            'parent_franchisee_id', 'parent_franchisee_name', 'parent_franchisee_role',
         ]
         read_only_fields = ['last_login']
+
+    def get_parent_franchisee_name(self, obj):
+        parent = obj.parent_franchisee
+        if not parent:
+            return ''
+        return parent.display_name or parent.username
+
+    def get_parent_franchisee_role(self, obj):
+        parent = obj.parent_franchisee
+        return parent.role if parent else ''
 
 
 class RegisterSerializer(serializers.Serializer):
@@ -53,10 +68,35 @@ class RegisterSerializer(serializers.Serializer):
     full_name = serializers.CharField(max_length=100)
     mobile = serializers.CharField(max_length=20)
     role = serializers.ChoiceField(choices=User.ROLE_CHOICES, default=User.ROLE_USER)
+    parent_franchisee_id = serializers.IntegerField(required=False, allow_null=True)
+
+    def _actor(self):
+        return self.context.get('actor') or self.context.get('request') and self.context['request'].user
 
     def validate_role(self, value):
-        if value not in User.SIGNUP_ROLES:
-            raise serializers.ValidationError('Select a valid user type.')
+        actor = self._actor()
+        allowed = set()
+        if actor and actor.is_authenticated:
+            if actor.is_superuser or actor.role == User.ROLE_ADMIN:
+                allowed = {choice[0] for choice in User.ROLE_CHOICES}
+            elif actor.role == User.ROLE_SUPER_FRANCHISEE:
+                allowed = {User.ROLE_FRANCHISEE, User.ROLE_SUB_FRANCHISE}
+            elif actor.role == User.ROLE_FRANCHISEE:
+                allowed = {User.ROLE_SUB_FRANCHISE}
+            elif actor.role == User.ROLE_HR:
+                allowed = {
+                    User.ROLE_USER,
+                    User.ROLE_RECEPTIONIST,
+                    User.ROLE_TECHNICIAN,
+                    User.ROLE_PATHOLOGIST,
+                }
+        else:
+            allowed = set(User.SIGNUP_ROLES)
+
+        if value not in allowed:
+            raise serializers.ValidationError(
+                'You do not have permission to create this user type.'
+            )
         return value
 
     def validate_username(self, value):
@@ -82,26 +122,128 @@ class RegisterSerializer(serializers.Serializer):
             raise serializers.ValidationError('Enter a valid 10-digit mobile number.')
         return cleaned
 
+    def validate(self, attrs):
+        role = attrs.get('role', User.ROLE_USER)
+        parent_id = attrs.get('parent_franchisee_id')
+        actor = self._actor()
+
+        if role in User.PARENT_REQUIRED_ROLES:
+            if not parent_id and actor and actor.is_authenticated:
+                # Default parent to the creating supervisor when omitted.
+                if role == User.ROLE_FRANCHISEE and actor.role == User.ROLE_SUPER_FRANCHISEE:
+                    parent_id = actor.id
+                elif role == User.ROLE_SUB_FRANCHISE and actor.role in {
+                    User.ROLE_FRANCHISEE,
+                    User.ROLE_SUPER_FRANCHISEE,
+                }:
+                    parent_id = actor.id if actor.role == User.ROLE_FRANCHISEE else parent_id
+
+            if not parent_id:
+                label = 'Super Franchisee' if role == User.ROLE_FRANCHISEE else 'Franchisee'
+                raise serializers.ValidationError({
+                    'parent_franchisee_id': f'Select a parent {label} for this account.',
+                })
+            try:
+                parent = User.objects.get(pk=parent_id, is_active=True)
+            except User.DoesNotExist:
+                raise serializers.ValidationError({
+                    'parent_franchisee_id': 'Selected parent account was not found.',
+                })
+
+            expected_parent_role = (
+                User.ROLE_SUPER_FRANCHISEE
+                if role == User.ROLE_FRANCHISEE
+                else User.ROLE_FRANCHISEE
+            )
+            if parent.role != expected_parent_role:
+                raise serializers.ValidationError({
+                    'parent_franchisee_id': (
+                        f'Parent must be a {dict(User.ROLE_CHOICES).get(expected_parent_role)}.'
+                    ),
+                })
+            attrs['parent_franchisee'] = parent
+        else:
+            attrs['parent_franchisee'] = None
+            attrs['parent_franchisee_id'] = None
+
+        return attrs
+
     def create(self, validated_data):
-        return User.objects.create_user(
+        parent = validated_data.pop('parent_franchisee', None)
+        validated_data.pop('parent_franchisee_id', None)
+        role = validated_data.get('role', User.ROLE_USER)
+        user = User.objects.create_user(
             username=validated_data['username'],
             password=validated_data['password'],
             display_name=validated_data['full_name'],
             mobile=validated_data['mobile'],
-            role=validated_data.get('role', User.ROLE_USER),
+            role=role,
+            parent_franchisee=parent,
+            is_staff=(role == User.ROLE_ADMIN),
         )
+        return user
 
 
 class UserRoleUpdateSerializer(serializers.ModelSerializer):
+    parent_franchisee_id = serializers.IntegerField(required=False, allow_null=True)
+
     class Meta:
         model = User
-        fields = ['role']
+        fields = ['role', 'parent_franchisee_id']
 
     def validate_role(self, value):
         valid_roles = {choice[0] for choice in User.ROLE_CHOICES}
         if value not in valid_roles:
             raise serializers.ValidationError('Invalid role selected.')
         return value
+
+    def validate(self, attrs):
+        role = attrs.get('role', getattr(self.instance, 'role', User.ROLE_USER))
+        parent_id = attrs.get('parent_franchisee_id', serializers.empty)
+        if parent_id is serializers.empty:
+            parent = getattr(self.instance, 'parent_franchisee', None)
+            parent_id = parent.id if parent else None
+
+        if role in User.PARENT_REQUIRED_ROLES:
+            if not parent_id:
+                label = 'Super Franchisee' if role == User.ROLE_FRANCHISEE else 'Franchisee'
+                raise serializers.ValidationError({
+                    'parent_franchisee_id': f'Select a parent {label} for this account.',
+                })
+            try:
+                parent = User.objects.get(pk=parent_id, is_active=True)
+            except User.DoesNotExist:
+                raise serializers.ValidationError({
+                    'parent_franchisee_id': 'Selected parent account was not found.',
+                })
+            expected_parent_role = (
+                User.ROLE_SUPER_FRANCHISEE
+                if role == User.ROLE_FRANCHISEE
+                else User.ROLE_FRANCHISEE
+            )
+            if parent.role != expected_parent_role:
+                raise serializers.ValidationError({
+                    'parent_franchisee_id': (
+                        f'Parent must be a {dict(User.ROLE_CHOICES).get(expected_parent_role)}.'
+                    ),
+                })
+            if self.instance and parent.id == self.instance.id:
+                raise serializers.ValidationError({
+                    'parent_franchisee_id': 'A user cannot be their own parent.',
+                })
+            attrs['parent_franchisee'] = parent
+        else:
+            attrs['parent_franchisee'] = None
+
+        attrs.pop('parent_franchisee_id', None)
+        return attrs
+
+    def update(self, instance, validated_data):
+        instance.role = validated_data.get('role', instance.role)
+        if 'parent_franchisee' in validated_data:
+            instance.parent_franchisee = validated_data['parent_franchisee']
+        instance.save()
+        return instance
 
 
 class LabRoleSerializer(serializers.ModelSerializer):
@@ -447,6 +589,12 @@ class SampleBarcodeInputSerializer(serializers.Serializer):
     sample_type = serializers.CharField(max_length=100, required=False, allow_blank=True, default='')
     barcode = serializers.CharField(max_length=100)
     confirm_barcode = serializers.CharField(max_length=100)
+    test_ids = serializers.ListField(
+        child=serializers.IntegerField(min_value=1),
+        required=False,
+        allow_empty=True,
+        default=list,
+    )
 
 
 class PatientSampleBarcodeSerializer(serializers.ModelSerializer):

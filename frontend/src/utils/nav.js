@@ -24,7 +24,7 @@ export const NAV = [
     id: 'sample-scan',
     label: 'Sample Scan',
     href: '/sample-scan',
-    roles: [ROLES.ADMIN, ROLES.TECHNICIAN],
+    roles: [ROLES.ADMIN, ROLES.TECHNICIAN, ROLES.PATHOLOGIST, ROLES.RECEPTIONIST],
   },
   {
     id: 'test-result',
@@ -43,7 +43,7 @@ export const NAV = [
     id: 'user-signup',
     label: 'New User Sign Up',
     href: '/user-signup',
-    adminOnly: true,
+    roles: [ROLES.ADMIN, ROLES.HR, ROLES.SUPER_FRANCHISEE, ROLES.FRANCHISEE],
   },
   {
     id: 'reports',

@@ -136,7 +136,48 @@ class HealthView(APIView):
 
 class IsAdmin(permissions.BasePermission):
     def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role == User.ROLE_ADMIN
+        user = request.user
+        return bool(
+            user
+            and user.is_authenticated
+            and (user.is_superuser or user.role == User.ROLE_ADMIN)
+        )
+
+
+class CanCreateUserAccounts(permissions.BasePermission):
+    """Admin can create any account; franchise roles can create their child accounts."""
+
+    message = 'You do not have permission to create user accounts.'
+
+    def has_permission(self, request, view):
+        user = request.user
+        if not user or not user.is_authenticated:
+            return False
+        if user.is_superuser or user.role == User.ROLE_ADMIN:
+            return True
+        if user.role in {User.ROLE_SUPER_FRANCHISEE, User.ROLE_FRANCHISEE, User.ROLE_HR}:
+            return True
+        return False
+
+
+def roles_creatable_by(actor):
+    """Return role codes the actor is allowed to assign when creating a user."""
+    if not actor or not actor.is_authenticated:
+        return set()
+    if actor.is_superuser or actor.role == User.ROLE_ADMIN:
+        return {choice[0] for choice in User.ROLE_CHOICES}
+    if actor.role == User.ROLE_SUPER_FRANCHISEE:
+        return {User.ROLE_FRANCHISEE, User.ROLE_SUB_FRANCHISE}
+    if actor.role == User.ROLE_FRANCHISEE:
+        return {User.ROLE_SUB_FRANCHISE}
+    if actor.role == User.ROLE_HR:
+        return {
+            User.ROLE_USER,
+            User.ROLE_RECEPTIONIST,
+            User.ROLE_TECHNICIAN,
+            User.ROLE_PATHOLOGIST,
+        }
+    return set()
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -176,13 +217,19 @@ class LoginView(APIView):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class RegisterView(APIView):
-    permission_classes = [permissions.IsAuthenticated, IsAdmin]
+    permission_classes = [permissions.IsAuthenticated, CanCreateUserAccounts]
 
     def post(self, request):
         try:
-            serializer = RegisterSerializer(data=request.data)
+            serializer = RegisterSerializer(
+                data=request.data,
+                context={'request': request, 'actor': request.user},
+            )
             serializer.is_valid(raise_exception=True)
             user = serializer.save()
+            if user.role == User.ROLE_ADMIN:
+                user.is_staff = True
+                user.save(update_fields=['is_staff'])
             return Response({
                 'detail': 'Account created successfully. Please login with your username and password.',
                 'user': UserSerializer(user).data,
@@ -1398,16 +1445,25 @@ class ReportSummaryView(APIView):
 
 
 class UserListView(generics.ListAPIView):
-    queryset = User.objects.all().order_by('username')
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        qs = User.objects.select_related('parent_franchisee').all().order_by('username')
+        role = (self.request.query_params.get('role') or '').strip()
+        if role:
+            qs = qs.filter(role=role)
+        active = self.request.query_params.get('is_active')
+        if active in ('1', 'true', 'True'):
+            qs = qs.filter(is_active=True)
+        return qs
 
 
 class UserRoleUpdateView(APIView):
     permission_classes = [IsAdmin]
 
     def patch(self, request, pk):
-        target = get_object_or_404(User, pk=pk)
+        target = get_object_or_404(User.objects.select_related('parent_franchisee'), pk=pk)
         if target.id == request.user.id:
             return Response(
                 {'detail': 'You cannot change your own role.'},
@@ -1416,11 +1472,8 @@ class UserRoleUpdateView(APIView):
         serializer = UserRoleUpdateSerializer(target, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        if user.role == User.ROLE_ADMIN:
-            user.is_staff = True
-        else:
-            user.is_staff = False
-        user.save(update_fields=['role', 'is_staff'])
+        user.is_staff = user.role == User.ROLE_ADMIN
+        user.save(update_fields=['is_staff'])
         return Response(UserSerializer(user).data)
 
 

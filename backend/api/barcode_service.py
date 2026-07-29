@@ -44,6 +44,13 @@ def link_sample_barcodes(*, patient, registration=None, barcodes_data, user=None
 
     for item in barcodes_data or []:
         sample_type = _normalize_barcode(item.get('sample_type', ''))
+        raw_test_ids = item.get('test_ids') or []
+        linked_test_ids = []
+        for value in raw_test_ids:
+            try:
+                linked_test_ids.append(int(value))
+            except (TypeError, ValueError):
+                continue
         barcode = validate_barcode_pair(
             item.get('barcode'),
             item.get('confirm_barcode'),
@@ -75,6 +82,7 @@ def link_sample_barcodes(*, patient, registration=None, barcodes_data, user=None
             'patient': patient,
             'registration': registration,
             'sample_type': sample_type,
+            'linked_test_ids': linked_test_ids,
             'is_active': True,
             'linked_by': user,
         }
@@ -205,25 +213,77 @@ def format_age_sex(patient):
     return f'{age}(Y) / {sex}'
 
 
+def format_gender_label(patient):
+    gender = (patient.gender or '').lower()
+    if gender == 'female':
+        return 'Female'
+    if gender == 'male':
+        return 'Male'
+    if gender == 'none':
+        return 'None'
+    return (patient.gender or '—').title() if patient.gender else '—'
+
+
+def format_patient_age(patient):
+    years = patient.age_years or 0
+    months = getattr(patient, 'age_months', 0) or 0
+    days = getattr(patient, 'age_days', 0) or 0
+    parts = []
+    if years:
+        parts.append(f'{years} Y')
+    if months:
+        parts.append(f'{months} M')
+    if days:
+        parts.append(f'{days} D')
+    return ' '.join(parts) if parts else f'{years} Y'
+
+
+def _parse_sample_types(sample_type_str):
+    raw = (sample_type_str or '').strip()
+    if not raw:
+        return []
+    return [part.strip() for part in re.split(r'[,/|]', raw) if part.strip()]
+
+
+def _normalize_sample_token(value):
+    return ' '.join((value or '').upper().split())
+
+
+def test_matches_sample_type(test, target_sample_type):
+    target = _normalize_sample_token(target_sample_type)
+    if not target:
+        return False
+
+    catalog_types = [_normalize_sample_token(part) for part in _parse_sample_types(test.sample_type)]
+    if catalog_types:
+        return any(token == target for token in catalog_types)
+
+    group_name = _normalize_sample_token(sample_group_for_test(test))
+    return group_name == target
+
+
 def _tests_for_link(registration, link):
     all_tests = list(registration.tests.select_related('test__category').all())
     sample_type = (link.sample_type or '').strip()
+
+    linked_test_ids = [int(value) for value in (link.linked_test_ids or []) if str(value).isdigit()]
+    if linked_test_ids:
+        id_set = set(linked_test_ids)
+        matched = [reg_test for reg_test in all_tests if reg_test.test_id in id_set]
+        return matched, sample_type or 'Sample'
+
     if not sample_type or sample_type.lower() == 'primary':
         return all_tests, 'All Samples'
 
-    matched = []
-    target = sample_type.upper()
-    for reg_test in all_tests:
-        group_name = sample_group_for_test(reg_test.test)
-        test_sample = (reg_test.test.sample_type or group_name or '').upper()
-        if group_name.upper() == target or test_sample == target or target in group_name.upper():
-            matched.append(reg_test)
-    return (matched or all_tests), sample_type
+    matched = [reg_test for reg_test in all_tests if test_matches_sample_type(reg_test.test, sample_type)]
+    return matched, sample_type
 
 
 def build_sample_scan_payload(link):
     patient = link.patient
     registration = link.registration
+    gender_label = format_gender_label(patient)
+    age_display = format_patient_age(patient)
 
     base = {
         'found': True,
@@ -231,8 +291,11 @@ def build_sample_scan_payload(link):
         'linked_sample_type': link.sample_type or '',
         'patient_id': patient.patient_id,
         'patient_name': f'{patient.title} {patient.patient_name}'.strip(),
+        'age': age_display,
+        'age_years': patient.age_years or 0,
         'age_sex': format_age_sex(patient),
         'gender': patient.gender,
+        'gender_label': gender_label,
         'mobile': patient.mobile or '',
         'doctor_name': patient.doctor_name or '',
         'patient_type': patient.patient_type or '',
@@ -247,6 +310,7 @@ def build_sample_scan_payload(link):
             'registration_status': '',
             'registration_date': '',
             'sample_type': link.sample_type or '',
+            'test_type': link.sample_type or '',
             'tests': [],
             'linked_barcodes': [],
             'message': 'Barcode is linked to the patient but not to a registration.',
@@ -269,12 +333,15 @@ def build_sample_scan_payload(link):
         'registration_status': registration.status,
         'registration_date': regn_dt.strftime('%d-%m-%Y %H:%M') if regn_dt else '',
         'sample_type': display_sample_type,
+        'test_type': display_sample_type,
         'tests': [
             {
                 'id': reg_test.id,
                 'test_id': reg_test.test_id,
                 'name': reg_test.test.name,
                 'sample_type': reg_test.test.sample_type or sample_group_for_test(reg_test.test),
+                'test_type': display_sample_type or reg_test.test.sample_type or sample_group_for_test(reg_test.test),
+                'category': reg_test.test.category.name if reg_test.test.category_id else '',
                 'price': str(reg_test.price),
             }
             for reg_test in sample_tests

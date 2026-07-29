@@ -4,6 +4,7 @@ import Footer from '../components/Footer';
 import Layout from '../components/Layout';
 import GenderRadioGroup from '../components/GenderRadioGroup';
 import BarcodeLinkForm, { validateRegistrationBarcodes } from '../components/BarcodeLinkForm';
+import TestDualListPicker from '../components/TestDualListPicker';
 import { QrScanButton } from '../components/QrCameraScanner';
 import { sanitizeBarcodeScannedValue } from '../utils/barcodeScan';
 import { buildSampleBarcodePayload } from '../utils/barcodeScan';
@@ -11,7 +12,7 @@ import { useSystemDateTime } from '../hooks/useSystemDateTime';
 import { api } from '../services/api';
 
 const emptyPatient = () => ({
-  patient_type: 'I.P.D.',
+  patient_type: 'O.P.D.',
   title: 'Mr.',
   patient_name: '',
   gender: 'male',
@@ -33,9 +34,10 @@ const emptyPatient = () => ({
 
 const formatTestOption = (test) => test.name;
 
-function getPrimarySampleType(sampleType) {
+function getSampleTypes(sampleType) {
   const raw = (sampleType || 'General').trim();
-  return raw.split(/[,/|]/)[0].trim() || 'General';
+  const parts = raw.split(/[,/|]/).map((part) => part.trim()).filter(Boolean);
+  return parts.length ? parts : ['General'];
 }
 
 function calculateDiscountAmounts(total, discountTest, discountRegn, discountType) {
@@ -68,9 +70,8 @@ export default function Registration() {
   const [patient, setPatient] = useState(emptyPatient());
   const [tests, setTests] = useState([]);
   const [selected, setSelected] = useState([]);
-  const [selectedAvailable, setSelectedAvailable] = useState([]);
-  const [selectedChosen, setSelectedChosen] = useState([]);
   const [testSearch, setTestSearch] = useState('');
+  const [selectedTestSearch, setSelectedTestSearch] = useState('');
   const [labCode, setLabCode] = useState('');
   const [comment, setComment] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('cash');
@@ -100,9 +101,8 @@ export default function Registration() {
   const resetForm = useCallback((nextIds) => {
     setPatient(emptyPatient());
     setSelected([]);
-    setSelectedAvailable([]);
-    setSelectedChosen([]);
     setTestSearch('');
+    setSelectedTestSearch('');
     setComment('');
     setVisiting(0);
     setPaid(0);
@@ -149,9 +149,10 @@ export default function Registration() {
   const sampleGroups = useMemo(() => {
     const groups = new Map();
     selected.forEach((test) => {
-      const sampleType = getPrimarySampleType(test.sample_type);
-      if (!groups.has(sampleType)) groups.set(sampleType, []);
-      groups.get(sampleType).push(test);
+      getSampleTypes(test.sample_type).forEach((sampleType) => {
+        if (!groups.has(sampleType)) groups.set(sampleType, []);
+        groups.get(sampleType).push(test);
+      });
     });
     return [...groups.entries()].map(([sampleType, groupTests]) => ({ sampleType, tests: groupTests }));
   }, [selected]);
@@ -174,9 +175,9 @@ export default function Registration() {
     });
   };
 
-  const removeSelectedTests = () => {
-    setSelected((prev) => prev.filter((t) => !selectedChosen.includes(t.id)));
-    setSelectedChosen([]);
+  const removeSelectedTests = (ids) => {
+    const removeIds = new Set(ids);
+    setSelected((prev) => prev.filter((t) => !removeIds.has(t.id)));
   };
 
   const updateBarcode = (sampleType, field, value) => {
@@ -520,79 +521,33 @@ export default function Registration() {
         </section>
 
         <section className="reg-sketch-panel" aria-label="Test selection">
-          <label className="reg-sketch-search">
-            <span>Search Test</span>
-            <input
-              type="search"
-              placeholder="Search tests..."
-              value={testSearch}
-              onChange={(e) => setTestSearch(e.target.value)}
-            />
-          </label>
+          <div className="reg-sketch-total-bill reg-sketch-total-bill--top">
+            <span>Total Bill :</span>
+            <strong>Rs. {total > 0 ? total.toFixed(0) : 0}</strong>
+          </div>
 
           <div className="reg-sketch-test-layout">
-            <div className="reg-sketch-test-list">
-              <h4>Test List</h4>
-              <select
-                multiple
-                size={10}
-                value={selectedAvailable}
-                onChange={(e) => setSelectedAvailable([...e.target.selectedOptions].map((o) => Number(o.value)))}
-              >
-                {filteredAvailable.map((t) => (
-                  <option key={t.id} value={t.id} title={formatTestOption(t)}>
-                    {formatTestOption(t)}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <TestDualListPicker
+              available={filteredAvailable}
+              selected={selected}
+              onAdd={addTests}
+              onRemove={removeSelectedTests}
+              onRemoveAll={() => setSelected([])}
+              testSearch={testSearch}
+              onTestSearchChange={setTestSearch}
+              selectedTestSearch={selectedTestSearch}
+              onSelectedTestSearchChange={setSelectedTestSearch}
+              formatLabel={formatTestOption}
+            />
 
-            <div className="reg-sketch-test-actions">
-              <button
-                type="button"
-                onClick={() => addTests(filteredAvailable.filter((t) => selectedAvailable.includes(t.id)))}
-              >
-                Add
-              </button>
-              <button type="button" onClick={removeSelectedTests}>
-                Remove
-              </button>
-              <button type="button" onClick={() => setSelected([])}>
-                Remove all
-              </button>
-            </div>
-
-            <div className="reg-sketch-sample-table-wrap">
+            <div className="reg-sketch-sample-panel">
               <BarcodeLinkForm
                 sampleGroups={sampleGroups}
                 sampleBarcodes={sampleBarcodes}
                 onBarcodeChange={updateBarcode}
-                singleScanMode
+                registrationLayout
               />
-
-              {selected.length > 0 && (
-                <div className="reg-sketch-selected-tests">
-                  <strong>Selected Tests:</strong>
-                  <select
-                    multiple
-                    size={4}
-                    value={selectedChosen.map(String)}
-                    onChange={(e) => setSelectedChosen([...e.target.selectedOptions].map((o) => Number(o.value)))}
-                  >
-                    {selected.map((t) => (
-                      <option key={t.id} value={t.id}>
-                        {t.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
             </div>
-          </div>
-
-          <div className="reg-sketch-total-bill">
-            <span>Total Bill</span>
-            <strong>{total > 0 ? `${total.toFixed(0)}/-` : '0/-'}</strong>
           </div>
         </section>
 

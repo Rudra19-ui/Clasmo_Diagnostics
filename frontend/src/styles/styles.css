@@ -946,11 +946,64 @@ input, select, textarea, button {
   border: 1px solid #9ab8d0;
 }
 
+.reg-sketch-search--inline {
+  margin-bottom: 6px;
+}
+
+.reg-sketch-search--inline input {
+  max-width: none;
+  width: 100%;
+}
+
 .reg-sketch-test-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) auto minmax(0, 1.2fr);
-  gap: 12px;
+  grid-template-columns: minmax(180px, 1fr) auto minmax(170px, 0.95fr) minmax(320px, 1.5fr);
+  gap: 10px;
   align-items: start;
+}
+
+.test-picker-list-box {
+  width: 100%;
+  min-height: 220px;
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid #9ab8d0;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.test-picker-list-box:focus {
+  outline: 2px solid #7eb6e6;
+  outline-offset: -2px;
+}
+
+.test-picker-item {
+  display: block;
+  width: 100%;
+  padding: 4px 8px;
+  border: none;
+  background: transparent;
+  color: #222;
+  text-align: left;
+  font-size: 12px;
+  line-height: 1.35;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.test-picker-item:hover {
+  background: #eef4fb;
+}
+
+.test-picker-item.is-active {
+  background: #2f80d8;
+  color: #fff;
+}
+
+.test-picker-empty {
+  padding: 12px 8px;
+  font-size: 12px;
+  color: #666;
 }
 
 .reg-sketch-test-list h4 {
@@ -967,6 +1020,25 @@ input, select, textarea, button {
   box-sizing: border-box;
 }
 
+.reg-sketch-selected-panel {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.reg-sketch-selected-panel select {
+  width: 100%;
+  min-height: 220px;
+  border: 1px solid #9ab8d0;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+.reg-sketch-sample-panel {
+  min-width: 0;
+}
+
 .reg-sketch-test-actions {
   display: flex;
   flex-direction: column;
@@ -975,13 +1047,15 @@ input, select, textarea, button {
 }
 
 .reg-sketch-test-actions button {
-  min-width: 92px;
+  min-width: 44px;
+  min-height: 34px;
   padding: 8px 10px;
   border: 1px solid #9ab8d0;
   background: #eef4fb;
   cursor: pointer;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .reg-sketch-sample-table-wrap {
@@ -1007,11 +1081,65 @@ input, select, textarea, button {
   font-weight: 700;
 }
 
+.reg-sketch-sample-table--registration th,
+.reg-sketch-sample-table--registration td {
+  padding: 6px 8px;
+  font-size: 11px;
+}
+
+.reg-sketch-sample-table--registration th:nth-child(1),
+.reg-sketch-sample-table--registration td.reg-sketch-sample-index {
+  width: 28px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.reg-sketch-sample-table--registration th:nth-child(2),
+.reg-sketch-sample-table--registration td.reg-sketch-sample-type-cell {
+  width: 118px;
+  white-space: nowrap;
+}
+
+.reg-sketch-sample-table--registration th:nth-child(3),
+.reg-sketch-sample-table--registration td.reg-sketch-barcode-cell {
+  width: 132px;
+}
+
+.reg-sketch-sample-table--registration th:nth-child(4),
+.reg-sketch-sample-table--registration td.reg-sketch-sample-test-names {
+  min-width: 120px;
+}
+
 .reg-sketch-sample-tests {
   margin-top: 4px;
   font-size: 11px;
   color: #666;
   line-height: 1.35;
+}
+
+.reg-sketch-sample-test-names {
+  font-size: 11px;
+  line-height: 1.45;
+  color: #333;
+}
+
+.reg-sketch-barcode-scan-row--compact {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.reg-sketch-barcode-scan-row--compact .reg-sketch-barcode-field {
+  margin-bottom: 0;
+}
+
+.reg-sketch-barcode-scan-row--compact .reg-sketch-barcode-field input {
+  padding: 4px 6px;
+  font-size: 11px;
+}
+
+.barcode-link-form--registration .reg-sketch-sample-table-wrap {
+  margin-top: 0;
 }
 
 .reg-sketch-barcode-field {
@@ -1620,6 +1748,74 @@ input, select, textarea, button {
   margin-bottom: 14px;
 }
 
+.sample-scan-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 14px 0 18px;
+}
+
+.sample-scan-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid #d5e4f2;
+  border-radius: 8px;
+  background: #f8fbfe;
+}
+
+.sample-scan-detail-item span {
+  font-size: 11px;
+  font-weight: 600;
+  color: #5a738a;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.sample-scan-detail-item strong {
+  font-size: 14px;
+  color: #12354f;
+  word-break: break-word;
+}
+
+.sample-scan-detail-table th,
+.sample-scan-detail-table td {
+  vertical-align: top;
+}
+
+.sample-scan-linked-list {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #d5e4f2;
+}
+
+.sample-scan-linked-list h4 {
+  margin: 0 0 8px;
+  font-size: 13px;
+}
+
+.sample-scan-linked-list ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.sample-scan-result-card {
+  margin-top: 16px;
+}
+
+@media (max-width: 900px) {
+  .sample-scan-detail-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .sample-scan-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .pathologist-scan-grid div {
   background: #f5f7fb;
   border: 1px solid #e0e6ef;
@@ -1706,6 +1902,11 @@ input, select, textarea, button {
   max-width: 220px;
   font-size: 13px;
   font-weight: 600;
+}
+
+.reg-sketch-total-bill--top {
+  margin-top: 0;
+  margin-bottom: 12px;
 }
 
 .reg-sketch-tally h3 {
@@ -1811,6 +2012,16 @@ input, select, textarea, button {
   border: 1px solid #9ab8d0;
   background: #fff;
   cursor: pointer;
+}
+
+@media (max-width: 1100px) {
+  .reg-sketch-test-layout {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  }
+
+  .reg-sketch-sample-panel {
+    grid-column: 1 / -1;
+  }
 }
 
 @media (max-width: 900px) {
@@ -3731,6 +3942,13 @@ input, select, textarea, button {
   font-size: 14px;
 }
 
+.user-signup-parent-help {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: #5a738a;
+  line-height: 1.4;
+}
+
 .user-signup-show-password {
   display: inline-flex;
   align-items: center;
@@ -4784,6 +5002,10 @@ input, select, textarea, button {
   border: 1px solid #d8e6f2;
   border-radius: 16px;
   box-shadow: 0 10px 28px rgba(10, 61, 107, 0.08);
+}
+
+.dashboard-welcome-hero--below-scan {
+  margin-top: 24px;
 }
 
 .dashboard-welcome-actions {

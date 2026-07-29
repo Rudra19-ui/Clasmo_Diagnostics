@@ -134,7 +134,13 @@ export const api = {
     request('/messages/', { method: 'POST', body: JSON.stringify({ message }) }),
   getMessages: () => request('/messages/'),
   globalSearch: (q) => request(`/search/global/?q=${encodeURIComponent(q)}`),
-  getUsers: () => request('/users/'),
+  getUsers: (params = {}) => {
+    const query = new URLSearchParams();
+    if (params.role) query.set('role', params.role);
+    if (params.is_active) query.set('is_active', params.is_active === true ? 'true' : String(params.is_active));
+    const suffix = query.toString() ? `?${query.toString()}` : '';
+    return request(`/users/${suffix}`);
+  },
   getRoles: () => request('/roles/'),
   getRole: (code) => request(`/roles/${code}/`),
   updateRole: (code, payload) =>

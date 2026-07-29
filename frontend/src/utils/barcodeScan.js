@@ -7,15 +7,18 @@ export function sanitizeBarcodeScannedValue(value) {
 
 export function buildSampleBarcodePayload(sampleGroups, sampleBarcodes) {
   return sampleGroups
-    .map(({ sampleType }) => {
+    .map(({ sampleType, tests = [] }) => {
       const entry = sampleBarcodes[sampleType];
       const barcode = sanitizeBarcodeScannedValue(entry?.enter);
       if (!barcode) return null;
-      const confirm = sanitizeBarcodeScannedValue(entry?.confirm) || barcode;
+      const confirm = sanitizeBarcodeScannedValue(entry?.confirm);
+      if (!confirm) return null;
+      if (barcode !== confirm) return null;
       return {
         sample_type: sampleType,
         barcode,
         confirm_barcode: confirm,
+        test_ids: tests.map((test) => test.id),
       };
     })
     .filter(Boolean);
@@ -48,11 +51,13 @@ export function validateSampleBarcodes(sampleGroups, sampleBarcodes) {
     const entry = sampleBarcodes[sampleType];
     const barcode = sanitizeBarcodeScannedValue(entry?.enter);
     const confirm = sanitizeBarcodeScannedValue(entry?.confirm);
-    if (!barcode && !confirm) continue;
     if (!barcode) {
       return `${sampleType}: enter the barcode number.`;
     }
-    if (confirm && barcode !== confirm) {
+    if (!confirm) {
+      return `${sampleType}: confirm the barcode number.`;
+    }
+    if (barcode !== confirm) {
       return `${sampleType}: barcode and confirmation do not match.`;
     }
   }

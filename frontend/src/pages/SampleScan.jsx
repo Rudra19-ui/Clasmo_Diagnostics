@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 import Layout from '../components/Layout';
 import { QrScanButton } from '../components/QrCameraScanner';
+import SampleScanResultPanel from '../components/SampleScanResultPanel';
 import { api } from '../services/api';
 import { canEnterResults, canVerifyReports } from '../utils/roles';
 import { useAuth } from '../context/AuthContext';
@@ -71,8 +72,8 @@ export default function SampleScan() {
         <section className="sample-scan-panel">
           <h1 className="sample-scan-title">Scan Sample Tube</h1>
           <p className="sample-scan-intro">
-            Scan the pre-printed barcode on the blood tube with your QR scanner machine or phone camera.
-            Patient details and ordered tests will appear here.
+            Scan the tube barcode to see Lab Code, Patient ID, Patient Name, Age, Gender,
+            Register Date, Test Type, and all tests for that sample.
           </p>
 
           <div className="sample-scan-input-row">
@@ -103,72 +104,11 @@ export default function SampleScan() {
 
           {error && <p className="sample-scan-message sample-scan-message--error">{error}</p>}
 
-          {result?.found && (
-            <div className="sample-scan-result">
-              <div className="sample-scan-result-header">
-                <div>
-                  <h2>{result.patient_name}</h2>
-                  <p className="sample-scan-subtitle">
-                    Patient ID: <strong>{result.patient_id}</strong>
-                    {' · '}
-                    Lab Code: <strong>{result.lab_code}</strong>
-                  </p>
-                </div>
-                <span className="sample-scan-status-badge">{result.registration_status || 'Registered'}</span>
-              </div>
-
-              <div className="sample-scan-grid">
-                <div><span>Age / Sex</span><strong>{result.age_sex}</strong></div>
-                <div><span>Sample Type</span><strong>{result.sample_type || '—'}</strong></div>
-                <div><span>Barcode</span><strong>{result.barcode}</strong></div>
-                <div><span>Register Date</span><strong>{result.registration_date || '—'}</strong></div>
-                <div><span>Doctor</span><strong>{result.doctor_name || '—'}</strong></div>
-                <div><span>Mobile</span><strong>{result.mobile || '—'}</strong></div>
-                <div><span>Collection Center</span><strong>{result.collection_center || '—'}</strong></div>
-                <div><span>Patient Type</span><strong>{result.patient_type || '—'}</strong></div>
-              </div>
-
-              <h3 className="sample-scan-tests-title">Tests for this sample</h3>
-              {result.tests?.length ? (
-                <div className="sample-scan-table-wrap">
-                  <table className="sample-scan-table">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Test Name</th>
-                        <th>Sample</th>
-                        <th>Price</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {result.tests.map((test, index) => (
-                        <tr key={test.id || `${test.test_id}-${index}`}>
-                          <td>{index + 1}</td>
-                          <td>{test.name}</td>
-                          <td>{test.sample_type || '—'}</td>
-                          <td>{test.price}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <p className="sample-scan-message sample-scan-message--warn">No tests found for this sample type.</p>
-              )}
-
-              {result.linked_barcodes?.length > 1 && (
-                <div className="sample-scan-linked">
-                  <h4>All linked barcodes for this patient</h4>
-                  <ul>
-                    {result.linked_barcodes.map((item) => (
-                      <li key={`${item.sample_type}-${item.barcode}`}>
-                        <strong>{item.sample_type || 'General'}</strong>: {item.barcode}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
+          <SampleScanResultPanel
+            result={result}
+            classPrefix="sample-scan"
+            showActions
+            actions={(
               <div className="sample-scan-actions">
                 <button type="button" className="sample-scan-action-btn" onClick={openReportPreview}>
                   View Report
@@ -184,8 +124,8 @@ export default function SampleScan() {
                   </button>
                 )}
               </div>
-            </div>
-          )}
+            )}
+          />
         </section>
       </main>
       <Footer />

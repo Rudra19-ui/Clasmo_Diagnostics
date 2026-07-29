@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { QrScanButton } from '../components/QrCameraScanner';
+import { QrScanButton } from './QrCameraScanner';
+import SampleScanResultPanel from './SampleScanResultPanel';
+import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
 import { sanitizeBarcodeScannedValue } from '../utils/barcodeScan';
+import { ROLE_LABELS } from '../utils/roles';
 
-const LAST_SCAN_KEY = 'clasmo_pathologist_last_scan';
+const LAST_SCAN_KEY = 'clasmo_sample_barcode_last_scan';
 
 function readLastScan() {
   try {
@@ -21,65 +24,12 @@ function saveLastScan(data) {
   }
 }
 
-function ScanResultPanel({ result }) {
-  if (!result?.found) return null;
-
-  return (
-    <div className="pathologist-scan-result">
-      <div className="pathologist-scan-result-header">
-        <div>
-          <h2>{result.patient_name}</h2>
-          <p className="pathologist-scan-subtitle">
-            Patient ID: <strong>{result.patient_id}</strong>
-            {' · '}
-            Lab Code: <strong>{result.lab_code}</strong>
-          </p>
-        </div>
-        <span className="pathologist-scan-badge">{result.registration_status || 'Registered'}</span>
-      </div>
-
-      <div className="pathologist-scan-grid">
-        <div><span>Age / Sex</span><strong>{result.age_sex}</strong></div>
-        <div><span>Sample Type</span><strong>{result.sample_type || '—'}</strong></div>
-        <div><span>Barcode</span><strong>{result.barcode}</strong></div>
-        <div><span>Register Date</span><strong>{result.registration_date || '—'}</strong></div>
-        <div><span>Doctor</span><strong>{result.doctor_name || '—'}</strong></div>
-        <div><span>Mobile</span><strong>{result.mobile || '—'}</strong></div>
-      </div>
-
-      <h3 className="pathologist-tests-title">Tests for this sample</h3>
-      {result.tests?.length ? (
-        <div className="pathologist-table-wrap">
-          <table className="pathologist-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Test Name</th>
-                <th>Sample</th>
-              </tr>
-            </thead>
-            <tbody>
-              {result.tests.map((test, index) => (
-                <tr key={test.id || `${test.test_id}-${index}`}>
-                  <td>{index + 1}</td>
-                  <td>{test.name}</td>
-                  <td>{test.sample_type || '—'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <p className="pathologist-message pathologist-message--warn">No tests found for this sample.</p>
-      )}
-    </div>
-  );
-}
-
 export default function PathologistDashboard() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const roleLabel = ROLE_LABELS[user?.role] || 'User';
   const inputRef = useRef(null);
-  const [scanOpen, setScanOpen] = useState(false);
+  const [scanOpen, setScanOpen] = useState(true);
   const [barcode, setBarcode] = useState('');
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -99,6 +49,7 @@ export default function PathologistDashboard() {
     setLoading(true);
     setError('');
     setMessage('');
+    setScanOpen(true);
 
     try {
       const data = await api.scanSampleBarcode(cleaned);
@@ -170,15 +121,16 @@ export default function PathologistDashboard() {
   return (
     <div className="pathologist-dashboard">
       <h1 className="dashboard-welcome-heading">
-        Welcome, <span>Pathologist</span>
+        Welcome, <span>{roleLabel}</span>
       </h1>
       <p className="pathologist-dashboard-intro">
-        For testing: register a patient with a barcode number, then scan the same QR here using Scan by Phone.
+        Scan a sample tube barcode to see Lab Code, Patient ID, Patient Name, Age, Gender,
+        Register Date, Test Type, and all tests for that sample.
       </p>
 
       <section className="pathologist-action-grid">
         <button type="button" className="pathologist-action-btn pathologist-action-btn--scan" onClick={openScan}>
-          Scan
+          Scan Barcode
         </button>
         <button type="button" className="pathologist-action-btn pathologist-action-btn--report" onClick={handleViewReport}>
           View Report
@@ -197,8 +149,7 @@ export default function PathologistDashboard() {
         <section className="pathologist-scan-panel">
           <h2>Scan Blood Tube</h2>
           <p>
-            No scanner machine? Tap <strong>Scan by Phone</strong> and point your camera at the QR code.
-            The QR must contain the same barcode number entered at registration.
+            Use a scanner machine, type the barcode and press Enter, or tap <strong>Scan by Phone</strong>.
           </p>
           <div className="pathologist-scan-input-row">
             <input
@@ -206,7 +157,7 @@ export default function PathologistDashboard() {
               type="text"
               className="field-highlight-barcode pathologist-scan-input"
               value={barcode}
-              placeholder="Or type barcode number and press Enter…"
+              placeholder="Scan or type barcode number and press Enter…"
               onChange={(e) => {
                 setBarcode(sanitizeBarcodeScannedValue(e.target.value));
                 setError('');
@@ -225,7 +176,7 @@ export default function PathologistDashboard() {
 
       {error && <p className="pathologist-message pathologist-message--error">{error}</p>}
       {message && <p className="pathologist-message pathologist-message--success">{message}</p>}
-      <ScanResultPanel result={result} />
+      <SampleScanResultPanel result={result} classPrefix="pathologist" />
     </div>
   );
 }

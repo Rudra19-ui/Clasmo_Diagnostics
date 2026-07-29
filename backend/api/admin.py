@@ -23,12 +23,34 @@ from .models import (
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
     fieldsets = UserAdmin.fieldsets + (
-        ('Clasmo', {'fields': ('role', 'display_name', 'mobile', 'lab_code', 'save_credentials', 'save_info')}),
+        ('Clasmo', {
+            'fields': (
+                'role',
+                'parent_franchisee',
+                'display_name',
+                'mobile',
+                'lab_code',
+                'save_credentials',
+                'save_info',
+            ),
+        }),
     )
     add_fieldsets = UserAdmin.add_fieldsets + (
-        ('Clasmo', {'fields': ('role', 'display_name', 'mobile', 'lab_code')}),
+        ('Clasmo', {'fields': ('role', 'parent_franchisee', 'display_name', 'mobile', 'lab_code')}),
     )
-    list_display = ['username', 'display_name', 'role', 'mobile', 'lab_code', 'is_staff', 'last_login']
+    list_display = [
+        'username',
+        'display_name',
+        'role',
+        'parent_franchisee',
+        'mobile',
+        'lab_code',
+        'is_staff',
+        'last_login',
+    ]
+    list_filter = ['role', 'is_staff', 'is_active']
+    search_fields = ['username', 'display_name', 'mobile']
+    raw_id_fields = ['parent_franchisee']
 
 
 @admin.register(LoginLog)

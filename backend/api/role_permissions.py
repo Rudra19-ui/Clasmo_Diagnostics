@@ -113,4 +113,42 @@ DEFAULT_ROLE_DEFINITIONS = [
             report_preview=True,
         ),
     },
+    {
+        'code': 'super_franchisee',
+        'name': 'Super Franchisee',
+        'description': 'Top-level franchise owner who manages Franchisee accounts.',
+        'permissions': build_permissions(
+            search=True,
+            registration=True,
+            reports=True,
+            dashboard=True,
+            help=True,
+            manage_users=True,
+        ),
+    },
+    {
+        'code': 'franchisee',
+        'name': 'Franchisee',
+        'description': 'Franchisee managed by a Super Franchisee; can oversee Sub-Franchise accounts.',
+        'permissions': build_permissions(
+            search=True,
+            registration=True,
+            reports=True,
+            dashboard=True,
+            help=True,
+            manage_users=True,
+        ),
+    },
+    {
+        'code': 'sub_franchise',
+        'name': 'Sub-Franchise',
+        'description': 'Sub-franchise unit managed by a Franchisee supervisor.',
+        'permissions': build_permissions(
+            search=True,
+            registration=True,
+            reports=True,
+            dashboard=True,
+            help=True,
+        ),
+    },
 ]

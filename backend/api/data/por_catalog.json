@@ -1,0 +1,7194 @@
+{
+  "source": "por_catalog",
+  "tests": [
+    {
+      "sl": 1,
+      "name": "1.3 Fitness Advance",
+      "mrp": 3000,
+      "price": 690,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 2,
+      "name": "17 OH Progesterone",
+      "mrp": 1300,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 3,
+      "name": "24 hour urine catecholamines",
+      "mrp": 2100,
+      "price": 920,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 4,
+      "name": "24 HOURS BENCE JONES PROTEIN URINE",
+      "mrp": 500,
+      "price": 173,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 5,
+      "name": "24 hours urine Protein/Creatinine Ratio",
+      "mrp": 500,
+      "price": 115,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 6,
+      "name": "25 OH VITAMIN D 3 TOTAL",
+      "mrp": 1400,
+      "price": 161,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 7,
+      "name": "5-Dihydrotestosterone (DHT)",
+      "mrp": 1700,
+      "price": 575,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 8,
+      "name": "ABO Group & RH Type (Blood Group)",
+      "mrp": 120,
+      "price": 58,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 9,
+      "name": "ABSLI-13",
+      "mrp": 1500,
+      "price": 207,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum, Urine"
+    },
+    {
+      "sl": 10,
+      "name": "Absolute Basophil Count",
+      "mrp": 120,
+      "price": 35,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 11,
+      "name": "Absolute Eosinophil Count (AEC)",
+      "mrp": 120,
+      "price": 35,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 12,
+      "name": "Absolute Lymphocyte Count",
+      "mrp": 120,
+      "price": 35,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 13,
+      "name": "Absolute Neutrophil Count",
+      "mrp": 120,
+      "price": 35,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 14,
+      "name": "Acetylcholine receptor (AChR) antibody",
+      "mrp": 2700,
+      "price": 1265,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 15,
+      "name": "Acid Phosphtase",
+      "mrp": 170,
+      "price": 75,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 16,
+      "name": "Activated Partial Thromboplastin Time (APTT/PTTK)",
+      "mrp": 500,
+      "price": 92,
+      "sample_type": "Citrated Plasma"
+    },
+    {
+      "sl": 17,
+      "name": "Activated protein C resistance (APCR)",
+      "mrp": 3000,
+      "price": 1150,
+      "sample_type": "Citrated Plasma"
+    },
+    {
+      "sl": 18,
+      "name": "Activated protein S resistance (APSR)",
+      "mrp": 2500,
+      "price": 1150,
+      "sample_type": "Citrated Plasma"
+    },
+    {
+      "sl": 19,
+      "name": "Adenosine Deaminase (ADA) FOR CSF",
+      "mrp": 600,
+      "price": 115,
+      "sample_type": "CSF"
+    },
+    {
+      "sl": 20,
+      "name": "Adenosine Deaminase (ADA) For Fluids",
+      "mrp": 600,
+      "price": 115,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 21,
+      "name": "Adenosine Deaminase (ADA) FOR PUS",
+      "mrp": 600,
+      "price": 115,
+      "sample_type": "PUS"
+    },
+    {
+      "sl": 22,
+      "name": "Adenosine Deaminase (ADA) For Serum",
+      "mrp": 600,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 23,
+      "name": "Adreno Corticotrophic Hormone (ACTH)",
+      "mrp": 1100,
+      "price": 294,
+      "sample_type": "EDTA_PLASMA"
+    },
+    {
+      "sl": 24,
+      "name": "ADVANCE full body check",
+      "mrp": 2500,
+      "price": 630,
+      "sample_type": "EDTA Blood, Serum, Fluoride Plasma-01"
+    },
+    {
+      "sl": 25,
+      "name": "AFB C/S (ANY FLUID)",
+      "mrp": 1000,
+      "price": 460,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 26,
+      "name": "AFB C/S (PUS) 42 DAY",
+      "mrp": 1000,
+      "price": 460,
+      "sample_type": "PUS"
+    },
+    {
+      "sl": 27,
+      "name": "AFB C/S (TISSUE)",
+      "mrp": 1000,
+      "price": 460,
+      "sample_type": "Tissue"
+    },
+    {
+      "sl": 28,
+      "name": "AFB C/S (URINE)",
+      "mrp": 1000,
+      "price": 460,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 29,
+      "name": "AFB Stain (Z-N Stain) 1ST Sample FOR FLUID",
+      "mrp": 200,
+      "price": 58,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 30,
+      "name": "AFB Stain (Z-N Stain) 1ST Sample FOR PUS",
+      "mrp": 200,
+      "price": 58,
+      "sample_type": "PUS"
+    },
+    {
+      "sl": 31,
+      "name": "AFB Stain (Z-N Stain) 1ST Sample FOR SPUTUM",
+      "mrp": 200,
+      "price": 58,
+      "sample_type": "SPUTUM"
+    },
+    {
+      "sl": 32,
+      "name": "AFB Stain (Z-N Stain) 1ST Sample FOR URINE",
+      "mrp": 200,
+      "price": 58,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 33,
+      "name": "AFB Stain (Z-N Stain) 2ND Sample FOR FLUID",
+      "mrp": 200,
+      "price": 58,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 34,
+      "name": "AFB Stain (Z-N Stain) 2ND Sample FOR PUS",
+      "mrp": 200,
+      "price": 58,
+      "sample_type": "PUS"
+    },
+    {
+      "sl": 35,
+      "name": "AFB Stain (Z-N Stain) 2ND Sample FOR SPUTUM",
+      "mrp": 200,
+      "price": 58,
+      "sample_type": "SPUTUM"
+    },
+    {
+      "sl": 36,
+      "name": "AFB Stain (Z-N Stain) 2ND Sample FOR URINE",
+      "mrp": 200,
+      "price": 58,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 37,
+      "name": "AFB Stain (Z-N Stain) 3RD Sample FOR FLUID",
+      "mrp": 200,
+      "price": 58,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 38,
+      "name": "AFB Stain (Z-N Stain) 3RD Sample FOR PUS",
+      "mrp": 200,
+      "price": 58,
+      "sample_type": "PUS"
+    },
+    {
+      "sl": 39,
+      "name": "AFB Stain (Z-N Stain) 3RD Sample FOR SPUTUM",
+      "mrp": 200,
+      "price": 58,
+      "sample_type": "SPUTUM"
+    },
+    {
+      "sl": 40,
+      "name": "AFB Stain (Z-N Stain) 3RD Sample FOR URINE",
+      "mrp": 200,
+      "price": 58,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 41,
+      "name": "Albert Stain (Diphtheria Bacilli)",
+      "mrp": 150,
+      "price": 58,
+      "sample_type": "THROAT SWAB"
+    },
+    {
+      "sl": 42,
+      "name": "Albumin, Body Fluid",
+      "mrp": 150,
+      "price": 58,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 43,
+      "name": "Albumin, Serum",
+      "mrp": 100,
+      "price": 23,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 44,
+      "name": "ALBUMIN/CREATININE RATIO (URINE)",
+      "mrp": 500,
+      "price": 115,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 45,
+      "name": "ALBUMIN/CREATININE RATIO (URINE), 24 Hours",
+      "mrp": 500,
+      "price": 115,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 46,
+      "name": "ALBUMIN/CREATININE RATIO, SERUM",
+      "mrp": 300,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 47,
+      "name": "ALBUMIN/GLOBULIN RATIO",
+      "mrp": 500,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 48,
+      "name": "Alcohol (Ethonol), SERUM",
+      "mrp": 650,
+      "price": 403,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 49,
+      "name": "Alcohol (Ethonol), URINE",
+      "mrp": 650,
+      "price": 403,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 50,
+      "name": "Aldolase",
+      "mrp": 650,
+      "price": 460,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 51,
+      "name": "Aldosterone",
+      "mrp": 1600,
+      "price": 690,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 52,
+      "name": "Aldosterone Renin ratio",
+      "mrp": 3000,
+      "price": 1380,
+      "sample_type": "EDTA_PLASMA, Serum"
+    },
+    {
+      "sl": 53,
+      "name": "Alkaline Phosphatase (ALP)",
+      "mrp": 100,
+      "price": 23,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 54,
+      "name": "Allergic Bronchopulmonary Aspergillosis (ABPA) Panel",
+      "mrp": 5000,
+      "price": 1840,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 55,
+      "name": "ALLERGY CONTACT",
+      "mrp": 1500,
+      "price": 805,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 56,
+      "name": "ALLERGY FOOD AND NON VEG",
+      "mrp": 2500,
+      "price": 754,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 57,
+      "name": "ALLERGY PANEL II",
+      "mrp": 500,
+      "price": 406,
+      "sample_type": "EDTA Blood, Serum, Urine"
+    },
+    {
+      "sl": 58,
+      "name": "ALLERGY PROFILE",
+      "mrp": 3000,
+      "price": 575,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 59,
+      "name": "Allergy profile without nonveg",
+      "mrp": 4000,
+      "price": 1035,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 60,
+      "name": "ALLERGY PROFILE-3",
+      "mrp": 3000,
+      "price": 1150,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 61,
+      "name": "ALLERGY PROFILE-4",
+      "mrp": 3000,
+      "price": 1380,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 62,
+      "name": "ALLERGY PROFILE-5",
+      "mrp": 4500,
+      "price": 1725,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 63,
+      "name": "ALLERGY SKIN & FOOD ALLERGY",
+      "mrp": 3000,
+      "price": 1380,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 64,
+      "name": "Allergy veg panal",
+      "mrp": 800,
+      "price": 460,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 65,
+      "name": "ALLERGY, SESAME",
+      "mrp": 400,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 66,
+      "name": "Alpha Fetoprotein (AFP), SERUM",
+      "mrp": 800,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 67,
+      "name": "Alpha Fetoprotein(AFP), CSF",
+      "mrp": 800,
+      "price": 230,
+      "sample_type": "CSF"
+    },
+    {
+      "sl": 68,
+      "name": "Alpha Fetoprotein(AFP), FLUID",
+      "mrp": 800,
+      "price": 230,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 69,
+      "name": "Alpha-1 Acid Glycoprotein",
+      "mrp": 4100,
+      "price": 2300,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 70,
+      "name": "ALPHA-1-ANTITRYPSIN QUANTITATION",
+      "mrp": 1500,
+      "price": 805,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 71,
+      "name": "Aluminum",
+      "mrp": 2000,
+      "price": 1150,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 72,
+      "name": "AMH GOLD",
+      "mrp": 3000,
+      "price": 805,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 73,
+      "name": "AMH PLUS",
+      "mrp": 4000,
+      "price": 1725,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 74,
+      "name": "AMINO ACID PROFILE",
+      "mrp": 800,
+      "price": 460,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 75,
+      "name": "AMINO ACID QUALITATIVE, CSF",
+      "mrp": 1500,
+      "price": 690,
+      "sample_type": "CSF"
+    },
+    {
+      "sl": 76,
+      "name": "AMINO ACID QUALITATIVE, PLASMA",
+      "mrp": 1200,
+      "price": 690,
+      "sample_type": "Heparin"
+    },
+    {
+      "sl": 77,
+      "name": "AMINO ACID QUALITATIVE, URINE",
+      "mrp": 1500,
+      "price": 690,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 78,
+      "name": "AMMONIA",
+      "mrp": 1000,
+      "price": 178,
+      "sample_type": "Heparin"
+    },
+    {
+      "sl": 79,
+      "name": "AMOEBIC SEROLOGY IgG",
+      "mrp": 1300,
+      "price": 690,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 80,
+      "name": "Amphetamine (Qualitative) Urine",
+      "mrp": 700,
+      "price": 345,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 81,
+      "name": "Amphetamine (Quantitative), SERUM",
+      "mrp": 700,
+      "price": 404,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 82,
+      "name": "Amylase (Serum)",
+      "mrp": 450,
+      "price": 81,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 83,
+      "name": "Amylase FLUID",
+      "mrp": 450,
+      "price": 115,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 84,
+      "name": "Amylase URINE",
+      "mrp": 500,
+      "price": 115,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 85,
+      "name": "ANA PROFILE ELISA",
+      "mrp": 4000,
+      "price": 1725,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 86,
+      "name": "ANA PROFILE IMMUNOBLOT",
+      "mrp": 4000,
+      "price": 1495,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 87,
+      "name": "Anaemia Profile - I",
+      "mrp": 2300,
+      "price": 1150,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 88,
+      "name": "ANC PROFILE",
+      "mrp": 2300,
+      "price": 460,
+      "sample_type": "EDTA Blood, Serum, Urine"
+    },
+    {
+      "sl": 89,
+      "name": "ANC PROFILE 2",
+      "mrp": 2100,
+      "price": 575,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 90,
+      "name": "ANC PROFILE NEW RAPID",
+      "mrp": 1000,
+      "price": 403,
+      "sample_type": "EDTA Blood, Fluoride Plasma-03, Serum, Urine"
+    },
+    {
+      "sl": 91,
+      "name": "ANCA - Myeloperoxidase (p-ANCA)",
+      "mrp": 1000,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 92,
+      "name": "ANCA - Serine Proteinase (c-ANCA)",
+      "mrp": 1000,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 93,
+      "name": "Androgen Index",
+      "mrp": 2500,
+      "price": 690,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 94,
+      "name": "Androstenedione (A4)",
+      "mrp": 1500,
+      "price": 518,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 95,
+      "name": "ANEMIA PROFILE - A",
+      "mrp": 4200,
+      "price": 978,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 96,
+      "name": "ANEMIA PROFILE - B",
+      "mrp": 5500,
+      "price": 1265,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 97,
+      "name": "ANEMIA PROFILE - C",
+      "mrp": 5000,
+      "price": 1380,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 98,
+      "name": "ANEMIA PROFILE - I",
+      "mrp": 2300,
+      "price": 460,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 99,
+      "name": "ANEMIA PROFILE - III",
+      "mrp": 2500,
+      "price": 897,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 100,
+      "name": "ANEMIA PROFILE - M",
+      "mrp": 3200,
+      "price": 690,
+      "sample_type": "EDTA Blood, Serum, Urine"
+    },
+    {
+      "sl": 101,
+      "name": "ANEMIA PROFILE II",
+      "mrp": 2300,
+      "price": 518,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 102,
+      "name": "ANEMIA STUDY",
+      "mrp": 3500,
+      "price": 748,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 103,
+      "name": "ANGELMAN SYNDROME",
+      "mrp": 10000,
+      "price": 2875,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 104,
+      "name": "Angiotensin Converting Enzyme(ACE), CSF",
+      "mrp": 1000,
+      "price": 173,
+      "sample_type": "CSF"
+    },
+    {
+      "sl": 105,
+      "name": "Angiotensin Converting Enzyme(ACE), SERUM",
+      "mrp": 1000,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 106,
+      "name": "Anti Chlamydia Trachomatis IgG",
+      "mrp": 600,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 107,
+      "name": "Anti Chlamydia Trachomatis IgM",
+      "mrp": 600,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 108,
+      "name": "Anti Cyclic Citrullinated Peptide Antibody (Anti-CCP)",
+      "mrp": 1600,
+      "price": 224,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 109,
+      "name": "Anti Desmoglein Antibody -DSG1 & DSG 3",
+      "mrp": 6000,
+      "price": 1725,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 110,
+      "name": "Anti DNase Antibodies",
+      "mrp": 1500,
+      "price": 575,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 111,
+      "name": "Anti ds DNA Antibody",
+      "mrp": 1500,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 112,
+      "name": "ANTI GLIADIN ANTIBODY",
+      "mrp": 4000,
+      "price": 1725,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 113,
+      "name": "ANTI GLIADIN ANTIBODY IGA",
+      "mrp": 1700,
+      "price": 805,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 114,
+      "name": "ANTI GLIADIN ANTIBODY IGG",
+      "mrp": 1700,
+      "price": 805,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 115,
+      "name": "ANTI GLOMERULAR BASEMENT MEMBRANE ANTIBODY (ANTI GBM ANTIBODY)",
+      "mrp": 1800,
+      "price": 805,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 116,
+      "name": "Anti HBc TOTAL",
+      "mrp": 1000,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 117,
+      "name": "Anti Jo-I antibody",
+      "mrp": 1000,
+      "price": 575,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 118,
+      "name": "Anti Microsomal/Thryroperoxidase Antibody (AMA/Anti TPO) Titre",
+      "mrp": 2000,
+      "price": 690,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 119,
+      "name": "Anti Mullerian Hormone (AMH)",
+      "mrp": 1800,
+      "price": 414,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 120,
+      "name": "ANTI MuSK (MUSCLE SPECIFIC KINASE) ANTIBODY",
+      "mrp": 5500,
+      "price": 2875,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 121,
+      "name": "ANTI NMDA RECEPTOR/ANTI GLUTAMATE ANTIBODY, FLUID",
+      "mrp": 6000,
+      "price": 1725,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 122,
+      "name": "ANTI NMDA RECEPTOR/ANTI GLUTAMATE ANTIBODY, SERUM",
+      "mrp": 6000,
+      "price": 1725,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 123,
+      "name": "ANTI NUCLEAR ANTIBODY (ANA)",
+      "mrp": 800,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 124,
+      "name": "ANTI NUCLEAR ANTIBODY (ANA-IFA)",
+      "mrp": 1000,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 125,
+      "name": "ANTI PHOSPHOLIPID ANTIBODY (APL) - IgG",
+      "mrp": 1000,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 126,
+      "name": "ANTI PHOSPHOLIPID ANTIBODY (APL) - IgG,IgM",
+      "mrp": 1500,
+      "price": 345,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 127,
+      "name": "ANTI PHOSPHOLIPID ANTIBODY (APL) - IgM",
+      "mrp": 1000,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 128,
+      "name": "anti smith antibody",
+      "mrp": 500,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 129,
+      "name": "Anti Smooth Muscle Antibody (ASMA)",
+      "mrp": 1000,
+      "price": 405,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 130,
+      "name": "ANTI SOLUBLE LIVER ANTIGEN (SLA)",
+      "mrp": 1500,
+      "price": 575,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 131,
+      "name": "ANTI SPERM ANTIBODY, SERUM",
+      "mrp": 1000,
+      "price": 403,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 132,
+      "name": "Anti SS-A (RO) Antibody",
+      "mrp": 1000,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 133,
+      "name": "Anti SS-B (LA) Antibody",
+      "mrp": 1000,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 134,
+      "name": "Anti streptolysin-0 ( ASO) Titre",
+      "mrp": 700,
+      "price": 86,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 135,
+      "name": "Anti Thyroglobulin Antibody (Anti-TG)",
+      "mrp": 1200,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 136,
+      "name": "Anti-DGP IgA",
+      "mrp": 1500,
+      "price": 403,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 137,
+      "name": "Anti-NMO (AQUAPORIN 4)",
+      "mrp": 4500,
+      "price": 2530,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 138,
+      "name": "Anti-Nuclear Antibodies HEp-2 (ANA-HEp-2)",
+      "mrp": 2000,
+      "price": 575,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 139,
+      "name": "Anti-TPO antibodies",
+      "mrp": 800,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 140,
+      "name": "Antidiuretic hormone (ADH)",
+      "mrp": 1500,
+      "price": 690,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 141,
+      "name": "ANTIMOG (MYELIN OLIGODENDROCYTE GLYCOPROTEIN)",
+      "mrp": 6500,
+      "price": 2875,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 142,
+      "name": "Antithrombin III",
+      "mrp": 6000,
+      "price": 518,
+      "sample_type": "Citrated Plasma"
+    },
+    {
+      "sl": 143,
+      "name": "APLA PROFILE",
+      "mrp": 4000,
+      "price": 1725,
+      "sample_type": "Citrated Plasma, Serum"
+    },
+    {
+      "sl": 144,
+      "name": "Apolipoprotein A1 (APO-A1)",
+      "mrp": 400,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 145,
+      "name": "Apolipoprotein B (APO-B)",
+      "mrp": 400,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 146,
+      "name": "APOLIPOPROTEIN B/A1",
+      "mrp": 800,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 147,
+      "name": "ARTHRITIS BASIC PANEL",
+      "mrp": 5000,
+      "price": 805,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 148,
+      "name": "ARTHRITIS BASIC PANEL - 2",
+      "mrp": 6000,
+      "price": 690,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 149,
+      "name": "Arthritis first",
+      "mrp": 1000,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 150,
+      "name": "ARTHRITIS PANAL (MINI)",
+      "mrp": 1500,
+      "price": 345,
+      "sample_type": "Serum, Urine"
+    },
+    {
+      "sl": 151,
+      "name": "ARTHRITIS PANAL I",
+      "mrp": 1500,
+      "price": 403,
+      "sample_type": "Serum, Urine"
+    },
+    {
+      "sl": 152,
+      "name": "ARTHRITIS PANAL II",
+      "mrp": 2000,
+      "price": 920,
+      "sample_type": "EDTA Blood, Serum, Urine"
+    },
+    {
+      "sl": 153,
+      "name": "ARTHRITIS PROFILE - A",
+      "mrp": 4000,
+      "price": 1380,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 154,
+      "name": "ARTHRITIS PROFILE - B",
+      "mrp": 5500,
+      "price": 1840,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 155,
+      "name": "ARTHRITIS PROFILE - C",
+      "mrp": 10000,
+      "price": 2530,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 156,
+      "name": "ARTHRITIS PROFILE - M",
+      "mrp": 2000,
+      "price": 748,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 157,
+      "name": "ASCA IgG (ANTI SACCHAROMYCES CEREVISIAE ANTIBODY)",
+      "mrp": 1500,
+      "price": 748,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 158,
+      "name": "ASCA IgA (ANTI SACCHAROMYCES CEREVISIAE ANTIBODY)",
+      "mrp": 1500,
+      "price": 860,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 159,
+      "name": "Aspergillus Antibody - IgG & IgM",
+      "mrp": 3200,
+      "price": 690,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 160,
+      "name": "ASPERGILLUS ANTIBODY IgG",
+      "mrp": 1500,
+      "price": 345,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 161,
+      "name": "ASPERGILLUS ANTIBODY IgM",
+      "mrp": 1500,
+      "price": 345,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 162,
+      "name": "Aspergillus Fumigatus Specific IgE",
+      "mrp": 1800,
+      "price": 518,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 163,
+      "name": "Aspergillus Fumigatus Specific IgG",
+      "mrp": 1800,
+      "price": 345,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 164,
+      "name": "aspergillus iga",
+      "mrp": 2500,
+      "price": 805,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 165,
+      "name": "B K VIRUS",
+      "mrp": 7000,
+      "price": 4025,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 166,
+      "name": "B-TYPE NATRIURETIC PEPTIDE (BNP)",
+      "mrp": 1700,
+      "price": 460,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 167,
+      "name": "BABESIA MICROTI ANTIBODIES IgG & IgM",
+      "mrp": 4000,
+      "price": 2300,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 168,
+      "name": "Barbiturates (Qualitative)",
+      "mrp": 600,
+      "price": 230,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 169,
+      "name": "Barbiturates (Quantitative)",
+      "mrp": 600,
+      "price": 230,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 170,
+      "name": "Basic fever panel",
+      "mrp": 750,
+      "price": 160,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 171,
+      "name": "basic fever panel-2",
+      "mrp": 1600,
+      "price": 459,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 172,
+      "name": "BASIC HEALTH PACKAGE",
+      "mrp": 1600,
+      "price": 199,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum"
+    },
+    {
+      "sl": 173,
+      "name": "BCR-ABL International Scale PCR (Method: Real Time PCR)",
+      "mrp": 9500,
+      "price": 2300,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 174,
+      "name": "BENCE JONES PROTEIN URINE, QUALITATIVE",
+      "mrp": 550,
+      "price": 92,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 175,
+      "name": "Benzodiazepines (Qualitative)",
+      "mrp": 700,
+      "price": 173,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 176,
+      "name": "Benzodiazepines (Quantitative)",
+      "mrp": 800,
+      "price": 230,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 177,
+      "name": "Beta 2 Microglobulin, SERUM",
+      "mrp": 1300,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 178,
+      "name": "Beta 2 Microglobulin, URINE",
+      "mrp": 1300,
+      "price": 230,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 179,
+      "name": "Beta cell function",
+      "mrp": 2300,
+      "price": 460,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 180,
+      "name": "Beta Human Chorionic Gonodotropin Hormone (BHCG)",
+      "mrp": 800,
+      "price": 127,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 181,
+      "name": "Beta Human Chorionic Gonodotropin Hormone (BHCG), fluid",
+      "mrp": 1000,
+      "price": 230,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 182,
+      "name": "Beta Human Chorionic Gonodotropin Hormone (BHCG), URINE",
+      "mrp": 1000,
+      "price": 127,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 183,
+      "name": "Beta-2- Glycoprotein-1 IgA",
+      "mrp": 900,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 184,
+      "name": "Beta-2- Glycoprotein-1 IgG",
+      "mrp": 900,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 185,
+      "name": "Beta-2- Glycoprotein-1 IgM",
+      "mrp": 900,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 186,
+      "name": "Bicarbonate",
+      "mrp": 500,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 187,
+      "name": "BILE ACIDS TOTAL",
+      "mrp": 1500,
+      "price": 345,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 188,
+      "name": "Bilirubin (Total + Direct + Indirect)",
+      "mrp": 300,
+      "price": 23,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 189,
+      "name": "Bilirubin, Body Fluid",
+      "mrp": 250,
+      "price": 23,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 190,
+      "name": "BIO-T PLUS",
+      "mrp": 3000,
+      "price": 575,
+      "sample_type": "EDTA Blood, Serum, Urine, Fluoride Plasma-01"
+    },
+    {
+      "sl": 191,
+      "name": "BIOT-PLATINUM",
+      "mrp": 1000,
+      "price": 690,
+      "sample_type": "EDTA Blood, Serum, Fluoride Plasma-01, Urine"
+    },
+    {
+      "sl": 192,
+      "name": "BIOTIN (VITAMIN B7)",
+      "mrp": 1300,
+      "price": 403,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 193,
+      "name": "BIOTINIDASE ACTIVITY QUANTITATIVE BLOOD",
+      "mrp": 3600,
+      "price": 1150,
+      "sample_type": "Heparin"
+    },
+    {
+      "sl": 194,
+      "name": "BLEEDING TIME AND CLOTTING TIME (BT, CT)",
+      "mrp": 200,
+      "price": 35,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 195,
+      "name": "BLOOD C/S Anaerobic",
+      "mrp": 1200,
+      "price": 184,
+      "sample_type": "Heparin"
+    },
+    {
+      "sl": 196,
+      "name": "BLOOD C/S BACTEC",
+      "mrp": 1200,
+      "price": 230,
+      "sample_type": "Blood culture bottle"
+    },
+    {
+      "sl": 197,
+      "name": "Blood c/s Bactec Aerobic",
+      "mrp": 1200,
+      "price": 230,
+      "sample_type": "Heparin"
+    },
+    {
+      "sl": 198,
+      "name": "Blood Toxic Element Profile 21 test",
+      "mrp": 1000,
+      "price": 403,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 199,
+      "name": "Blood Toxic Element Profile 9 test",
+      "mrp": 1000,
+      "price": 230,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 200,
+      "name": "BODY FLUID FOR GRAM STAIN",
+      "mrp": 150,
+      "price": 115,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 201,
+      "name": "BOH PROFILE",
+      "mrp": 11500,
+      "price": 2185,
+      "sample_type": "Citrated Plasma, EDTA Blood, Serum"
+    },
+    {
+      "sl": 202,
+      "name": "Bone marrow",
+      "mrp": 5000,
+      "price": 1725,
+      "sample_type": "EDTA Blood, SLIDE"
+    },
+    {
+      "sl": 203,
+      "name": "BONE PROFILE - A",
+      "mrp": 3000,
+      "price": 1725,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 204,
+      "name": "BONE PROFILE - B",
+      "mrp": 4000,
+      "price": 1380,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 205,
+      "name": "BONE PROFILE - C",
+      "mrp": 5000,
+      "price": 2875,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 206,
+      "name": "BONE PROFILE - M",
+      "mrp": 2300,
+      "price": 1725,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 207,
+      "name": "BREAST DISCHARGE C/S",
+      "mrp": 600,
+      "price": 115,
+      "sample_type": "BREAST DISCHARGE"
+    },
+    {
+      "sl": 208,
+      "name": "BREAST PROGNOSIS SCREEN",
+      "mrp": 2000,
+      "price": 1150,
+      "sample_type": "block"
+    },
+    {
+      "sl": 209,
+      "name": "Bronchoalveolar Lavage (BAL) Cytology",
+      "mrp": 500,
+      "price": 288,
+      "sample_type": "Bronchoalveolar SWAB"
+    },
+    {
+      "sl": 210,
+      "name": "Brucella IgG",
+      "mrp": 1100,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 211,
+      "name": "Brucella IgG & IgM",
+      "mrp": 2100,
+      "price": 575,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 212,
+      "name": "Brucella IgM",
+      "mrp": 1100,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 213,
+      "name": "BUN (Blood Urea Nitrogen)",
+      "mrp": 100,
+      "price": 23,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 214,
+      "name": "C Reactive Protein (CRP) Quantitative",
+      "mrp": 400,
+      "price": 46,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 215,
+      "name": "C-Peptide",
+      "mrp": 900,
+      "price": 177,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 216,
+      "name": "C-PEPTIDE (F)",
+      "mrp": 900,
+      "price": 177,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 217,
+      "name": "C-PEPTIDE (PP)",
+      "mrp": 900,
+      "price": 186,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 218,
+      "name": "C-Peptide 24 hrs urine",
+      "mrp": 900,
+      "price": 288,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 219,
+      "name": "C-Peptide Urine Random",
+      "mrp": 900,
+      "price": 288,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 220,
+      "name": "c1 esterase inhibitor",
+      "mrp": 5000,
+      "price": 2300,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 221,
+      "name": "CA 125- (FLUID)",
+      "mrp": 800,
+      "price": 230,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 222,
+      "name": "CA 19.9 (FLUID)",
+      "mrp": 1200,
+      "price": 345,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 223,
+      "name": "CA-27.29 Stage II or III breast Cancer",
+      "mrp": 4000,
+      "price": 2875,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 224,
+      "name": "CA-72.4 GASTRIC CANCER MARKER",
+      "mrp": 1500,
+      "price": 920,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 225,
+      "name": "CA125 - Cancer marker",
+      "mrp": 1100,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 226,
+      "name": "CA15.3 - Breast Cancer marker",
+      "mrp": 1350,
+      "price": 265,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 227,
+      "name": "CA19.9 - Pancreatic Cancer Marker",
+      "mrp": 1350,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 228,
+      "name": "CADMIUM BLOOD",
+      "mrp": 3200,
+      "price": 1725,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 229,
+      "name": "Calcitonin",
+      "mrp": 2100,
+      "price": 380,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 230,
+      "name": "Calcium",
+      "mrp": 100,
+      "price": 17,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 231,
+      "name": "Calcium - 24 hrs urine",
+      "mrp": 150,
+      "price": 46,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 232,
+      "name": "Calcium - Spot urine",
+      "mrp": 100,
+      "price": 58,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 233,
+      "name": "Calcium/Creatinine - Ratio, URINE",
+      "mrp": 200,
+      "price": 46,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 234,
+      "name": "Calprotectin, SERUM",
+      "mrp": 3000,
+      "price": 2070,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 235,
+      "name": "camp profile",
+      "mrp": 1000,
+      "price": 230,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum"
+    },
+    {
+      "sl": 236,
+      "name": "CANCER MARKER - II (FEMALE)",
+      "mrp": 5500,
+      "price": 1380,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 237,
+      "name": "CANCER PANEL (MALE)",
+      "mrp": 5000,
+      "price": 1150,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 238,
+      "name": "Carcino embryonic antigen (CEA)",
+      "mrp": 700,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 239,
+      "name": "CARDIAC PANEL - II",
+      "mrp": 5000,
+      "price": 276,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 240,
+      "name": "CARDIAC PANEL-I",
+      "mrp": 1100,
+      "price": 253,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 241,
+      "name": "CARDIAC PROFILE - A",
+      "mrp": 4000,
+      "price": 978,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 242,
+      "name": "CARDIAC PROFILE - B",
+      "mrp": 5000,
+      "price": 1093,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 243,
+      "name": "CARDIAC PROFILE - C",
+      "mrp": 7000,
+      "price": 1093,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 244,
+      "name": "CARDIAC PROFILE - M",
+      "mrp": 2500,
+      "price": 518,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 245,
+      "name": "CARDIAC RISK MARKERS",
+      "mrp": 600,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 246,
+      "name": "Cardiolipin Antibodies IgA",
+      "mrp": 800,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 247,
+      "name": "Cardiolipin Antibodies IgA,IgG,IgM",
+      "mrp": 2200,
+      "price": 524,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 248,
+      "name": "Cardiolipin Antibodies IgG",
+      "mrp": 800,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 249,
+      "name": "Cardiolipin Antibodies IgM",
+      "mrp": 800,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 250,
+      "name": "CD 19",
+      "mrp": 2500,
+      "price": 1265,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 251,
+      "name": "CD3-CD4-CD8-CD45",
+      "mrp": 1500,
+      "price": 619,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 252,
+      "name": "CEA (FLUID)",
+      "mrp": 800,
+      "price": 230,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 253,
+      "name": "Centromere Antibodies, IgG",
+      "mrp": 1300,
+      "price": 460,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 254,
+      "name": "Cerebrospinal Fluid (CSF) Cytology",
+      "mrp": 500,
+      "price": 288,
+      "sample_type": "CSF"
+    },
+    {
+      "sl": 255,
+      "name": "Cervical Swab C/S",
+      "mrp": 500,
+      "price": 115,
+      "sample_type": "Cervical Swab"
+    },
+    {
+      "sl": 256,
+      "name": "Chikungunya IgG & IgM",
+      "mrp": 1700,
+      "price": 460,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 257,
+      "name": "Chikungunya-IgG",
+      "mrp": 900,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 258,
+      "name": "Chikungunya-IgM",
+      "mrp": 900,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 259,
+      "name": "Chloride - 24 hrs Urine",
+      "mrp": 300,
+      "price": 92,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 260,
+      "name": "Chloride - CSF",
+      "mrp": 300,
+      "price": 92,
+      "sample_type": "CSF"
+    },
+    {
+      "sl": 261,
+      "name": "Chloride - SERUM",
+      "mrp": 300,
+      "price": 46,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 262,
+      "name": "Chloride - Urine Random",
+      "mrp": 300,
+      "price": 81,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 263,
+      "name": "Cholesterol HDL",
+      "mrp": 150,
+      "price": 67,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 264,
+      "name": "Cholesterol LDL",
+      "mrp": 150,
+      "price": 58,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 265,
+      "name": "Cholesterol Total",
+      "mrp": 150,
+      "price": 23,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 266,
+      "name": "Cholesterol Urine",
+      "mrp": 200,
+      "price": 58,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 267,
+      "name": "Cholinesterase",
+      "mrp": 450,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 268,
+      "name": "Cholylglycine (CG)",
+      "mrp": 2000,
+      "price": 1150,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 269,
+      "name": "CHROMOGRANIN (URINE)",
+      "mrp": 4000,
+      "price": 2300,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 270,
+      "name": "CHROMOGRANIN A; CGA",
+      "mrp": 5000,
+      "price": 2300,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 271,
+      "name": "Chromosome Analysis, Blood (Karyotyping)",
+      "mrp": 4000,
+      "price": 1380,
+      "sample_type": "Heparin"
+    },
+    {
+      "sl": 272,
+      "name": "Citric Acid, Urine 24 Hours",
+      "mrp": 600,
+      "price": 230,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 273,
+      "name": "Cobalamine",
+      "mrp": 1300,
+      "price": 460,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 274,
+      "name": "Cocaine",
+      "mrp": 600,
+      "price": 345,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 275,
+      "name": "COD PROFILE",
+      "mrp": 1000,
+      "price": 173,
+      "sample_type": "EDTA Blood, Serum, Urine, Fluoride Plasma-03"
+    },
+    {
+      "sl": 276,
+      "name": "Cold agglutinin test",
+      "mrp": 1000,
+      "price": 460,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 277,
+      "name": "Collagen IV",
+      "mrp": 2000,
+      "price": 920,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 278,
+      "name": "Complement 3 (C3)",
+      "mrp": 650,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 279,
+      "name": "Complement 4 (C4)",
+      "mrp": 650,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 280,
+      "name": "Complete Blood Count (CBC)",
+      "mrp": 400,
+      "price": 58,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 281,
+      "name": "Complete Blood Count (CBC) +PS+ESR",
+      "mrp": 500,
+      "price": 173,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 282,
+      "name": "Complete Blood Count (CBC)+ESR",
+      "mrp": 400,
+      "price": 81,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 283,
+      "name": "COMPLETE INFERTILITY PROFILE",
+      "mrp": 6000,
+      "price": 2645,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 284,
+      "name": "COMPLETE VITAMIN PROFILE",
+      "mrp": 4000,
+      "price": 1725,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 285,
+      "name": "Copper (24 hrs Urine)",
+      "mrp": 1800,
+      "price": 460,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 286,
+      "name": "Copper (Serum)",
+      "mrp": 1250,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 287,
+      "name": "Copper (Urine Random)",
+      "mrp": 900,
+      "price": 288,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 288,
+      "name": "Corticosterone",
+      "mrp": 600,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 289,
+      "name": "CORTISOL MORNING",
+      "mrp": 700,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 290,
+      "name": "Cortisol spot urine",
+      "mrp": 800,
+      "price": 230,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 291,
+      "name": "Cortisol (24 Hrs Urine)",
+      "mrp": 800,
+      "price": 230,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 292,
+      "name": "CORTISOL EVENING",
+      "mrp": 700,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 293,
+      "name": "COTININE URINE",
+      "mrp": 600,
+      "price": 345,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 294,
+      "name": "COW MILK C/S",
+      "mrp": 400,
+      "price": 115,
+      "sample_type": "COW MILK"
+    },
+    {
+      "sl": 295,
+      "name": "CPK-MB (creatine kinase myocardial band)",
+      "mrp": 500,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 296,
+      "name": "Creatine kinase",
+      "mrp": 550,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 297,
+      "name": "Creatine phosphokinase (CPK TOTAL)",
+      "mrp": 500,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 298,
+      "name": "Creatinine",
+      "mrp": 150,
+      "price": 17,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 299,
+      "name": "Creatinine Clearance Test",
+      "mrp": 400,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 300,
+      "name": "Creatinine Random Urine",
+      "mrp": 150,
+      "price": 23,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 301,
+      "name": "Creatinine,24 Hours Urine",
+      "mrp": 150,
+      "price": 23,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 302,
+      "name": "Creatinine,With GFR",
+      "mrp": 150,
+      "price": 35,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 303,
+      "name": "Cryofibrinogen qualitative",
+      "mrp": 2000,
+      "price": 690,
+      "sample_type": "Citrated Plasma"
+    },
+    {
+      "sl": 304,
+      "name": "Cryoglobulins",
+      "mrp": 1500,
+      "price": 575,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 305,
+      "name": "Cryptococcal Antigen",
+      "mrp": 1500,
+      "price": 690,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 306,
+      "name": "CRYPTOCOCCUS ANTIGEN, CSF",
+      "mrp": 4000,
+      "price": 690,
+      "sample_type": "CSF"
+    },
+    {
+      "sl": 307,
+      "name": "CRYPTOCOCCUS ANTIGEN, SERUM",
+      "mrp": 4000,
+      "price": 1150,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 308,
+      "name": "CSF AFB STAIN",
+      "mrp": 300,
+      "price": 115,
+      "sample_type": "CSF"
+    },
+    {
+      "sl": 309,
+      "name": "CSF C/S",
+      "mrp": 600,
+      "price": 115,
+      "sample_type": "CSF"
+    },
+    {
+      "sl": 310,
+      "name": "CSF FOR TB PCR",
+      "mrp": 1500,
+      "price": 690,
+      "sample_type": "CSF"
+    },
+    {
+      "sl": 311,
+      "name": "CSF GRAM STAIN",
+      "mrp": 300,
+      "price": 115,
+      "sample_type": "CSF"
+    },
+    {
+      "sl": 312,
+      "name": "CSF R/M",
+      "mrp": 450,
+      "price": 115,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 313,
+      "name": "CSF- monoclonal antibodies igg index",
+      "mrp": 2000,
+      "price": 805,
+      "sample_type": "CSF"
+    },
+    {
+      "sl": 314,
+      "name": "CSF-(FTA-ABS)",
+      "mrp": 1500,
+      "price": 805,
+      "sample_type": "CSF"
+    },
+    {
+      "sl": 315,
+      "name": "CSF-CRYPTOCOCCUS ANTIGEN DETECTION",
+      "mrp": 2000,
+      "price": 966,
+      "sample_type": "CSF"
+    },
+    {
+      "sl": 316,
+      "name": "CYFRA 21-1; LUNG CANCER MARKER",
+      "mrp": 2700,
+      "price": 1380,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 317,
+      "name": "Cystatin - C",
+      "mrp": 1100,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 318,
+      "name": "Cysticercus Antibody (IgG), ELISA, CSF",
+      "mrp": 1200,
+      "price": 735,
+      "sample_type": "CSF"
+    },
+    {
+      "sl": 319,
+      "name": "Cysticercus Antibody (IgG), SERUM",
+      "mrp": 1500,
+      "price": 575,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 320,
+      "name": "CYTOMEGALOVIRUS (CMV) PCR, QUANTITATIVE,",
+      "mrp": 5500,
+      "price": 3105,
+      "sample_type": "EDTA_PLASMA"
+    },
+    {
+      "sl": 321,
+      "name": "CYTOMEGALOVIRUS (CMV) PCR, QUANTITATIVE, URINE",
+      "mrp": 5500,
+      "price": 2875,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 322,
+      "name": "CYTOMEGALOVIRUS AVIDITY(CMV), IgG",
+      "mrp": 700,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 323,
+      "name": "Cytomegalovirus IgG Antibody (CMV IgG)",
+      "mrp": 500,
+      "price": 69,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 324,
+      "name": "Cytomegalovirus IgM Antibody (CMV IgM)",
+      "mrp": 500,
+      "price": 69,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 325,
+      "name": "D - DIMER QUANTITATIVE",
+      "mrp": 1000,
+      "price": 380,
+      "sample_type": "Citrated Plasma"
+    },
+    {
+      "sl": 326,
+      "name": "DC (Differential Count) - 5 part",
+      "mrp": 100,
+      "price": 35,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 327,
+      "name": "DEHYDROEPIANDROSTERONE (DHEA)",
+      "mrp": 2400,
+      "price": 345,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 328,
+      "name": "Dehydroepiandrosterone Sulphate (DHEA-S)",
+      "mrp": 1000,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 329,
+      "name": "DENGUE NS1 RAPID",
+      "mrp": 900,
+      "price": 150,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 330,
+      "name": "DENGUE ANTIGEN ELISA NS1",
+      "mrp": 700,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 331,
+      "name": "DENGUE ELISA IgG",
+      "mrp": 600,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 332,
+      "name": "DENGUE ELISA IgG,IgM,NS1",
+      "mrp": 1500,
+      "price": 518,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 333,
+      "name": "DENGUE ELISA IgM",
+      "mrp": 600,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 334,
+      "name": "DENGUE IgG,IgM,NS1 RAPID",
+      "mrp": 700,
+      "price": 311,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 335,
+      "name": "DENGUE IgG,IgM-Rapid",
+      "mrp": 1200,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 336,
+      "name": "Deoxycortisol",
+      "mrp": 900,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 337,
+      "name": "DIABETIC CAMP PROFILE",
+      "mrp": 4500,
+      "price": 1035,
+      "sample_type": "EDTA Blood, Serum, Urine"
+    },
+    {
+      "sl": 338,
+      "name": "DIABETIC PANEL - MINI",
+      "mrp": 1500,
+      "price": 403,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum, Urine, Fluoride Plasma-02"
+    },
+    {
+      "sl": 339,
+      "name": "DIABETIC PROFILE - A",
+      "mrp": 4500,
+      "price": 1783,
+      "sample_type": "EDTA Blood, Serum, Urine"
+    },
+    {
+      "sl": 340,
+      "name": "DIABETIC PROFILE - B",
+      "mrp": 4500,
+      "price": 1840,
+      "sample_type": "EDTA Blood, Serum, Urine"
+    },
+    {
+      "sl": 341,
+      "name": "DIABETIC PROFILE - C",
+      "mrp": 6000,
+      "price": 2530,
+      "sample_type": "EDTA Blood, Serum, Urine"
+    },
+    {
+      "sl": 342,
+      "name": "DIABETIC PROFILE - M",
+      "mrp": 1800,
+      "price": 748,
+      "sample_type": "EDTA Blood, Serum, Urine"
+    },
+    {
+      "sl": 343,
+      "name": "DIABETIC PROFILE NEW",
+      "mrp": 13000,
+      "price": 1725,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum"
+    },
+    {
+      "sl": 344,
+      "name": "Digoxin",
+      "mrp": 900,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 345,
+      "name": "DIHYDROTESTOSTERONE DHT FREE",
+      "mrp": 2000,
+      "price": 1150,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 346,
+      "name": "DIPHTHERIA ANTIBODY IgG",
+      "mrp": 2500,
+      "price": 1150,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 347,
+      "name": "DIRECT COOMB'S TEST (DCT)",
+      "mrp": 450,
+      "price": 173,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 348,
+      "name": "Dopamine",
+      "mrp": 4000,
+      "price": 1725,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 349,
+      "name": "DOUBLE MARKER - FIRST TRIMESTER",
+      "mrp": 3000,
+      "price": 575,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 350,
+      "name": "Dr bhavika profile",
+      "mrp": 6500,
+      "price": 2358,
+      "sample_type": "EDTA Blood, Serum, Urine, Fluoride Plasma-03"
+    },
+    {
+      "sl": 351,
+      "name": "Drain Fluid Cytology",
+      "mrp": 500,
+      "price": 173,
+      "sample_type": "Drain Fluid"
+    },
+    {
+      "sl": 352,
+      "name": "DRUGS ALLERGY",
+      "mrp": 3500,
+      "price": 920,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 353,
+      "name": "DRUGS OF ABUSE (10 drugs)",
+      "mrp": 2000,
+      "price": 1150,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 354,
+      "name": "Dysmorphic RBC",
+      "mrp": 250,
+      "price": 115,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 355,
+      "name": "Ear Swab C/S",
+      "mrp": 500,
+      "price": 115,
+      "sample_type": "EAR SWAB"
+    },
+    {
+      "sl": 356,
+      "name": "EB FOR AFB &TB PCR",
+      "mrp": 5000,
+      "price": 978,
+      "sample_type": "Tissue"
+    },
+    {
+      "sl": 357,
+      "name": "EBV DNA PCR",
+      "mrp": 4500,
+      "price": 2875,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 358,
+      "name": "ECHINOCOCCUS IgG,IgM ELISA",
+      "mrp": 2400,
+      "price": 690,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 359,
+      "name": "Echinococcus Antibody IgG (Hydatid serology)",
+      "mrp": 900,
+      "price": 460,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 360,
+      "name": "EGG ALLERGY",
+      "mrp": 700,
+      "price": 345,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 361,
+      "name": "Electrolyte Panel- (N a, K, Cl)",
+      "mrp": 300,
+      "price": 92,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 362,
+      "name": "Endomysial Antibody IgA",
+      "mrp": 1500,
+      "price": 345,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 363,
+      "name": "EOD PROFILE",
+      "mrp": 1200,
+      "price": 259,
+      "sample_type": "EDTA Blood, Serum, Urine, Fluoride Plasma-03"
+    },
+    {
+      "sl": 364,
+      "name": "Eosinophils Sputum",
+      "mrp": 200,
+      "price": 115,
+      "sample_type": "SPUTUM"
+    },
+    {
+      "sl": 365,
+      "name": "Epstein Bar Virus IgG",
+      "mrp": 1200,
+      "price": 460,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 366,
+      "name": "Epstein Bar Virus IgM",
+      "mrp": 1200,
+      "price": 460,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 367,
+      "name": "EPSTEIN BARR VIRUS ANTIBODY TO VIRAL CAPSID ANTIGEN (VCA) IgG",
+      "mrp": 4000,
+      "price": 500,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 368,
+      "name": "EPSTEIN BARR VIRUS ANTIBODY TO VIRAL CAPSID ANTIGEN (VCA) IgM",
+      "mrp": 4000,
+      "price": 500,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 369,
+      "name": "EPSTEINBARR VIRUS ANTIBODY TO NUCLEAR ANTIGEN (EBNA) IgG",
+      "mrp": 4000,
+      "price": 1725,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 370,
+      "name": "ER, PR & Her2nue",
+      "mrp": 5500,
+      "price": 4025,
+      "sample_type": "block"
+    },
+    {
+      "sl": 371,
+      "name": "Erythrocyte Count (RBC Count)",
+      "mrp": 100,
+      "price": 46,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 372,
+      "name": "Erythrocyte Sedimentation Rate (ESR)",
+      "mrp": 150,
+      "price": 23,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 373,
+      "name": "Erythropoietin (EPO)",
+      "mrp": 2000,
+      "price": 222,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 374,
+      "name": "ESTRADIOL (E2)",
+      "mrp": 700,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 375,
+      "name": "Eye Swab C/S",
+      "mrp": 500,
+      "price": 115,
+      "sample_type": "EYE SWAB"
+    },
+    {
+      "sl": 376,
+      "name": "Factor IX FUNCTIONAL",
+      "mrp": 1800,
+      "price": 1035,
+      "sample_type": "Citrated Plasma"
+    },
+    {
+      "sl": 377,
+      "name": "Factor V",
+      "mrp": 3200,
+      "price": 920,
+      "sample_type": "Citrated Plasma"
+    },
+    {
+      "sl": 378,
+      "name": "factor v leiden",
+      "mrp": 5200,
+      "price": 1495,
+      "sample_type": "Citrated Plasma"
+    },
+    {
+      "sl": 379,
+      "name": "FACTOR VII",
+      "mrp": 2900,
+      "price": 1150,
+      "sample_type": "Citrated Plasma"
+    },
+    {
+      "sl": 380,
+      "name": "Factor VIII FUNCTIONAL / ACTIVITY",
+      "mrp": 1800,
+      "price": 978,
+      "sample_type": "Citrated Plasma"
+    },
+    {
+      "sl": 381,
+      "name": "FAECAL CALPROTECTIN OR FECAL CALPROTECTIN",
+      "mrp": 3000,
+      "price": 1726,
+      "sample_type": "STOOL"
+    },
+    {
+      "sl": 382,
+      "name": "FAMILY PROFILE",
+      "mrp": 900,
+      "price": 286,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 383,
+      "name": "FECAL ELASTASE, STOOL",
+      "mrp": 7000,
+      "price": 2875,
+      "sample_type": "STOOL"
+    },
+    {
+      "sl": 384,
+      "name": "FEMALE CARE",
+      "mrp": 4000,
+      "price": 1035,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 385,
+      "name": "FERRITIN",
+      "mrp": 600,
+      "price": 138,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 386,
+      "name": "FIBRINOGEN",
+      "mrp": 1000,
+      "price": 230,
+      "sample_type": "Citrated Plasma"
+    },
+    {
+      "sl": 387,
+      "name": "Fibrinogen Degradation Product (FDP)",
+      "mrp": 1000,
+      "price": 166,
+      "sample_type": "Citrated Plasma"
+    },
+    {
+      "sl": 388,
+      "name": "FILARIA Ag TEST (QUALITATIVE)",
+      "mrp": 800,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 389,
+      "name": "FILARIA Ag TEST (QUANTITATIVE)",
+      "mrp": 1000,
+      "price": 300,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 390,
+      "name": "FILARIAL IgG-IgM Rapid",
+      "mrp": 1000,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 391,
+      "name": "FILARIASIS TEST (QUALITATIVE)",
+      "mrp": 800,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 392,
+      "name": "FLUID ACR",
+      "mrp": 100,
+      "price": 81,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 393,
+      "name": "FLUID BACTEC CULTURE",
+      "mrp": 1000,
+      "price": 403,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 394,
+      "name": "FLUID C/S",
+      "mrp": 500,
+      "price": 115,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 395,
+      "name": "Fluid CA 125",
+      "mrp": 800,
+      "price": 230,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 396,
+      "name": "Fluid Cell Count",
+      "mrp": 100,
+      "price": 35,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 397,
+      "name": "FLUID Creatinine",
+      "mrp": 100,
+      "price": 35,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 398,
+      "name": "Fluid Cytology",
+      "mrp": 500,
+      "price": 173,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 399,
+      "name": "fluid cytology,R/M",
+      "mrp": 550,
+      "price": 288,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 400,
+      "name": "fluid for Z-N Stain",
+      "mrp": 500,
+      "price": 69,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 401,
+      "name": "fluid koh",
+      "mrp": 800,
+      "price": 115,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 402,
+      "name": "Fluid Routine Examination",
+      "mrp": 450,
+      "price": 115,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 403,
+      "name": "FLUORESCENT TREPONEMAL ANTIBODIES; FTA-ABS, SERUM",
+      "mrp": 2500,
+      "price": 1725,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 404,
+      "name": "FNAC (Fine Needle Aspiration Cytology)",
+      "mrp": 500,
+      "price": 173,
+      "sample_type": "SLIDE"
+    },
+    {
+      "sl": 405,
+      "name": "FOLATE (FOLIC ACID), RBC",
+      "mrp": 700,
+      "price": 403,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 406,
+      "name": "Folic Acid",
+      "mrp": 1200,
+      "price": 138,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 407,
+      "name": "Free Androgen Index",
+      "mrp": 2100,
+      "price": 1150,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 408,
+      "name": "FREE Beta Human Chorionic Gonodotropin Hormone (BHCG)",
+      "mrp": 1000,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 409,
+      "name": "Fructosamine",
+      "mrp": 500,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 410,
+      "name": "FSH (Follicle Stimulating Hormone)",
+      "mrp": 350,
+      "price": 69,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 411,
+      "name": "FT3 (Trilodothyronine- Free)",
+      "mrp": 200,
+      "price": 58,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 412,
+      "name": "FT3, FT4, TSH",
+      "mrp": 700,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 413,
+      "name": "FT4 (Thyroxine- Free)",
+      "mrp": 200,
+      "price": 52,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 414,
+      "name": "FT4,TSH",
+      "mrp": 230,
+      "price": 75,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 415,
+      "name": "Fungal Examination",
+      "mrp": 450,
+      "price": 115,
+      "sample_type": "SWAB"
+    },
+    {
+      "sl": 416,
+      "name": "Fungal FOR URINE",
+      "mrp": 250,
+      "price": 115,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 417,
+      "name": "Fungal Stain",
+      "mrp": 150,
+      "price": 69,
+      "sample_type": "SKIN SCRAPPINGS"
+    },
+    {
+      "sl": 418,
+      "name": "Fungal Stain (FLUID)",
+      "mrp": 200,
+      "price": 115,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 419,
+      "name": "Fungal Stain (SPUTUM)",
+      "mrp": 100,
+      "price": 58,
+      "sample_type": "SPUTUM"
+    },
+    {
+      "sl": 420,
+      "name": "Fungal Stain, CSF",
+      "mrp": 150,
+      "price": 58,
+      "sample_type": "CSF"
+    },
+    {
+      "sl": 421,
+      "name": "GAD 65 Antibody , Serum",
+      "mrp": 6000,
+      "price": 1725,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 422,
+      "name": "GANGLIOSIDE ANTIBODY IgG",
+      "mrp": 3500,
+      "price": 1725,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 423,
+      "name": "GANGLIOSIDE ANTIBODY IgM",
+      "mrp": 3500,
+      "price": 1725,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 424,
+      "name": "GASTRIN",
+      "mrp": 1200,
+      "price": 690,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 425,
+      "name": "GDPL CAMP PROFILE",
+      "mrp": 1800,
+      "price": 196,
+      "sample_type": "EDTA Blood, Fluoride Plasma-03, Serum"
+    },
+    {
+      "sl": 426,
+      "name": "Gene Xpert (CB NAAT) FLUID",
+      "mrp": 4000,
+      "price": 1150,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 427,
+      "name": "Gene Xpert (CB NAAT) CSF",
+      "mrp": 5000,
+      "price": 1150,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 428,
+      "name": "Gene Xpert (CB NAAT) MENSTRUATION BLOOD",
+      "mrp": 4000,
+      "price": 1150,
+      "sample_type": "Menstruation blood"
+    },
+    {
+      "sl": 429,
+      "name": "Gene Xpert (CB NAAT) PUS",
+      "mrp": 5000,
+      "price": 1150,
+      "sample_type": "PUS"
+    },
+    {
+      "sl": 430,
+      "name": "Gene Xpert (CB NAAT) SPUTUM",
+      "mrp": 4000,
+      "price": 1150,
+      "sample_type": "SPUTUM"
+    },
+    {
+      "sl": 431,
+      "name": "Gene Xpert (CB NAAT) TISSUE",
+      "mrp": 5000,
+      "price": 1725,
+      "sample_type": "Tissue"
+    },
+    {
+      "sl": 432,
+      "name": "Gene Xpert (CB NAAT) URINE",
+      "mrp": 4000,
+      "price": 1150,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 433,
+      "name": "GFR (GLOMERULAR FILTRATION RATE)",
+      "mrp": 200,
+      "price": 35,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 434,
+      "name": "GGT (Gamma Glutamyl Transferase)",
+      "mrp": 150,
+      "price": 35,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 435,
+      "name": "Giardia",
+      "mrp": 250,
+      "price": 115,
+      "sample_type": "STOOL"
+    },
+    {
+      "sl": 436,
+      "name": "Globulin",
+      "mrp": 100,
+      "price": 5,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 437,
+      "name": "Glucose 6 Phosphate Dehydrogenase (G6PD Quantitative)",
+      "mrp": 1500,
+      "price": 173,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 438,
+      "name": "Glucose F (Blood Sugar Fasting)",
+      "mrp": 100,
+      "price": 17,
+      "sample_type": "Fluoride Plasma-01"
+    },
+    {
+      "sl": 439,
+      "name": "Glucose PP (Blood Sugar Post prandial)",
+      "mrp": 100,
+      "price": 17,
+      "sample_type": "Fluoride Plasma-02"
+    },
+    {
+      "sl": 440,
+      "name": "Glucose R (Blood Sugar Random)",
+      "mrp": 100,
+      "price": 17,
+      "sample_type": "Fluoride Plasma-03"
+    },
+    {
+      "sl": 441,
+      "name": "GLUCOSE TOLERANCE TEST ( GTT) - 3 SAMPLES (75 gm)",
+      "mrp": 200,
+      "price": 58,
+      "sample_type": "Fluoride Plasma-01, Fluoride Plasma-02, Fluoride Plasma-03"
+    },
+    {
+      "sl": 442,
+      "name": "GLUCOSE TOLERANCE TEST ( GTT) - 5 SAMPLES",
+      "mrp": 300,
+      "price": 86,
+      "sample_type": "Fluoride Plasma-01, Fluoride Plasma-02, Fluoride Plasma-03, Fluoride Plasma-04, Fluoride Plasma-05"
+    },
+    {
+      "sl": 443,
+      "name": "Glucose-6-phosphate dehydrogenase(G6PD), Qualitative",
+      "mrp": 1000,
+      "price": 173,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 444,
+      "name": "Glycated Haemoglobin (HbA1c)",
+      "mrp": 550,
+      "price": 69,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 445,
+      "name": "Growth Hormone (HGH)",
+      "mrp": 800,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 446,
+      "name": "GYNO-7",
+      "mrp": 3200,
+      "price": 805,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 447,
+      "name": "H1N1 (SWINE FLU) QUALITATIVE, REAL TIME PCR",
+      "mrp": 4500,
+      "price": 2300,
+      "sample_type": "SWAB"
+    },
+    {
+      "sl": 448,
+      "name": "HAIRFALL PROFILE",
+      "mrp": 3500,
+      "price": 1380,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 449,
+      "name": "Haptoglobin",
+      "mrp": 1900,
+      "price": 690,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 450,
+      "name": "Hb Electrophoresis by HPLC",
+      "mrp": 1000,
+      "price": 288,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 451,
+      "name": "HB, TLC, D LC, ESR",
+      "mrp": 320,
+      "price": 69,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 452,
+      "name": "HB, TLC, DLC",
+      "mrp": 220,
+      "price": 58,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 453,
+      "name": "HB,Sodium,Potassium",
+      "mrp": 250,
+      "price": 104,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 454,
+      "name": "HBA1C WITH GRAPH",
+      "mrp": 600,
+      "price": 575,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 455,
+      "name": "HBV DNA quantitative",
+      "mrp": 5000,
+      "price": 805,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 456,
+      "name": "Hcv genotyping",
+      "mrp": 5000,
+      "price": 2530,
+      "sample_type": "EDTA_PLASMA"
+    },
+    {
+      "sl": 457,
+      "name": "HCV IgG,",
+      "mrp": 1500,
+      "price": 345,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 458,
+      "name": "HCV RNA PCR Quantitative",
+      "mrp": 4000,
+      "price": 805,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 459,
+      "name": "HEALTH CHECK",
+      "mrp": 2000,
+      "price": 460,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum, Urine"
+    },
+    {
+      "sl": 460,
+      "name": "health check advance",
+      "mrp": 2400,
+      "price": 575,
+      "sample_type": "EDTA Blood, Serum, Urine"
+    },
+    {
+      "sl": 461,
+      "name": "health check basic",
+      "mrp": 900,
+      "price": 288,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 462,
+      "name": "HEALTH PROFILE -2",
+      "mrp": 1500,
+      "price": 345,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum, Urine"
+    },
+    {
+      "sl": 463,
+      "name": "HEALTH PROFILE 1.3",
+      "mrp": 2000,
+      "price": 633,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum, Urine"
+    },
+    {
+      "sl": 464,
+      "name": "HEALTH PROFILE-1",
+      "mrp": 1000,
+      "price": 230,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum, Urine"
+    },
+    {
+      "sl": 465,
+      "name": "HEALTH PROFILE-3",
+      "mrp": 2000,
+      "price": 633,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum, Urine"
+    },
+    {
+      "sl": 466,
+      "name": "HELICOBACTER PYLORI - IgA",
+      "mrp": 1600,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 467,
+      "name": "HELICOBACTER PYLORI - IgG",
+      "mrp": 1600,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 468,
+      "name": "HELICOBACTER PYLORI - IgM",
+      "mrp": 1600,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 469,
+      "name": "HELICOBACTER PYLORI ANTIGEN (H. PYLORI), STOOL",
+      "mrp": 1400,
+      "price": 805,
+      "sample_type": "STOOL"
+    },
+    {
+      "sl": 470,
+      "name": "Hemoglobin",
+      "mrp": 100,
+      "price": 35,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 471,
+      "name": "HEMOPHILIA PROFILE",
+      "mrp": 13000,
+      "price": 2875,
+      "sample_type": "Citrated Plasma"
+    },
+    {
+      "sl": 472,
+      "name": "HEPATITIS B ENVELOPE ANTIGEN (HbeAg )",
+      "mrp": 800,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 473,
+      "name": "Hepatitis PROFILE",
+      "mrp": 6000,
+      "price": 1380,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 474,
+      "name": "Hepatitis A virus IgM Antibodies",
+      "mrp": 1100,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 475,
+      "name": "Hepatitis A virus IgG Antibodies (HAV IgG)",
+      "mrp": 1100,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 476,
+      "name": "Hepatitis A virus IgM Antibodies (HAV IgM)",
+      "mrp": 1000,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 477,
+      "name": "Hepatitis A virus Total Antibodies (HAV-Total)",
+      "mrp": 1250,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 478,
+      "name": "Hepatitis B core antibody IgM (HBC IgM)",
+      "mrp": 1000,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 479,
+      "name": "Hepatitis B core antigen - Total",
+      "mrp": 1000,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 480,
+      "name": "Hepatitis B core antigen TOTAL",
+      "mrp": 1000,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 481,
+      "name": "Hepatitis B Envelope antibody(Anti-HBeAb)",
+      "mrp": 1000,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 482,
+      "name": "HEPATITIS B ENVELOPE ANTIGEN (AHBE) - TOTAL",
+      "mrp": 1000,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 483,
+      "name": "HEPATITIS B PROFILE",
+      "mrp": 6000,
+      "price": 1380,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 484,
+      "name": "Hepatitis B surface Antibody (HBsAb)",
+      "mrp": 700,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 485,
+      "name": "Hepatitis B surface antigen (HBs Ag) (Rapid)",
+      "mrp": 300,
+      "price": 92,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 486,
+      "name": "Hepatitis B surface antigen (HBs Ag) CLIA",
+      "mrp": 800,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 487,
+      "name": "Hepatitis B surface antigen (HBsAg)-ELISA",
+      "mrp": 800,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 488,
+      "name": "Hepatitis B surface antigen IgG",
+      "mrp": 500,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 489,
+      "name": "Hepatitis B surface antigen IgM",
+      "mrp": 500,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 490,
+      "name": "Hepatitis C virus (HCV Rapid)",
+      "mrp": 300,
+      "price": 92,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 491,
+      "name": "Hepatitis C virus (HCV) CLIA",
+      "mrp": 800,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 492,
+      "name": "Hepatitis C virus (HCV) ELISA",
+      "mrp": 800,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 493,
+      "name": "HEPATITIS E ANTIBODY ( HEV), IgG",
+      "mrp": 1500,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 494,
+      "name": "HEPATITIS E ANTIBODY ( HEV), IgM",
+      "mrp": 1500,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 495,
+      "name": "Herpes Simplex Virus (HSV) -IgG 1",
+      "mrp": 700,
+      "price": 69,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 496,
+      "name": "Herpes Simplex Virus (HSV) -IgG 1, CSF",
+      "mrp": 600,
+      "price": 69,
+      "sample_type": "CSF"
+    },
+    {
+      "sl": 497,
+      "name": "Herpes Simplex Virus (HSV) -IgG 2",
+      "mrp": 700,
+      "price": 69,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 498,
+      "name": "Herpes Simplex Virus (HSV) -IgG 2, CSF",
+      "mrp": 600,
+      "price": 69,
+      "sample_type": "CSF"
+    },
+    {
+      "sl": 499,
+      "name": "Herpes Simplex Virus (HSV) -IgM 1",
+      "mrp": 700,
+      "price": 69,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 500,
+      "name": "Herpes Simplex Virus (HSV) -IgM 1, CSF",
+      "mrp": 600,
+      "price": 69,
+      "sample_type": "CSF"
+    },
+    {
+      "sl": 501,
+      "name": "Herpes Simplex Virus (HSV) -IgM 2",
+      "mrp": 700,
+      "price": 69,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 502,
+      "name": "Herpes Simplex Virus (HSV) -IgM 2, CSF",
+      "mrp": 600,
+      "price": 69,
+      "sample_type": "CSF"
+    },
+    {
+      "sl": 503,
+      "name": "HERPES SIMPLEX VIRUS (HSV) TYPE 1 & 2, PCR, QUALITATIVE SERUM",
+      "mrp": 4500,
+      "price": 2300,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 504,
+      "name": "HIGH GRADE SEROUS CARCINOMA OF OVARIAN TYP",
+      "mrp": 120000,
+      "price": 92000,
+      "sample_type": "block"
+    },
+    {
+      "sl": 505,
+      "name": "Histone",
+      "mrp": 1400,
+      "price": 345,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 506,
+      "name": "Histopathology (L)",
+      "mrp": 1400,
+      "price": 345,
+      "sample_type": "Tissue"
+    },
+    {
+      "sl": 507,
+      "name": "Histopathology (M)",
+      "mrp": 900,
+      "price": 230,
+      "sample_type": "Tissue"
+    },
+    {
+      "sl": 508,
+      "name": "Histopathology (s)",
+      "mrp": 800,
+      "price": 230,
+      "sample_type": "Tissue"
+    },
+    {
+      "sl": 509,
+      "name": "HIV 1 & 2 Antibody ELISA",
+      "mrp": 800,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 510,
+      "name": "HIV 1 & 2 Antibody -Rapid",
+      "mrp": 450,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 511,
+      "name": "HIV 1 RNA PCR - Qualitative",
+      "mrp": 3500,
+      "price": 1380,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 512,
+      "name": "HIV 1- Quantitative PCR",
+      "mrp": 3500,
+      "price": 1380,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 513,
+      "name": "HIV Western Blot",
+      "mrp": 2200,
+      "price": 920,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 514,
+      "name": "HIV-p24 Antigen detection",
+      "mrp": 4500,
+      "price": 1495,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 515,
+      "name": "HLA TYPING",
+      "mrp": 12000,
+      "price": 9775,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 516,
+      "name": "HLA- B27 ESTIMATION",
+      "mrp": 2500,
+      "price": 575,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 517,
+      "name": "HLA-B27 PCR (Qualitative)",
+      "mrp": 2500,
+      "price": 690,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 518,
+      "name": "HLAB* 5701",
+      "mrp": 6500,
+      "price": 3450,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 519,
+      "name": "HMPV",
+      "mrp": 3999,
+      "price": 1050,
+      "sample_type": "Nasal Swab"
+    },
+    {
+      "sl": 520,
+      "name": "HOMA -IR",
+      "mrp": 1000,
+      "price": 403,
+      "sample_type": "Fluoride Plasma-01, Serum"
+    },
+    {
+      "sl": 521,
+      "name": "Homocysteine, Serum",
+      "mrp": 1000,
+      "price": 311,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 522,
+      "name": "Homocysteine, Urine",
+      "mrp": 1000,
+      "price": 345,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 523,
+      "name": "Homovanillic acid (HVA), 24 hours urine",
+      "mrp": 3500,
+      "price": 1150,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 524,
+      "name": "Homovanillic acid (HVA), random urine",
+      "mrp": 3500,
+      "price": 1150,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 525,
+      "name": "HPCL",
+      "mrp": 1500,
+      "price": 196,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum, Urine"
+    },
+    {
+      "sl": 526,
+      "name": "hs-CRP (hs-C Reactive Protein )",
+      "mrp": 700,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 527,
+      "name": "HSV 1&2 DNA Qualitative PCR (CSF)",
+      "mrp": 4500,
+      "price": 1725,
+      "sample_type": "CSF"
+    },
+    {
+      "sl": 528,
+      "name": "Human Papilloma Virus (HPV)",
+      "mrp": 2000,
+      "price": 978,
+      "sample_type": "liquid"
+    },
+    {
+      "sl": 529,
+      "name": "HUMAN PAPILLOMA VIRUS (HPV), REAL TIME PCR",
+      "mrp": 2000,
+      "price": 978,
+      "sample_type": "liquid"
+    },
+    {
+      "sl": 530,
+      "name": "HY FIT PROFILE",
+      "mrp": 3500,
+      "price": 1288,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum, Urine"
+    },
+    {
+      "sl": 531,
+      "name": "HY AAROGYAM-1.3",
+      "mrp": 3000,
+      "price": 748,
+      "sample_type": "EDTA Blood, Serum, Fluoride Plasma-01, Urine"
+    },
+    {
+      "sl": 532,
+      "name": "HY ANC 3",
+      "mrp": 2000,
+      "price": 345,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum, Urine"
+    },
+    {
+      "sl": 533,
+      "name": "HY ANC ADVANCE",
+      "mrp": 3000,
+      "price": 894,
+      "sample_type": "EDTA Blood, Serum, Urine, VAGINAL FLUID"
+    },
+    {
+      "sl": 534,
+      "name": "HY coagulation profile -1",
+      "mrp": 2500,
+      "price": 920,
+      "sample_type": "Citrated Plasma"
+    },
+    {
+      "sl": 535,
+      "name": "HY COMPLETE FIVERR PROFILE",
+      "mrp": 3000,
+      "price": 748,
+      "sample_type": "EDTA Blood, Serum, Urine"
+    },
+    {
+      "sl": 536,
+      "name": "HY DIABETES PROFILE",
+      "mrp": 3000,
+      "price": 1150,
+      "sample_type": "EDTA Blood, Serum, Urine"
+    },
+    {
+      "sl": 537,
+      "name": "HY DIABETIC PROFILE - ADVANCED",
+      "mrp": 4000,
+      "price": 1265,
+      "sample_type": "EDTA Blood, Serum, Urine"
+    },
+    {
+      "sl": 538,
+      "name": "HY DIABETIC-1",
+      "mrp": 2500,
+      "price": 1035,
+      "sample_type": "EDTA Blood, Serum, Urine"
+    },
+    {
+      "sl": 539,
+      "name": "HY DIABETIC-2",
+      "mrp": 2700,
+      "price": 1093,
+      "sample_type": "EDTA Blood, Serum, Urine"
+    },
+    {
+      "sl": 540,
+      "name": "HY FEVER-1",
+      "mrp": 750,
+      "price": 230,
+      "sample_type": "EDTA Blood, Serum, Urine"
+    },
+    {
+      "sl": 541,
+      "name": "HY FEVER-2",
+      "mrp": 1500,
+      "price": 518,
+      "sample_type": "EDTA Blood, Serum, Urine"
+    },
+    {
+      "sl": 542,
+      "name": "HY FEVER-3",
+      "mrp": 1800,
+      "price": 633,
+      "sample_type": "EDTA Blood, Serum, Urine"
+    },
+    {
+      "sl": 543,
+      "name": "HY FEVER-4",
+      "mrp": 2200,
+      "price": 978,
+      "sample_type": "EDTA Blood, Serum, Urine"
+    },
+    {
+      "sl": 544,
+      "name": "HY FIT 3+ESR",
+      "mrp": 3500,
+      "price": 633,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum, Urine"
+    },
+    {
+      "sl": 545,
+      "name": "HY FIT PACK -A",
+      "mrp": 950,
+      "price": 265,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 546,
+      "name": "HY FIT PACK -B",
+      "mrp": 1350,
+      "price": 322,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum, Urine"
+    },
+    {
+      "sl": 547,
+      "name": "HY FIT PACK -C",
+      "mrp": 2350,
+      "price": 656,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum, Urine"
+    },
+    {
+      "sl": 548,
+      "name": "HY FIT PACK -D",
+      "mrp": 2950,
+      "price": 771,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum, Urine"
+    },
+    {
+      "sl": 549,
+      "name": "HY FIT1.3+Cardiac Risk",
+      "mrp": 3000,
+      "price": 748,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 550,
+      "name": "HY FIT3 +RA",
+      "mrp": 2500,
+      "price": 690,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 551,
+      "name": "HY FITNESS 1.0",
+      "mrp": 1000,
+      "price": 207,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 552,
+      "name": "HY FITNESS 4.1",
+      "mrp": 3000,
+      "price": 690,
+      "sample_type": "EDTA Blood, Serum, Fluoride Plasma-01"
+    },
+    {
+      "sl": 553,
+      "name": "HY FITNESS COMPREHENSIVE PROFILE",
+      "mrp": 1200,
+      "price": 575,
+      "sample_type": "EDTA Blood, Serum, Urine"
+    },
+    {
+      "sl": 554,
+      "name": "HY FITNESS SMART",
+      "mrp": 2400,
+      "price": 481,
+      "sample_type": "EDTA Blood, Serum, Urine"
+    },
+    {
+      "sl": 555,
+      "name": "HY FITNESS SMART 3",
+      "mrp": 2450,
+      "price": 518,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum, Urine"
+    },
+    {
+      "sl": 556,
+      "name": "HY FITNESS-1",
+      "mrp": 1000,
+      "price": 230,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum, Urine"
+    },
+    {
+      "sl": 557,
+      "name": "HY FITNESS-1.1",
+      "mrp": 1200,
+      "price": 207,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 558,
+      "name": "HY FITNESS-1.2",
+      "mrp": 2000,
+      "price": 299,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 559,
+      "name": "HY FITNESS-1.3",
+      "mrp": 3000,
+      "price": 518,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 560,
+      "name": "HY FITNESS-1.3 PRO",
+      "mrp": 2500,
+      "price": 978,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 561,
+      "name": "HY FITNESS-2",
+      "mrp": 2000,
+      "price": 299,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum, Urine"
+    },
+    {
+      "sl": 562,
+      "name": "HY FITNESS-3",
+      "mrp": 3000,
+      "price": 575,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum, Urine"
+    },
+    {
+      "sl": 563,
+      "name": "HY FITNESS-4",
+      "mrp": 4000,
+      "price": 1035,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum, Urine"
+    },
+    {
+      "sl": 564,
+      "name": "HY FLUID-1",
+      "mrp": 1000,
+      "price": 437,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 565,
+      "name": "HY HEART ADVANCED",
+      "mrp": 1800,
+      "price": 920,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 566,
+      "name": "HY HEART BASIC",
+      "mrp": 900,
+      "price": 460,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 567,
+      "name": "HY HEART HEALTH PACKAGE",
+      "mrp": 3000,
+      "price": 920,
+      "sample_type": "Fluoride Plasma-01, Serum"
+    },
+    {
+      "sl": 568,
+      "name": "HY MINI PROFILE",
+      "mrp": 1500,
+      "price": 459,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 569,
+      "name": "HY MONSOON-1",
+      "mrp": 3000,
+      "price": 564,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 570,
+      "name": "HY MUMBAI PROFILE",
+      "mrp": 2000,
+      "price": 299,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum"
+    },
+    {
+      "sl": 571,
+      "name": "HY WOMEN health",
+      "mrp": 3000,
+      "price": 748,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 572,
+      "name": "HY WOMEN PROFILE",
+      "mrp": 3500,
+      "price": 1208,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 573,
+      "name": "HYFIT2NASHIK",
+      "mrp": 3000,
+      "price": 653,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 574,
+      "name": "IA2 - Insulin",
+      "mrp": 6000,
+      "price": 2070,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 575,
+      "name": "IGF Binding Protein-3 (IGFBP-3)",
+      "mrp": 5000,
+      "price": 1380,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 576,
+      "name": "IGF-I",
+      "mrp": 2000,
+      "price": 1150,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 577,
+      "name": "IgG4 SUB",
+      "mrp": 5000,
+      "price": 4025,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 578,
+      "name": "IgM 24 hrs Urine",
+      "mrp": 700,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 579,
+      "name": "IHC",
+      "mrp": 20000,
+      "price": 8740,
+      "sample_type": "Tissue"
+    },
+    {
+      "sl": 580,
+      "name": "Immunity profile",
+      "mrp": 4000,
+      "price": 1955,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 581,
+      "name": "Immunofixation Electrophoresis",
+      "mrp": 4000,
+      "price": 1886,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 582,
+      "name": "Immunoglobulin (IgA)",
+      "mrp": 700,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 583,
+      "name": "Immunoglobulin D (IgD)",
+      "mrp": 700,
+      "price": 345,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 584,
+      "name": "Immunoglobulin G (IgG)",
+      "mrp": 700,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 585,
+      "name": "IMMUNOGLOBULIN IgG SUBCLASS",
+      "mrp": 6000,
+      "price": 4025,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 586,
+      "name": "IMMUNOGLOBULIN IgG, index CSF",
+      "mrp": 1000,
+      "price": 690,
+      "sample_type": "CSF, Serum"
+    },
+    {
+      "sl": 587,
+      "name": "Immunoglobulin M (IgM)",
+      "mrp": 700,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 588,
+      "name": "IMMUNOGLOBULIN-IgE(Total IgE)",
+      "mrp": 600,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 589,
+      "name": "Indirect Coombs test (ICT)",
+      "mrp": 450,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 590,
+      "name": "INFERTILITY PROFILE - A",
+      "mrp": 4000,
+      "price": 1265,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 591,
+      "name": "INFERTILITY PROFILE - B",
+      "mrp": 8000,
+      "price": 2070,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 592,
+      "name": "INFERTILITY PROFILE-FEMALE",
+      "mrp": 3500,
+      "price": 1438,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 593,
+      "name": "INFERTILITY PROFILE-MALE",
+      "mrp": 3000,
+      "price": 1438,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 594,
+      "name": "INHALANT",
+      "mrp": 4000,
+      "price": 920,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 595,
+      "name": "INHALANT + FOOD ALLERGY",
+      "mrp": 3000,
+      "price": 1150,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 596,
+      "name": "Inhibin -A",
+      "mrp": 1500,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 597,
+      "name": "Inhibin -B",
+      "mrp": 1500,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 598,
+      "name": "inorganic phosphorus",
+      "mrp": 300,
+      "price": 69,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 599,
+      "name": "Insulin - Post Prandial",
+      "mrp": 550,
+      "price": 182,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 600,
+      "name": "Insulin antibodies, serum",
+      "mrp": 6000,
+      "price": 1150,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 601,
+      "name": "Insulin Fasting",
+      "mrp": 800,
+      "price": 184,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 602,
+      "name": "Insulin Random",
+      "mrp": 800,
+      "price": 184,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 603,
+      "name": "Intact Parathyroid Hormone (iPTH)",
+      "mrp": 1000,
+      "price": 276,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 604,
+      "name": "Interleukin 6",
+      "mrp": 2200,
+      "price": 345,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 605,
+      "name": "Intrinsic Factor Antibody",
+      "mrp": 3000,
+      "price": 1208,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 606,
+      "name": "Ionized Calcium",
+      "mrp": 300,
+      "price": 69,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 607,
+      "name": "IRON",
+      "mrp": 300,
+      "price": 46,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 608,
+      "name": "IRON PROFILE",
+      "mrp": 500,
+      "price": 92,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 609,
+      "name": "Islet Cell Antibody",
+      "mrp": 4500,
+      "price": 2875,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 610,
+      "name": "JAK2 Mutation Analysis",
+      "mrp": 7000,
+      "price": 5175,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 611,
+      "name": "JAK2 mutation test",
+      "mrp": 10000,
+      "price": 4025,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 612,
+      "name": "Jo-1 ANTIBODY",
+      "mrp": 1500,
+      "price": 748,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 613,
+      "name": "KALP PACKGE 5",
+      "mrp": 1400,
+      "price": 690,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum"
+    },
+    {
+      "sl": 614,
+      "name": "KAPPA / LAMBDA LIGHT CHAINS, FREE, SERUM",
+      "mrp": 4000,
+      "price": 2070,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 615,
+      "name": "Karyotyping-POC",
+      "mrp": 6000,
+      "price": 5175,
+      "sample_type": "Tissue"
+    },
+    {
+      "sl": 616,
+      "name": "Ketone (Acetone,Hydroxybutyrate), serum",
+      "mrp": 400,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 617,
+      "name": "Ketone (Acetone,Hydroxybutyrate),Urine",
+      "mrp": 400,
+      "price": 173,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 618,
+      "name": "Kidney Profile",
+      "mrp": 600,
+      "price": 92,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 619,
+      "name": "Kidney Profile with GFR",
+      "mrp": 600,
+      "price": 92,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 620,
+      "name": "KIDNEY WITH PHOSPHOROUS",
+      "mrp": 660,
+      "price": 167,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 621,
+      "name": "KIDPRO",
+      "mrp": 500,
+      "price": 72,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 622,
+      "name": "KLI-15",
+      "mrp": 1000,
+      "price": 207,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum, Urine"
+    },
+    {
+      "sl": 623,
+      "name": "KOH Preparation",
+      "mrp": 300,
+      "price": 115,
+      "sample_type": "SKIN SCRAPPINGS"
+    },
+    {
+      "sl": 624,
+      "name": "Lactate Dehyderogenase (LDH) FLUID",
+      "mrp": 900,
+      "price": 173,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 625,
+      "name": "LACTATE DEHYDROGENASE(LDH)",
+      "mrp": 500,
+      "price": 92,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 626,
+      "name": "Lactate Plasma",
+      "mrp": 950,
+      "price": 288,
+      "sample_type": "Citrated Plasma"
+    },
+    {
+      "sl": 627,
+      "name": "Lambda Light Chain",
+      "mrp": 4000,
+      "price": 1725,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 628,
+      "name": "LaminIn",
+      "mrp": 2000,
+      "price": 978,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 629,
+      "name": "LBC WITH HPV",
+      "mrp": 2500,
+      "price": 1150,
+      "sample_type": "liquid"
+    },
+    {
+      "sl": 630,
+      "name": "LE Cells",
+      "mrp": 400,
+      "price": 288,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 631,
+      "name": "LEAD TEST",
+      "mrp": 1500,
+      "price": 808,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 632,
+      "name": "LEPROSY-IgG",
+      "mrp": 1000,
+      "price": 345,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 633,
+      "name": "LEPROSY-IgG,IgM",
+      "mrp": 1800,
+      "price": 575,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 634,
+      "name": "LEPROSY-IgM",
+      "mrp": 1000,
+      "price": 345,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 635,
+      "name": "LEPTIN",
+      "mrp": 3500,
+      "price": 1840,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 636,
+      "name": "Leptospira Antibody IgG",
+      "mrp": 1000,
+      "price": 403,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 637,
+      "name": "Leptospira Antibody IgM",
+      "mrp": 1000,
+      "price": 403,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 638,
+      "name": "Leshmania Antibodies (KALA AZAR ) RK - 39",
+      "mrp": 1000,
+      "price": 345,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 639,
+      "name": "LEVIPIL LEVEL",
+      "mrp": 700,
+      "price": 600,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 640,
+      "name": "LH,FSH,PRL",
+      "mrp": 1200,
+      "price": 196,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 641,
+      "name": "LH,FSH,PRL,TSH",
+      "mrp": 1300,
+      "price": 219,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 642,
+      "name": "LH:FSH Ratio",
+      "mrp": 500,
+      "price": 161,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 643,
+      "name": "Lipase",
+      "mrp": 500,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 644,
+      "name": "Lipase Fluid",
+      "mrp": 500,
+      "price": 173,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 645,
+      "name": "Lipase Random Urine",
+      "mrp": 500,
+      "price": 174,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 646,
+      "name": "Lipid Profile",
+      "mrp": 650,
+      "price": 58,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 647,
+      "name": "Lipoprotein (A) [Lp(a)]",
+      "mrp": 700,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 648,
+      "name": "liquid-based Pap smear",
+      "mrp": 1000,
+      "price": 403,
+      "sample_type": "liquid"
+    },
+    {
+      "sl": 649,
+      "name": "Lithium (Li)",
+      "mrp": 400,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 650,
+      "name": "liver abscess cytology",
+      "mrp": 500,
+      "price": 173,
+      "sample_type": "PUS"
+    },
+    {
+      "sl": 651,
+      "name": "Liver Cytosolic Antigen Type 1 (LC-1) Antibody",
+      "mrp": 3500,
+      "price": 2300,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 652,
+      "name": "LIVER FUNCTION TESTS",
+      "mrp": 650,
+      "price": 92,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 653,
+      "name": "Liver-Kidney Microsome (LKM) -1 Antibody",
+      "mrp": 2000,
+      "price": 863,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 654,
+      "name": "LP-PLA2",
+      "mrp": 300,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 655,
+      "name": "Lupus Anticoagulant (DRVVT)",
+      "mrp": 1500,
+      "price": 345,
+      "sample_type": "Citrated Plasma"
+    },
+    {
+      "sl": 656,
+      "name": "LUPUS ANTICOAGULANT+APTT RATIO",
+      "mrp": 2000,
+      "price": 403,
+      "sample_type": "Citrated Plasma"
+    },
+    {
+      "sl": 657,
+      "name": "Luteinising Hormone (LH)",
+      "mrp": 300,
+      "price": 69,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 658,
+      "name": "Magnesium",
+      "mrp": 350,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 659,
+      "name": "Magnesium 24 hrs Urine",
+      "mrp": 300,
+      "price": 173,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 660,
+      "name": "Magnesium Random Urine",
+      "mrp": 200,
+      "price": 173,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 661,
+      "name": "MALARIA ANTIGEN ELISA",
+      "mrp": 400,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 662,
+      "name": "Malarial Falciparum and Vivax Antigen (Parasite V & F)",
+      "mrp": 400,
+      "price": 115,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 663,
+      "name": "Malarial Parasite slide",
+      "mrp": 200,
+      "price": 46,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 664,
+      "name": "MALE HORMONE PROFILE",
+      "mrp": 4000,
+      "price": 2070,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 665,
+      "name": "mantoux test",
+      "mrp": 100,
+      "price": 58,
+      "sample_type": "SKIN SCRAPPINGS"
+    },
+    {
+      "sl": 666,
+      "name": "Marijuana (CANNABINOIDS)",
+      "mrp": 600,
+      "price": 173,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 667,
+      "name": "MCH-Mean Corpuscular Haemoglobin",
+      "mrp": 100,
+      "price": 35,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 668,
+      "name": "MCHC-Mean Corpuscular Haemoglobin Concentration",
+      "mrp": 100,
+      "price": 35,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 669,
+      "name": "MCTD PANELS",
+      "mrp": 5500,
+      "price": 1380,
+      "sample_type": "EDTA Blood, Serum, Urine"
+    },
+    {
+      "sl": 670,
+      "name": "MCV-Mean Corpuscular Volume",
+      "mrp": 100,
+      "price": 35,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 671,
+      "name": "Mean Platelet Volume",
+      "mrp": 150,
+      "price": 35,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 672,
+      "name": "Measles IgG Antibodies",
+      "mrp": 2500,
+      "price": 518,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 673,
+      "name": "Measles IgM Antibodies",
+      "mrp": 2500,
+      "price": 518,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 674,
+      "name": "MENSTRUAL BLOOD AFB",
+      "mrp": 400,
+      "price": 173,
+      "sample_type": "Menstruation blood"
+    },
+    {
+      "sl": 675,
+      "name": "Metanephrine free serum",
+      "mrp": 1500,
+      "price": 1150,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 676,
+      "name": "Metanephrine free PLZMA",
+      "mrp": 2500,
+      "price": 920,
+      "sample_type": "EDTA_PLASMA"
+    },
+    {
+      "sl": 677,
+      "name": "Metanephrine serum",
+      "mrp": 1500,
+      "price": 920,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 678,
+      "name": "METHANOL URINE, RANDOM",
+      "mrp": 2500,
+      "price": 863,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 679,
+      "name": "Methemoglobin, Blood",
+      "mrp": 1000,
+      "price": 230,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 680,
+      "name": "Microalbumin (Urine Random)",
+      "mrp": 400,
+      "price": 115,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 681,
+      "name": "Microalbumin & Creatinine ratio (Urine )",
+      "mrp": 500,
+      "price": 121,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 682,
+      "name": "Microalbumin 24 hrs URINE",
+      "mrp": 500,
+      "price": 173,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 683,
+      "name": "Microalbumin SERUM",
+      "mrp": 400,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 684,
+      "name": "Microalbumin/protein ratio",
+      "mrp": 7000,
+      "price": 173,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 685,
+      "name": "MICROFILARIA (RAPID)",
+      "mrp": 600,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 686,
+      "name": "MICROFILARIA IgG, IgM",
+      "mrp": 1300,
+      "price": 460,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 687,
+      "name": "MICROFILARIA SLIDE",
+      "mrp": 400,
+      "price": 173,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 688,
+      "name": "Milk Allergy",
+      "mrp": 4000,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 689,
+      "name": "MILK C/S",
+      "mrp": 400,
+      "price": 115,
+      "sample_type": "MILK"
+    },
+    {
+      "sl": 690,
+      "name": "MISCELLANEOUS C/S",
+      "mrp": 400,
+      "price": 115,
+      "sample_type": "INSTRUMENTS"
+    },
+    {
+      "sl": 691,
+      "name": "MITOCHONDRIAL ANTIBODY (AMA)",
+      "mrp": 1500,
+      "price": 403,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 692,
+      "name": "modified acid fast stain for leprosy nasal smear",
+      "mrp": 500,
+      "price": 230,
+      "sample_type": "Nasal Swab"
+    },
+    {
+      "sl": 693,
+      "name": "modified acid fast stain for leprosy skin smear",
+      "mrp": 500,
+      "price": 230,
+      "sample_type": "SKIN SCRAPPINGS"
+    },
+    {
+      "sl": 694,
+      "name": "MOTHER MILK CYTOLOGY",
+      "mrp": 400,
+      "price": 173,
+      "sample_type": "MOTHER MILK"
+    },
+    {
+      "sl": 695,
+      "name": "MULTIPLE MYELOMA PROFILE",
+      "mrp": 10000,
+      "price": 5175,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 696,
+      "name": "Mumps IgG Antibodies",
+      "mrp": 1000,
+      "price": 368,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 697,
+      "name": "Mumps IgM Antibodies",
+      "mrp": 1000,
+      "price": 368,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 698,
+      "name": "Mycobacterium TB PCR - Qualitative (EDTA)",
+      "mrp": 1500,
+      "price": 690,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 699,
+      "name": "Mycobacterium TB PCR - Qualitative (FLUID)",
+      "mrp": 1500,
+      "price": 690,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 700,
+      "name": "Mycobacterium TB PCR - Qualitative (menstruation BLOOD)",
+      "mrp": 1500,
+      "price": 690,
+      "sample_type": "Menstruation blood"
+    },
+    {
+      "sl": 701,
+      "name": "Mycobacterium TB PCR - Qualitative (PUS)",
+      "mrp": 1700,
+      "price": 690,
+      "sample_type": "PUS"
+    },
+    {
+      "sl": 702,
+      "name": "Mycobacterium TB PCR - Qualitative (SPUTUM)",
+      "mrp": 1700,
+      "price": 690,
+      "sample_type": "SPUTUM"
+    },
+    {
+      "sl": 703,
+      "name": "Mycobacterium TB PCR - Qualitative (STOOL)",
+      "mrp": 2000,
+      "price": 690,
+      "sample_type": "STOOL"
+    },
+    {
+      "sl": 704,
+      "name": "Mycobacterium TB PCR - Qualitative (TISSUE)",
+      "mrp": 1500,
+      "price": 690,
+      "sample_type": "Tissue"
+    },
+    {
+      "sl": 705,
+      "name": "Mycobacterium TB PCR - Qualitative (URINE)",
+      "mrp": 1500,
+      "price": 690,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 706,
+      "name": "Mycoplasma Pneumoniae IgG",
+      "mrp": 2000,
+      "price": 978,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 707,
+      "name": "Mycoplasma Pneumoniae IgM",
+      "mrp": 2000,
+      "price": 978,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 708,
+      "name": "MYELIN BASIC PROTEIN MBP",
+      "mrp": 2000,
+      "price": 1035,
+      "sample_type": "CSF"
+    },
+    {
+      "sl": 709,
+      "name": "Myoglobin SERUM",
+      "mrp": 1000,
+      "price": 345,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 710,
+      "name": "Myoglobin URINE",
+      "mrp": 1200,
+      "price": 345,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 711,
+      "name": "Nasal smear for eosinophils",
+      "mrp": 200,
+      "price": 58,
+      "sample_type": "Nasal Swab"
+    },
+    {
+      "sl": 712,
+      "name": "Nasal Swab C/S",
+      "mrp": 500,
+      "price": 115,
+      "sample_type": "Nasal Swab"
+    },
+    {
+      "sl": 713,
+      "name": "Niacin (VITAMIN B3)",
+      "mrp": 1200,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 714,
+      "name": "NIPT (Noninvasive prenatal testing)",
+      "mrp": 25000,
+      "price": 8050,
+      "sample_type": "Blood ccfDNA Tube"
+    },
+    {
+      "sl": 715,
+      "name": "NIVA BUPA-3",
+      "mrp": 1500,
+      "price": 357,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum, Urine"
+    },
+    {
+      "sl": 716,
+      "name": "Non-Metanepherin Serum",
+      "mrp": 2500,
+      "price": 920,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 717,
+      "name": "NT-Pro BNP",
+      "mrp": 1700,
+      "price": 518,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 718,
+      "name": "OLIGOCLONAL BANDS IgG, CSF",
+      "mrp": 5500,
+      "price": 2875,
+      "sample_type": "CSF"
+    },
+    {
+      "sl": 719,
+      "name": "Opiates / Morphine",
+      "mrp": 600,
+      "price": 230,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 720,
+      "name": "ORAL GLUCOSE CHALLENGE TEST (OGCT)",
+      "mrp": 160,
+      "price": 115,
+      "sample_type": "Fluoride Plasma-01"
+    },
+    {
+      "sl": 721,
+      "name": "ORGANIC ACIDS URINE",
+      "mrp": 800,
+      "price": 345,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 722,
+      "name": "OROTIC ACID",
+      "mrp": 1000,
+      "price": 460,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 723,
+      "name": "Osmolality - 24 hrs Urine",
+      "mrp": 500,
+      "price": 345,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 724,
+      "name": "Osmolality - Serum",
+      "mrp": 500,
+      "price": 345,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 725,
+      "name": "Osmolality - Urine Random",
+      "mrp": 500,
+      "price": 345,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 726,
+      "name": "Osmotic Fragility, Erythrocytes",
+      "mrp": 1000,
+      "price": 460,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 727,
+      "name": "OT Swabs C/S",
+      "mrp": 500,
+      "price": 81,
+      "sample_type": "OT Swabs"
+    },
+    {
+      "sl": 728,
+      "name": "OXALATE",
+      "mrp": 700,
+      "price": 230,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 729,
+      "name": "Oxalates, Urine 24 Hours",
+      "mrp": 2000,
+      "price": 230,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 730,
+      "name": "P850",
+      "mrp": 1000,
+      "price": 230,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum, Urine"
+    },
+    {
+      "sl": 731,
+      "name": "Pantothenic acid (VITAMIN B5)",
+      "mrp": 1200,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 732,
+      "name": "PAP Smear",
+      "mrp": 500,
+      "price": 173,
+      "sample_type": "SLIDE"
+    },
+    {
+      "sl": 733,
+      "name": "papp-a",
+      "mrp": 1000,
+      "price": 403,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 734,
+      "name": "Parvovirus B19 IgG,IgM",
+      "mrp": 4000,
+      "price": 2070,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 735,
+      "name": "Parvovirus B19 IgM",
+      "mrp": 2000,
+      "price": 1150,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 736,
+      "name": "PCOD EXTENDED PROFILE",
+      "mrp": 7500,
+      "price": 2875,
+      "sample_type": "Fluoride Plasma-01, Serum"
+    },
+    {
+      "sl": 737,
+      "name": "PCOD PROFILE",
+      "mrp": 4000,
+      "price": 1093,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 738,
+      "name": "Peripheral Blood Smear (PBS O R PBF)",
+      "mrp": 250,
+      "price": 115,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 739,
+      "name": "PH Urine",
+      "mrp": 100,
+      "price": 35,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 740,
+      "name": "phenobarbital",
+      "mrp": 900,
+      "price": 403,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 741,
+      "name": "Phenobarbitone",
+      "mrp": 900,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 742,
+      "name": "PHENOL URINE, RANDOM",
+      "mrp": 2500,
+      "price": 460,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 743,
+      "name": "Phenytoin",
+      "mrp": 800,
+      "price": 403,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 744,
+      "name": "PHENYTOIN/DILANTIN/EPTOIN",
+      "mrp": 800,
+      "price": 159,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 745,
+      "name": "PHOSPHATE URINE RANDOM",
+      "mrp": 300,
+      "price": 115,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 746,
+      "name": "Phospholipase A2 Receptor Antibody IgG (PLA2R)",
+      "mrp": 7000,
+      "price": 4500,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 747,
+      "name": "Phosphorous , serum",
+      "mrp": 180,
+      "price": 69,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 748,
+      "name": "Phosphorus (24 Hrs Urinary)",
+      "mrp": 300,
+      "price": 115,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 749,
+      "name": "Phosphorus Urine Random",
+      "mrp": 300,
+      "price": 115,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 750,
+      "name": "PIVKA- II",
+      "mrp": 3000,
+      "price": 1725,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 751,
+      "name": "Plasma Metanephrine",
+      "mrp": 2200,
+      "price": 1265,
+      "sample_type": "EDTA_PLASMA"
+    },
+    {
+      "sl": 752,
+      "name": "Plasma Non Metanepherin Free",
+      "mrp": 5000,
+      "price": 2990,
+      "sample_type": "EDTA_PLASMA"
+    },
+    {
+      "sl": 753,
+      "name": "Plasma Renin Activity",
+      "mrp": 1500,
+      "price": 690,
+      "sample_type": "EDTA_PLASMA"
+    },
+    {
+      "sl": 754,
+      "name": "Platelet Count",
+      "mrp": 150,
+      "price": 35,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 755,
+      "name": "PLATINUM BODY HEALTH PLAN- FEMALE",
+      "mrp": 5500,
+      "price": 2070,
+      "sample_type": "EDTA Blood, Serum, Urine"
+    },
+    {
+      "sl": 756,
+      "name": "Pleural Fluid Cytology",
+      "mrp": 500,
+      "price": 173,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 757,
+      "name": "PNH mumps flow cytometry",
+      "mrp": 8000,
+      "price": 6900,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 758,
+      "name": "POC microarray",
+      "mrp": 25000,
+      "price": 12650,
+      "sample_type": "Tissue"
+    },
+    {
+      "sl": 759,
+      "name": "POOLED PRL",
+      "mrp": 800,
+      "price": 184,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 760,
+      "name": "PORPHOBILINOGEN (PBG), QUALITATIVE, URINE",
+      "mrp": 400,
+      "price": 288,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 761,
+      "name": "Potassium",
+      "mrp": 200,
+      "price": 46,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 762,
+      "name": "Potassium 24 hrs Urine",
+      "mrp": 300,
+      "price": 69,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 763,
+      "name": "Potassium Random URINE",
+      "mrp": 300,
+      "price": 69,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 764,
+      "name": "pre surgery profile",
+      "mrp": 1400,
+      "price": 518,
+      "sample_type": "EDTA Blood, Serum, Fluoride Plasma-03"
+    },
+    {
+      "sl": 765,
+      "name": "pregnancy profile",
+      "mrp": 2000,
+      "price": 511,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum"
+    },
+    {
+      "sl": 766,
+      "name": "Pregnancy Test Urine",
+      "mrp": 100,
+      "price": 35,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 767,
+      "name": "Procalcitonin",
+      "mrp": 2500,
+      "price": 357,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 768,
+      "name": "Progesterone",
+      "mrp": 550,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 769,
+      "name": "Prolactin (PRL)",
+      "mrp": 400,
+      "price": 69,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 770,
+      "name": "Protein (Microprotein) Random - Urinary",
+      "mrp": 100,
+      "price": 29,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 771,
+      "name": "Protein (Serum)",
+      "mrp": 220,
+      "price": 23,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 772,
+      "name": "Protein (Urine)",
+      "mrp": 200,
+      "price": 29,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 773,
+      "name": "Protein - Fluids",
+      "mrp": 200,
+      "price": 29,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 774,
+      "name": "Protein - Total",
+      "mrp": 220,
+      "price": 23,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 775,
+      "name": "Protein 24 hrs - Urinary",
+      "mrp": 200,
+      "price": 58,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 776,
+      "name": "Protein c",
+      "mrp": 2500,
+      "price": 863,
+      "sample_type": "Citrated Plasma"
+    },
+    {
+      "sl": 777,
+      "name": "Protein Electrophoresis (Serum)",
+      "mrp": 1000,
+      "price": 403,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 778,
+      "name": "Protein Electrophoresis (Urine)",
+      "mrp": 1000,
+      "price": 460,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 779,
+      "name": "Protein S",
+      "mrp": 2500,
+      "price": 863,
+      "sample_type": "Citrated Plasma"
+    },
+    {
+      "sl": 780,
+      "name": "Protein Total with Albumin & PA Ratio",
+      "mrp": 150,
+      "price": 58,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 781,
+      "name": "Protein/Creatinine Ratio Serum",
+      "mrp": 400,
+      "price": 81,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 782,
+      "name": "Prothrombin Time (PT) with INR",
+      "mrp": 400,
+      "price": 69,
+      "sample_type": "Citrated Plasma"
+    },
+    {
+      "sl": 783,
+      "name": "PSA- Free (Prostrate Specific Antigen Free)",
+      "mrp": 1000,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 784,
+      "name": "PSA- Total (Prostrate Specific Antigen total)",
+      "mrp": 600,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 785,
+      "name": "PUS C/S Anaerobic",
+      "mrp": 500,
+      "price": 115,
+      "sample_type": "PUS"
+    },
+    {
+      "sl": 786,
+      "name": "Pus c/s BACTEC Aerobic",
+      "mrp": 1000,
+      "price": 403,
+      "sample_type": "PUS"
+    },
+    {
+      "sl": 787,
+      "name": "Pus Cytology",
+      "mrp": 500,
+      "price": 173,
+      "sample_type": "PUS"
+    },
+    {
+      "sl": 788,
+      "name": "PUS FOR AFB STAIN & GRAM STAIN",
+      "mrp": 400,
+      "price": 115,
+      "sample_type": "PUS"
+    },
+    {
+      "sl": 789,
+      "name": "PUS FOR Fungus Culture",
+      "mrp": 500,
+      "price": 230,
+      "sample_type": "PUS"
+    },
+    {
+      "sl": 790,
+      "name": "PUS FOR KOH",
+      "mrp": 600,
+      "price": 173,
+      "sample_type": "PUS"
+    },
+    {
+      "sl": 791,
+      "name": "PUS GRAM STAIN",
+      "mrp": 300,
+      "price": 115,
+      "sample_type": "PUS"
+    },
+    {
+      "sl": 792,
+      "name": "PUS MICROSCOPY",
+      "mrp": 200,
+      "price": 115,
+      "sample_type": "PUS"
+    },
+    {
+      "sl": 793,
+      "name": "Pyridoxal 5 phosphate (VITAMIN B6)",
+      "mrp": 2500,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 794,
+      "name": "Pyruvate",
+      "mrp": 4000,
+      "price": 690,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 795,
+      "name": "QUADRUPLE MARKER - SECOND TRIMESTER",
+      "mrp": 3000,
+      "price": 863,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 796,
+      "name": "RA,ASO,CRP",
+      "mrp": 600,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 797,
+      "name": "RADICAL HISTOPATHOLOGY",
+      "mrp": 4000,
+      "price": 2875,
+      "sample_type": "Tissue"
+    },
+    {
+      "sl": 798,
+      "name": "RAPID PLASMA REAGIN (RPR TEST)",
+      "mrp": 500,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 799,
+      "name": "RBC-Red Blood Cell Count",
+      "mrp": 100,
+      "price": 35,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 800,
+      "name": "RDW - Red Cell Distribution width",
+      "mrp": 100,
+      "price": 35,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 801,
+      "name": "Reticulocyte Count",
+      "mrp": 150,
+      "price": 69,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 802,
+      "name": "Rh Antibody Titer",
+      "mrp": 500,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 803,
+      "name": "Rheumatoid Factor (RA test) Quantitative",
+      "mrp": 700,
+      "price": 92,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 804,
+      "name": "Rheumatoid Factor, RA test",
+      "mrp": 400,
+      "price": 69,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 805,
+      "name": "Riboflavin (VITAMIN B2)",
+      "mrp": 1200,
+      "price": 345,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 806,
+      "name": "RICKETTSIA DNA PCR",
+      "mrp": 5000,
+      "price": 2300,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 807,
+      "name": "Roma Score ( HE4 & CA125)",
+      "mrp": 2500,
+      "price": 1150,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 808,
+      "name": "Rota virus detection",
+      "mrp": 1000,
+      "price": 578,
+      "sample_type": "STOOL"
+    },
+    {
+      "sl": 809,
+      "name": "Rubella -IgG ,CMV-IgG",
+      "mrp": 500,
+      "price": 150,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 810,
+      "name": "RUBELLA AVIDITY, IgG, SERUM",
+      "mrp": 700,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 811,
+      "name": "Rubella Virus - IgG",
+      "mrp": 600,
+      "price": 69,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 812,
+      "name": "Rubella Virus - IgM",
+      "mrp": 600,
+      "price": 69,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 813,
+      "name": "RUTINE CHECKUP",
+      "mrp": 1500,
+      "price": 920,
+      "sample_type": "EDTA Blood, Serum, STOOL, Urine"
+    },
+    {
+      "sl": 814,
+      "name": "Saag test",
+      "mrp": 400,
+      "price": 173,
+      "sample_type": "Serum, Body Fluid"
+    },
+    {
+      "sl": 815,
+      "name": "Salmonella Typhi (TYPHI DOT IgG & IgM)",
+      "mrp": 500,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 816,
+      "name": "Salmonella Typhi (TYPHI DOT IgG)",
+      "mrp": 300,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 817,
+      "name": "Salmonella Typhi (TYPHI DOT IgM)",
+      "mrp": 300,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 818,
+      "name": "SAPHIRE MINOR FEMALE",
+      "mrp": 25000,
+      "price": 2300,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Fluoride Plasma-02, Serum, Urine"
+    },
+    {
+      "sl": 819,
+      "name": "SAPHIRE MINOR MALE",
+      "mrp": 25000,
+      "price": 2300,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Fluoride Plasma-02, Serum, Urine"
+    },
+    {
+      "sl": 820,
+      "name": "SAPHIRE MINOR FEMALE",
+      "mrp": 25000,
+      "price": 2300,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Fluoride Plasma-02, Serum"
+    },
+    {
+      "sl": 821,
+      "name": "Scl-70 (SCLERODERMA) ANTIBODY",
+      "mrp": 1800,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 822,
+      "name": "SCRUB TYPHUS IGG",
+      "mrp": 1200,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 823,
+      "name": "SCRUB TYPHUS IGM",
+      "mrp": 1200,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 824,
+      "name": "Semen Analysis",
+      "mrp": 300,
+      "price": 58,
+      "sample_type": "SEMEN"
+    },
+    {
+      "sl": 825,
+      "name": "SEMEN C/S",
+      "mrp": 500,
+      "price": 115,
+      "sample_type": "SEMEN"
+    },
+    {
+      "sl": 826,
+      "name": "Serotonin-(5-Hydroxy Tryptamine)",
+      "mrp": 7500,
+      "price": 3450,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 827,
+      "name": "Serum Acetylcholinesterase, Erythrocytes",
+      "mrp": 1500,
+      "price": 920,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 828,
+      "name": "SERUM CERULOPLASMIN",
+      "mrp": 1000,
+      "price": 518,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 829,
+      "name": "Serum Free Lambda (Light Chain)",
+      "mrp": 6000,
+      "price": 1725,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 830,
+      "name": "Serum HEPCIDIN",
+      "mrp": 4000,
+      "price": 2070,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 831,
+      "name": "Serum phosphate",
+      "mrp": 400,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 832,
+      "name": "serum vasopressin level",
+      "mrp": 4000,
+      "price": 1955,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 833,
+      "name": "Sex Hormone Binding Globulin (SHBG)",
+      "mrp": 1000,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 834,
+      "name": "SGOT ; Aspartate Aminotransferase (AST)",
+      "mrp": 200,
+      "price": 29,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 835,
+      "name": "SGPT ; ALANINE AMINOTRANSFERASE (ALT)",
+      "mrp": 200,
+      "price": 29,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 836,
+      "name": "sickle cell",
+      "mrp": 600,
+      "price": 173,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 837,
+      "name": "Sickling Test",
+      "mrp": 500,
+      "price": 173,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 838,
+      "name": "Skin afb",
+      "mrp": 400,
+      "price": 115,
+      "sample_type": "SKIN SCRAPPINGS"
+    },
+    {
+      "sl": 839,
+      "name": "Skin scraping for Fungal C/S",
+      "mrp": 500,
+      "price": 173,
+      "sample_type": "SKIN SCRAPPINGS"
+    },
+    {
+      "sl": 840,
+      "name": "Skin scraping for Fungal examination",
+      "mrp": 600,
+      "price": 230,
+      "sample_type": "SKIN SCRAPPINGS"
+    },
+    {
+      "sl": 841,
+      "name": "Sm/RNP ANTIBODIES",
+      "mrp": 1000,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 842,
+      "name": "Sm/RNP Antibody",
+      "mrp": 1800,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 843,
+      "name": "Sodium",
+      "mrp": 300,
+      "price": 46,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 844,
+      "name": "Sodium 24hrs Urine",
+      "mrp": 300,
+      "price": 58,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 845,
+      "name": "Sodium biocorbonet",
+      "mrp": 500,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 846,
+      "name": "Sodium Random Urine",
+      "mrp": 300,
+      "price": 58,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 847,
+      "name": "Sodium,Potassium",
+      "mrp": 200,
+      "price": 58,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 848,
+      "name": "Specific Gravity Urine",
+      "mrp": 100,
+      "price": 29,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 849,
+      "name": "SPOT urine Protein/Creatinine Ratio",
+      "mrp": 120,
+      "price": 81,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 850,
+      "name": "SPUTUM for koh",
+      "mrp": 400,
+      "price": 115,
+      "sample_type": "SPUTUM"
+    },
+    {
+      "sl": 851,
+      "name": "SPUTUM AFB",
+      "mrp": 400,
+      "price": 58,
+      "sample_type": "SPUTUM"
+    },
+    {
+      "sl": 852,
+      "name": "SPUTUM AFB CULTURE FOR ATT",
+      "mrp": 1000,
+      "price": 460,
+      "sample_type": "SPUTUM"
+    },
+    {
+      "sl": 853,
+      "name": "SPUTUM C/S",
+      "mrp": 500,
+      "price": 115,
+      "sample_type": "SPUTUM"
+    },
+    {
+      "sl": 854,
+      "name": "Sputum Cytology",
+      "mrp": 500,
+      "price": 173,
+      "sample_type": "SPUTUM"
+    },
+    {
+      "sl": 855,
+      "name": "SPUTUM FOR Fungus Culture",
+      "mrp": 400,
+      "price": 173,
+      "sample_type": "SPUTUM"
+    },
+    {
+      "sl": 856,
+      "name": "SPUTUM FOR GRAM STAIN",
+      "mrp": 150,
+      "price": 81,
+      "sample_type": "SPUTUM"
+    },
+    {
+      "sl": 857,
+      "name": "STD PROFILE",
+      "mrp": 4000,
+      "price": 2184,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 858,
+      "name": "Stone Analysis",
+      "mrp": 1000,
+      "price": 460,
+      "sample_type": "Stone"
+    },
+    {
+      "sl": 859,
+      "name": "Stone Analysis Gall bladder",
+      "mrp": 1000,
+      "price": 460,
+      "sample_type": "Stone"
+    },
+    {
+      "sl": 860,
+      "name": "Stone Analysis Kidney",
+      "mrp": 1000,
+      "price": 460,
+      "sample_type": "Stone"
+    },
+    {
+      "sl": 861,
+      "name": "STOOL C/S",
+      "mrp": 500,
+      "price": 115,
+      "sample_type": "STOOL"
+    },
+    {
+      "sl": 862,
+      "name": "Stool Examination",
+      "mrp": 200,
+      "price": 58,
+      "sample_type": "STOOL"
+    },
+    {
+      "sl": 863,
+      "name": "Stool Examination for ova & cysts",
+      "mrp": 200,
+      "price": 81,
+      "sample_type": "STOOL"
+    },
+    {
+      "sl": 864,
+      "name": "stool for fat stain",
+      "mrp": 300,
+      "price": 115,
+      "sample_type": "STOOL"
+    },
+    {
+      "sl": 865,
+      "name": "Stool for Hanging Drop",
+      "mrp": 200,
+      "price": 81,
+      "sample_type": "STOOL"
+    },
+    {
+      "sl": 866,
+      "name": "stool for occult blood",
+      "mrp": 300,
+      "price": 115,
+      "sample_type": "STOOL"
+    },
+    {
+      "sl": 867,
+      "name": "STOOL FOR REDUCING SUGAR",
+      "mrp": 130,
+      "price": 35,
+      "sample_type": "STOOL"
+    },
+    {
+      "sl": 868,
+      "name": "STOOL Metanephrine",
+      "mrp": 2200,
+      "price": 920,
+      "sample_type": "STOOL"
+    },
+    {
+      "sl": 869,
+      "name": "SWAB C/S",
+      "mrp": 500,
+      "price": 115,
+      "sample_type": "SWAB"
+    },
+    {
+      "sl": 870,
+      "name": "Synovial Fluid Cytology",
+      "mrp": 500,
+      "price": 173,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 871,
+      "name": "Synovial Fluid for Crystals",
+      "mrp": 500,
+      "price": 173,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 872,
+      "name": "Systemic lupus erythematosus (SLE) PANEL",
+      "mrp": 2500,
+      "price": 1035,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 873,
+      "name": "T4,TSH",
+      "mrp": 250,
+      "price": 46,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 874,
+      "name": "TACROLIMUS",
+      "mrp": 3600,
+      "price": 1725,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 875,
+      "name": "TB GOLD, INTERFERON GAMMA RELEASE ASSAY (IGRA)",
+      "mrp": 2000,
+      "price": 489,
+      "sample_type": "Heparin"
+    },
+    {
+      "sl": 876,
+      "name": "TB PLATINUM, INTERFERON GAMMA RELEASE ASSAY (IGRA)",
+      "mrp": 1500,
+      "price": 518,
+      "sample_type": "Heparin"
+    },
+    {
+      "sl": 877,
+      "name": "TB PLATINUM, INTERFERON GAMMA RELEASE ASSAY (IGRA).",
+      "mrp": 2500,
+      "price": 518,
+      "sample_type": "Heparin"
+    },
+    {
+      "sl": 878,
+      "name": "Testosterone- Free",
+      "mrp": 800,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 879,
+      "name": "Testosterone- Total",
+      "mrp": 600,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 880,
+      "name": "THALASSEMIA PROFILE",
+      "mrp": 3600,
+      "price": 1725,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 881,
+      "name": "THALASSEMIA SCREEN",
+      "mrp": 2000,
+      "price": 460,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 882,
+      "name": "Thiamine (VITAMIN B 1)",
+      "mrp": 1200,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 883,
+      "name": "Throat Swab C/S",
+      "mrp": 500,
+      "price": 115,
+      "sample_type": "SWAB"
+    },
+    {
+      "sl": 884,
+      "name": "THROAT SWAB GRAM- STAIN",
+      "mrp": 300,
+      "price": 115,
+      "sample_type": "THROAT SWAB"
+    },
+    {
+      "sl": 885,
+      "name": "Thrombophilia Profile",
+      "mrp": 12000,
+      "price": 5980,
+      "sample_type": "Citrated Plasma, Serum"
+    },
+    {
+      "sl": 886,
+      "name": "Thyroglobulin",
+      "mrp": 1500,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 887,
+      "name": "THYROID PROFILE -3 (T3 T4 TSH)",
+      "mrp": 600,
+      "price": 50,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 888,
+      "name": "THYROID PROFILE-5 (FT3 FT4 T3 T4 TSH )",
+      "mrp": 1000,
+      "price": 150,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 889,
+      "name": "Thyroid Stimulating Hormone (TSH)",
+      "mrp": 250,
+      "price": 23,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 890,
+      "name": "TIBC (Total Iron Binding Capacity)",
+      "mrp": 500,
+      "price": 58,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 891,
+      "name": "TIP C/S",
+      "mrp": 700,
+      "price": 173,
+      "sample_type": "SWAB"
+    },
+    {
+      "sl": 892,
+      "name": "TISSUE AFB AND MALIGNANT CELL",
+      "mrp": 600,
+      "price": 345,
+      "sample_type": "Tissue"
+    },
+    {
+      "sl": 893,
+      "name": "TISSUE C/S Aerobic",
+      "mrp": 1000,
+      "price": 460,
+      "sample_type": "Tissue"
+    },
+    {
+      "sl": 894,
+      "name": "TISSUE C/S Anaerobic",
+      "mrp": 400,
+      "price": 173,
+      "sample_type": "Tissue"
+    },
+    {
+      "sl": 895,
+      "name": "tissue cytology",
+      "mrp": 700,
+      "price": 230,
+      "sample_type": "Tissue"
+    },
+    {
+      "sl": 896,
+      "name": "TISSUE FOR GRAM STAIN",
+      "mrp": 600,
+      "price": 173,
+      "sample_type": "Tissue"
+    },
+    {
+      "sl": 897,
+      "name": "Tissue Transglutaminase Antibody ( tTG-IgA)",
+      "mrp": 900,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 898,
+      "name": "Tissue Transglutaminase Antibody ( tTG-IgG)",
+      "mrp": 900,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 899,
+      "name": "Tissue Transglutaminase Antibody ( tTG-IgM)",
+      "mrp": 900,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 900,
+      "name": "TISSUE TRANSGLUTAMINASE TTG-DGP SCREEN",
+      "mrp": 1500,
+      "price": 575,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 901,
+      "name": "TLC (Total Leukocyte Count)",
+      "mrp": 100,
+      "price": 35,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 902,
+      "name": "TLC, DLC, ESR",
+      "mrp": 300,
+      "price": 58,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 903,
+      "name": "TORCH-10",
+      "mrp": 2400,
+      "price": 575,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 904,
+      "name": "TORCH-10 WITH Avidity",
+      "mrp": 4000,
+      "price": 1150,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 905,
+      "name": "TORCH-4 IgG",
+      "mrp": 1000,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 906,
+      "name": "TORCH-4 IgM",
+      "mrp": 1000,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 907,
+      "name": "TORCH-8",
+      "mrp": 2000,
+      "price": 495,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 908,
+      "name": "TORCH-IgG-5",
+      "mrp": 1000,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 909,
+      "name": "TORCH-IgM-5",
+      "mrp": 1000,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 910,
+      "name": "Total Count & Differential Count (TLC & DLC)",
+      "mrp": 200,
+      "price": 35,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 911,
+      "name": "Total Eosinophil Count (TEC)",
+      "mrp": 100,
+      "price": 35,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 912,
+      "name": "Total Leucocytes Count",
+      "mrp": 100,
+      "price": 58,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 913,
+      "name": "TOTAL TRIIODOTHYRONINE (T3)",
+      "mrp": 150,
+      "price": 23,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 914,
+      "name": "toxoplasma avidity test",
+      "mrp": 200,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 915,
+      "name": "Toxoplasma-IgG",
+      "mrp": 300,
+      "price": 69,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 916,
+      "name": "Toxoplasma-IgM",
+      "mrp": 300,
+      "price": 69,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 917,
+      "name": "TPHA; TREPONEMA PALLIDUM HEMAGGLUTINATION",
+      "mrp": 400,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 918,
+      "name": "TPMT Genotyping",
+      "mrp": 5000,
+      "price": 3450,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 919,
+      "name": "Tracheal tube c/s",
+      "mrp": 400,
+      "price": 173,
+      "sample_type": "Tracheal Tube"
+    },
+    {
+      "sl": 920,
+      "name": "Transferrin",
+      "mrp": 600,
+      "price": 81,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 921,
+      "name": "Treponema Pallidum",
+      "mrp": 400,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 922,
+      "name": "TREPONEMA PALLIDUM ANTIBODY (TPAB)",
+      "mrp": 400,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 923,
+      "name": "TREPONEMA PALLIDUM HAEMAGGLUTINATION",
+      "mrp": 400,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 924,
+      "name": "Trichomoniasis test (Female)",
+      "mrp": 600,
+      "price": 230,
+      "sample_type": "VAGINAL SWAB"
+    },
+    {
+      "sl": 925,
+      "name": "Trichomoniasis test (Male)",
+      "mrp": 600,
+      "price": 230,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 926,
+      "name": "TRIGLYCERIDES",
+      "mrp": 200,
+      "price": 35,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 927,
+      "name": "Triglycerides (TG) Body fluids",
+      "mrp": 200,
+      "price": 58,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 928,
+      "name": "Triglycerides (TG) Urine",
+      "mrp": 200,
+      "price": 58,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 929,
+      "name": "TriIodothyronine Total (T4)",
+      "mrp": 150,
+      "price": 23,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 930,
+      "name": "Triple H - (HIV,HBsAg,HCV antibody) ELISA",
+      "mrp": 1200,
+      "price": 276,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 931,
+      "name": "Triple H Rapid - (HIV,HBsAg,HCV)",
+      "mrp": 900,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 932,
+      "name": "TRIPLE MARKER - SECOND TRIMESTER",
+      "mrp": 2000,
+      "price": 552,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 933,
+      "name": "Troponin - I (Quantitative)",
+      "mrp": 1400,
+      "price": 460,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 934,
+      "name": "Troponin - I, Qualitative",
+      "mrp": 1300,
+      "price": 460,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 935,
+      "name": "TROPONIN- T, HIGH SENSITIVE (CLIA)",
+      "mrp": 1500,
+      "price": 575,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 936,
+      "name": "TROPONIN-T",
+      "mrp": 1300,
+      "price": 460,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 937,
+      "name": "Tsh receptor antibody",
+      "mrp": 4000,
+      "price": 1150,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 938,
+      "name": "TSH Ultrasensitive",
+      "mrp": 400,
+      "price": 35,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 939,
+      "name": "TSH,PRL",
+      "mrp": 600,
+      "price": 92,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 940,
+      "name": "TUMOUR PANEL (FEMALE)",
+      "mrp": 5000,
+      "price": 1150,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 941,
+      "name": "TUMOUR PANEL (MALE)",
+      "mrp": 5000,
+      "price": 1150,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 942,
+      "name": "TYPHI DOT IgG & IgM RAPID",
+      "mrp": 700,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 943,
+      "name": "U1RNP ANTIBODIES, SERUM",
+      "mrp": 1500,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 944,
+      "name": "Unconjugated Estriol(E3)",
+      "mrp": 1000,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 945,
+      "name": "Urea (Blood)",
+      "mrp": 100,
+      "price": 23,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 946,
+      "name": "Urea 24 hrs Urine",
+      "mrp": 150,
+      "price": 46,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 947,
+      "name": "Urea, Urine spot",
+      "mrp": 150,
+      "price": 46,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 948,
+      "name": "UREA,CRE,SOD,POT,FAS,PPBS",
+      "mrp": 200,
+      "price": 207,
+      "sample_type": "Fluoride Plasma-01, Fluoride Plasma-02, Serum"
+    },
+    {
+      "sl": 949,
+      "name": "Uric Acid",
+      "mrp": 150,
+      "price": 23,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 950,
+      "name": "Uric Acid 24 hrs Urine",
+      "mrp": 150,
+      "price": 46,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 951,
+      "name": "Uric Acid Synovial Fluid",
+      "mrp": 150,
+      "price": 46,
+      "sample_type": "Body Fluid"
+    },
+    {
+      "sl": 952,
+      "name": "Uric Acid, Urine spot",
+      "mrp": 150,
+      "price": 46,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 953,
+      "name": "URIC ACID/CREATININE, 24 HOURS URINE",
+      "mrp": 500,
+      "price": 46,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 954,
+      "name": "Urine 24 hrs Non metanephrine",
+      "mrp": 2200,
+      "price": 920,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 955,
+      "name": "Urine Bile Salt & Bile Pigment",
+      "mrp": 500,
+      "price": 115,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 956,
+      "name": "URINE C/S",
+      "mrp": 600,
+      "price": 69,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 957,
+      "name": "urine casts",
+      "mrp": 50,
+      "price": 23,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 958,
+      "name": "urine catecholamines random",
+      "mrp": 2100,
+      "price": 1035,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 959,
+      "name": "Urine Conductivity",
+      "mrp": 250,
+      "price": 69,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 960,
+      "name": "URINE CYTOLOGY",
+      "mrp": 500,
+      "price": 173,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 961,
+      "name": "urine electrolyte",
+      "mrp": 200,
+      "price": 81,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 962,
+      "name": "URINE FOR AFB Stain",
+      "mrp": 200,
+      "price": 58,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 963,
+      "name": "Urine for Chyle",
+      "mrp": 400,
+      "price": 58,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 964,
+      "name": "Urine for Fat Globulins",
+      "mrp": 100,
+      "price": 58,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 965,
+      "name": "URINE FOR GRAM STAIN",
+      "mrp": 200,
+      "price": 58,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 966,
+      "name": "urine for hemosiderin",
+      "mrp": 400,
+      "price": 115,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 967,
+      "name": "Urine for Toxic Element Profile",
+      "mrp": 1000,
+      "price": 460,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 968,
+      "name": "URINE Glucose (Fasting),",
+      "mrp": 100,
+      "price": 23,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 969,
+      "name": "URINE Glucose (PP)",
+      "mrp": 100,
+      "price": 23,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 970,
+      "name": "Urine Metanephrine 24 hrs",
+      "mrp": 2200,
+      "price": 920,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 971,
+      "name": "Urine Metanephrine spot",
+      "mrp": 2200,
+      "price": 920,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 972,
+      "name": "URINE MIC C/S",
+      "mrp": 1600,
+      "price": 518,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 973,
+      "name": "URINE PROTEIN & CRETININE RANDOM",
+      "mrp": 600,
+      "price": 92,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 974,
+      "name": "URINE Protein /Creat Ratio Random",
+      "mrp": 500,
+      "price": 92,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 975,
+      "name": "Urine R/M (Urine Analysis)",
+      "mrp": 150,
+      "price": 40,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 976,
+      "name": "UROBILINOGEN QUALITATIVE, URINE",
+      "mrp": 400,
+      "price": 115,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 977,
+      "name": "VAGINAL SWAB C/S",
+      "mrp": 500,
+      "price": 173,
+      "sample_type": "SWAB"
+    },
+    {
+      "sl": 978,
+      "name": "Valporic Acid (Sodium Valproate)",
+      "mrp": 900,
+      "price": 345,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 979,
+      "name": "Varicella-Zoster Virus (VZV) Chicken Pox-IgG",
+      "mrp": 1400,
+      "price": 690,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 980,
+      "name": "Varicella-Zoster Virus (VZV) Chicken Pox-IgG,IgM",
+      "mrp": 2500,
+      "price": 690,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 981,
+      "name": "Varicella-Zoster Virus (VZV) Chicken Pox-IgM",
+      "mrp": 1400,
+      "price": 690,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 982,
+      "name": "VDRL CSF RAPID",
+      "mrp": 250,
+      "price": 127,
+      "sample_type": "CSF"
+    },
+    {
+      "sl": 983,
+      "name": "VDRL Quantitative",
+      "mrp": 500,
+      "price": 138,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 984,
+      "name": "Vdrl (Rapid)",
+      "mrp": 350,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 985,
+      "name": "VDRL TITER",
+      "mrp": 300,
+      "price": 127,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 986,
+      "name": "Vitamin B 6",
+      "mrp": 4000,
+      "price": 748,
+      "sample_type": "EDTA Blood"
+    },
+    {
+      "sl": 987,
+      "name": "VITAMIN A",
+      "mrp": 4000,
+      "price": 518,
+      "sample_type": "Serum, Serum"
+    },
+    {
+      "sl": 988,
+      "name": "VITAMIN B COMPLEX PROFILE",
+      "mrp": 7000,
+      "price": 690,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 989,
+      "name": "Vitamin B12",
+      "mrp": 900,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 990,
+      "name": "Vitamin B12 Active (Holo Transcobalamin)",
+      "mrp": 1500,
+      "price": 518,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 991,
+      "name": "VITAMIN C",
+      "mrp": 3500,
+      "price": 831,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 992,
+      "name": "Vitamin D 3 (1, 25 D ihydroxyvitamin D 3)",
+      "mrp": 3000,
+      "price": 863,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 993,
+      "name": "Vitamin D PROFILE (D2,D3,TOTAL D)",
+      "mrp": 1200,
+      "price": 460,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 994,
+      "name": "Vitamin d2",
+      "mrp": 800,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 995,
+      "name": "Vitamin D3",
+      "mrp": 800,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 996,
+      "name": "VITAMIN E",
+      "mrp": 6000,
+      "price": 851,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 997,
+      "name": "VITAMIN K",
+      "mrp": 5000,
+      "price": 978,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 998,
+      "name": "VITAMIN PLUS",
+      "mrp": 1500,
+      "price": 345,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 999,
+      "name": "Vitamin Profile (D2,D3,B12,TOTAL D)",
+      "mrp": 1700,
+      "price": 575,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 1000,
+      "name": "VITAMIN PROFILE (TOTAL VID- D,B 12,FOLIC ACID,CALCIUM,T3 T4 TSH )",
+      "mrp": 1550,
+      "price": 518,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 1001,
+      "name": "VLDL",
+      "mrp": 350,
+      "price": 58,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 1002,
+      "name": "VMA-Vanillylmandelic Acid 24 Hours Urine",
+      "mrp": 2000,
+      "price": 920,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 1003,
+      "name": "VMA-Vanillylmandelic Acid Spot Urine",
+      "mrp": 2000,
+      "price": 1012,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 1004,
+      "name": "Weil -Felix",
+      "mrp": 800,
+      "price": 288,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 1005,
+      "name": "Wellness -1",
+      "mrp": 1200,
+      "price": 265,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 1006,
+      "name": "Wellness -2",
+      "mrp": 1800,
+      "price": 403,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 1007,
+      "name": "Wellness -3",
+      "mrp": 2500,
+      "price": 633,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 1008,
+      "name": "WELLNESS-1.1",
+      "mrp": 2500,
+      "price": 173,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 1009,
+      "name": "WELLNESS-1.1 MINI",
+      "mrp": 800,
+      "price": 207,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 1010,
+      "name": "WELLNESS-1.1+CBC",
+      "mrp": 1000,
+      "price": 207,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 1011,
+      "name": "WELLNESS-1.1+CBC+GLUCOSE",
+      "mrp": 1100,
+      "price": 207,
+      "sample_type": "EDTA Blood, Fluoride Plasma-01, Serum"
+    },
+    {
+      "sl": 1012,
+      "name": "WELLNESS-1.2",
+      "mrp": 2400,
+      "price": 276,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 1013,
+      "name": "WELLNESS-1.3",
+      "mrp": 3200,
+      "price": 552,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 1014,
+      "name": "WELLNESS-1.3+RA+CRP",
+      "mrp": 2000,
+      "price": 690,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 1015,
+      "name": "WELLNESS-1.4",
+      "mrp": 4800,
+      "price": 1265,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 1016,
+      "name": "WELLNESS-1.5",
+      "mrp": 5800,
+      "price": 1553,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 1017,
+      "name": "WELLNESS-1.6",
+      "mrp": 6500,
+      "price": 1668,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 1018,
+      "name": "WELLNESS-1.7",
+      "mrp": 7500,
+      "price": 1783,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 1019,
+      "name": "WHEAT allergy",
+      "mrp": 500,
+      "price": 230,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 1020,
+      "name": "Widal Test (Slide Test)",
+      "mrp": 200,
+      "price": 58,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 1021,
+      "name": "Widal Test (Tube Test)",
+      "mrp": 200,
+      "price": 115,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 1022,
+      "name": "WOMEN BESIC PROFILE",
+      "mrp": 1850,
+      "price": 690,
+      "sample_type": "EDTA Blood, Serum"
+    },
+    {
+      "sl": 1023,
+      "name": "Z-N STAIN for leprosy",
+      "mrp": 500,
+      "price": 288,
+      "sample_type": "SKIN SCRAPPINGS"
+    },
+    {
+      "sl": 1024,
+      "name": "ZIKA VIRUS",
+      "mrp": 20000,
+      "price": 5750,
+      "sample_type": "Serum"
+    },
+    {
+      "sl": 1025,
+      "name": "Zinc 24 hrs Urine",
+      "mrp": 1000,
+      "price": 345,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 1026,
+      "name": "Zinc Random Urine",
+      "mrp": 1000,
+      "price": 345,
+      "sample_type": "Urine"
+    },
+    {
+      "sl": 1027,
+      "name": "Zinc SERUM",
+      "mrp": 1000,
+      "price": 230,
+      "sample_type": "Serum"
+    }
+  ]
+}

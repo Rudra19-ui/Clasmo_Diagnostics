@@ -3,7 +3,7 @@ import Layout from '../components/Layout';
 import PathologistDashboard from '../components/PathologistDashboard';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
-import { ROLES } from '../utils/roles';
+import { canScanSampleBarcode, ROLES } from '../utils/roles';
 
 const DASHBOARD_ACTIONS = [
   { label: 'Enquire Box', href: '/enquire-box' },
@@ -14,14 +14,28 @@ const DASHBOARD_ACTIONS = [
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const isPathologist = user?.role === ROLES.PATHOLOGIST;
+  const showBarcodeScan = canScanSampleBarcode(user);
+  const showWelcomeActions = user?.role === ROLES.ADMIN || user?.role === ROLES.HR;
 
   return (
     <Layout activePage="dashboard">
       <main className="dash-main dashboard-home-main">
         <div className="dashboard-home-shell">
-          {isPathologist ? (
-            <PathologistDashboard />
+          {showBarcodeScan ? (
+            <>
+              <PathologistDashboard />
+              {showWelcomeActions && (
+                <section className="dashboard-welcome-hero dashboard-welcome-hero--below-scan">
+                  <div className="dashboard-welcome-actions">
+                    {DASHBOARD_ACTIONS.map((action) => (
+                      <Link key={action.label} to={action.href} className="dashboard-welcome-btn">
+                        {action.label}
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+              )}
+            </>
           ) : (
             <>
               <h1 className="dashboard-welcome-heading">

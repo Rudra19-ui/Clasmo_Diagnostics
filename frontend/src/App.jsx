@@ -45,7 +45,7 @@ import TestParameterMaster from './pages/clinical/TestParameterMaster';
 import DeviceStub from './pages/device/DeviceStub';
 import ResponsiveProvider from './components/ResponsiveProvider';
 import { NavProvider } from './context/NavContext';
-import { ROLES, ALL_ROLES } from './utils/roles';
+import { ROLES, ALL_ROLES, SAMPLE_SCAN_ROLES, USER_CREATOR_ROLES } from './utils/roles';
 import MessageToLab from './pages/device/MessageToLab';
 import PickupRequest from './pages/device/PickupRequest';
 
@@ -67,7 +67,7 @@ export default function App() {
           <Route
             path="/sample-scan"
             element={(
-              <ProtectedRoute allowedRoles={[ROLES.ADMIN, ROLES.TECHNICIAN, ROLES.PATHOLOGIST]}>
+              <ProtectedRoute allowedRoles={SAMPLE_SCAN_ROLES}>
                 <SampleScan />
               </ProtectedRoute>
             )}
@@ -76,7 +76,7 @@ export default function App() {
           <Route path="/test-result-entry" element={<ProtectedRoute><TestResultEntry /></ProtectedRoute>} />
           <Route path="/registration" element={<ProtectedRoute><Registration /></ProtectedRoute>} />
           <Route path="/test-result" element={<ProtectedRoute><TestResult /></ProtectedRoute>} />
-          <Route path="/user-signup" element={<ProtectedRoute adminOnly><UserSignUp /></ProtectedRoute>} />
+          <Route path="/user-signup" element={<ProtectedRoute allowedRoles={USER_CREATOR_ROLES}><UserSignUp /></ProtectedRoute>} />
           <Route path="/enquire-box" element={<ProtectedRoute adminOnly><EnquireBox /></ProtectedRoute>} />
           <Route path="/self-patient-query" element={<ProtectedRoute><SelfPatientQuery /></ProtectedRoute>} />
           <Route path="/give-feedback" element={<ProtectedRoute><GiveFeedback /></ProtectedRoute>} />

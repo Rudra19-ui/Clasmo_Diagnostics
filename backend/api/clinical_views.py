@@ -37,7 +37,7 @@ class TestParameterListCreateView(generics.ListCreateAPIView):
             )
         if active_only in ('true', '1', 'yes'):
             qs = qs.filter(is_active=True)
-        return qs.order_by('test__name', 'parameter_name')
+        return qs.order_by('test__name', 'sort_order', 'parameter_name')
 
 
 class TestParameterDetailView(generics.RetrieveUpdateDestroyAPIView):

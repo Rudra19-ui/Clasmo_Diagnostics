@@ -369,12 +369,21 @@ class TestParameter(models.Model):
     reference_range_child = models.CharField(max_length=100, blank=True)
     critical_low = models.DecimalField(max_digits=12, decimal_places=4, null=True, blank=True)
     critical_high = models.DecimalField(max_digits=12, decimal_places=4, null=True, blank=True)
+    sample_value = models.CharField(max_length=50, blank=True, help_text='Example result shown on Sample Report')
+    method = models.CharField(max_length=100, blank=True)
+    analyzer_code = models.CharField(
+        max_length=40,
+        blank=True,
+        db_index=True,
+        help_text='Instrument / hematology analyzer analyte code (e.g. HGB, WBC, PLT)',
+    )
+    sort_order = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['test__name', 'parameter_name']
+        ordering = ['test__name', 'sort_order', 'parameter_name']
         constraints = [
             models.UniqueConstraint(
                 fields=['test', 'parameter_name'],
@@ -435,6 +444,14 @@ class ReportValue(models.Model):
     parameter = models.ForeignKey(TestParameter, on_delete=models.PROTECT, related_name='report_values')
     value = models.CharField(max_length=100)
     flag = models.CharField(max_length=20, choices=FLAG_CHOICES, default=FLAG_NORMAL)
+    source = models.CharField(
+        max_length=20,
+        choices=[
+            ('manual', 'Manual'),
+            ('machine', 'Machine'),
+        ],
+        default='manual',
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -448,6 +465,44 @@ class ReportValue(models.Model):
 
     def __str__(self):
         return f'{self.parameter.parameter_name}: {self.value} ({self.flag})'
+
+
+class InstrumentResultBatch(models.Model):
+    """Audit log for analyzer / machine result ingestion."""
+
+    STATUS_APPLIED = 'applied'
+    STATUS_PARTIAL = 'partial'
+    STATUS_FAILED = 'failed'
+    STATUS_CHOICES = [
+        (STATUS_APPLIED, 'Applied'),
+        (STATUS_PARTIAL, 'Partial'),
+        (STATUS_FAILED, 'Failed'),
+    ]
+
+    barcode = models.CharField(max_length=100, db_index=True)
+    instrument_id = models.CharField(max_length=100, blank=True)
+    registration = models.ForeignKey(
+        Registration,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='instrument_batches',
+    )
+    raw_payload = models.JSONField(default=dict, blank=True)
+    matched_count = models.PositiveIntegerField(default=0)
+    unmatched_codes = models.JSONField(default=list, blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_FAILED)
+    message = models.CharField(max_length=500, blank=True)
+    created_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True, related_name='instrument_batches'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'Instrument batch {self.barcode} ({self.status})'
 
 
 class MembershipType(models.Model):

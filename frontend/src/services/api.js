@@ -319,4 +319,10 @@ export const api = {
     request(`/reports/${registrationId}/`, { method: 'POST', body: JSON.stringify(payload) }),
   verifyReport: (registrationId) =>
     request(`/reports/${registrationId}/verify/`, { method: 'PATCH', body: '{}' }),
+  ingestInstrumentResults: (payload) =>
+    request('/instrument/results/', { method: 'POST', body: JSON.stringify(payload) }),
+  getPatientReportByBarcode: (barcode, params = {}) => {
+    const query = new URLSearchParams({ barcode, ...params }).toString();
+    return request(`/instrument/patient-report/?${query}`);
+  },
 };

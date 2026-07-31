@@ -2292,6 +2292,111 @@ input, select, textarea, button {
   transform: translateX(0);
 }
 
+.franchise-sidebar {
+  --sidebar-width: 280px;
+  background: linear-gradient(180deg, #1a3a5c 0%, #152f4a 55%, #12263c 100%);
+  overflow-y: auto;
+}
+
+.franchise-sidebar-user {
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.franchise-sidebar-user strong {
+  display: block;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+}
+
+.franchise-sidebar-user span {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  color: #f6d060;
+  font-weight: 600;
+}
+
+.franchise-sidebar-menu {
+  padding-bottom: 28px;
+}
+
+.franchise-nav-section {
+  list-style: none;
+  margin: 10px 0 0;
+}
+
+.franchise-nav-section > ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.franchise-nav-section-title {
+  padding: 10px 16px 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #7eb6e8;
+  text-transform: uppercase;
+}
+
+.franchise-nav-link {
+  width: 100%;
+  text-align: left;
+}
+
+.franchise-nav-link.is-accent,
+.franchise-nav-link.is-accent .sidebar-nav-label {
+  color: #ffd54f;
+}
+
+.franchise-nav-badge {
+  margin-left: auto;
+  min-width: 28px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  color: #fff;
+}
+
+.franchise-nav-badge--danger {
+  background: #e53935;
+}
+
+.franchise-nav-badge--success {
+  background: #43a047;
+}
+
+.franchise-nav-chevron {
+  margin-left: auto;
+  opacity: 0.65;
+  font-size: 16px;
+}
+
+.franchise-sidebar .submenu {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.franchise-sidebar .submenu a {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.franchise-sidebar .submenu a.active,
+.franchise-sidebar .submenu a:hover {
+  color: #fff;
+  background: rgba(33, 150, 243, 0.35);
+}
+
+.franchise-sidebar .has-submenu.open > .franchise-nav-link,
+.franchise-sidebar li.active > .franchise-nav-link {
+  background: #2196f3;
+  color: #fff;
+}
+
 .nav-drawer-overlay {
   position: fixed;
   inset: 0;
@@ -2504,13 +2609,28 @@ input, select, textarea, button {
   font-size: 13px;
   text-decoration: none;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
+  position: relative;
+}
+
+.sidebar-menu .submenu a::before {
+  content: '›';
+  position: absolute;
+  left: 38px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .sidebar-menu .submenu a:hover,
 .sidebar-menu .submenu a.active {
   background: rgba(255, 255, 255, 0.1);
-  color: var(--white);
+  color: #7ec8f0;
   text-decoration: none;
+}
+
+.sidebar-menu .submenu a.active::before {
+  color: #7ec8f0;
 }
 
 .nav-phones {
@@ -6451,6 +6571,385 @@ input, select, textarea, button {
 
 @media (max-width: 575px) {
   .activity-checklist-filter-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Test Portfolio */
+.portfolio-intro {
+  margin: -4px 0 16px;
+  color: #555;
+  font-size: 14px;
+}
+
+.portfolio-panel {
+  padding: 16px;
+}
+
+.portfolio-toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.portfolio-search {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  min-width: min(100%, 320px);
+}
+
+.portfolio-search input {
+  padding: 8px 10px;
+  border: 1px solid #9ab8d0;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.portfolio-count {
+  font-size: 13px;
+  color: #1a4a7a;
+}
+
+.portfolio-table-wrap {
+  overflow: auto;
+  border: 1px solid #d5e4f2;
+  border-radius: 8px;
+}
+
+.portfolio-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.portfolio-table th,
+.portfolio-table td {
+  border-bottom: 1px solid #e4eef7;
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.portfolio-table th {
+  background: #eef4fb;
+  font-weight: 700;
+  color: #12354f;
+}
+
+.portfolio-empty {
+  text-align: center;
+  color: #666;
+  padding: 24px 8px;
+}
+
+.portfolio-profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+.portfolio-profile-card {
+  border: 1px solid #d5e4f2;
+  border-radius: 10px;
+  padding: 16px;
+  background: #f8fbfe;
+}
+
+.portfolio-profile-card h3 {
+  margin: 0 0 10px;
+  font-size: 16px;
+  color: #0a3d6b;
+}
+
+.portfolio-profile-card p {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: #333;
+  line-height: 1.45;
+}
+
+.portfolio-profile-link {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1565c0;
+}
+
+.portfolio-sample-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.portfolio-sample-picker {
+  border: 1px solid #d5e4f2;
+  border-radius: 10px;
+  padding: 12px;
+  background: #fff;
+}
+
+.portfolio-test-picker-list {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  max-height: 520px;
+  overflow: auto;
+  border: 1px solid #d5e4f2;
+  border-radius: 8px;
+}
+
+.portfolio-test-picker-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  border-bottom: 1px solid #eef3f8;
+  background: transparent;
+  padding: 9px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  color: #222;
+}
+
+.portfolio-test-picker-item:hover {
+  background: #eef4fb;
+}
+
+.portfolio-test-picker-item.is-active {
+  background: #2f80d8;
+  color: #fff;
+}
+
+.sample-report-sheet {
+  border: 1px solid #c9d9e8;
+  border-radius: 10px;
+  padding: 18px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(10, 61, 107, 0.06);
+}
+
+.sample-report-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #0a3d6b;
+  margin-bottom: 14px;
+}
+
+.sample-report-meta {
+  text-align: right;
+}
+
+.sample-report-meta strong {
+  display: block;
+  color: #0a3d6b;
+  font-size: 14px;
+}
+
+.sample-report-meta span {
+  font-size: 11px;
+  color: #666;
+}
+
+.sample-report-patient-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.sample-report-patient-grid div {
+  border: 1px solid #e4eef7;
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: #f8fbfe;
+}
+
+.sample-report-patient-grid span {
+  display: block;
+  font-size: 11px;
+  color: #5a738a;
+  margin-bottom: 3px;
+}
+
+.sample-report-patient-grid strong {
+  font-size: 13px;
+  color: #12354f;
+}
+
+.sample-report-test-title {
+  margin: 0 0 6px;
+  font-size: 18px;
+  color: #0a3d6b;
+}
+
+.sample-report-sample-type {
+  margin: 0 0 12px;
+  font-size: 13px;
+}
+
+.sample-report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+
+.sample-report-table th,
+.sample-report-table td {
+  border: 1px solid #cfdceb;
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.sample-report-table th {
+  background: #eef4fb;
+}
+
+.sample-report-sample-row {
+  background: #f5f9fc;
+  font-size: 12px;
+}
+
+.sample-report-method {
+  margin-top: 2px;
+  font-size: 11px;
+  color: #667788;
+}
+
+.sample-report-barcode-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #d9e4f0;
+}
+
+.sample-report-barcode-bar label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1 1 240px;
+  font-size: 13px;
+}
+
+.sample-report-barcode-bar input {
+  padding: 8px 10px;
+  border: 1px solid #c5d4e6;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.instrument-ingest-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.instrument-ingest-tabs button {
+  border: 1px solid #c5d4e6;
+  background: #f5f9fc;
+  color: #1a3a5c;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.instrument-ingest-tabs button.is-active {
+  background: #1a3a5c;
+  color: #fff;
+  border-color: #1a3a5c;
+}
+
+.instrument-ingest-form {
+  display: grid;
+  gap: 12px;
+  max-width: 720px;
+}
+
+.instrument-ingest-form label {
+  display: grid;
+  gap: 4px;
+  font-size: 13px;
+}
+
+.instrument-ingest-form input,
+.instrument-ingest-form textarea {
+  padding: 8px 10px;
+  border: 1px solid #c5d4e6;
+  border-radius: 6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+}
+
+.instrument-ingest-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.instrument-ingest-hint {
+  font-size: 13px;
+  color: #555;
+}
+
+.instrument-ingest-results {
+  margin-top: 18px;
+}
+
+.instrument-ingest-result-card {
+  border: 1px solid #d9e4f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-top: 10px;
+  background: #f8fbfe;
+}
+
+.sample-report-footer p {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: #555;
+}
+
+.sample-report-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.sample-report-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 6px;
+  background: #0a3d6b;
+  color: #fff;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.sample-report-btn--secondary {
+  background: #eef4fb;
+  color: #0a3d6b;
+  border: 1px solid #9ab8d0;
+}
+
+@media (max-width: 900px) {
+  .portfolio-sample-layout,
+  .sample-report-patient-grid {
     grid-template-columns: 1fr;
   }
 }

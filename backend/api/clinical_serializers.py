@@ -12,8 +12,8 @@ class TestParameterSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'test', 'test_name', 'parameter_name', 'unit',
             'reference_range_male', 'reference_range_female', 'reference_range_child',
-            'critical_low', 'critical_high', 'is_active',
-            'created_at', 'updated_at',
+            'critical_low', 'critical_high', 'sample_value', 'method', 'analyzer_code', 'sort_order',
+            'is_active', 'created_at', 'updated_at',
         ]
         read_only_fields = ['created_at', 'updated_at']
 
@@ -29,7 +29,7 @@ class ReportValueSerializer(serializers.ModelSerializer):
         model = ReportValue
         fields = [
             'id', 'parameter', 'parameter_name', 'unit', 'test_id', 'test_name',
-            'value', 'flag', 'reference_range',
+            'value', 'flag', 'source', 'reference_range',
         ]
 
     def get_reference_range(self, obj):

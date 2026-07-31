@@ -4,8 +4,10 @@ import { useAuth } from '../context/AuthContext';
 import { useNav } from '../context/NavContext';
 import NavIcon from './NavIcon';
 import AdminSidebar from './AdminSidebar';
+import FranchiseSidebar from './FranchiseSidebar';
 import LandingBrandTitle from './landing/LandingBrandTitle';
 import { NAV } from '../utils/nav';
+import { isFranchiseRole } from '../utils/franchiseNav';
 import { ROLE_LABELS } from '../utils/roles';
 
 function formatUserDateTime(value) {
@@ -177,9 +179,11 @@ export default function Layout({ activePage, children }) {
   const navItems = NAV.filter((item) => canSee(item, user));
   const profileName = user?.display_name || user?.username || 'User';
   const profileInitial = profileName.charAt(0).toUpperCase();
+  const franchiseMode = isFranchiseRole(user?.role);
+  const roleLabel = ROLE_LABELS[user?.role] || user?.role || '';
 
   return (
-    <div className={`dashboard app-with-sidebar${navOpen ? ' sidebar-open' : ''}`}>
+    <div className={`dashboard app-with-sidebar${navOpen ? ' sidebar-open' : ''}${franchiseMode ? ' franchise-shell' : ''}`}>
       <div
         className={`nav-drawer-overlay${navOpen ? ' open' : ''}`}
         onClick={closeNav}
@@ -188,7 +192,7 @@ export default function Layout({ activePage, children }) {
 
       <aside
         id="main-navigation"
-        className={`app-sidebar${navOpen ? ' nav-open' : ''}`}
+        className={`app-sidebar${navOpen ? ' nav-open' : ''}${franchiseMode ? ' franchise-sidebar' : ''}`}
         aria-label="Main navigation"
         onClick={handleSidebarClick}
       >
@@ -198,6 +202,17 @@ export default function Layout({ activePage, children }) {
           </div>
         </div>
 
+        {franchiseMode ? (
+          <FranchiseSidebar
+            activePage={activePage}
+            openMenu={openMenu}
+            setOpenMenu={setOpenMenu}
+            closeNav={closeNav}
+            onLogout={handleLogout}
+            user={user}
+            roleLabel={roleLabel}
+          />
+        ) : (
         <ul className="sidebar-menu">
           {navItems.map((item) => {
             const visibleChildren = item.children?.filter((c) => canSee(c, user)) || [];
@@ -212,31 +227,47 @@ export default function Layout({ activePage, children }) {
             }
 
             if (visibleChildren.length) {
+              const isPortfolioSection = item.id === 'test-portfolio' && location.pathname.startsWith('/portfolio/');
+              const childActive = visibleChildren.some((child) => {
+                const pathOnly = child.href.split('#')[0];
+                if (child.href.includes('#')) {
+                  return location.pathname + location.hash === child.href;
+                }
+                return location.pathname === pathOnly;
+              }) || isPortfolioSection;
+              const menuOpen = openMenu === item.id || isPortfolioSection;
               return (
                 <li
                   key={item.id}
-                  className={`has-submenu${isActive ? ' active' : ''}${openMenu === item.id ? ' open' : ''}`}
+                  className={`has-submenu${isActive || childActive ? ' active' : ''}${menuOpen ? ' open' : ''}`}
                 >
                   <SidebarLink
                     item={item}
-                    isActive={isActive}
+                    isActive={isActive || childActive}
                     asButton
                     showCaret
-                    caretOpen={openMenu === item.id}
+                    caretOpen={menuOpen}
                     onClick={() => setOpenMenu(openMenu === item.id ? null : item.id)}
                   />
                   <ul className="submenu">
-                    {visibleChildren.map((child) => (
-                      <li key={child.label}>
-                        <Link
-                          to={child.href}
-                          className={child.active ? 'active' : ''}
-                          onClick={closeNav}
-                        >
-                          {child.label}
-                        </Link>
-                      </li>
-                    ))}
+                    {visibleChildren.map((child) => {
+                      const pathOnly = child.href.split('#')[0];
+                      const childIsActive = child.active
+                        || (child.href.includes('#')
+                          ? location.pathname + location.hash === child.href
+                          : location.pathname === pathOnly);
+                      return (
+                        <li key={child.label}>
+                          <Link
+                            to={child.href}
+                            className={childIsActive ? 'active' : ''}
+                            onClick={closeNav}
+                          >
+                            {child.label}
+                          </Link>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </li>
               );
@@ -249,6 +280,7 @@ export default function Layout({ activePage, children }) {
             );
           })}
         </ul>
+        )}
       </aside>
 
       <div className="app-main">

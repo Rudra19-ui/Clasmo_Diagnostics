@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import clinical_views, views
+from . import clinical_views, instrument_views, views
 
 urlpatterns = [
     path('health/', views.HealthView.as_view(), name='health'),
@@ -72,4 +72,6 @@ urlpatterns = [
     path('test-parameters/<int:pk>/', clinical_views.TestParameterDetailView.as_view(), name='test-parameter-detail'),
     path('reports/<int:registration_id>/', clinical_views.ReportDetailView.as_view(), name='report-detail'),
     path('reports/<int:registration_id>/verify/', clinical_views.ReportVerifyView.as_view(), name='report-verify'),
+    path('instrument/results/', instrument_views.InstrumentResultsIngestView.as_view(), name='instrument-results'),
+    path('instrument/patient-report/', instrument_views.PatientReportByBarcodeView.as_view(), name='instrument-patient-report'),
 ]

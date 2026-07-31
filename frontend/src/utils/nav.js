@@ -33,6 +33,17 @@ export const NAV = [
     excludeRoles: [ROLES.PATHOLOGIST],
   },
   {
+    id: 'test-portfolio',
+    label: 'Test Portfolio',
+    href: '/portfolio/test-list',
+    excludeRoles: [ROLES.PATHOLOGIST],
+    children: [
+      { label: 'Test List', href: '/portfolio/test-list' },
+      { label: 'Test Profile', href: '/portfolio/test-profile' },
+      { label: 'Sample Report', href: '/portfolio/sample-report' },
+    ],
+  },
+  {
     id: 'administration',
     label: 'Administration',
     href: '/administration',

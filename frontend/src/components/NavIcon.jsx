@@ -2,6 +2,7 @@ const ICON_COLORS = {
   search: '#4a90e2',
   registration: '#43a047',
   'test-result': '#e53935',
+  'test-portfolio': '#26a69a',
   clinical: '#00acc1',
   administration: '#7e57c2',
   'user-signup': '#5c6bc0',
@@ -14,6 +15,12 @@ const ICON_COLORS = {
   'elab-pay': '#29b6f6',
   help: '#9e9e9e',
   'give-feedback': '#0288d1',
+  analytics: '#81d4fa',
+  layers: '#e3f2fd',
+  chip: '#b3e5fc',
+  payment: '#ffd54f',
+  settings: '#cfd8dc',
+  logout: '#ef9a9a',
 };
 
 export default function NavIcon({ id }) {
@@ -37,6 +44,13 @@ export default function NavIcon({ id }) {
       <svg viewBox="0 0 24 24" fill="none" aria-hidden>
         <rect x="4" y="5" width="16" height="14" rx="2" stroke={color} strokeWidth="2" />
         <path d="M8 15l3-4 3 2 4-6" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    'test-portfolio': (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+        <path d="M5 16l7-4 7 4-7 4-7-4z" stroke={color} strokeWidth="2" strokeLinejoin="round" />
+        <path d="M5 12l7-4 7 4" stroke={color} strokeWidth="2" strokeLinejoin="round" />
+        <path d="M5 8l7-4 7 4" stroke={color} strokeWidth="2" strokeLinejoin="round" />
       </svg>
     ),
     clinical: (
@@ -115,6 +129,42 @@ export default function NavIcon({ id }) {
       <svg viewBox="0 0 24 24" fill="none" aria-hidden>
         <path d="M4 6h16v10a2 2 0 01-2 2H8l-4 3V6z" stroke={color} strokeWidth="2" strokeLinejoin="round" />
         <path d="M8 10h8M8 13h5" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
+      </svg>
+    ),
+    analytics: (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+        <path d="M4 19h16" stroke={color} strokeWidth="2" strokeLinecap="round" />
+        <path d="M7 16V10M12 16V7M17 16v-5" stroke={color} strokeWidth="2.2" strokeLinecap="round" />
+      </svg>
+    ),
+    layers: (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+        <path d="M12 4l8 4-8 4-8-4 8-4z" stroke={color} strokeWidth="1.8" strokeLinejoin="round" />
+        <path d="M4 12l8 4 8-4M4 16l8 4 8-4" stroke={color} strokeWidth="1.8" strokeLinejoin="round" />
+      </svg>
+    ),
+    chip: (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+        <rect x="7" y="7" width="10" height="10" rx="1.5" stroke={color} strokeWidth="1.8" />
+        <path d="M10 4v3M14 4v3M10 17v3M14 17v3M4 10h3M4 14h3M17 10h3M17 14h3" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
+      </svg>
+    ),
+    payment: (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+        <circle cx="12" cy="12" r="8" stroke={color} strokeWidth="2" />
+        <path d="M12 7v10M9.5 9.5c.5-1 1.5-1.5 2.5-1.5 1.4 0 2.5.8 2.5 2s-1.1 2-2.5 2h-1c-1.4 0-2.5.9-2.5 2s1.1 2 2.5 2c1 0 2-.5 2.5-1.5" stroke={color} strokeWidth="1.6" strokeLinecap="round" />
+      </svg>
+    ),
+    settings: (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+        <circle cx="12" cy="12" r="3" stroke={color} strokeWidth="1.8" />
+        <path d="M12 4v2.2M12 17.8V20M4 12h2.2M17.8 12H20M6.3 6.3l1.6 1.6M16.1 16.1l1.6 1.6M17.7 6.3l-1.6 1.6M7.9 16.1l-1.6 1.6" stroke={color} strokeWidth="1.6" strokeLinecap="round" />
+      </svg>
+    ),
+    logout: (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+        <path d="M10 5H7a2 2 0 00-2 2v10a2 2 0 002 2h3" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M14 8l4 4-4 4M18 12H10" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
   };

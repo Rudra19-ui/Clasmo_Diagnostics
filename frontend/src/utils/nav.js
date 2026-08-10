@@ -94,3 +94,137 @@ export const NAV = [
   { id: 'give-feedback', label: 'Give Feedback', href: '/give-feedback', excludeRoles: [ROLES.PATHOLOGIST] },
   { id: 'help', label: 'Help', href: '/help' },
 ];
+
+/** Portal sidebar layout for non-franchise roles (Admin, HR, Pathologist, etc.). */
+export const STANDARD_NAV = [
+  { id: 'dashboard', label: 'Dashboard', href: '/dashboard', icon: 'dashboard' },
+  {
+    id: 'search',
+    label: 'Search',
+    href: '/search',
+    icon: 'search',
+    excludeRoles: [ROLES.PATHOLOGIST],
+  },
+  {
+    id: 'sample-scan',
+    label: 'Sample Scan',
+    href: '/sample-scan',
+    icon: 'chip',
+    roles: [ROLES.ADMIN, ROLES.TECHNICIAN, ROLES.PATHOLOGIST, ROLES.RECEPTIONIST],
+  },
+  {
+    section: 'REGISTRATION',
+    items: [
+      {
+        id: 'registration',
+        label: 'Test Registration',
+        href: '/registration',
+        icon: 'registration',
+        excludeRoles: [ROLES.PATHOLOGIST],
+      },
+      {
+        id: 'barcode-link',
+        label: 'Link Barcode',
+        href: '/barcode-link',
+        icon: 'chip',
+        excludeRoles: [ROLES.PATHOLOGIST],
+      },
+      {
+        id: 'test-result',
+        label: 'Test Result',
+        href: '/test-result',
+        icon: 'test-result',
+        excludeRoles: [ROLES.PATHOLOGIST],
+      },
+    ],
+  },
+  {
+    section: 'TEST PORTFOLIO',
+    items: [
+      {
+        id: 'test-portfolio',
+        label: 'Test Portfolio',
+        href: '/portfolio/test-list',
+        icon: 'layers',
+        excludeRoles: [ROLES.PATHOLOGIST],
+        children: [
+          { label: 'Test List', href: '/portfolio/test-list' },
+          { label: 'Test Profile', href: '/portfolio/test-profile' },
+          { label: 'Sample Report', href: '/portfolio/sample-report' },
+        ],
+      },
+    ],
+  },
+  {
+    section: 'REPORTS',
+    items: [
+      {
+        id: 'reports',
+        label: 'Reports',
+        href: '/reports',
+        icon: 'reports',
+        excludeRoles: [ROLES.PATHOLOGIST],
+        children: [
+          { label: 'Daily Summary', href: '/reports#daily' },
+          { label: 'Collection Report', href: '/reports#collection' },
+          { label: 'Outstanding Report', href: '/reports#outstanding' },
+          { label: 'TAT Report', href: '/reports#tat' },
+        ],
+      },
+    ],
+  },
+  {
+    section: 'DEVICE',
+    items: [
+      {
+        id: 'device-request',
+        label: 'Device Request',
+        href: '/device/pickup-request',
+        icon: 'device-request',
+        excludeRoles: [ROLES.PATHOLOGIST],
+        children: [
+          { label: 'Pickup Request Page', href: '/device/pickup-request' },
+          { label: 'Patient Appointment', href: '/device/patient-appointment' },
+          { label: 'Message To Lab', href: '/device/message-to-lab' },
+          { label: 'Schedular', href: '/device/schedular' },
+          { label: 'Trip Management', href: '/device/trip-management' },
+          { label: 'Batch Upload', href: '/device/batch-upload' },
+          { label: 'Test Result Batch', href: '/device/test-result-batch' },
+        ],
+      },
+    ],
+  },
+  {
+    section: 'ADMINISTRATION',
+    items: [
+      {
+        id: 'administration',
+        label: 'Administration',
+        href: '/administration',
+        icon: 'administration',
+        excludeRoles: [ROLES.PATHOLOGIST],
+      },
+      {
+        id: 'user-signup',
+        label: 'New User Sign Up',
+        href: '/user-signup',
+        icon: 'user-signup',
+        roles: [ROLES.ADMIN, ROLES.HR, ROLES.SUPER_FRANCHISEE, ROLES.FRANCHISEE],
+      },
+    ],
+  },
+  {
+    section: 'SETTINGS',
+    items: [
+      {
+        id: 'give-feedback',
+        label: 'Give Feedback',
+        href: '/give-feedback',
+        icon: 'give-feedback',
+        excludeRoles: [ROLES.PATHOLOGIST],
+      },
+      { id: 'help', label: 'Help', href: '/help', icon: 'help' },
+      { id: 'logout', label: 'Logout', href: '#logout', icon: 'logout', action: 'logout' },
+    ],
+  },
+];

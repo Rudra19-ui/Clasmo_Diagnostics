@@ -1,6 +1,5 @@
 import Footer from '../components/Footer';
 import Layout from '../components/Layout';
-import PathologistDashboard from '../components/PathologistDashboard';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { canScanSampleBarcode, ROLES } from '../utils/roles';
@@ -14,44 +13,30 @@ const DASHBOARD_ACTIONS = [
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const showBarcodeScan = canScanSampleBarcode(user);
-  const showWelcomeActions = user?.role === ROLES.ADMIN || user?.role === ROLES.HR;
+  const showWelcomeActions = (
+    user?.role === ROLES.ADMIN
+    || user?.role === ROLES.HR
+    || !canScanSampleBarcode(user)
+  );
 
   return (
     <Layout activePage="dashboard">
       <main className="dash-main dashboard-home-main">
         <div className="dashboard-home-shell">
-          {showBarcodeScan ? (
-            <>
-              <PathologistDashboard />
-              {showWelcomeActions && (
-                <section className="dashboard-welcome-hero dashboard-welcome-hero--below-scan">
-                  <div className="dashboard-welcome-actions">
-                    {DASHBOARD_ACTIONS.map((action) => (
-                      <Link key={action.label} to={action.href} className="dashboard-welcome-btn">
-                        {action.label}
-                      </Link>
-                    ))}
-                  </div>
-                </section>
-              )}
-            </>
-          ) : (
-            <>
-              <h1 className="dashboard-welcome-heading">
-                Welcome to <span>Clasmo</span>
-              </h1>
+          <h1 className="dashboard-welcome-heading">
+            Welcome to <span>Clasmo</span>
+          </h1>
 
-              <section className="dashboard-welcome-hero">
-                <div className="dashboard-welcome-actions">
-                  {DASHBOARD_ACTIONS.map((action) => (
-                    <Link key={action.label} to={action.href} className="dashboard-welcome-btn">
-                      {action.label}
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            </>
+          {showWelcomeActions && (
+            <section className="dashboard-welcome-hero">
+              <div className="dashboard-welcome-actions">
+                {DASHBOARD_ACTIONS.map((action) => (
+                  <Link key={action.label} to={action.href} className="dashboard-welcome-btn">
+                    {action.label}
+                  </Link>
+                ))}
+              </div>
+            </section>
           )}
         </div>
       </main>

@@ -1,12 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 import Layout from '../components/Layout';
 import GenderRadioGroup from '../components/GenderRadioGroup';
-import BarcodeLinkForm, { validateRegistrationBarcodes } from '../components/BarcodeLinkForm';
+import BarcodeLinkForm, { validateSampleBarcodes } from '../components/BarcodeLinkForm';
 import TestDualListPicker from '../components/TestDualListPicker';
-import { QrScanButton } from '../components/QrCameraScanner';
-import { sanitizeBarcodeScannedValue } from '../utils/barcodeScan';
 import { buildSampleBarcodePayload } from '../utils/barcodeScan';
 import { useSystemDateTime } from '../hooks/useSystemDateTime';
 import { api } from '../services/api';
@@ -79,7 +77,6 @@ export default function Registration({
   pageTitle = '',
   successNoun = 'Registration',
 }) {
-  const navigate = useNavigate();
   const isFranchiseBooking = activePage === 'manage-booking';
   const [patient, setPatient] = useState(emptyPatient());
   const [tests, setTests] = useState([]);
@@ -100,9 +97,6 @@ export default function Registration({
   const [discountAuthorities, setDiscountAuthorities] = useState([]);
   const [trfName, setTrfName] = useState('');
   const [sampleBarcodes, setSampleBarcodes] = useState({});
-  const [registrationBarcode, setRegistrationBarcode] = useState('');
-  const [barcodeLookup, setBarcodeLookup] = useState(null);
-  const [barcodeStatus, setBarcodeStatus] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const registerDateTime = useSystemDateTime();
 
@@ -127,9 +121,6 @@ export default function Registration({
     setDiscountAuthorization('');
     setTrfName('');
     setSampleBarcodes({});
-    setRegistrationBarcode('');
-    setBarcodeLookup(null);
-    setBarcodeStatus('');
     setPaymentMethod('cash');
     const fileInput = document.getElementById('regPdfUpload');
     if (fileInput) fileInput.value = '';
@@ -205,37 +196,6 @@ export default function Registration({
     }));
   };
 
-  const handleBarcodeLookup = useCallback(async (rawValue) => {
-    const code = sanitizeBarcodeScannedValue(rawValue ?? registrationBarcode);
-    if (!code) {
-      setBarcodeLookup(null);
-      setBarcodeStatus('');
-      return;
-    }
-
-    try {
-      const result = await api.lookupPatientBarcode(code);
-      if (result.found) {
-        setBarcodeLookup(result);
-        setBarcodeStatus(`Barcode already linked to Patient ${result.patient_id} (${result.patient_name})`);
-      } else {
-        setBarcodeLookup(null);
-        setBarcodeStatus('New barcode — will link to Patient ID when you click Submit');
-      }
-    } catch {
-      setBarcodeLookup(null);
-      setBarcodeStatus('');
-    }
-  }, [registrationBarcode]);
-
-  const openBarcodePatient = () => {
-    if (!barcodeLookup?.found) return;
-    const params = new URLSearchParams();
-    if (barcodeLookup.lab_code) params.set('lab_code', barcodeLookup.lab_code);
-    params.set('barcode', barcodeLookup.barcode);
-    navigate(`/search?${params.toString()}`);
-  };
-
   const handleSave = async () => {
     if (!patient.patient_name.trim()) {
       alert('Please enter Patient Name (required).');
@@ -246,7 +206,7 @@ export default function Registration({
       return false;
     }
 
-    const barcodeError = validateRegistrationBarcodes(registrationBarcode, sampleGroups, sampleBarcodes);
+    const barcodeError = validateSampleBarcodes(sampleGroups, sampleBarcodes);
     if (barcodeError) {
       alert(barcodeError);
       return false;
@@ -273,16 +233,13 @@ export default function Registration({
         discount_reason: discountReason,
         discount_authorization: discountAuthorization,
         tests: selected.map((t) => ({ test_id: t.id, price: t.price })),
-        registration_barcode: sanitizeBarcodeScannedValue(registrationBarcode),
         sample_barcodes: barcodePayload,
       });
       const savedPatientId = result.patient?.patient_id || patient.patient_id;
-      const savedBarcode = result.patient?.bar_code || registrationBarcode;
       alert(
         `${successNoun} saved successfully!\n`
         + `Patient ID: ${savedPatientId}\n`
-        + `Lab Code: ${result.lab_code}`
-        + (savedBarcode ? `\nBarcode linked: ${savedBarcode}\nStick this label on the blood tube.` : ''),
+        + `Lab Code: ${result.lab_code}`,
       );
       resetForm({
         lab_code: nextLabCode(result.lab_code),
@@ -416,54 +373,6 @@ export default function Registration({
                   value={patient.patient_id}
                   aria-label="Patient ID (assigned automatically in series)"
                 />
-              </label>
-
-              <label className="reg-sketch-field">
-                <span>Patient Barcode (Tube Label)</span>
-                <div className="reg-sketch-barcode-input-row">
-                  <input
-                    type="text"
-                    className="field-highlight-barcode"
-                    placeholder="Enter pre-printed barcode number from tube label"
-                    value={registrationBarcode}
-                    onChange={(e) => {
-                      setRegistrationBarcode(sanitizeBarcodeScannedValue(e.target.value));
-                      setBarcodeLookup(null);
-                      setBarcodeStatus('');
-                    }}
-                    onBlur={(e) => handleBarcodeLookup(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
-                        handleBarcodeLookup(e.currentTarget.value);
-                      }
-                    }}
-                    autoComplete="off"
-                    spellCheck={false}
-                    aria-label="Pre-printed tube barcode linked to patient on submit"
-                  />
-                  <QrScanButton
-                    label="Scan QR"
-                    title="Scan tube barcode with camera"
-                    onScan={(value) => {
-                      setRegistrationBarcode(value);
-                      handleBarcodeLookup(value);
-                    }}
-                  />
-                </div>
-                <p className="reg-sketch-barcode-help-inline">
-                  Enter any barcode number for testing. Create a QR with the same number on your phone, then pathologist scans it using Scan by Phone.
-                </p>
-                {barcodeStatus && (
-                  <p className={`reg-sketch-barcode-status ${barcodeLookup?.found ? 'reg-sketch-barcode-status--linked' : ''}`}>
-                    {barcodeStatus}
-                    {barcodeLookup?.found && (
-                      <button type="button" className="reg-sketch-barcode-open" onClick={openBarcodePatient}>
-                        Open Patient
-                      </button>
-                    )}
-                  </p>
-                )}
               </label>
 
               <label className="reg-sketch-field">

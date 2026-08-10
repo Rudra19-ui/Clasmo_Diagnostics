@@ -1,3 +1,4 @@
+import { STANDARD_NAV } from './nav';
 import { FRANCHISE_ROLES, ROLES } from './roles';
 
 /** Shared franchise portal sidebar for Supreme, Prime, and Sub-Franchise. */
@@ -166,6 +167,11 @@ export function isFranchiseRole(role) {
 export function getNavForRole(role) {
   if (isFranchiseRole(role)) return FRANCHISE_NAV;
   return null;
+}
+
+export function getSidebarNavForRole(role) {
+  if (isFranchiseRole(role)) return FRANCHISE_NAV;
+  return STANDARD_NAV;
 }
 
 export { ROLES };

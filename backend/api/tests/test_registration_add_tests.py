@@ -110,3 +110,40 @@ class RegistrationAddTestsTests(TestCase):
             format='json',
         )
         self.assertEqual(response.status_code, 400)
+
+    def test_add_test_with_new_barcode_and_payment(self):
+        urine_test = Test.objects.create(
+            name='Urine Routine',
+            price=Decimal('80.00'),
+            mrp=Decimal('160.00'),
+            sample_type='URINE',
+        )
+        response = self.client.post(
+            f'/api/registrations/{self.registration.lab_code}/add-tests/',
+            {
+                'test_ids': [urine_test.id],
+                'sample_barcodes': [{
+                    'sample_type': 'URINE',
+                    'barcode': 'BC-TA-URINE',
+                    'confirm_barcode': 'BC-TA-URINE',
+                    'test_ids': [urine_test.id],
+                }],
+                'paid': 100,
+                'payment_method': 'cash',
+                'discount_test': 10,
+                'discount_regn': 0,
+            },
+            format='json',
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        self.registration.refresh_from_db()
+        self.assertEqual(self.registration.tests.count(), 3)
+        self.assertEqual(float(self.registration.paid), 100)
+        self.assertEqual(float(self.registration.discount_test), 10)
+        barcode = PatientSampleBarcode.objects.filter(
+            registration=self.registration,
+            sample_type='URINE',
+            is_active=True,
+        ).first()
+        self.assertIsNotNone(barcode)
+        self.assertEqual(barcode.barcode, 'BC-TA-URINE')

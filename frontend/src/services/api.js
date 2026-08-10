@@ -116,10 +116,14 @@ export const api = {
       method: 'PATCH',
       body: JSON.stringify(payload),
     }),
-  addRegistrationTests: (labCode, testIds) =>
+  addRegistrationTests: (labCode, payload) =>
     request(`/registrations/${encodeURIComponent(labCode)}/add-tests/`, {
       method: 'POST',
-      body: JSON.stringify({ test_ids: testIds }),
+      body: JSON.stringify(
+        Array.isArray(payload)
+          ? { test_ids: payload }
+          : payload,
+      ),
     }),
   cancelRegistrationTests: (labCode, payload) =>
     request(`/registrations/${encodeURIComponent(labCode)}/cancel-tests/`, {

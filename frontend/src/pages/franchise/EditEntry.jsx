@@ -1,10 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import BarcodeLinkForm from '../../components/BarcodeLinkForm';
 import Footer from '../../components/Footer';
 import Layout from '../../components/Layout';
 import TestDualListPicker from '../../components/TestDualListPicker';
 import { api } from '../../services/api';
-import { sanitizeBarcodeScannedValue } from '../../utils/barcodeScan';
+import {
+  buildSampleBarcodePayload,
+  sanitizeBarcodeScannedValue,
+  validateSampleBarcodes,
+} from '../../utils/barcodeScan';
 
 function formatHoursLeft(hours) {
   const value = Number(hours || 0);
@@ -23,6 +28,32 @@ function formatFranchiseEditTest(test) {
   if (price > 0) bits.push(`Price ₹${price.toFixed(2)}`);
   if (mrp > 0) bits.push(`MRP ₹${mrp.toFixed(2)}`);
   return bits.length ? `${test.name} — ${bits.join(' · ')}` : test.name;
+}
+
+function getSampleTypes(sampleType) {
+  const raw = (sampleType || 'General').trim();
+  const parts = raw.split(/[,/|]/).map((part) => part.trim()).filter(Boolean);
+  return parts.length ? parts : ['General'];
+}
+
+function getFranchiseBillAmount(test) {
+  const mrp = Number(test.mrp || 0);
+  if (mrp > 0) return mrp;
+  return Number(test.price || 0);
+}
+
+function buildSampleGroups(tests) {
+  const groups = new Map();
+  tests.forEach((test) => {
+    getSampleTypes(test.sample_type).forEach((sampleType) => {
+      if (!groups.has(sampleType)) groups.set(sampleType, []);
+      groups.get(sampleType).push(test);
+    });
+  });
+  return [...groups.entries()].map(([sampleType, groupTests]) => ({
+    sampleType,
+    tests: groupTests,
+  }));
 }
 
 function patientFromRegistration(registration) {
@@ -54,8 +85,17 @@ function selectedTestsFromRegistration(registration, catalog) {
       name: row.test_name || (typeof row.test === 'object' ? row.test?.name : null) || 'Test',
       price: row.price,
       mrp: row.mrp,
+      sample_type: row.sample_type,
     };
   }).filter((test) => test.id);
+}
+
+function testIdsFromRegistration(registration) {
+  return new Set(
+    (registration?.tests || [])
+      .map((row) => (typeof row.test === 'object' ? row.test?.id : row.test) || row.test_id)
+      .filter(Boolean),
+  );
 }
 
 export default function EditEntry() {
@@ -69,6 +109,9 @@ export default function EditEntry() {
   const [editing, setEditing] = useState(null);
   const [patient, setPatient] = useState(null);
   const [selected, setSelected] = useState([]);
+  const [originalTestIds, setOriginalTestIds] = useState(() => new Set());
+  const [linkedBarcodes, setLinkedBarcodes] = useState([]);
+  const [sampleBarcodes, setSampleBarcodes] = useState({});
   const [comment, setComment] = useState('');
   const [testSearch, setTestSearch] = useState('');
   const [selectedTestSearch, setSelectedTestSearch] = useState('');
@@ -77,6 +120,22 @@ export default function EditEntry() {
     api.getTests()
       .then((data) => setCatalog(Array.isArray(data) ? data : []))
       .catch(() => setCatalog([]));
+  }, []);
+
+  const loadLinkedBarcodes = useCallback(async (detail) => {
+    if (!detail?.lab_code && !detail?.patient?.patient_id) {
+      setLinkedBarcodes([]);
+      return;
+    }
+    try {
+      const params = {};
+      if (detail.lab_code) params.lab_code = detail.lab_code;
+      else if (detail.patient?.patient_id) params.patient_id = detail.patient.patient_id;
+      const data = await api.getPatientBarcodes(params);
+      setLinkedBarcodes(Array.isArray(data) ? data : []);
+    } catch {
+      setLinkedBarcodes([]);
+    }
   }, []);
 
   const loadList = useCallback(async (searchValue = '') => {
@@ -123,6 +182,41 @@ export default function EditEntry() {
     });
   }, [catalog, selected, testSearch]);
 
+  const newlyAddedTests = useMemo(
+    () => selected.filter((test) => !originalTestIds.has(test.id)),
+    [selected, originalTestIds],
+  );
+
+  const linkedSampleTypes = useMemo(() => {
+    const map = new Map();
+    linkedBarcodes.forEach((row) => {
+      const sampleType = String(row.sample_type || '').trim();
+      if (sampleType && row.is_active !== false) {
+        map.set(sampleType.toLowerCase(), row.barcode);
+      }
+    });
+    return map;
+  }, [linkedBarcodes]);
+
+  const newSampleGroups = useMemo(
+    () => buildSampleGroups(newlyAddedTests),
+    [newlyAddedTests],
+  );
+
+  const sampleGroupsNeedingBarcode = useMemo(
+    () => newSampleGroups.filter(
+      (group) => !linkedSampleTypes.has(group.sampleType.toLowerCase()),
+    ),
+    [newSampleGroups, linkedSampleTypes],
+  );
+
+  const sampleGroupsAlreadyLinked = useMemo(
+    () => newSampleGroups.filter(
+      (group) => linkedSampleTypes.has(group.sampleType.toLowerCase()),
+    ),
+    [newSampleGroups, linkedSampleTypes],
+  );
+
   const openEdit = async (row) => {
     setError('');
     setMessage('');
@@ -137,9 +231,12 @@ export default function EditEntry() {
       setEditing(detail);
       setPatient(patientFromRegistration(detail));
       setSelected(selectedTestsFromRegistration(detail, catalog));
+      setOriginalTestIds(testIdsFromRegistration(detail));
+      setSampleBarcodes({});
       setComment(detail.comment || '');
       setTestSearch('');
       setSelectedTestSearch('');
+      await loadLinkedBarcodes(detail);
     } catch (err) {
       setError(err.message || 'Could not open entry for editing.');
     }
@@ -149,8 +246,22 @@ export default function EditEntry() {
     setEditing(null);
     setPatient(null);
     setSelected([]);
+    setOriginalTestIds(new Set());
+    setLinkedBarcodes([]);
+    setSampleBarcodes({});
     setComment('');
     setMessage('');
+  };
+
+  const updateBarcode = (sampleType, field, value) => {
+    setSampleBarcodes((prev) => ({
+      ...prev,
+      [sampleType]: {
+        enter: prev[sampleType]?.enter || '',
+        confirm: prev[sampleType]?.confirm || '',
+        [field]: value,
+      },
+    }));
   };
 
   const handleSave = async () => {
@@ -163,6 +274,18 @@ export default function EditEntry() {
       setError('Keep at least one test.');
       return;
     }
+
+    const barcodeError = validateSampleBarcodes(sampleGroupsNeedingBarcode, sampleBarcodes);
+    if (barcodeError) {
+      setError(barcodeError);
+      return;
+    }
+
+    const sampleBarcodePayload = buildSampleBarcodePayload(
+      sampleGroupsNeedingBarcode,
+      sampleBarcodes,
+    );
+    const addedCount = newlyAddedTests.length;
 
     setSaving(true);
     setError('');
@@ -186,14 +309,21 @@ export default function EditEntry() {
         comment,
         tests: selected.map((test) => ({
           test_id: test.id,
-          price: test.price,
+          price: getFranchiseBillAmount(test),
         })),
+        sample_barcodes: sampleBarcodePayload,
       });
       setEditing(updated);
       setPatient(patientFromRegistration(updated));
       setSelected(selectedTestsFromRegistration(updated, catalog));
+      setOriginalTestIds(testIdsFromRegistration(updated));
+      setSampleBarcodes({});
       setComment(updated.comment || '');
-      setMessage(`Saved changes for ${updated.lab_code}.`);
+      await loadLinkedBarcodes(updated);
+      const addedNote = addedCount > 0
+        ? ` Added ${addedCount} test(s) to the same Lab Code ${updated.lab_code}.`
+        : '';
+      setMessage(`Saved changes for ${updated.lab_code}.${addedNote}`);
       loadList();
     } catch (err) {
       setError(err.message || 'Could not save changes.');
@@ -215,7 +345,8 @@ export default function EditEntry() {
           </nav>
           <h2 className="page-heading">Edit Entry</h2>
           <p className="portfolio-intro">
-            Edit patient and test details only within 12 hours of registration. After that the entry is locked.
+            Edit patient and test details only within 12 hours of registration. New tests you add
+            stay on the same Lab Code — enter barcodes for any new sample types before saving.
           </p>
         </header>
 
@@ -380,20 +511,68 @@ export default function EditEntry() {
               </label>
             </div>
 
-            <h3 className="test-addition-subtitle">Tests</h3>
-            <div className="edit-entry-test-picker">
+            <h3 className="test-addition-subtitle">Tests on this entry</h3>
+            {linkedBarcodes.length > 0 && (
+              <>
+                <p className="edit-entry-linked-label">Linked barcodes on this booking</p>
+                <ul className="test-addition-current-list">
+                  {linkedBarcodes.map((row) => (
+                    <li key={row.id || row.barcode}>
+                      {row.barcode}
+                      {row.sample_type ? ` — ${row.sample_type}` : ''}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            <div className="reg-sketch-test-layout edit-entry-test-layout">
               <TestDualListPicker
                 available={availableTests}
                 selected={selected}
                 onAdd={(items) => setSelected((prev) => [...prev, ...items])}
                 onRemove={(ids) => setSelected((prev) => prev.filter((test) => !ids.includes(test.id)))}
-                onRemoveAll={() => setSelected([])}
+                onRemoveAll={() => setSelected((prev) => prev.filter((test) => originalTestIds.has(test.id)))}
                 testSearch={testSearch}
                 onTestSearchChange={setTestSearch}
                 selectedTestSearch={selectedTestSearch}
                 onSelectedTestSearchChange={setSelectedTestSearch}
                 formatLabel={formatFranchiseEditTest}
               />
+
+              <div className="reg-sketch-sample-panel">
+                {newlyAddedTests.length === 0 ? (
+                  <p className="reg-sketch-empty edit-entry-barcode-hint">
+                    Move new tests from the left list. Barcode fields appear here for each new sample type.
+                  </p>
+                ) : (
+                  <>
+                    <p className="edit-entry-new-tests-label">
+                      New tests added ({newlyAddedTests.length}) — enter barcodes for this entry only
+                    </p>
+                    {sampleGroupsAlreadyLinked.length > 0 && (
+                      <div className="test-addition-linked-samples">
+                        <p className="test-addition-linked-samples-title">Sample types already linked</p>
+                        <ul className="test-addition-current-list">
+                          {sampleGroupsAlreadyLinked.map(({ sampleType }) => (
+                            <li key={sampleType}>
+                              {sampleType}
+                              {' — '}
+                              {linkedSampleTypes.get(sampleType.toLowerCase())}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    <BarcodeLinkForm
+                      sampleGroups={sampleGroupsNeedingBarcode}
+                      sampleBarcodes={sampleBarcodes}
+                      onBarcodeChange={updateBarcode}
+                      registrationLayout
+                    />
+                  </>
+                )}
+              </div>
             </div>
 
             <div className="test-addition-actions">

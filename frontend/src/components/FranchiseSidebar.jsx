@@ -16,7 +16,48 @@ function canSeeNavItem(item, role) {
 function menuIdForPath(pathname) {
   if (pathname.startsWith('/franchise/manage-reports')) return 'manage-reports';
   if (pathname.startsWith('/franchise/manage-booking')) return 'manage-booking';
+  if (pathname.startsWith('/portfolio/')) return 'test-portfolio';
+  if (pathname.startsWith('/reports')) return 'reports';
+  if (pathname.startsWith('/device/')) return 'device-request';
   return null;
+}
+
+function hrefMatchesLocation(href, location) {
+  if (!href || href === '#logout') return false;
+  const pathOnly = href.split('#')[0];
+  if (href.includes('#')) {
+    return `${location.pathname}${location.hash}` === href;
+  }
+  if (location.pathname === pathOnly) return true;
+  return pathOnly !== '/' && location.pathname.startsWith(`${pathOnly}/`);
+}
+
+function isItemActive(item, location, activePage) {
+  if (item.id === 'manage-booking') {
+    return location.pathname.startsWith('/franchise/manage-booking');
+  }
+  if (item.id === 'manage-reports') {
+    return location.pathname.startsWith('/franchise/manage-reports');
+  }
+  if (item.id === 'administration') {
+    return location.pathname.startsWith('/administration') || location.pathname.startsWith('/admin/');
+  }
+  if (item.id === 'test-portfolio') {
+    return location.pathname.startsWith('/portfolio/');
+  }
+  if (item.id === 'all-tests' && location.pathname === '/portfolio/test-list') return true;
+  if (item.id === 'package-list' && location.pathname === '/portfolio/test-profile') return true;
+  if (item.id === 'reports-format' && location.pathname === '/portfolio/sample-report') return true;
+  if (item.id === 'reports') {
+    return location.pathname.startsWith('/reports');
+  }
+  if (item.id === 'device-request') {
+    return location.pathname.startsWith('/device/');
+  }
+  if (item.children?.some((child) => hrefMatchesLocation(child.href, location))) return true;
+  if (item.href && hrefMatchesLocation(item.href, location)) return true;
+  if (!item.children && item.id === activePage) return true;
+  return false;
 }
 
 function NavRow({
@@ -84,6 +125,7 @@ function NavRow({
 }
 
 export default function FranchiseSidebar({
+  navConfig = FRANCHISE_NAV,
   activePage,
   openMenu,
   setOpenMenu,
@@ -94,28 +136,10 @@ export default function FranchiseSidebar({
 }) {
   const location = useLocation();
 
-  // Auto-expand parent when entering a child route; user toggle still opens/closes freely.
   useEffect(() => {
     const menuId = menuIdForPath(location.pathname);
     if (menuId) setOpenMenu(menuId);
   }, [location.pathname, setOpenMenu]);
-
-  const isItemActive = (item) => {
-    // Parent menus: only highlight from the current route (not from open/expanded state).
-    if (item.id === 'manage-booking') {
-      return location.pathname.startsWith('/franchise/manage-booking');
-    }
-    if (item.id === 'manage-reports') {
-      return location.pathname.startsWith('/franchise/manage-reports');
-    }
-    if (item.id === 'all-tests' && location.pathname === '/portfolio/test-list') return true;
-    if (item.id === 'package-list' && location.pathname === '/portfolio/test-profile') return true;
-    if (item.id === 'reports-format' && location.pathname === '/portfolio/sample-report') return true;
-    if (item.children?.some((child) => location.pathname === child.href.split('#')[0])) return true;
-    if (item.href && item.href !== '#logout' && location.pathname === item.href) return true;
-    if (!item.children && item.id === activePage) return true;
-    return false;
-  };
 
   return (
     <>
@@ -125,7 +149,7 @@ export default function FranchiseSidebar({
       </div>
 
       <ul className="sidebar-menu franchise-sidebar-menu">
-        {FRANCHISE_NAV.map((entry) => {
+        {navConfig.map((entry) => {
           if (entry.section) {
             const visibleItems = (entry.items || []).filter((item) => canSeeNavItem(item, user?.role));
             if (!visibleItems.length) return null;
@@ -134,7 +158,7 @@ export default function FranchiseSidebar({
                 <div className="franchise-nav-section-title">{entry.section}</div>
                 <ul>
                   {visibleItems.map((item) => {
-                    const active = isItemActive(item);
+                    const active = isItemActive(item, location, activePage);
                     const hasChildren = Boolean(item.children?.length);
                     const menuOpen = openMenu === item.id;
 
@@ -153,7 +177,7 @@ export default function FranchiseSidebar({
                           />
                           <ul className="submenu">
                             {item.children.map((child) => {
-                              const childActive = location.pathname === child.href.split('#')[0];
+                              const childActive = hrefMatchesLocation(child.href, location);
                               return (
                                 <li key={child.label}>
                                   <Link
@@ -191,7 +215,7 @@ export default function FranchiseSidebar({
 
           if (!canSeeNavItem(entry, user?.role)) return null;
 
-          const active = isItemActive(entry);
+          const active = isItemActive(entry, location, activePage);
           return (
             <li key={entry.id} className={active ? 'active' : ''}>
               <NavRow item={entry} isActive={active} onNavigate={closeNav} />

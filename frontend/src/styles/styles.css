@@ -2272,13 +2272,13 @@ input, select, textarea, button {
 }
 
 .app-sidebar {
-  --sidebar-width: 300px;
+  --sidebar-width: 280px;
   position: fixed;
   top: 0;
   left: 0;
   bottom: 0;
   width: var(--sidebar-width);
-  background: linear-gradient(180deg, #1b4f86 0%, #163f6d 100%);
+  background: linear-gradient(180deg, #1a3a5c 0%, #152f4a 55%, #12263c 100%);
   display: flex;
   flex-direction: column;
   z-index: 950;
@@ -2286,6 +2286,7 @@ input, select, textarea, button {
   transform: translateX(-105%);
   transition: transform 0.28s ease;
   box-shadow: 6px 0 28px rgba(0, 0, 0, 0.28);
+  border-bottom-left-radius: 18px;
 }
 
 .app-sidebar.nav-open {
@@ -2293,8 +2294,6 @@ input, select, textarea, button {
 }
 
 .franchise-sidebar {
-  --sidebar-width: 280px;
-  background: linear-gradient(180deg, #1a3a5c 0%, #152f4a 55%, #12263c 100%);
   overflow-y: auto;
 }
 
@@ -2358,6 +2357,11 @@ input, select, textarea, button {
 .franchise-nav-link {
   width: 100%;
   text-align: left;
+  color: #b8daf2;
+}
+
+.franchise-nav-link:hover {
+  color: #e8f4fc;
 }
 
 .franchise-nav-link.is-accent,
@@ -2429,8 +2433,20 @@ input, select, textarea, button {
 /* Only the route-active parent is highlighted — open state only expands the submenu. */
 .franchise-sidebar li.active > .franchise-nav-link,
 .franchise-sidebar .franchise-nav-link.is-active {
-  background: #2196f3;
-  color: #fff;
+  background: rgba(33, 150, 243, 0.35);
+  color: #9fd4f0;
+}
+
+.franchise-sidebar .sidebar-menu > li.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 4px;
+  border-radius: 0 4px 4px 0;
+  background: linear-gradient(180deg, #e91e63 0%, #ff9800 20%, #ffeb3b 40%, #4caf50 60%, #2196f3 80%, #9c27b0 100%);
+  z-index: 2;
 }
 
 .franchise-sidebar .has-submenu.open:not(.active) > .franchise-nav-link {
@@ -5277,6 +5293,21 @@ input, select, textarea, button {
   margin-top: 8px;
 }
 
+.test-addition-linked-samples {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  background: #f4f8fc;
+  border: 1px solid #d5e4f2;
+  border-radius: 8px;
+}
+
+.test-addition-linked-samples-title {
+  margin: 0 0 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #486581;
+}
+
 .analytics-kpi-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -5372,6 +5403,25 @@ input, select, textarea, button {
   gap: 12px;
   align-items: start;
   margin-bottom: 16px;
+}
+
+.edit-entry-test-layout {
+  margin-bottom: 16px;
+}
+
+.edit-entry-linked-label,
+.edit-entry-new-tests-label {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #486581;
+}
+
+.edit-entry-barcode-hint {
+  margin: 0;
+  padding: 16px;
+  color: #627d98;
+  font-size: 0.9rem;
 }
 
 @media (max-width: 900px) {

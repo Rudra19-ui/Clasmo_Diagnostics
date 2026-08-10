@@ -2,12 +2,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useNav } from '../context/NavContext';
-import NavIcon from './NavIcon';
 import AdminSidebar from './AdminSidebar';
 import FranchiseSidebar from './FranchiseSidebar';
 import LandingBrandTitle from './landing/LandingBrandTitle';
-import { NAV } from '../utils/nav';
-import { isFranchiseRole } from '../utils/franchiseNav';
+import { getSidebarNavForRole } from '../utils/franchiseNav';
 import { ROLE_LABELS } from '../utils/roles';
 
 function formatUserDateTime(value) {
@@ -31,45 +29,6 @@ const LANGUAGE_OPTIONS = [
 
 function readStoredLanguage() {
   return localStorage.getItem('clasmo_ui_lang') || 'en';
-}
-
-function canSee(item, user) {
-  if (item.adminOnly && user?.role !== 'admin') return false;
-  if (item.excludeRoles?.includes(user?.role)) return false;
-  if (item.roles?.length && !item.roles.includes(user?.role)) return false;
-  return true;
-}
-
-function SidebarLink({ item, isActive, onClose, onClick, asButton, showCaret, caretOpen }) {
-  const className = `sidebar-nav-link${isActive ? ' is-active' : ''}`;
-  const content = (
-    <>
-      <NavIcon id={item.id} />
-      <span className="sidebar-nav-label">{item.label}</span>
-      {showCaret && <span className={`submenu-caret${caretOpen ? ' open' : ''}`} aria-hidden>▾</span>}
-    </>
-  );
-
-  const handleClick = (event) => {
-    if (!asButton) {
-      onClose?.();
-    }
-    onClick?.(event);
-  };
-
-  if (asButton) {
-    return (
-      <button type="button" className={className} onClick={handleClick}>
-        {content}
-      </button>
-    );
-  }
-
-  return (
-    <Link to={item.href} className={className} onClick={handleClick}>
-      {content}
-    </Link>
-  );
 }
 
 export default function Layout({ activePage, children }) {
@@ -176,17 +135,13 @@ export default function Layout({ activePage, children }) {
     closeNav();
   }, [location.pathname, location.search, location.hash, closeNav]);
 
-  const navItems = NAV.filter((item) => canSee(item, user));
   const profileName = user?.display_name || user?.username || 'User';
   const profileInitial = profileName.charAt(0).toUpperCase();
-  const franchiseMode = isFranchiseRole(user?.role);
   const roleLabel = ROLE_LABELS[user?.role] || user?.role || '';
-  const isDashboardPage = activePage === 'dashboard' || location.pathname === '/dashboard';
-  // Franchise portal chrome on dashboard for every role (visual only).
-  const useFranchiseDashboardStyle = franchiseMode || isDashboardPage;
+  const sidebarNav = getSidebarNavForRole(user?.role);
 
   return (
-    <div className={`dashboard app-with-sidebar${navOpen ? ' sidebar-open' : ''}${useFranchiseDashboardStyle ? ' franchise-shell' : ''}`}>
+    <div className={`dashboard app-with-sidebar franchise-shell${navOpen ? ' sidebar-open' : ''}`}>
       <div
         className={`nav-drawer-overlay${navOpen ? ' open' : ''}`}
         onClick={closeNav}
@@ -195,7 +150,7 @@ export default function Layout({ activePage, children }) {
 
       <aside
         id="main-navigation"
-        className={`app-sidebar${navOpen ? ' nav-open' : ''}${useFranchiseDashboardStyle ? ' franchise-sidebar' : ''}`}
+        className={`app-sidebar franchise-sidebar${navOpen ? ' nav-open' : ''}`}
         aria-label="Main navigation"
         onClick={handleSidebarClick}
       >
@@ -205,85 +160,16 @@ export default function Layout({ activePage, children }) {
           </div>
         </div>
 
-        {franchiseMode ? (
-          <FranchiseSidebar
-            activePage={activePage}
-            openMenu={openMenu}
-            setOpenMenu={setOpenMenu}
-            closeNav={closeNav}
-            onLogout={handleLogout}
-            user={user}
-            roleLabel={roleLabel}
-          />
-        ) : (
-        <ul className="sidebar-menu">
-          {navItems.map((item) => {
-            const visibleChildren = item.children?.filter((c) => canSee(c, user)) || [];
-            const isActive = item.id === activePage || (item.id === 'administration' && isAdminRoute);
-
-            if (item.megaMenu && item.id === 'administration') {
-              return (
-                <li key={item.id} className={isActive ? 'active' : ''}>
-                  <SidebarLink item={item} isActive={isActive} onClose={closeNav} />
-                </li>
-              );
-            }
-
-            if (visibleChildren.length) {
-              const isPortfolioSection = item.id === 'test-portfolio' && location.pathname.startsWith('/portfolio/');
-              const childActive = visibleChildren.some((child) => {
-                const pathOnly = child.href.split('#')[0];
-                if (child.href.includes('#')) {
-                  return location.pathname + location.hash === child.href;
-                }
-                return location.pathname === pathOnly;
-              }) || isPortfolioSection;
-              const menuOpen = openMenu === item.id || isPortfolioSection;
-              return (
-                <li
-                  key={item.id}
-                  className={`has-submenu${isActive || childActive ? ' active' : ''}${menuOpen ? ' open' : ''}`}
-                >
-                  <SidebarLink
-                    item={item}
-                    isActive={isActive || childActive}
-                    asButton
-                    showCaret
-                    caretOpen={menuOpen}
-                    onClick={() => setOpenMenu(openMenu === item.id ? null : item.id)}
-                  />
-                  <ul className="submenu">
-                    {visibleChildren.map((child) => {
-                      const pathOnly = child.href.split('#')[0];
-                      const childIsActive = child.active
-                        || (child.href.includes('#')
-                          ? location.pathname + location.hash === child.href
-                          : location.pathname === pathOnly);
-                      return (
-                        <li key={child.label}>
-                          <Link
-                            to={child.href}
-                            className={childIsActive ? 'active' : ''}
-                            onClick={closeNav}
-                          >
-                            {child.label}
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </li>
-              );
-            }
-
-            return (
-              <li key={item.id} className={isActive ? 'active' : ''}>
-                <SidebarLink item={item} isActive={isActive} onClose={closeNav} />
-              </li>
-            );
-          })}
-        </ul>
-        )}
+        <FranchiseSidebar
+          navConfig={sidebarNav}
+          activePage={activePage}
+          openMenu={openMenu}
+          setOpenMenu={setOpenMenu}
+          closeNav={closeNav}
+          onLogout={handleLogout}
+          user={user}
+          roleLabel={roleLabel}
+        />
       </aside>
 
       <div className="app-main">

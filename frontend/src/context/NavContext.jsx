@@ -1,18 +1,36 @@
-import { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 const NavContext = createContext(null);
 
+function readInitialNavOpen() {
+  if (typeof window === 'undefined') return false;
+  return window.matchMedia('(min-width: 1024px)').matches;
+}
+
 export function NavProvider({ children }) {
-  const [navOpen, setNavOpen] = useState(false);
+  const [navOpen, setNavOpen] = useState(readInitialNavOpen);
   const [openMenu, setOpenMenu] = useState(null);
 
   const closeNav = useCallback(() => {
-    setNavOpen(false);
     setOpenMenu(null);
+    if (typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches) {
+      return;
+    }
+    setNavOpen(false);
   }, []);
 
   const toggleNav = useCallback(() => {
     setNavOpen((open) => !open);
+  }, []);
+
+  useEffect(() => {
+    const media = window.matchMedia('(min-width: 1024px)');
+    const syncNav = () => {
+      if (media.matches) setNavOpen(true);
+    };
+    syncNav();
+    media.addEventListener('change', syncNav);
+    return () => media.removeEventListener('change', syncNav);
   }, []);
 
   const value = useMemo(

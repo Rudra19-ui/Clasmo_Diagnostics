@@ -1450,7 +1450,23 @@ class RegistrationEditView(APIView):
                 )
             registration.tests.all().delete()
             RegistrationSerializer()._sync_tests(registration, tests_data)
-        else:
+
+        sample_barcodes = data.get('sample_barcodes') or []
+        if sample_barcodes:
+            try:
+                link_sample_barcodes(
+                    patient=registration.patient,
+                    registration=registration,
+                    barcodes_data=sample_barcodes,
+                    user=request.user,
+                )
+            except BarcodeLinkError as exc:
+                return Response(
+                    {'detail': exc.message},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        if 'tests' not in data:
             discount_total = float(registration.discount_test) + float(registration.discount_regn)
             total = sum(float(rt.price) for rt in registration.tests.all())
             registration.total = total
@@ -1516,6 +1532,32 @@ class RegistrationAddTestsView(APIView):
             for tid in new_ids
         ])
 
+        sample_barcodes = request.data.get('sample_barcodes') or []
+        if sample_barcodes:
+            try:
+                link_sample_barcodes(
+                    patient=registration.patient,
+                    registration=registration,
+                    barcodes_data=sample_barcodes,
+                    user=request.user,
+                )
+            except BarcodeLinkError as exc:
+                return Response(
+                    {'detail': exc.message},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        addition_discount_test = float(request.data.get('discount_test') or 0)
+        addition_discount_regn = float(request.data.get('discount_regn') or 0)
+        addition_paid = float(request.data.get('paid') or 0)
+        payment_method = request.data.get('payment_method')
+
+        registration.discount_test = float(registration.discount_test) + addition_discount_test
+        registration.discount_regn = float(registration.discount_regn) + addition_discount_regn
+        if payment_method:
+            registration.payment_method = str(payment_method)
+        registration.paid = float(registration.paid) + addition_paid
+
         total = sum(float(rt.price) for rt in registration.tests.all())
         discount_total = float(registration.discount_test) + float(registration.discount_regn)
         registration.total = total
@@ -1524,7 +1566,16 @@ class RegistrationAddTestsView(APIView):
         added_names = [tests_by_id[tid].name for tid in new_ids]
         note = f'Tests added: {", ".join(added_names)}'
         registration.comment = f'{registration.comment}\n{note}'.strip() if registration.comment else note
-        registration.save(update_fields=['total', 'net_amount', 'balance', 'comment'])
+        registration.save(update_fields=[
+            'total',
+            'net_amount',
+            'balance',
+            'comment',
+            'discount_test',
+            'discount_regn',
+            'paid',
+            'payment_method',
+        ])
 
         from .franchise_ledger import record_ledger_event
         from .models import FranchiseLedgerEvent

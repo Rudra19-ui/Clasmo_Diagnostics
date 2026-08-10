@@ -7,7 +7,8 @@ from django.utils import timezone
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient
 
-from api.models import Patient, Registration, RegistrationTest, Test, User
+from api.barcode_service import link_sample_barcodes
+from api.models import Patient, PatientSampleBarcode, Registration, RegistrationTest, Test, User
 from api.registration_edit import can_edit_registration
 
 
@@ -83,6 +84,41 @@ class RegistrationEditWindowTests(TestCase):
         self.assertEqual(self.patient.mobile, '8888888888')
         self.assertEqual(self.registration.tests.count(), 1)
         self.assertEqual(self.registration.tests.first().test_id, other.id)
+
+    def test_edit_adds_test_with_barcode_on_same_entry(self):
+        urine = Test.objects.create(
+            name='Edit Urine Routine',
+            price=Decimal('80.00'),
+            mrp=Decimal('160.00'),
+            sample_type='URINE',
+        )
+        response = self.client.patch(
+            f'/api/registrations/{self.registration.lab_code}/edit/',
+            {
+                'tests': [
+                    {'test_id': self.test.id, 'price': '200.00'},
+                    {'test_id': urine.id, 'price': '160.00'},
+                ],
+                'sample_barcodes': [{
+                    'sample_type': 'URINE',
+                    'barcode': 'BC-EDIT-URINE',
+                    'confirm_barcode': 'BC-EDIT-URINE',
+                    'test_ids': [urine.id],
+                }],
+            },
+            format='json',
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        self.registration.refresh_from_db()
+        self.assertEqual(self.registration.lab_code, 'EDIT001')
+        self.assertEqual(self.registration.tests.count(), 2)
+        barcode = PatientSampleBarcode.objects.filter(
+            registration=self.registration,
+            sample_type='URINE',
+            is_active=True,
+        ).first()
+        self.assertIsNotNone(barcode)
+        self.assertEqual(barcode.barcode, 'BC-EDIT-URINE')
 
     def test_editable_only_search(self):
         old = Registration.objects.create(

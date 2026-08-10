@@ -16,7 +16,18 @@ from .clinical_serializers import (
     TestParameterSerializer,
 )
 from .clinical_utils import calculate_flag
+from .franchise_scope import scope_registrations_for_user
 from .models import Registration, Report, ReportValue, TestParameter, User
+
+
+def _scoped_registration(user, registration_id):
+    return get_object_or_404(
+        scope_registrations_for_user(
+            user,
+            Registration.objects.select_related('patient').prefetch_related('tests__test'),
+        ),
+        pk=registration_id,
+    )
 
 
 class TestParameterListCreateView(generics.ListCreateAPIView):
@@ -82,10 +93,7 @@ class ReportDetailView(APIView):
         return [permissions.IsAuthenticated()]
 
     def get(self, request, registration_id):
-        registration = get_object_or_404(
-            Registration.objects.select_related('patient').prefetch_related('tests__test'),
-            pk=registration_id,
-        )
+        registration = _scoped_registration(request.user, registration_id)
         report = Report.objects.filter(registration=registration).select_related(
             'entered_by', 'verified_by', 'registration__patient'
         ).prefetch_related(
@@ -123,10 +131,7 @@ class ReportDetailView(APIView):
 
     @transaction.atomic
     def post(self, request, registration_id):
-        registration = get_object_or_404(
-            Registration.objects.select_related('patient').prefetch_related('tests__test'),
-            pk=registration_id,
-        )
+        registration = _scoped_registration(request.user, registration_id)
 
         if hasattr(registration, 'clinical_report') and registration.clinical_report.status == Report.STATUS_VERIFIED:
             return Response(
@@ -268,7 +273,7 @@ class ReportVerifyView(APIView):
 
     @transaction.atomic
     def patch(self, request, registration_id):
-        registration = get_object_or_404(Registration, pk=registration_id)
+        registration = _scoped_registration(request.user, registration_id)
         report = get_object_or_404(Report, registration=registration)
 
         if report.status == Report.STATUS_PENDING:

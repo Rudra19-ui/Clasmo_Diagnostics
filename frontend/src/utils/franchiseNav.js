@@ -1,16 +1,40 @@
 import { FRANCHISE_ROLES, ROLES } from './roles';
 
-/** Shared franchise portal sidebar for Super Franchisee, Franchisee, and Sub-Franchise. */
+/** Shared franchise portal sidebar for Supreme, Prime, and Sub-Franchise. */
 export const FRANCHISE_NAV = [
   { id: 'dashboard', label: 'Dashboard', href: '/dashboard', icon: 'dashboard' },
-  { id: 'analytics', label: 'Analytics', href: '/franchise/analytics', icon: 'analytics' },
+  {
+    id: 'analytics',
+    label: 'Analytics',
+    href: '/franchise/analytics',
+    icon: 'analytics',
+    excludeRoles: [ROLES.SUB_FRANCHISE],
+  },
 
   {
-    section: 'BOOKING',
+    section: 'BOOKING SECTIONS',
     items: [
-      { id: 'manage-booking', label: 'Manage Booking', href: '/franchise/manage-booking', icon: 'layers' },
-      { id: 'manage-reports', label: 'Manage Reports', href: '/franchise/manage-reports', icon: 'layers' },
-      { id: 'old-reports', label: 'Old Reports', href: '/franchise/old-reports', icon: 'layers' },
+      {
+        id: 'manage-booking',
+        label: 'Entry Section',
+        href: '/franchise/manage-booking/new',
+        icon: 'layers',
+        children: [
+          { label: 'New Entry', href: '/franchise/manage-booking/new' },
+          { label: 'Edit Entry', href: '/franchise/manage-booking/list' },
+          { label: 'Test Addition', href: '/franchise/manage-booking/test-addition' },
+        ],
+      },
+      {
+        id: 'manage-reports',
+        label: 'Report Section',
+        href: '/franchise/manage-reports/all',
+        icon: 'layers',
+        children: [
+          { label: 'All Reports', href: '/franchise/manage-reports/all' },
+          { label: 'Search Reports', href: '/franchise/manage-reports/search' },
+        ],
+      },
     ],
   },
 
@@ -18,38 +42,42 @@ export const FRANCHISE_NAV = [
     section: 'NOTIFICATIONS',
     items: [
       {
-        id: 'barcode-mismatch',
-        label: 'Barcode Mismatch',
-        href: '/franchise/barcode-mismatch',
+        id: 'find-barcode',
+        label: 'Find Barcode',
+        href: '/franchise/find-barcode',
         icon: 'chip',
-        badge: 240,
-        badgeTone: 'danger',
+      },
+      {
+        id: 'clinical-history',
+        label: 'Clinical History',
+        href: '/franchise/clinical-history',
+        icon: 'chip',
+      },
+      {
+        id: 'test-cancellation',
+        label: 'Test Cancellation',
+        href: '/franchise/test-cancellation',
+        icon: 'layers',
+      },
+      {
+        id: 'extra-sample',
+        label: 'Extra Sample',
+        href: '/franchise/extra-sample',
+        icon: 'chip',
       },
       {
         id: 'hold',
         label: 'Hold',
         href: '/franchise/hold',
         icon: 'chip',
-        badge: 0,
-        badgeTone: 'success',
       },
-      {
-        id: 'clinical-alerts',
-        label: 'Clinical',
-        href: '/franchise/clinical',
-        icon: 'chip',
-        badge: 11,
-        badgeTone: 'danger',
-      },
-      { id: 'cancellations', label: 'Cancellations', href: '/franchise/cancellations', icon: 'layers' },
+      { id: 'rejection', label: 'Rejection', href: '/franchise/rejection', icon: 'layers' },
     ],
   },
 
   {
-    section: 'BILLING',
+    section: 'PAYMENT SECTION',
     items: [
-      { id: 'generate-bill', label: 'Generate Bill', href: '/franchise/generate-bill', icon: 'layers' },
-      { id: 'generate-bill-old', label: 'Generate Bill Old', href: '/franchise/generate-bill-old', icon: 'layers' },
       {
         id: 'online-payment',
         label: 'Online Payment',
@@ -57,30 +85,41 @@ export const FRANCHISE_NAV = [
         icon: 'payment',
         accent: true,
       },
-      { id: 'payment-history', label: 'Payment History', href: '/franchise/payment-history', icon: 'layers' },
-      { id: 'track-ledger', label: 'Track Ledger', href: '/franchise/track-ledger', icon: 'layers' },
-      { id: 'manage-doctors', label: 'Manage Doctors', href: '/franchise/manage-doctors', icon: 'layers' },
-      { id: 'manage-lab', label: 'Manage Lab', href: '/franchise/manage-lab', icon: 'layers' },
       {
-        id: 'test-portfolio',
-        label: 'Test Portfolio',
-        href: '/portfolio/test-list',
+        id: 'payment-history',
+        label: 'Payment History',
+        href: '/franchise/payment-history',
         icon: 'layers',
-        children: [
-          { label: 'Test List', href: '/portfolio/test-list' },
-          { label: 'Test Profile', href: '/portfolio/test-profile' },
-          { label: 'Sample Report', href: '/portfolio/sample-report' },
-        ],
       },
-      { id: 'commission', label: 'Commission', href: '/franchise/commission', icon: 'layers' },
     ],
   },
 
   {
-    section: 'INVENTORY',
+    section: 'BILL SECTION',
     items: [
-      { id: 'inventory', label: 'Inventory', href: '/franchise/inventory', icon: 'layers' },
-      { id: 'slide-request', label: 'Slide/Request', href: '/franchise/slide-request', icon: 'layers' },
+      { id: 'make-bill', label: 'Make Bill', href: '/franchise/make-bill', icon: 'layers' },
+      { id: 'billing-list', label: 'Billing List', href: '/franchise/billing-list', icon: 'layers' },
+    ],
+  },
+
+  {
+    section: 'ACCOUNTING',
+    items: [
+      {
+        id: 'track-ledger',
+        label: 'Track Ledger / Accounting',
+        href: '/franchise/track-ledger',
+        icon: 'analytics',
+      },
+    ],
+  },
+
+  {
+    section: 'TEST SECTION',
+    items: [
+      { id: 'all-tests', label: 'All Tests', href: '/portfolio/test-list', icon: 'layers' },
+      { id: 'package-list', label: 'Package Lists', href: '/portfolio/test-profile', icon: 'layers' },
+      { id: 'reports-format', label: 'Reports Format', href: '/portfolio/sample-report', icon: 'layers' },
     ],
   },
 
@@ -113,13 +152,6 @@ export const FRANCHISE_NAV = [
   {
     section: 'SETTINGS',
     items: [
-      {
-        id: 'generate-certificate',
-        label: 'Generate Certificate',
-        href: '/franchise/generate-certificate',
-        icon: 'settings',
-      },
-      { id: 'kyc-verification', label: 'KYC Verification', href: '/franchise/kyc-verification', icon: 'settings' },
       { id: 'update-profile', label: 'Update Profile', href: '/franchise/update-profile', icon: 'settings' },
       { id: 'change-password', label: 'Change Password', href: '/admin/change-password', icon: 'settings' },
       { id: 'logout', label: 'Logout', href: '#logout', icon: 'logout', action: 'logout' },

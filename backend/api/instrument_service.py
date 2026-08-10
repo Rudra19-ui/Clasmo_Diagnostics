@@ -211,6 +211,18 @@ def apply_instrument_results(*, barcode, results, instrument_id='', user=None, r
         )
         raise InstrumentIngestError(batch.message)
 
+    from .franchise_scope import user_can_access_registration
+    if user is not None and not user_can_access_registration(user, registration):
+        batch = InstrumentResultBatch.objects.create(
+            barcode=normalized,
+            instrument_id=instrument_id or '',
+            raw_payload=payload,
+            status=InstrumentResultBatch.STATUS_FAILED,
+            message='No patient linked to this barcode.',
+            created_by=user,
+        )
+        raise InstrumentIngestError(batch.message)
+
     if hasattr(registration, 'clinical_report') and registration.clinical_report.status == Report.STATUS_VERIFIED:
         batch = InstrumentResultBatch.objects.create(
             barcode=normalized,
@@ -317,7 +329,7 @@ def apply_instrument_results(*, barcode, results, instrument_id='', user=None, r
     }
 
 
-def build_patient_report_by_barcode(barcode, *, test_filter='cbc'):
+def build_patient_report_by_barcode(barcode, *, test_filter='cbc', user=None):
     """
     Demographics + CBC investigation rows for Sample Report / patient report preview.
     """
@@ -337,6 +349,14 @@ def build_patient_report_by_barcode(barcode, *, test_filter='cbc'):
     registration = link.registration or (
         Registration.objects.filter(patient=patient).order_by('-created_at').first()
     )
+    if user is not None and registration is not None:
+        from .franchise_scope import user_can_access_registration
+        if not user_can_access_registration(user, registration):
+            return {
+                'found': False,
+                'barcode': normalized,
+                'message': 'No patient linked to this barcode.',
+            }
 
     gender_label = (
         'Male' if patient.gender == 'male'

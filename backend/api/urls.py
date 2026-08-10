@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import clinical_views, instrument_views, views
+from . import clinical_views, instrument_views, views, wallet_views
 
 urlpatterns = [
     path('health/', views.HealthView.as_view(), name='health'),
@@ -11,6 +11,8 @@ urlpatterns = [
     path('auth/change-password/', views.ChangePasswordView.as_view(), name='change-password'),
     path('tests/', views.TestListView.as_view(), name='tests'),
     path('test-categories/', views.TestCategoryListView.as_view(), name='test-categories'),
+    path('test-packages/', views.TestPackageListView.as_view(), name='test-packages'),
+    path('report-formats/', views.ReportFormatListView.as_view(), name='report-formats'),
     path('registrations/', views.RegistrationSearchView.as_view(), name='registrations'),
     path('registrations/worksheet/', views.WorksheetView.as_view(), name='registration-worksheet'),
     path('registrations/workflow/', views.WorkFlowHistoryView.as_view(), name='registration-workflow'),
@@ -21,7 +23,13 @@ urlpatterns = [
     path('registrations/create/', views.RegistrationCreateView.as_view(), name='registration-create'),
     path('registrations/next-lab-code/', views.NextLabCodeView.as_view(), name='next-lab-code'),
     path('registrations/next-patient-id/', views.NextPatientIdView.as_view(), name='next-patient-id'),
+    path('registrations/<str:lab_code>/add-tests/', views.RegistrationAddTestsView.as_view(), name='registration-add-tests'),
+    path('registrations/<str:lab_code>/cancel-tests/', views.RegistrationCancelTestsView.as_view(), name='registration-cancel-tests'),
+    path('registrations/<str:lab_code>/generate-mrp-bill/', views.RegistrationGenerateMrpBillView.as_view(), name='registration-generate-mrp-bill'),
+    path('registrations/<str:lab_code>/edit/', views.RegistrationEditView.as_view(), name='registration-edit'),
     path('registrations/<str:lab_code>/', views.RegistrationDetailView.as_view(), name='registration-detail'),
+    path('franchise/ledger/', views.FranchiseLedgerView.as_view(), name='franchise-ledger'),
+    path('franchise/sample-usage/', views.FranchiseSampleUsageView.as_view(), name='franchise-sample-usage'),
     path('pickup-requests/', views.PickupRequestListCreateView.as_view(), name='pickup-requests'),
     path('messages/', views.LabMessageListCreateView.as_view(), name='messages'),
     path('dashboard/summary/', views.DashboardSummaryView.as_view(), name='dashboard-summary'),
@@ -74,4 +82,10 @@ urlpatterns = [
     path('reports/<int:registration_id>/verify/', clinical_views.ReportVerifyView.as_view(), name='report-verify'),
     path('instrument/results/', instrument_views.InstrumentResultsIngestView.as_view(), name='instrument-results'),
     path('instrument/patient-report/', instrument_views.PatientReportByBarcodeView.as_view(), name='instrument-patient-report'),
+    path('wallets/me/', wallet_views.MyWalletView.as_view(), name='wallet-me'),
+    path('wallets/', wallet_views.WalletListView.as_view(), name='wallet-list'),
+    path('wallets/transactions/', wallet_views.WalletTransactionListView.as_view(), name='wallet-transactions'),
+    path('wallets/commission-config/', wallet_views.CommissionConfigView.as_view(), name='wallet-commission-config'),
+    path('wallets/demo-transaction/', wallet_views.DemoWalletTransactionView.as_view(), name='wallet-demo-transaction'),
+    path('wallets/<int:user_id>/', wallet_views.WalletDetailView.as_view(), name='wallet-detail'),
 ]

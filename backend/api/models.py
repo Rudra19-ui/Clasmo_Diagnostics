@@ -20,8 +20,8 @@ class User(AbstractUser):
         (ROLE_PATHOLOGIST, 'Pathologist'),
         (ROLE_TECHNICIAN, 'Technician'),
         (ROLE_RECEPTIONIST, 'Receptionist'),
-        (ROLE_SUPER_FRANCHISEE, 'Super Franchisee'),
-        (ROLE_FRANCHISEE, 'Franchisee'),
+        (ROLE_SUPER_FRANCHISEE, 'Supreme'),
+        (ROLE_FRANCHISEE, 'Prime'),
         (ROLE_SUB_FRANCHISE, 'Sub-Franchise'),
     ]
     CLINICAL_ROLES = {ROLE_ADMIN, ROLE_TECHNICIAN, ROLE_PATHOLOGIST}
@@ -51,7 +51,7 @@ class User(AbstractUser):
         null=True,
         blank=True,
         related_name='franchise_children',
-        help_text='Parent Super Franchisee or Franchisee in the management chain.',
+        help_text='Parent Supreme or Prime account in the management chain.',
     )
 
     def expected_parent_role(self):
@@ -114,15 +114,78 @@ class Test(models.Model):
     name = models.CharField(max_length=200)
     short_name = models.CharField(max_length=50, blank=True)
     test_code = models.CharField(max_length=50, blank=True)
-    mrp = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    mrp = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0,
+        help_text='Patient MRP.',
+    )
+    price = models.DecimalField(
+        max_digits=10, decimal_places=2,
+        help_text='B2B / franchise rate.',
+    )
     sample_type = models.CharField(max_length=150, blank=True)
+    tat = models.CharField(
+        max_length=80, blank=True,
+        help_text='Turnaround time to release report (e.g. 24 hrs).',
+    )
+    volume_ml = models.DecimalField(
+        max_digits=8, decimal_places=2, default=0,
+        help_text='Sample volume in ml.',
+    )
     category = models.ForeignKey(
         TestCategory, on_delete=models.SET_NULL, null=True, blank=True, related_name='tests'
     )
 
     def __str__(self):
         return self.name
+
+
+class TestPackage(models.Model):
+    """Combo / package shown in Package Lists."""
+
+    name = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    is_active = models.BooleanField(default=True)
+    tests = models.ManyToManyField(Test, blank=True, related_name='packages')
+    sort_order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['sort_order', 'name']
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def test_count(self):
+        return self.tests.count()
+
+
+class ReportFormatAsset(models.Model):
+    """Demo / sample report PDF or image for Reports Format."""
+
+    TYPE_PDF = 'pdf'
+    TYPE_IMAGE = 'image'
+    TYPE_CHOICES = [
+        (TYPE_PDF, 'PDF'),
+        (TYPE_IMAGE, 'Image'),
+    ]
+
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    file = models.FileField(upload_to='report-formats/', blank=True, null=True)
+    external_url = models.URLField(blank=True)
+    file_type = models.CharField(max_length=20, choices=TYPE_CHOICES, default=TYPE_PDF)
+    is_demo = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)
+    sort_order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['sort_order', 'title']
+        verbose_name = 'Report format asset'
+
+    def __str__(self):
+        return self.title
 
 
 class Patient(models.Model):
@@ -1067,4 +1130,174 @@ class SelfPatientQuery(models.Model):
 
     def __str__(self):
         return f'{self.test_name} ({self.created_at:%d-%b-%Y})'
+
+
+class FranchiseCommissionConfig(models.Model):
+    """
+    Predefined hierarchical commission rates (% of registration net_amount).
+    Credits are awarded to each role present in the booking creator's parent chain.
+    """
+
+    sub_franchise_pct = models.DecimalField(
+        max_digits=5, decimal_places=2, default=5,
+        help_text='Commission % credited to Sub-Franchise when they (or their booking) generate revenue.',
+    )
+    franchisee_pct = models.DecimalField(
+        max_digits=5, decimal_places=2, default=3,
+        help_text='Commission % credited to Prime in the hierarchy.',
+    )
+    super_franchisee_pct = models.DecimalField(
+        max_digits=5, decimal_places=2, default=2,
+        help_text='Commission % credited to Supreme in the hierarchy.',
+    )
+    is_active = models.BooleanField(default=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Franchise commission config'
+
+    def __str__(self):
+        return (
+            f'Commission Sub {self.sub_franchise_pct}% / '
+            f'Prime {self.franchisee_pct}% / Supreme {self.super_franchisee_pct}%'
+        )
+
+    @classmethod
+    def get_solo(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+
+class FranchiseWallet(models.Model):
+    """Per-user wallet balance for franchise hierarchy actors."""
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='franchise_wallet')
+    balance = models.DecimalField(max_digits=14, decimal_places=2, default=0)
+    currency = models.CharField(max_length=8, default='INR')
+    is_active = models.BooleanField(default=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['user__username']
+        verbose_name = 'Franchise wallet'
+
+    def __str__(self):
+        return f'{self.user.username}: {self.balance} {self.currency}'
+
+
+class WalletTransaction(models.Model):
+    """Immutable ledger entry for franchise wallet credits/debits."""
+
+    TYPE_COMMISSION = 'commission'
+    TYPE_TOP_UP = 'top_up'
+    TYPE_DEBIT = 'debit'
+    TYPE_ADJUSTMENT = 'adjustment'
+    TYPE_DEMO = 'demo'
+    TYPE_CHOICES = [
+        (TYPE_COMMISSION, 'Commission'),
+        (TYPE_TOP_UP, 'Top-up'),
+        (TYPE_DEBIT, 'Debit'),
+        (TYPE_ADJUSTMENT, 'Adjustment'),
+        (TYPE_DEMO, 'Demo'),
+    ]
+
+    DIR_CREDIT = 'credit'
+    DIR_DEBIT = 'debit'
+    DIR_CHOICES = [
+        (DIR_CREDIT, 'Credit'),
+        (DIR_DEBIT, 'Debit'),
+    ]
+
+    wallet = models.ForeignKey(FranchiseWallet, on_delete=models.CASCADE, related_name='transactions')
+    txn_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
+    direction = models.CharField(max_length=10, choices=DIR_CHOICES, default=DIR_CREDIT)
+    amount = models.DecimalField(max_digits=14, decimal_places=2)
+    balance_after = models.DecimalField(max_digits=14, decimal_places=2)
+    commission_rate_pct = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    base_amount = models.DecimalField(
+        max_digits=14, decimal_places=2, null=True, blank=True,
+        help_text='Registration net_amount (or demo base) used to compute commission.',
+    )
+    beneficiary_role = models.CharField(max_length=30, blank=True)
+    batch_key = models.CharField(max_length=64, blank=True, db_index=True)
+    description = models.CharField(max_length=255, blank=True)
+    registration = models.ForeignKey(
+        Registration,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='wallet_transactions',
+    )
+    source_user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='wallet_transactions_sourced',
+        help_text='User whose booking/activity generated this credit.',
+    )
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='wallet_transactions_created',
+    )
+    metadata = models.JSONField(default=dict, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at', '-id']
+        indexes = [
+            models.Index(fields=['txn_type', 'created_at']),
+            models.Index(fields=['batch_key']),
+        ]
+
+    def __str__(self):
+        sign = '+' if self.direction == self.DIR_CREDIT else '-'
+        return f'{sign}{self.amount} {self.txn_type} → {self.wallet.user_id}'
+
+
+class FranchiseLedgerEvent(models.Model):
+    """Investment / accounting events for franchise Track Ledger."""
+
+    TYPE_ENTRY = 'entry'
+    TYPE_TEST_ADDITION = 'test_addition'
+    TYPE_REFUND = 'refund'
+    TYPE_CHOICES = [
+        (TYPE_ENTRY, 'Entry'),
+        (TYPE_TEST_ADDITION, 'Test Addition'),
+        (TYPE_REFUND, 'Refund'),
+    ]
+
+    event_type = models.CharField(max_length=30, choices=TYPE_CHOICES, db_index=True)
+    amount = models.DecimalField(max_digits=14, decimal_places=2, default=0)
+    quantity = models.PositiveIntegerField(default=1)
+    description = models.CharField(max_length=255, blank=True)
+    registration = models.ForeignKey(
+        Registration,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='ledger_events',
+    )
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='franchise_ledger_events',
+    )
+    metadata = models.JSONField(default=dict, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at', '-id']
+        indexes = [
+            models.Index(fields=['event_type', 'created_at']),
+        ]
+
+    def __str__(self):
+        return f'{self.event_type} {self.amount} @ {self.created_at:%Y-%m-%d}'
 

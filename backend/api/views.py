@@ -17,8 +17,21 @@ from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from .franchise_scope import (
+    get_registration_for_user,
+    is_franchise_actor,
+    scope_barcodes_for_user,
+    scope_created_by_for_user,
+    scope_patients_for_user,
+    scope_registrations_for_user,
+    scope_reports_for_user,
+    scope_users_for_user,
+    user_can_access_registration,
+    visible_creator_ids,
+)
 from .models import (
-    LabMessage, PickupRequest, Registration, RegistrationTest, Test, TestCategory, User, LabRole,
+    LabMessage, PickupRequest, Registration, RegistrationTest, Test, TestCategory, TestPackage,
+    ReportFormatAsset, User, LabRole,
     Membership, MembershipType, CollectionCenter, CollectionCenterBoy, DiscountReason, DiscountAuthority,
     WhatsAppMessageLog, ExpenseType, Area, RateMaster, Affiliation, SalesReference, Doctor, Patient, PatientAddress, LabConfiguration, ServiceAreaPincode, LabActivity,
     JoinRequest, LoginLog, SelfPatientQuery, PatientSampleBarcode,
@@ -57,6 +70,8 @@ from .serializers import (
     PatientBarcodeLinkSerializer,
     PatientSampleBarcodeSerializer,
     TestCategorySerializer,
+    TestPackageSerializer,
+    ReportFormatAssetSerializer,
     TestSerializer,
     UserRoleUpdateSerializer,
     UserSerializer,
@@ -301,6 +316,38 @@ class TestCategoryListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
 
+class TestPackageListView(generics.ListAPIView):
+    serializer_class = TestPackageSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        qs = TestPackage.objects.filter(is_active=True).prefetch_related('tests')
+        search = self.request.query_params.get('search', '').strip()
+        if search:
+            qs = qs.filter(name__icontains=search)
+        return qs
+
+
+class ReportFormatListView(generics.ListAPIView):
+    serializer_class = ReportFormatAssetSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        qs = ReportFormatAsset.objects.filter(is_active=True)
+        search = self.request.query_params.get('search', '').strip()
+        file_type = self.request.query_params.get('file_type', '').strip()
+        if search:
+            qs = qs.filter(Q(title__icontains=search) | Q(description__icontains=search))
+        if file_type:
+            qs = qs.filter(file_type=file_type)
+        return qs
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+
+
 class RegistrationSearchView(generics.ListAPIView):
     serializer_class = RegistrationSearchSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -376,7 +423,14 @@ class RegistrationSearchView(generics.ListAPIView):
         if sample_collection_at and sample_collection_at.lower() != 'all':
             qs = qs.filter(patient__sample_collected_at__icontains=sample_collection_at)
         if user_id:
-            qs = qs.filter(created_by_id=user_id)
+            try:
+                uid = int(user_id)
+            except (TypeError, ValueError):
+                return Registration.objects.none()
+            visible = visible_creator_ids(self.request.user)
+            if visible is not None and uid not in visible:
+                return Registration.objects.none()
+            qs = qs.filter(created_by_id=uid)
 
         if barcode:
             qs = filter_registrations_by_barcode(qs, barcode)
@@ -399,6 +453,15 @@ class RegistrationSearchView(generics.ListAPIView):
         end = self._parse_ddmmyyyy(to_date)
         if end:
             qs = qs.filter(registration_date__date__lte=end)
+
+        editable_only = params.get('editable_only', '').strip().lower()
+        if editable_only in ('1', 'true', 'yes'):
+            from .registration_edit import editable_registrations_since
+            qs = qs.filter(registration_date__gte=editable_registrations_since())
+
+        lab_code = params.get('lab_code', '').strip()
+        if lab_code:
+            qs = qs.filter(lab_code__icontains=lab_code)
 
         sample_start = self._parse_ddmmyyyy(sample_from_date)
         if sample_start:
@@ -431,6 +494,7 @@ class RegistrationSearchView(generics.ListAPIView):
                     Q(tests__test__short_name__icontains=test_profile_name) | Q(tests__test__name__icontains=test_profile_name)
                 ).distinct()
 
+        qs = scope_registrations_for_user(self.request.user, qs)
         return qs.order_by('-registration_date')
 
 
@@ -515,9 +579,12 @@ class WorksheetView(APIView):
         if not ids:
             return Response({'detail': 'Provide registration ids.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        registrations = Registration.objects.filter(id__in=ids).select_related('patient').prefetch_related(
-            'tests__test',
-            'clinical_report__values__parameter__test',
+        registrations = scope_registrations_for_user(
+            request.user,
+            Registration.objects.filter(id__in=ids).select_related('patient').prefetch_related(
+                'tests__test',
+                'clinical_report__values__parameter__test',
+            ),
         )
         by_id = {registration.id: registration for registration in registrations}
         patients = [_build_worksheet_patient(by_id[reg_id]) for reg_id in ids if reg_id in by_id]
@@ -613,7 +680,10 @@ class WorkFlowHistoryView(APIView):
         if not reg_id and not lab_code:
             return Response({'detail': 'Provide registration id or lab code.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        qs = Registration.objects.select_related('patient', 'created_by').prefetch_related('tests__test')
+        qs = scope_registrations_for_user(
+            request.user,
+            Registration.objects.select_related('patient', 'created_by').prefetch_related('tests__test'),
+        )
         if reg_id:
             try:
                 registration = qs.get(id=int(reg_id))
@@ -706,7 +776,10 @@ class BarcodeView(APIView):
         if not reg_id and not lab_code:
             return Response({'detail': 'Provide registration id or lab code.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        qs = Registration.objects.select_related('patient').prefetch_related('tests__test__category')
+        qs = scope_registrations_for_user(
+            request.user,
+            Registration.objects.select_related('patient').prefetch_related('tests__test__category'),
+        )
         if reg_id:
             try:
                 registration = qs.get(id=int(reg_id))
@@ -824,7 +897,10 @@ class NotificationView(APIView):
             return Response({'detail': 'Provide registration id.'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            registration = Registration.objects.select_related('patient').prefetch_related('tests__test').get(id=int(reg_id))
+            registration = scope_registrations_for_user(
+                request.user,
+                Registration.objects.select_related('patient').prefetch_related('tests__test'),
+            ).get(id=int(reg_id))
         except (ValueError, Registration.DoesNotExist):
             return Response({'detail': 'Registration not found.'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -864,7 +940,10 @@ class NotificationView(APIView):
             return Response({'detail': 'Invalid notification action.'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            registration = Registration.objects.select_related('patient').prefetch_related('tests__test').get(id=int(registration_id))
+            registration = scope_registrations_for_user(
+                request.user,
+                Registration.objects.select_related('patient').prefetch_related('tests__test'),
+            ).get(id=int(registration_id))
         except (ValueError, Registration.DoesNotExist):
             return Response({'detail': 'Registration not found.'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -1062,7 +1141,10 @@ class BulkNotificationView(APIView):
         except (TypeError, ValueError):
             return Response({'detail': 'Invalid registration ids.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        registrations = Registration.objects.filter(id__in=ids).select_related('patient').prefetch_related('tests__test')
+        registrations = scope_registrations_for_user(
+            request.user,
+            Registration.objects.filter(id__in=ids).select_related('patient').prefetch_related('tests__test'),
+        )
         if not registrations.exists():
             return Response({'detail': 'No registrations found.'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -1196,7 +1278,10 @@ class BillReceiptView(APIView):
             if not ids:
                 return Response({'detail': 'Provide registration ids.'}, status=status.HTTP_400_BAD_REQUEST)
 
-            registrations = Registration.objects.filter(id__in=ids).select_related('patient').prefetch_related('tests__test')
+            registrations = scope_registrations_for_user(
+                request.user,
+                Registration.objects.filter(id__in=ids).select_related('patient').prefetch_related('tests__test'),
+            )
             by_id = {registration.id: registration for registration in registrations}
             receipts = [_build_bill_receipt_payload(by_id[reg_id]) for reg_id in ids if reg_id in by_id]
 
@@ -1209,7 +1294,10 @@ class BillReceiptView(APIView):
             return Response({'detail': 'Provide registration id.'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            registration = Registration.objects.select_related('patient').prefetch_related('tests__test').get(id=int(reg_id))
+            registration = scope_registrations_for_user(
+                request.user,
+                Registration.objects.select_related('patient').prefetch_related('tests__test'),
+            ).get(id=int(reg_id))
         except (ValueError, Registration.DoesNotExist):
             return Response({'detail': 'Registration not found.'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -1221,7 +1309,10 @@ class BillReceiptView(APIView):
             return Response({'detail': 'Registration id is required.'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            registration = Registration.objects.select_related('patient').prefetch_related('tests__test').get(id=int(reg_id))
+            registration = scope_registrations_for_user(
+                request.user,
+                Registration.objects.select_related('patient').prefetch_related('tests__test'),
+            ).get(id=int(reg_id))
         except (ValueError, Registration.DoesNotExist):
             return Response({'detail': 'Registration not found.'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -1259,10 +1350,272 @@ class BillReceiptView(APIView):
 
 
 class RegistrationDetailView(generics.RetrieveAPIView):
-    queryset = Registration.objects.select_related('patient').prefetch_related('tests__test')
     serializer_class = RegistrationSerializer
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'lab_code'
+
+    def get_queryset(self):
+        return scope_registrations_for_user(
+            self.request.user,
+            Registration.objects.select_related('patient').prefetch_related('tests__test'),
+        )
+
+
+class RegistrationEditView(APIView):
+    """Update patient / tests / billing fields within 12 hours of registration."""
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    PATIENT_FIELDS = {
+        'patient_type', 'title', 'patient_name', 'gender', 'address', 'city',
+        'email', 'mobile', 'date_of_birth', 'age_years', 'age_months', 'age_days',
+        'doctor_name', 'affiliation', 'collection_center', 'send_result_sms', 'is_register',
+    }
+    REGISTRATION_FIELDS = {
+        'comment', 'urgency', 'discount_test', 'discount_regn', 'discount_type',
+        'discount_reason', 'discount_authorization', 'payment_method',
+        'visiting_charges', 'paid', 'refund_amount', 'recovery_amount',
+    }
+
+    @transaction.atomic
+    def patch(self, request, lab_code):
+        from .registration_edit import can_edit_registration, registration_edit_deadline
+
+        registration = get_registration_for_user(request.user, lab_code=lab_code)
+        if not registration:
+            return Response({'detail': 'Registration not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        if not can_edit_registration(registration):
+            deadline = registration_edit_deadline(registration)
+            return Response(
+                {
+                    'detail': (
+                        'Edit window closed. Entries can only be edited within 12 hours of registration '
+                        f'(expired {deadline.strftime("%d-%m-%Y %H:%M")}).'
+                    ),
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        data = request.data if isinstance(request.data, dict) else {}
+        patient_data = data.get('patient')
+        if isinstance(patient_data, dict):
+            patient = registration.patient
+            for field in self.PATIENT_FIELDS:
+                if field in patient_data:
+                    setattr(patient, field, patient_data[field])
+            if hasattr(patient, 'sync_computed_fields'):
+                patient.sync_computed_fields()
+            patient.save()
+
+        for field in self.REGISTRATION_FIELDS:
+            if field in data:
+                setattr(registration, field, data[field])
+
+        if 'tests' in data:
+            tests_raw = data.get('tests') or []
+            if not isinstance(tests_raw, list) or not tests_raw:
+                return Response(
+                    {'detail': 'Keep at least one test on the registration.'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            tests_data = []
+            for item in tests_raw:
+                if not isinstance(item, dict) or 'test_id' not in item:
+                    return Response(
+                        {'detail': 'Each test must include test_id.'},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+                try:
+                    test_id = int(item['test_id'])
+                except (TypeError, ValueError):
+                    return Response({'detail': 'Invalid test_id.'}, status=status.HTTP_400_BAD_REQUEST)
+                tests_data.append({
+                    'test_id': test_id,
+                    'price': item['price'] if item.get('price') is not None else None,
+                    'discount': item.get('discount', 0),
+                    'refund': item.get('refund', 0),
+                })
+            # Normalize blank prices to catalog rates inside _sync_tests
+            for item in tests_data:
+                if item.get('price') is None:
+                    item.pop('price', None)
+            missing = set(t['test_id'] for t in tests_data) - set(
+                Test.objects.filter(id__in=[t['test_id'] for t in tests_data]).values_list('id', flat=True)
+            )
+            if missing:
+                return Response(
+                    {'detail': f'Unknown test ids: {sorted(missing)}'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            registration.tests.all().delete()
+            RegistrationSerializer()._sync_tests(registration, tests_data)
+        else:
+            discount_total = float(registration.discount_test) + float(registration.discount_regn)
+            total = sum(float(rt.price) for rt in registration.tests.all())
+            registration.total = total
+            registration.net_amount = total + float(registration.visiting_charges) - discount_total
+            registration.balance = float(registration.net_amount) - float(registration.paid)
+            registration.save()
+
+        note = f'Edited within 12h window by {request.user.username}'
+        registration.comment = f'{registration.comment}\n{note}'.strip() if registration.comment else note
+        registration.save(update_fields=['comment'])
+
+        registration = (
+            Registration.objects.select_related('patient')
+            .prefetch_related('tests__test')
+            .get(pk=registration.pk)
+        )
+        return Response(RegistrationSerializer(registration).data)
+
+
+class RegistrationAddTestsView(APIView):
+    """Append tests to an existing registration (Test Addition)."""
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    @transaction.atomic
+    def post(self, request, lab_code):
+        registration = get_registration_for_user(request.user, lab_code=lab_code)
+        if not registration:
+            return Response({'detail': 'Registration not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        raw_ids = request.data.get('test_ids') or []
+        try:
+            test_ids = [int(value) for value in raw_ids]
+        except (TypeError, ValueError):
+            return Response({'detail': 'test_ids must be a list of integers.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not test_ids:
+            return Response({'detail': 'Select at least one test to add.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        existing_ids = set(registration.tests.values_list('test_id', flat=True))
+        new_ids = [tid for tid in test_ids if tid not in existing_ids]
+        if not new_ids:
+            return Response(
+                {'detail': 'Selected tests are already on this registration.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        tests_by_id = {test.id: test for test in Test.objects.filter(id__in=new_ids)}
+        missing = [tid for tid in new_ids if tid not in tests_by_id]
+        if missing:
+            return Response({'detail': f'Unknown test ids: {missing}'}, status=status.HTTP_400_BAD_REQUEST)
+
+        RegistrationTest.objects.bulk_create([
+            RegistrationTest(
+                registration=registration,
+                test=tests_by_id[tid],
+                price=(
+                    tests_by_id[tid].mrp
+                    if tests_by_id[tid].mrp and float(tests_by_id[tid].mrp) > 0
+                    else tests_by_id[tid].price
+                ),
+            )
+            for tid in new_ids
+        ])
+
+        total = sum(float(rt.price) for rt in registration.tests.all())
+        discount_total = float(registration.discount_test) + float(registration.discount_regn)
+        registration.total = total
+        registration.net_amount = total + float(registration.visiting_charges) - discount_total
+        registration.balance = float(registration.net_amount) - float(registration.paid)
+        added_names = [tests_by_id[tid].name for tid in new_ids]
+        note = f'Tests added: {", ".join(added_names)}'
+        registration.comment = f'{registration.comment}\n{note}'.strip() if registration.comment else note
+        registration.save(update_fields=['total', 'net_amount', 'balance', 'comment'])
+
+        from .franchise_ledger import record_ledger_event
+        from .models import FranchiseLedgerEvent
+        addition_amount = sum(
+            float(tests_by_id[tid].mrp or tests_by_id[tid].price)
+            for tid in new_ids
+        )
+        record_ledger_event(
+            event_type=FranchiseLedgerEvent.TYPE_TEST_ADDITION,
+            amount=addition_amount,
+            user=request.user,
+            registration=registration,
+            quantity=len(new_ids),
+            description=note,
+        )
+
+        registration = (
+            Registration.objects.select_related('patient')
+            .prefetch_related('tests__test')
+            .get(pk=registration.pk)
+        )
+        return Response(RegistrationSerializer(registration).data)
+
+
+class RegistrationCancelTestsView(APIView):
+    """Cancel (remove) selected tests from a registration."""
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    @transaction.atomic
+    def post(self, request, lab_code):
+        registration = get_registration_for_user(request.user, lab_code=lab_code)
+        if not registration:
+            return Response({'detail': 'Registration not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        raw_ids = request.data.get('registration_test_ids') or request.data.get('test_ids') or []
+        reason = str(request.data.get('reason') or '').strip()
+        try:
+            row_ids = [int(value) for value in raw_ids]
+        except (TypeError, ValueError):
+            return Response(
+                {'detail': 'registration_test_ids must be a list of integers.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not row_ids:
+            return Response({'detail': 'Select at least one test to cancel.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        rows = list(registration.tests.filter(id__in=row_ids).select_related('test'))
+        if not rows:
+            return Response({'detail': 'No matching tests found on this registration.'}, status=status.HTTP_404_NOT_FOUND)
+
+        cancelled_names = [row.test.name for row in rows if row.test_id]
+        cancelled_amount = 0
+        for row in rows:
+            if row.test_id and row.test.mrp and float(row.test.mrp) > 0:
+                cancelled_amount += float(row.test.mrp)
+            else:
+                cancelled_amount += float(row.price)
+        registration.tests.filter(id__in=[row.id for row in rows]).delete()
+
+        total = sum(float(rt.price) for rt in registration.tests.all())
+        discount_total = float(registration.discount_test) + float(registration.discount_regn)
+        registration.total = total
+        registration.net_amount = total + float(registration.visiting_charges) - discount_total
+        registration.balance = float(registration.net_amount) - float(registration.paid)
+        if reason or cancelled_names:
+            note = f'Tests cancelled: {", ".join(cancelled_names)}'
+            if reason:
+                note = f'{note}. Reason: {reason}'
+            registration.comment = f'{registration.comment}\n{note}'.strip() if registration.comment else note
+        registration.save(update_fields=['total', 'net_amount', 'balance', 'comment'])
+
+        from .franchise_ledger import record_ledger_event
+        from .models import FranchiseLedgerEvent
+        if cancelled_amount > 0:
+            record_ledger_event(
+                event_type=FranchiseLedgerEvent.TYPE_REFUND,
+                amount=cancelled_amount,
+                user=request.user,
+                registration=registration,
+                quantity=len(rows),
+                description=f'Refund/cancel: {", ".join(cancelled_names)}',
+            )
+
+        registration = (
+            Registration.objects.select_related('patient')
+            .prefetch_related('tests__test')
+            .get(pk=registration.pk)
+        )
+        return Response(RegistrationSerializer(registration).data)
 
 
 class RegistrationCreateView(APIView):
@@ -1320,6 +1673,21 @@ class RegistrationCreateView(APIView):
             except BarcodeLinkError as exc:
                 raise DRFValidationError({exc.field or 'sample_barcodes': exc.message})
 
+        from .wallet_service import distribute_registration_commissions
+        registration.refresh_from_db()
+        distribute_registration_commissions(registration, created_by=request.user)
+
+        from .franchise_ledger import record_ledger_event, registration_mrp_total
+        from .models import FranchiseLedgerEvent
+        record_ledger_event(
+            event_type=FranchiseLedgerEvent.TYPE_ENTRY,
+            amount=registration_mrp_total(registration),
+            user=request.user,
+            registration=registration,
+            quantity=registration.tests.count() or 1,
+            description=f'New entry {registration.lab_code}',
+        )
+
         return Response(
             {
                 'id': registration.id,
@@ -1329,6 +1697,63 @@ class RegistrationCreateView(APIView):
             },
             status=status.HTTP_201_CREATED,
         )
+
+
+class RegistrationGenerateMrpBillView(APIView):
+    """Generate / refresh bill using Test MRP only."""
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    @transaction.atomic
+    def post(self, request, lab_code):
+        registration = get_registration_for_user(
+            request.user,
+            lab_code=lab_code,
+        )
+        if not registration:
+            return Response({'detail': 'Registration not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        from .franchise_ledger import apply_mrp_bill
+        try:
+            paid = request.data.get('paid', None)
+            registration = apply_mrp_bill(
+                registration,
+                user=request.user,
+                paid=paid,
+            )
+        except ValueError as exc:
+            return Response({'detail': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+
+        registration = (
+            Registration.objects.select_related('patient')
+            .prefetch_related('tests__test')
+            .get(pk=registration.pk)
+        )
+        return Response(RegistrationSerializer(registration).data)
+
+
+class FranchiseLedgerView(APIView):
+    """Track Ledger / Accounting investments summary."""
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        from .franchise_ledger import ledger_summary, parse_ddmmyyyy
+        from_date = parse_ddmmyyyy(request.query_params.get('from_date', ''))
+        to_date = parse_ddmmyyyy(request.query_params.get('to_date', ''))
+        return Response(ledger_summary(request.user, from_date, to_date))
+
+
+class FranchiseSampleUsageView(APIView):
+    """Sample types, counts, and approx page usage by date period."""
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        from .franchise_ledger import parse_ddmmyyyy, sample_usage_summary
+        from_date = parse_ddmmyyyy(request.query_params.get('from_date', ''))
+        to_date = parse_ddmmyyyy(request.query_params.get('to_date', ''))
+        return Response(sample_usage_summary(request.user, from_date, to_date))
 
 
 class NextLabCodeView(APIView):
@@ -1350,7 +1775,10 @@ class PickupRequestListCreateView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return PickupRequest.objects.all().order_by('-created_at')
+        return scope_created_by_for_user(
+            self.request.user,
+            PickupRequest.objects.all(),
+        ).order_by('-created_at')
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
@@ -1361,7 +1789,10 @@ class LabMessageListCreateView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return LabMessage.objects.select_related('created_by').all().order_by('-created_at')
+        return scope_created_by_for_user(
+            self.request.user,
+            LabMessage.objects.select_related('created_by').all(),
+        ).order_by('-created_at')
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
@@ -1383,8 +1814,9 @@ class DashboardSummaryView(APIView):
         affiliation_mode = request.query_params.get('affiliation_mode', 'registration')
         history_period = request.query_params.get('history_period', '1m')
 
-        cards = dash.summary_cards(from_date, to_date)
-        reg_qs = dash.registration_queryset(from_date, to_date)
+        user = request.user
+        cards = dash.summary_cards(from_date, to_date, user=user)
+        reg_qs = dash.registration_queryset(from_date, to_date, user=user)
         status_breakdown = {
             item['status']: item['count']
             for item in reg_qs.values('status').annotate(count=Count('id'))
@@ -1402,6 +1834,7 @@ class DashboardSummaryView(APIView):
             from_date, to_date,
             department_ids=department_ids or None,
             category_ids=category_ids or None,
+            user=user,
         )
 
         data = {
@@ -1409,17 +1842,18 @@ class DashboardSummaryView(APIView):
             'to_date': request.query_params.get('to_date', ''),
             'metric': metric,
             'summary_cards': cards,
-            'test_status_summary': dash.test_status_summary(from_date, to_date),
+            'test_status_summary': dash.test_status_summary(from_date, to_date, user=user),
             'tat_summary': dash.tat_summary(
                 from_date, to_date,
                 test_id=int(test_id) if test_id and str(test_id).isdigit() else None,
+                user=user,
             ),
             'department_wise': dept_data,
-            'collection_center_wise': dash.collection_center_summary(from_date, to_date),
+            'collection_center_wise': dash.collection_center_summary(from_date, to_date, user=user),
             'affiliation_wise': dash.affiliation_wise_summary(
-                from_date, to_date, mode=affiliation_mode, affiliation=affiliation,
+                from_date, to_date, mode=affiliation_mode, affiliation=affiliation, user=user,
             ),
-            'affiliation_history': dash.affiliation_history(from_date, to_date, period=history_period),
+            'affiliation_history': dash.affiliation_history(from_date, to_date, period=history_period, user=user),
             'filter_options': dash.filter_options(),
             'total_registrations': cards['all']['registrations'],
             'total_revenue': cards['all']['amount_after_discount'],
@@ -1434,7 +1868,10 @@ class ReportSummaryView(APIView):
 
     def get(self, request):
         report_type = request.query_params.get('type', 'daily')
-        qs = Registration.objects.select_related('patient').all()
+        qs = scope_registrations_for_user(
+            request.user,
+            Registration.objects.select_related('patient').all(),
+        )
         rows = RegistrationSearchSerializer(qs[:50], many=True).data
         return Response({
             'type': report_type,
@@ -1456,7 +1893,7 @@ class UserListView(generics.ListAPIView):
         active = self.request.query_params.get('is_active')
         if active in ('1', 'true', 'True'):
             qs = qs.filter(is_active=True)
-        return qs
+        return scope_users_for_user(self.request.user, qs)
 
 
 class UserRoleUpdateView(APIView):
@@ -1512,7 +1949,10 @@ class MembershipListCreateView(APIView):
     parser_classes = [MultiPartParser, FormParser]
 
     def get(self, request):
-        memberships = Membership.objects.select_related('membership_type', 'created_by').order_by('-created_at')[:50]
+        memberships = scope_created_by_for_user(
+            request.user,
+            Membership.objects.select_related('membership_type', 'created_by'),
+        ).order_by('-created_at')[:50]
         serializer = MembershipSerializer(memberships, many=True, context={'request': request})
         return Response(serializer.data)
 
@@ -1685,6 +2125,9 @@ class WhatsAppLogListView(APIView):
             page_size = 20
 
         qs = WhatsAppMessageLog.objects.select_related('sent_by').all()
+        creator_ids = visible_creator_ids(request.user)
+        if creator_ids is not None:
+            qs = qs.filter(sent_by_id__in=creator_ids)
 
         if start_date:
             qs = qs.filter(message_date__date__gte=start_date)
@@ -1809,13 +2252,19 @@ class PatientMasterListCreateView(generics.ListCreateAPIView):
                 | Q(patient_name__icontains=search)
                 | Q(mobile__icontains=search)
             )
+        qs = scope_patients_for_user(self.request.user, qs)
         return qs.order_by('first_name', 'last_name', 'patient_name')
 
 
 class PatientMasterDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Patient.objects.select_related('family_doctor').prefetch_related('addresses')
     serializer_class = PatientMasterSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return scope_patients_for_user(
+            self.request.user,
+            Patient.objects.select_related('family_doctor').prefetch_related('addresses'),
+        )
 
     def perform_destroy(self, instance):
         instance.is_active = False
@@ -1897,6 +2346,7 @@ class LabActivityListCreateView(generics.ListCreateAPIView):
             qs = qs.filter(activity_date__gte=from_date)
         if to_date:
             qs = qs.filter(activity_date__lte=to_date)
+        qs = scope_created_by_for_user(self.request.user, qs)
         return qs.order_by('-activity_date', '-created_at')
 
     def perform_create(self, serializer):
@@ -1904,9 +2354,14 @@ class LabActivityListCreateView(generics.ListCreateAPIView):
 
 
 class LabActivityDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = LabActivity.objects.select_related('created_by')
     serializer_class = LabActivitySerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return scope_created_by_for_user(
+            self.request.user,
+            LabActivity.objects.select_related('created_by'),
+        )
 
     def perform_destroy(self, instance):
         instance.is_active = False
@@ -2006,11 +2461,14 @@ class GlobalSearchView(APIView):
         q = request.query_params.get('q', '').strip()
         if not q:
             return Response([])
-        qs = Registration.objects.filter(
-            Q(lab_code__icontains=q)
-            | Q(patient__patient_name__icontains=q)
-            | Q(patient__mobile__icontains=q)
-        ).select_related('patient')[:20]
+        qs = scope_registrations_for_user(
+            request.user,
+            Registration.objects.filter(
+                Q(lab_code__icontains=q)
+                | Q(patient__patient_name__icontains=q)
+                | Q(patient__mobile__icontains=q)
+            ).select_related('patient'),
+        )[:20]
         return Response(RegistrationSearchSerializer(qs, many=True).data)
 
 
@@ -2035,6 +2493,7 @@ class PatientBarcodeListView(generics.ListAPIView):
             qs = qs.filter(registration_id=registration_id)
         if barcode:
             qs = qs.filter(barcode__iexact=normalize_barcode(barcode))
+        qs = scope_barcodes_for_user(self.request.user, qs)
         return qs.order_by('-linked_at')
 
 
@@ -2052,6 +2511,18 @@ class PatientBarcodeLookupView(APIView):
 
         patient = link.patient
         registration = link.registration
+        if registration and not user_can_access_registration(request.user, registration):
+            return Response({
+                'found': False,
+                'barcode': normalize_barcode(barcode),
+            })
+        if not registration:
+            # Unlinked barcode: only visible if patient has a registration in scope
+            if not scope_patients_for_user(request.user, Patient.objects.filter(pk=patient.pk)).exists():
+                return Response({
+                    'found': False,
+                    'barcode': normalize_barcode(barcode),
+                })
         return Response({
             'found': True,
             'barcode': link.barcode,
@@ -2069,7 +2540,14 @@ class PatientSampleScanView(APIView):
 
     def get(self, request):
         barcode = request.query_params.get('barcode', '')
-        return Response(scan_sample_by_barcode(barcode))
+        payload = scan_sample_by_barcode(barcode)
+        if payload.get('found'):
+            reg_id = payload.get('registration_id')
+            if reg_id:
+                registration = Registration.objects.filter(pk=reg_id).first()
+                if registration and not user_can_access_registration(request.user, registration):
+                    return Response({'found': False, 'barcode': normalize_barcode(barcode)})
+        return Response(payload)
 
 
 class PatientBarcodeLinkView(APIView):
@@ -2087,6 +2565,12 @@ class PatientBarcodeLinkView(APIView):
                 lab_code=payload.get('lab_code', ''),
                 registration_id=payload.get('registration_id'),
             )
+            if registration and not user_can_access_registration(request.user, registration):
+                return Response({'detail': 'Registration not found.'}, status=status.HTTP_404_NOT_FOUND)
+            if not registration and not scope_patients_for_user(
+                request.user, Patient.objects.filter(pk=patient.pk)
+            ).exists():
+                return Response({'detail': 'Patient not found.'}, status=status.HTTP_404_NOT_FOUND)
             linked = link_sample_barcodes(
                 patient=patient,
                 registration=registration,
@@ -2109,9 +2593,14 @@ class PatientBarcodeLinkView(APIView):
 
 
 class PatientBarcodeDetailView(generics.RetrieveDestroyAPIView):
-    queryset = PatientSampleBarcode.objects.select_related('patient', 'registration', 'linked_by')
     serializer_class = PatientSampleBarcodeSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return scope_barcodes_for_user(
+            self.request.user,
+            PatientSampleBarcode.objects.select_related('patient', 'registration', 'linked_by'),
+        )
 
     def perform_destroy(self, instance):
         instance.is_active = False

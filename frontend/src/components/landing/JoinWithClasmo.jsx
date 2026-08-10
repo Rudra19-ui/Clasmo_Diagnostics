@@ -148,7 +148,7 @@ export default function JoinWithClasmo({ onClose }) {
       ) : step === 'franchise' ? (
         <div className="landing-join-form-card join-clasmo-form-card">
           <button type="button" className="join-clasmo-back" onClick={() => setStep(null)}>← Back to options</button>
-          <h3 className="join-clasmo-form-title">FRANCHISEE</h3>
+          <h3 className="join-clasmo-form-title">PRIME</h3>
           <p className="join-clasmo-form-subtitle">Register as a CLASMO Brand Partner or Self-Operated Lab.</p>
 
           <form className="join-clasmo-form" onSubmit={handleFranchiseSubmit}>
@@ -211,7 +211,7 @@ export default function JoinWithClasmo({ onClose }) {
 
             {error && <p className="landing-join-error">{error}</p>}
             <button type="submit" className="btn-landing-login landing-login-big join-clasmo-submit" disabled={submitting}>
-              {submitting ? 'SUBMITTING…' : 'REGISTER AS FRANCHISEE'}
+              {submitting ? 'SUBMITTING…' : 'REGISTER AS PRIME'}
             </button>
           </form>
         </div>

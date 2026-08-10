@@ -19,8 +19,8 @@ export const ROLE_LABELS = {
   [ROLES.PATHOLOGIST]: 'Pathologist',
   [ROLES.TECHNICIAN]: 'Technician',
   [ROLES.RECEPTIONIST]: 'Receptionist',
-  [ROLES.SUPER_FRANCHISEE]: 'Super Franchisee',
-  [ROLES.FRANCHISEE]: 'Franchisee',
+  [ROLES.SUPER_FRANCHISEE]: 'Supreme',
+  [ROLES.FRANCHISEE]: 'Prime',
   [ROLES.SUB_FRANCHISE]: 'Sub-Franchise',
 };
 
@@ -31,8 +31,8 @@ export const SIGNUP_ROLE_OPTIONS = [
   { value: ROLES.TECHNICIAN, label: 'Technician' },
   { value: ROLES.USER, label: 'User' },
   { value: ROLES.RECEPTIONIST, label: 'Receptionist' },
-  { value: ROLES.SUPER_FRANCHISEE, label: 'Super Franchisee' },
-  { value: ROLES.FRANCHISEE, label: 'Franchisee' },
+  { value: ROLES.SUPER_FRANCHISEE, label: 'Supreme' },
+  { value: ROLES.FRANCHISEE, label: 'Prime' },
   { value: ROLES.SUB_FRANCHISE, label: 'Sub-Franchise' },
 ];
 

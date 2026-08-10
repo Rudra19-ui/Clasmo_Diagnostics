@@ -2298,6 +2298,19 @@ input, select, textarea, button {
   overflow-y: auto;
 }
 
+.franchise-booking-header {
+  margin: 0 0 12px;
+  padding: 0 4px;
+}
+
+.franchise-booking-header .page-heading {
+  margin-bottom: 4px;
+}
+
+.franchise-booking-header .portfolio-intro {
+  margin-bottom: 8px;
+}
+
 .franchise-sidebar-user {
   padding: 14px 16px 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -2382,19 +2395,46 @@ input, select, textarea, button {
 }
 
 .franchise-sidebar .submenu a {
-  color: rgba(255, 255, 255, 0.85);
+  color: #8ec8e8;
+  border-radius: 10px;
+  margin: 2px 8px;
 }
 
 .franchise-sidebar .submenu a.active,
 .franchise-sidebar .submenu a:hover {
-  color: #fff;
-  background: rgba(33, 150, 243, 0.35);
+  color: #9fd4f0;
+  background: rgba(28, 42, 60, 0.95);
+  box-shadow: inset 0 0 0 1px rgba(143, 200, 232, 0.22);
 }
 
-.franchise-sidebar .has-submenu.open > .franchise-nav-link,
-.franchise-sidebar li.active > .franchise-nav-link {
+/* Regular role menus inherit franchise chrome when dashboard style is on */
+.franchise-sidebar .sidebar-menu > li.active > .sidebar-nav-link,
+.franchise-sidebar .sidebar-nav-link.is-active {
+  background: rgba(33, 150, 243, 0.35);
+  color: #9fd4f0;
+}
+
+.franchise-sidebar .sidebar-menu .submenu a {
+  color: #8ec8e8;
+  border-radius: 10px;
+  margin: 2px 8px;
+}
+
+.franchise-sidebar .sidebar-menu .submenu a.active,
+.franchise-sidebar .sidebar-menu .submenu a:hover {
+  color: #9fd4f0;
+  background: rgba(28, 42, 60, 0.95);
+}
+
+/* Only the route-active parent is highlighted — open state only expands the submenu. */
+.franchise-sidebar li.active > .franchise-nav-link,
+.franchise-sidebar .franchise-nav-link.is-active {
   background: #2196f3;
   color: #fff;
+}
+
+.franchise-sidebar .has-submenu.open:not(.active) > .franchise-nav-link {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .nav-drawer-overlay {
@@ -5086,10 +5126,337 @@ input, select, textarea, button {
   padding: 18px 24px 48px;
 }
 
+.franchise-shell .dashboard-home-main {
+  background:
+    radial-gradient(ellipse at top, rgba(33, 150, 243, 0.12), transparent 55%),
+    linear-gradient(180deg, #edf3f9 0%, #e4eef7 100%);
+}
+
 .dashboard-home-shell {
   width: min(100%, 920px);
   text-align: center;
   margin-top: 4px;
+}
+
+.franchise-shell .dashboard-welcome-heading {
+  color: #163a5c;
+  border-bottom-color: #5aa7d6;
+}
+
+.franchise-shell .dashboard-welcome-hero {
+  background: linear-gradient(180deg, #1a3a5c 0%, #152f4a 100%);
+  border: 1px solid rgba(143, 200, 232, 0.28);
+  box-shadow: 0 14px 32px rgba(18, 38, 60, 0.28);
+}
+
+.franchise-shell .dashboard-welcome-btn {
+  background: rgba(28, 42, 60, 0.9);
+  color: #9fd4f0;
+  border: 1px solid rgba(143, 200, 232, 0.35);
+  border-radius: 12px;
+}
+
+.franchise-shell .dashboard-welcome-btn:hover {
+  background: rgba(33, 150, 243, 0.28);
+  color: #fff;
+}
+
+.franchise-shell .pathologist-dashboard-intro {
+  color: #4a6480;
+}
+
+.franchise-shell .pathologist-scan-panel {
+  background: linear-gradient(180deg, #1a3a5c 0%, #152f4a 100%);
+  border: 1px solid rgba(143, 200, 232, 0.28);
+  color: #e8f4fc;
+}
+
+.franchise-shell .pathologist-scan-panel h2 {
+  color: #9fd4f0;
+}
+
+.franchise-shell .pathologist-scan-panel p {
+  color: rgba(232, 244, 252, 0.78);
+}
+
+.franchise-module-page .franchise-module-panel {
+  background: #fff;
+  border: 1px solid #d5e4f2;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 8px 20px rgba(18, 38, 60, 0.06);
+}
+
+.test-addition-search-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: #163a5c;
+  margin-bottom: 8px;
+}
+
+.test-addition-search-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.test-addition-search-row input {
+  flex: 1;
+  min-width: 220px;
+  padding: 10px 12px;
+  border: 1px solid #c5d8ea;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.test-addition-search-btn {
+  min-width: 110px;
+  border-radius: 999px;
+  padding: 10px 18px;
+}
+
+.test-addition-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.test-addition-summary span {
+  display: block;
+  font-size: 11px;
+  color: #6b849c;
+  margin-bottom: 2px;
+}
+
+.test-addition-summary strong {
+  font-size: 14px;
+  color: #163a5c;
+}
+
+.test-addition-subtitle {
+  margin: 8px 0 10px;
+  font-size: 15px;
+  color: #163a5c;
+}
+
+.test-addition-current-list {
+  margin: 0 0 16px;
+  padding-left: 18px;
+  color: #334e68;
+}
+
+.test-addition-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.edit-entry-locked {
+  color: #8a4b4b;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.edit-entry-patient-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.edit-entry-patient-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  color: #4a647c;
+}
+
+.edit-entry-patient-grid input,
+.edit-entry-patient-grid select,
+.edit-entry-patient-grid textarea {
+  border: 1px solid #c5d5e6;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font: inherit;
+}
+
+.edit-entry-span-2 {
+  grid-column: 1 / -1;
+}
+
+.edit-entry-test-picker {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 12px;
+  align-items: start;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 900px) {
+  .edit-entry-patient-grid,
+  .edit-entry-test-picker {
+    grid-template-columns: 1fr;
+  }
+}
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.franchise-report-filters,
+.franchise-search-reports-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+  align-items: end;
+}
+
+.franchise-report-filters label,
+.franchise-search-reports-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  color: #4a6480;
+}
+
+.franchise-report-filters input,
+.franchise-search-reports-form input {
+  padding: 8px 10px;
+  border: 1px solid #c5d8ea;
+  border-radius: 8px;
+}
+
+.franchise-search-reports-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.form-success-msg {
+  color: #2e7d32;
+  font-size: 13px;
+  margin: 0 0 12px;
+}
+
+.franchise-notif-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.clinical-history-gate {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.clinical-history-key {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 14px 16px;
+  border: 1px solid rgba(143, 200, 232, 0.35);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #1a3a5c 0%, #152f4a 100%);
+  color: #9fd4f0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.clinical-history-key span {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.clinical-history-key strong {
+  font-size: 16px;
+}
+
+.clinical-history-key:hover {
+  box-shadow: inset 0 0 0 1px rgba(159, 212, 240, 0.45);
+}
+
+.test-cancel-list {
+  list-style: none;
+  margin: 0 0 14px;
+  padding: 0;
+}
+
+.test-cancel-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid #e6eef6;
+}
+
+.test-cancel-list label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  color: #334e68;
+}
+
+.test-cancel-reason {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  color: #4a6480;
+}
+
+.test-cancel-reason input {
+  padding: 8px 10px;
+  border: 1px solid #c5d8ea;
+  border-radius: 8px;
+}
+
+.ledger-investment-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.ledger-investment-card {
+  background: linear-gradient(180deg, #1a3a5c 0%, #152f4a 100%);
+  color: #9fd4f0;
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ledger-investment-card span {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.8;
+}
+
+.ledger-investment-card strong {
+  font-size: 22px;
+  color: #fff;
+}
+
+.ledger-investment-card em {
+  font-style: normal;
+  font-size: 13px;
+}
+
+.ledger-investment-card--total {
+  background: linear-gradient(180deg, #0d7377 0%, #14919b 100%);
 }
 
 .dashboard-welcome-heading {
@@ -6616,10 +6983,93 @@ input, select, textarea, button {
   color: #1a4a7a;
 }
 
+.all-tests-por-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 14px;
+}
+
+.all-tests-por-links a {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #1a3a5c;
+  color: #9fd4f0;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.all-tests-por-links a:hover {
+  background: #2196f3;
+  color: #fff;
+}
+
 .portfolio-table-wrap {
   overflow: auto;
   border: 1px solid #d5e4f2;
   border-radius: 8px;
+}
+
+.package-count-line {
+  margin: 0 0 8px;
+  color: #163a5c;
+}
+
+.package-count-line strong {
+  font-size: 22px;
+  margin-right: 4px;
+}
+
+.report-format-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.report-format-card {
+  border: 1px solid #d5e4f2;
+  border-radius: 12px;
+  padding: 14px;
+  background: #fff;
+}
+
+.report-format-card h3 {
+  margin: 8px 0 6px;
+  font-size: 15px;
+  color: #163a5c;
+}
+
+.report-format-card p {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: #4a6480;
+}
+
+.report-format-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: #1a3a5c;
+}
+
+.report-format-badge--pdf {
+  background: #c62828;
+}
+
+.report-format-badge--image {
+  background: #1565c0;
+}
+
+.report-format-placeholder {
+  font-size: 12px;
+  color: #6b849c;
 }
 
 .portfolio-table {

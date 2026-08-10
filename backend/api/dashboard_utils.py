@@ -36,8 +36,12 @@ def _decimal(value):
     return Decimal(str(value))
 
 
-def registration_queryset(from_date=None, to_date=None):
+def registration_queryset(from_date=None, to_date=None, user=None):
+    from .franchise_scope import scope_registrations_for_user
+
     qs = Registration.objects.select_related('patient').all()
+    if user is not None:
+        qs = scope_registrations_for_user(user, qs)
     if from_date:
         qs = qs.filter(registration_date__date__gte=from_date)
     if to_date:
@@ -62,8 +66,8 @@ def card_stats(qs):
     }
 
 
-def summary_cards(from_date, to_date):
-    qs = registration_queryset(from_date, to_date)
+def summary_cards(from_date, to_date, user=None):
+    qs = registration_queryset(from_date, to_date, user=user)
     return {
         'all': card_stats(qs),
         'ipd': card_stats(qs.filter(patient__patient_type='I.P.D.')),
@@ -71,8 +75,8 @@ def summary_cards(from_date, to_date):
     }
 
 
-def test_status_summary(from_date, to_date):
-    reg_qs = registration_queryset(from_date, to_date)
+def test_status_summary(from_date, to_date, user=None):
+    reg_qs = registration_queryset(from_date, to_date, user=user)
     registration_count = reg_qs.count()
     report_qs = Report.objects.filter(registration__in=reg_qs)
     entered = report_qs.filter(status=Report.STATUS_ENTERED).count()
@@ -86,8 +90,8 @@ def test_status_summary(from_date, to_date):
     ]
 
 
-def tat_summary(from_date, to_date, test_id=None):
-    reg_qs = registration_queryset(from_date, to_date)
+def tat_summary(from_date, to_date, test_id=None, user=None):
+    reg_qs = registration_queryset(from_date, to_date, user=user)
     rt_qs = RegistrationTest.objects.filter(
         registration__in=reg_qs,
         registration__clinical_report__status=Report.STATUS_VERIFIED,
@@ -119,8 +123,8 @@ def tat_summary(from_date, to_date, test_id=None):
     return rows
 
 
-def department_wise_summary(from_date, to_date, department_ids=None, category_ids=None):
-    reg_qs = registration_queryset(from_date, to_date)
+def department_wise_summary(from_date, to_date, department_ids=None, category_ids=None, user=None):
+    reg_qs = registration_queryset(from_date, to_date, user=user)
     rt_qs = RegistrationTest.objects.filter(registration__in=reg_qs).select_related('test__category')
 
     if department_ids:
@@ -161,8 +165,8 @@ def department_wise_summary(from_date, to_date, department_ids=None, category_id
     }
 
 
-def collection_center_summary(from_date, to_date):
-    reg_qs = registration_queryset(from_date, to_date)
+def collection_center_summary(from_date, to_date, user=None):
+    reg_qs = registration_queryset(from_date, to_date, user=user)
     rows = list(
         reg_qs.values('patient__collection_center')
         .annotate(
@@ -181,8 +185,8 @@ def collection_center_summary(from_date, to_date):
     ]
 
 
-def affiliation_wise_summary(from_date, to_date, mode='registration', affiliation=''):
-    reg_qs = registration_queryset(from_date, to_date)
+def affiliation_wise_summary(from_date, to_date, mode='registration', affiliation='', user=None):
+    reg_qs = registration_queryset(from_date, to_date, user=user)
     if affiliation:
         reg_qs = reg_qs.filter(patient__affiliation__icontains=affiliation)
 
@@ -210,7 +214,7 @@ def affiliation_wise_summary(from_date, to_date, mode='registration', affiliatio
     return rows
 
 
-def affiliation_history(from_date, to_date, period='1m'):
+def affiliation_history(from_date, to_date, period='1m', user=None):
     end = to_date or timezone.localdate()
     if period == '1w':
         start = end - timedelta(days=7)
@@ -226,6 +230,8 @@ def affiliation_history(from_date, to_date, period='1m'):
         trunc = TruncMonth('registration_date')
 
     qs = Registration.objects.filter(registration_date__date__gte=start, registration_date__date__lte=end)
+    from .franchise_scope import scope_registrations_for_user
+    qs = scope_registrations_for_user(user, qs)
 
     if trunc:
         grouped = (

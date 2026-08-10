@@ -3,19 +3,31 @@ import { Link } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Layout from '../../components/Layout';
 import { api } from '../../services/api';
+import { isFranchiseRole } from '../../utils/franchiseNav';
+import { useAuth } from '../../context/AuthContext';
+import { filterPorCatalogPdfs } from '../../utils/porCatalog';
 
 export default function TestList() {
+  const { user } = useAuth();
+  const franchise = isFranchiseRole(user?.role);
   const [tests, setTests] = useState([]);
+  const [porPdfs, setPorPdfs] = useState([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    api.getTests()
-      .then((rows) => setTests(Array.isArray(rows) ? rows : []))
+    Promise.all([
+      api.getTests(),
+      api.getReportFormats().catch(() => []),
+    ])
+      .then(([rows, formats]) => {
+        setTests(Array.isArray(rows) ? rows : []);
+        setPorPdfs(filterPorCatalogPdfs(formats, { hidePriceCatalog: franchise }));
+      })
       .catch((err) => setError(err.message || 'Could not load tests.'))
       .finally(() => setLoading(false));
-  }, []);
+  }, [franchise]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -25,24 +37,43 @@ export default function TestList() {
       || test.sample_type?.toLowerCase().includes(q)
       || test.test_code?.toLowerCase().includes(q)
       || test.category_name?.toLowerCase().includes(q)
+      || test.tat?.toLowerCase().includes(q)
     ));
   }, [tests, search]);
 
   return (
-    <Layout activePage="test-portfolio">
-      <main className="dash-main portfolio-page">
+    <Layout activePage={franchise ? 'all-tests' : 'test-portfolio'}>
+      <main className={`dash-main portfolio-page${franchise ? ' franchise-module-page' : ''}`}>
         <nav className="breadcrumb" aria-label="Breadcrumb">
           <ul>
-            <li><Link to="/search">Home</Link></li>
-            <li><Link to="/portfolio/test-list">Test Portfolio</Link></li>
-            <li>Test List</li>
+            <li><Link to="/dashboard">Home</Link></li>
+            {franchise ? <li>Test Section</li> : <li><Link to="/portfolio/test-list">Test Portfolio</Link></li>}
+            <li>All Tests</li>
           </ul>
         </nav>
 
-        <h2 className="page-heading">Test List</h2>
-        <p className="portfolio-intro">Browse the complete diagnostic test catalogue with sample type and pricing.</p>
+        <h2 className="page-heading">All Tests</h2>
+        <p className="portfolio-intro">
+          {franchise
+            ? 'Test Name, Sample Type, TAT (release time), and Volume (ml). Price and MRP appear only during New Entry and Billing.'
+            : 'Test Name, Sample Type, TAT (release time), Volume (ml), Price (B2B), and MRP (patient). Loaded from POR catalog PDFs.'}
+        </p>
+        {porPdfs.length > 0 && (
+          <div className="all-tests-por-links">
+            {porPdfs.map((pdf) => (
+              <a
+                key={pdf.id}
+                href={pdf.file_url || pdf.external_url}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {pdf.title}
+              </a>
+            ))}
+          </div>
+        )}
 
-        <section className="content-panel portfolio-panel">
+        <section className={`content-panel portfolio-panel${franchise ? ' franchise-module-panel' : ''}`}>
           <div className="portfolio-toolbar">
             <label className="portfolio-search">
               <span>Search tests</span>
@@ -50,7 +81,7 @@ export default function TestList() {
                 type="search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Type test name, sample type, or code…"
+                placeholder="Type test name, sample type, TAT, or code…"
               />
             </label>
             <strong className="portfolio-count">{filtered.length} tests</strong>
@@ -67,14 +98,16 @@ export default function TestList() {
                     <th>#</th>
                     <th>Test Name</th>
                     <th>Sample Type</th>
-                    <th>Category</th>
-                    <th>Code</th>
+                    <th>TAT</th>
+                    <th>Volume</th>
+                    {!franchise && <th>Price</th>}
+                    {!franchise && <th>MRP</th>}
                   </tr>
                 </thead>
                 <tbody>
                   {filtered.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="portfolio-empty">No tests found.</td>
+                      <td colSpan={franchise ? 5 : 7} className="portfolio-empty">No tests found.</td>
                     </tr>
                   ) : (
                     filtered.map((test, index) => (
@@ -82,8 +115,14 @@ export default function TestList() {
                         <td>{index + 1}</td>
                         <td>{test.name}</td>
                         <td>{test.sample_type || '—'}</td>
-                        <td>{test.category_name || '—'}</td>
-                        <td>{test.test_code || '—'}</td>
+                        <td title="Time for that test to release">{test.tat || '—'}</td>
+                        <td>{Number(test.volume_ml || 0) > 0 ? `${Number(test.volume_ml).toFixed(1)} ml` : '—'}</td>
+                        {!franchise && (
+                          <td title="B2B rate">₹{Number(test.price || 0).toFixed(2)}</td>
+                        )}
+                        {!franchise && (
+                          <td title="Patient MRP">₹{Number(test.mrp || 0).toFixed(2)}</td>
+                        )}
                       </tr>
                     ))
                   )}

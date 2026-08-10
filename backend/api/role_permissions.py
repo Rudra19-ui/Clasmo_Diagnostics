@@ -115,8 +115,8 @@ DEFAULT_ROLE_DEFINITIONS = [
     },
     {
         'code': 'super_franchisee',
-        'name': 'Super Franchisee',
-        'description': 'Top-level franchise owner who manages Franchisee accounts.',
+        'name': 'Supreme',
+        'description': 'Top-level franchise owner who manages Prime accounts.',
         'permissions': build_permissions(
             search=True,
             registration=True,
@@ -128,8 +128,8 @@ DEFAULT_ROLE_DEFINITIONS = [
     },
     {
         'code': 'franchisee',
-        'name': 'Franchisee',
-        'description': 'Franchisee managed by a Super Franchisee; can oversee Sub-Franchise accounts.',
+        'name': 'Prime',
+        'description': 'Prime managed by a Supreme; can oversee Sub-Franchise accounts.',
         'permissions': build_permissions(
             search=True,
             registration=True,
@@ -142,7 +142,7 @@ DEFAULT_ROLE_DEFINITIONS = [
     {
         'code': 'sub_franchise',
         'name': 'Sub-Franchise',
-        'description': 'Sub-franchise unit managed by a Franchisee supervisor.',
+        'description': 'Sub-franchise unit managed by a Prime supervisor.',
         'permissions': build_permissions(
             search=True,
             registration=True,

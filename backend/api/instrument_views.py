@@ -65,7 +65,9 @@ class PatientReportByBarcodeView(APIView):
     def get(self, request):
         barcode = request.query_params.get('barcode', '')
         test_filter = request.query_params.get('test', 'cbc')
-        data = build_patient_report_by_barcode(barcode, test_filter=test_filter)
+        data = build_patient_report_by_barcode(
+            barcode, test_filter=test_filter, user=request.user
+        )
         if not data.get('found'):
             return Response(data, status=status.HTTP_404_NOT_FOUND)
         return Response(data)

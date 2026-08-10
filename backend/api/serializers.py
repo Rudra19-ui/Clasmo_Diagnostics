@@ -13,8 +13,10 @@ from .models import (
     PickupRequest,
     Registration,
     RegistrationTest,
+    ReportFormatAsset,
     Test,
     TestCategory,
+    TestPackage,
     User,
     CollectionCenter,
     CollectionCenterBoy,
@@ -139,7 +141,7 @@ class RegisterSerializer(serializers.Serializer):
                     parent_id = actor.id if actor.role == User.ROLE_FRANCHISEE else parent_id
 
             if not parent_id:
-                label = 'Super Franchisee' if role == User.ROLE_FRANCHISEE else 'Franchisee'
+                label = 'Supreme' if role == User.ROLE_FRANCHISEE else 'Prime'
                 raise serializers.ValidationError({
                     'parent_franchisee_id': f'Select a parent {label} for this account.',
                 })
@@ -206,7 +208,7 @@ class UserRoleUpdateSerializer(serializers.ModelSerializer):
 
         if role in User.PARENT_REQUIRED_ROLES:
             if not parent_id:
-                label = 'Super Franchisee' if role == User.ROLE_FRANCHISEE else 'Franchisee'
+                label = 'Supreme' if role == User.ROLE_FRANCHISEE else 'Prime'
                 raise serializers.ValidationError({
                     'parent_franchisee_id': f'Select a parent {label} for this account.',
                 })
@@ -339,17 +341,54 @@ class TestSerializer(serializers.ModelSerializer):
         model = Test
         fields = [
             'id', 'name', 'short_name', 'test_code', 'mrp', 'price',
-            'sample_type', 'category', 'category_name',
+            'sample_type', 'tat', 'volume_ml', 'category', 'category_name',
         ]
+
+
+class TestPackageSerializer(serializers.ModelSerializer):
+    test_count = serializers.SerializerMethodField()
+    test_names = serializers.SerializerMethodField()
+
+    class Meta:
+        model = TestPackage
+        fields = [
+            'id', 'name', 'description', 'is_active', 'test_count',
+            'test_names', 'sort_order', 'created_at',
+        ]
+
+    def get_test_count(self, obj):
+        return obj.tests.count()
+
+    def get_test_names(self, obj):
+        return list(obj.tests.order_by('name').values_list('name', flat=True))
+
+
+class ReportFormatAssetSerializer(serializers.ModelSerializer):
+    file_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ReportFormatAsset
+        fields = [
+            'id', 'title', 'description', 'file', 'file_url', 'external_url',
+            'file_type', 'is_demo', 'is_active', 'sort_order', 'created_at',
+        ]
+
+    def get_file_url(self, obj):
+        request = self.context.get('request')
+        if obj.file:
+            url = obj.file.url
+            return request.build_absolute_uri(url) if request else url
+        return obj.external_url or ''
 
 
 class RegistrationTestSerializer(serializers.ModelSerializer):
     test_name = serializers.CharField(source='test.name', read_only=True)
     sample_type = serializers.CharField(source='test.sample_type', read_only=True)
+    mrp = serializers.DecimalField(source='test.mrp', max_digits=10, decimal_places=2, read_only=True)
 
     class Meta:
         model = RegistrationTest
-        fields = ['id', 'test', 'test_name', 'sample_type', 'price', 'discount', 'refund']
+        fields = ['id', 'test', 'test_name', 'sample_type', 'mrp', 'price', 'discount', 'refund']
 
 
 class PatientAddressSerializer(serializers.ModelSerializer):
@@ -503,6 +542,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
     patient_name = serializers.CharField(source='patient.patient_name', read_only=True)
     test_names = serializers.SerializerMethodField()
     reg_date = serializers.SerializerMethodField()
+    can_edit = serializers.SerializerMethodField()
+    edit_expires_at = serializers.SerializerMethodField()
+    hours_left = serializers.SerializerMethodField()
 
     class Meta:
         model = Registration
@@ -512,6 +554,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
             'discount_reason', 'discount_authorization', 'payment_method', 'total',
             'visiting_charges', 'net_amount', 'paid', 'balance', 'refund_amount',
             'recovery_amount', 'bill_receipt_no', 'tests', 'test_names', 'reg_date',
+            'can_edit', 'edit_expires_at', 'hours_left',
         ]
         read_only_fields = ['lab_code', 'total', 'net_amount', 'balance']
 
@@ -520,6 +563,18 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def get_reg_date(self, obj):
         return obj.registration_date.strftime('%d-%m-%Y')
+
+    def get_can_edit(self, obj):
+        from .registration_edit import can_edit_registration
+        return can_edit_registration(obj)
+
+    def get_edit_expires_at(self, obj):
+        from .registration_edit import registration_edit_deadline
+        return registration_edit_deadline(obj).isoformat()
+
+    def get_hours_left(self, obj):
+        from .registration_edit import registration_edit_hours_left
+        return registration_edit_hours_left(obj)
 
     def create(self, validated_data):
         patient_data = validated_data.pop('patient')
@@ -652,6 +707,9 @@ class RegistrationSearchSerializer(serializers.ModelSerializer):
     total_amount = serializers.DecimalField(source='net_amount', max_digits=10, decimal_places=2, read_only=True)
     created_by_name = serializers.CharField(source='created_by.display_name', read_only=True, default='')
     created_by_username = serializers.CharField(source='created_by.username', read_only=True, default='')
+    can_edit = serializers.SerializerMethodField()
+    edit_expires_at = serializers.SerializerMethodField()
+    hours_left = serializers.SerializerMethodField()
 
     class Meta:
         model = Registration
@@ -660,6 +718,7 @@ class RegistrationSearchSerializer(serializers.ModelSerializer):
             'status', 'amount', 'total_amount', 'total', 'net_amount', 'paid', 'balance',
             'discount_test', 'discount_regn', 'refund_amount', 'payment_method', 'bill_receipt_no',
             'registration_date', 'collection_date', 'created_at', 'created_by_name', 'created_by_username',
+            'can_edit', 'edit_expires_at', 'hours_left',
         ]
 
     def get_test(self, obj):
@@ -668,6 +727,24 @@ class RegistrationSearchSerializer(serializers.ModelSerializer):
 
     def get_date(self, obj):
         return obj.registration_date.strftime('%d-%m-%Y')
+
+    def get_can_edit(self, obj):
+        from .registration_edit import can_edit_registration
+        return can_edit_registration(obj)
+
+    def get_edit_expires_at(self, obj):
+        from .registration_edit import registration_edit_deadline
+        return registration_edit_deadline(obj).isoformat()
+
+    def get_hours_left(self, obj):
+        from .registration_edit import registration_edit_hours_left
+        return registration_edit_hours_left(obj)
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        names = [t.test.name for t in instance.tests.all()]
+        data['test_names'] = ', '.join(names)
+        return data
 
 
 class PickupRequestSerializer(serializers.ModelSerializer):

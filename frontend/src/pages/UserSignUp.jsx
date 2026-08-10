@@ -43,10 +43,10 @@ export default function UserSignUp() {
 
   const parentHelpText = useMemo(() => {
     if (registerForm.role === ROLES.FRANCHISEE) {
-      return 'Link this Franchisee to their Super Franchisee supervisor.';
+      return 'Link this Prime to their Supreme supervisor.';
     }
     if (registerForm.role === ROLES.SUB_FRANCHISE) {
-      return 'Link this Sub-Franchise to their parent Franchisee.';
+      return 'Link this Sub-Franchise to their parent Prime.';
     }
     return '';
   }, [registerForm.role]);
@@ -157,7 +157,7 @@ export default function UserSignUp() {
           <h2 className="change-password-title">New User Sign Up</h2>
           <p className="user-signup-intro">
             {isAdminCreator
-              ? 'Admin can create every account type, including Super Franchisee, Franchisee, and Sub-Franchise.'
+              ? 'Admin can create every account type, including Supreme, Prime, and Sub-Franchise.'
               : 'Create accounts for your franchise hierarchy and link them to the correct parent supervisor.'}
           </p>
 

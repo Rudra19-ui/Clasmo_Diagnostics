@@ -181,9 +181,12 @@ export default function Layout({ activePage, children }) {
   const profileInitial = profileName.charAt(0).toUpperCase();
   const franchiseMode = isFranchiseRole(user?.role);
   const roleLabel = ROLE_LABELS[user?.role] || user?.role || '';
+  const isDashboardPage = activePage === 'dashboard' || location.pathname === '/dashboard';
+  // Franchise portal chrome on dashboard for every role (visual only).
+  const useFranchiseDashboardStyle = franchiseMode || isDashboardPage;
 
   return (
-    <div className={`dashboard app-with-sidebar${navOpen ? ' sidebar-open' : ''}${franchiseMode ? ' franchise-shell' : ''}`}>
+    <div className={`dashboard app-with-sidebar${navOpen ? ' sidebar-open' : ''}${useFranchiseDashboardStyle ? ' franchise-shell' : ''}`}>
       <div
         className={`nav-drawer-overlay${navOpen ? ' open' : ''}`}
         onClick={closeNav}
@@ -192,7 +195,7 @@ export default function Layout({ activePage, children }) {
 
       <aside
         id="main-navigation"
-        className={`app-sidebar${navOpen ? ' nav-open' : ''}${franchiseMode ? ' franchise-sidebar' : ''}`}
+        className={`app-sidebar${navOpen ? ' nav-open' : ''}${useFranchiseDashboardStyle ? ' franchise-sidebar' : ''}`}
         aria-label="Main navigation"
         onClick={handleSidebarClick}
       >

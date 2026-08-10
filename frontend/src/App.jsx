@@ -53,32 +53,28 @@ import TestList from './pages/portfolio/TestList';
 import TestProfile from './pages/portfolio/TestProfile';
 import SampleReport from './pages/portfolio/SampleReport';
 import FranchiseStub from './pages/franchise/FranchiseStub';
+import TestAddition from './pages/franchise/TestAddition';
+import EditEntry from './pages/franchise/EditEntry';
+import AllReports from './pages/franchise/AllReports';
+import SearchReports from './pages/franchise/SearchReports';
+import FindBarcode from './pages/franchise/FindBarcode';
+import ClinicalHistory from './pages/franchise/ClinicalHistory';
+import TestCancellation from './pages/franchise/TestCancellation';
+import MakeBill from './pages/franchise/MakeBill';
+import BillingList from './pages/franchise/BillingList';
+import TrackLedger from './pages/franchise/TrackLedger';
 
 const FRANCHISE_PAGES = [
-  { path: 'analytics', title: 'Analytics', activePage: 'analytics', description: 'Franchise performance analytics and trends.' },
-  { path: 'manage-booking', title: 'Manage Booking', activePage: 'manage-booking', description: 'Create and manage patient bookings.' },
-  { path: 'manage-reports', title: 'Manage Reports', activePage: 'manage-reports', description: 'View and manage franchise reports.' },
-  { path: 'old-reports', title: 'Old Reports', activePage: 'old-reports', description: 'Archive of older franchise reports.' },
-  { path: 'barcode-mismatch', title: 'Barcode Mismatch', activePage: 'barcode-mismatch', description: 'Review barcode mismatch notifications.' },
+  { path: 'analytics', title: 'Analytics', activePage: 'analytics', description: 'Franchise performance analytics and trends.', allowedRoles: [ROLES.SUPER_FRANCHISEE, ROLES.FRANCHISEE] },
+  { path: 'extra-sample', title: 'Extra Sample', activePage: 'extra-sample', description: 'Extra sample requests and tracking.' },
   { path: 'hold', title: 'Hold', activePage: 'hold', description: 'Samples and reports currently on hold.' },
-  { path: 'clinical', title: 'Clinical', activePage: 'clinical-alerts', description: 'Clinical alerts for franchise cases.' },
-  { path: 'cancellations', title: 'Cancellations', activePage: 'cancellations', description: 'Cancelled bookings and tests.' },
-  { path: 'generate-bill', title: 'Generate Bill', activePage: 'generate-bill', description: 'Generate franchise billing.' },
-  { path: 'generate-bill-old', title: 'Generate Bill Old', activePage: 'generate-bill-old', description: 'Legacy bill generation.' },
+  { path: 'rejection', title: 'Rejection', activePage: 'rejection', description: 'Rejected bookings and tests.' },
   { path: 'online-payment', title: 'Online Payment', activePage: 'online-payment', description: 'Collect and track online payments.' },
   { path: 'payment-history', title: 'Payment History', activePage: 'payment-history', description: 'Historical payment records.' },
-  { path: 'track-ledger', title: 'Track Ledger', activePage: 'track-ledger', description: 'Franchise ledger and balances.' },
-  { path: 'manage-doctors', title: 'Manage Doctors', activePage: 'manage-doctors', description: 'Doctors linked to this franchise.' },
-  { path: 'manage-lab', title: 'Manage Lab', activePage: 'manage-lab', description: 'Lab settings for the franchise.' },
-  { path: 'commission', title: 'Commission', activePage: 'commission', description: 'Commission statements and payouts.' },
-  { path: 'inventory', title: 'Inventory', activePage: 'inventory', description: 'Franchise inventory stock.' },
-  { path: 'slide-request', title: 'Slide/Request', activePage: 'slide-request', description: 'Submit and track slide requests.' },
   { path: 'my-staff', title: 'My Staff', activePage: 'my-staff', description: 'Staff accounts under this franchise.' },
   { path: 'sub-franchisee', title: 'Sub Franchisee', activePage: 'sub-franchisee', description: 'Manage sub-franchisee accounts.' },
   { path: 'sub-franchisee-pricing', title: 'SubFranchisee Pricing', activePage: 'sub-franchisee-pricing', description: 'Pricing for sub-franchisees.' },
   { path: 'sub-franchisee-credits', title: 'SubFranchisee Credits', activePage: 'sub-franchisee-credits', description: 'Credits allocated to sub-franchisees.' },
-  { path: 'generate-certificate', title: 'Generate Certificate', activePage: 'generate-certificate', description: 'Generate franchise certificates.' },
-  { path: 'kyc-verification', title: 'KYC Verification', activePage: 'kyc-verification', description: 'KYC documents and verification status.' },
   { path: 'update-profile', title: 'Update Profile', activePage: 'update-profile', description: 'Update franchise profile details.' },
 ];
 
@@ -159,12 +155,105 @@ export default function App() {
           <Route path="/device/trip-management" element={<ProtectedRoute><DeviceStub title="Trip Management" description="Active trips list and management." /></ProtectedRoute>} />
           <Route path="/device/batch-upload" element={<ProtectedRoute><DeviceStub title="Batch Upload" description="Upload CSV/XLSX registration batch files."><input type="file" accept=".csv,.xlsx" /></DeviceStub></ProtectedRoute>} />
           <Route path="/device/test-result-batch" element={<ProtectedRoute><TestResultBatch /></ProtectedRoute>} />
+          <Route
+            path="/franchise/manage-booking/new"
+            element={(
+              <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
+                <Registration
+                  activePage="manage-booking"
+                  pageTitle="New Entry"
+                  successNoun="Booking"
+                />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/franchise/manage-booking/list"
+            element={(
+              <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
+                <EditEntry />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/franchise/manage-booking/test-addition"
+            element={(
+              <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
+                <TestAddition />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/franchise/manage-reports/all"
+            element={(
+              <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
+                <AllReports />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/franchise/manage-reports/search"
+            element={(
+              <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
+                <SearchReports />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/franchise/find-barcode"
+            element={(
+              <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
+                <FindBarcode />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/franchise/clinical-history"
+            element={(
+              <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
+                <ClinicalHistory />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/franchise/test-cancellation"
+            element={(
+              <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
+                <TestCancellation />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/franchise/make-bill"
+            element={(
+              <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
+                <MakeBill />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/franchise/billing-list"
+            element={(
+              <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
+                <BillingList />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/franchise/track-ledger"
+            element={(
+              <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
+                <TrackLedger />
+              </ProtectedRoute>
+            )}
+          />
+          <Route path="/franchise/clinical" element={<Navigate to="/franchise/clinical-history" replace />} />
           {FRANCHISE_PAGES.map((page) => (
             <Route
               key={page.path}
               path={`/franchise/${page.path}`}
               element={(
-                <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
+                <ProtectedRoute allowedRoles={page.allowedRoles || FRANCHISE_ROLES}>
                   <FranchiseStub
                     title={page.title}
                     description={page.description}
@@ -174,6 +263,22 @@ export default function App() {
               )}
             />
           ))}
+          <Route
+            path="/franchise/manage-booking"
+            element={(
+              <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
+                <Navigate to="/franchise/manage-booking/new" replace />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/franchise/manage-reports"
+            element={(
+              <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
+                <Navigate to="/franchise/manage-reports/all" replace />
+              </ProtectedRoute>
+            )}
+          />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         </ResponsiveProvider>

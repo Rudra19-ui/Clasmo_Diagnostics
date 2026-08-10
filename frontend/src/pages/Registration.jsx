@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 import Layout from '../components/Layout';
 import GenderRadioGroup from '../components/GenderRadioGroup';
@@ -34,6 +34,15 @@ const emptyPatient = () => ({
 
 const formatTestOption = (test) => test.name;
 
+function formatFranchiseRegistrationTest(test) {
+  const price = Number(test.price || 0);
+  const mrp = Number(test.mrp || 0);
+  const bits = [];
+  if (price > 0) bits.push(`Price ₹${price.toFixed(2)}`);
+  if (mrp > 0) bits.push(`MRP ₹${mrp.toFixed(2)}`);
+  return bits.length ? `${test.name} — ${bits.join(' · ')}` : test.name;
+}
+
 function getSampleTypes(sampleType) {
   const raw = (sampleType || 'General').trim();
   const parts = raw.split(/[,/|]/).map((part) => part.trim()).filter(Boolean);
@@ -65,8 +74,13 @@ function nextLabCode(currentCode) {
   return `${prefix}${String(parseInt(digits, 10) + 1).padStart(digits.length, '0')}`;
 }
 
-export default function Registration() {
+export default function Registration({
+  activePage = 'registration',
+  pageTitle = '',
+  successNoun = 'Registration',
+}) {
   const navigate = useNavigate();
+  const isFranchiseBooking = activePage === 'manage-booking';
   const [patient, setPatient] = useState(emptyPatient());
   const [tests, setTests] = useState([]);
   const [selected, setSelected] = useState([]);
@@ -265,7 +279,7 @@ export default function Registration() {
       const savedPatientId = result.patient?.patient_id || patient.patient_id;
       const savedBarcode = result.patient?.bar_code || registrationBarcode;
       alert(
-        `Registration saved successfully!\n`
+        `${successNoun} saved successfully!\n`
         + `Patient ID: ${savedPatientId}\n`
         + `Lab Code: ${result.lab_code}`
         + (savedBarcode ? `\nBarcode linked: ${savedBarcode}\nStick this label on the blood tube.` : ''),
@@ -289,8 +303,23 @@ export default function Registration() {
   };
 
   return (
-    <Layout activePage="registration">
+    <Layout activePage={activePage}>
       <main className="dash-main page-registration page-registration-sketch">
+        {isFranchiseBooking && (
+          <header className="franchise-booking-header">
+            <nav className="breadcrumb" aria-label="Breadcrumb">
+              <ul>
+                <li><Link to="/dashboard">Home</Link></li>
+                <li><Link to="/franchise/manage-booking/list">Entry Section</Link></li>
+                <li>{pageTitle || 'New Entry'}</li>
+              </ul>
+            </nav>
+            <h2 className="page-heading">{pageTitle || 'New Entry'}</h2>
+            <p className="portfolio-intro">
+              Same registration form and catalog data used for Test Registration — create a new patient booking here.
+            </p>
+          </header>
+        )}
         <section className="reg-sketch-panel" aria-label="Patient information">
           <div className="reg-sketch-patient-grid">
             <div className="reg-sketch-col">
@@ -537,7 +566,7 @@ export default function Registration() {
               onTestSearchChange={setTestSearch}
               selectedTestSearch={selectedTestSearch}
               onSelectedTestSearchChange={setSelectedTestSearch}
-              formatLabel={formatTestOption}
+              formatLabel={isFranchiseBooking ? formatFranchiseRegistrationTest : formatTestOption}
             />
 
             <div className="reg-sketch-sample-panel">

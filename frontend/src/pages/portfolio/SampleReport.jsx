@@ -4,6 +4,9 @@ import Footer from '../../components/Footer';
 import Layout from '../../components/Layout';
 import LandingBrandTitle from '../../components/landing/LandingBrandTitle';
 import { api } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
+import { isFranchiseRole } from '../../utils/franchiseNav';
+import { filterPorCatalogPdfs } from '../../utils/porCatalog';
 
 function splitSampleTypes(sampleType) {
   const raw = (sampleType || '').trim();
@@ -27,8 +30,11 @@ function referenceInterval(param) {
 }
 
 export default function SampleReport() {
+  const { user } = useAuth();
+  const franchise = isFranchiseRole(user?.role);
   const [searchParams, setSearchParams] = useSearchParams();
   const [tests, setTests] = useState([]);
+  const [formats, setFormats] = useState([]);
   const [parameters, setParameters] = useState([]);
   const [search, setSearch] = useState('');
   const [selectedId, setSelectedId] = useState('');
@@ -41,10 +47,14 @@ export default function SampleReport() {
   const [reportError, setReportError] = useState('');
 
   useEffect(() => {
-    api.getTests()
-      .then((rows) => {
+    Promise.all([
+      api.getTests(),
+      api.getReportFormats().catch(() => []),
+    ])
+      .then(([rows, formatRows]) => {
         const list = Array.isArray(rows) ? rows : [];
         setTests(list);
+        setFormats(Array.isArray(formatRows) ? formatRows : []);
         if (list.length) setSelectedId(pickDefaultTestId(list));
       })
       .catch((err) => setError(err.message || 'Could not load tests.'))
@@ -146,24 +156,72 @@ export default function SampleReport() {
   const title = patientReport?.test_name || selectedTest?.name || 'CBC (COMPLETE BLOOD COUNT)';
   const rows = patientReport?.rows;
   const isLive = Boolean(patientReport?.found);
+  const porPdfs = useMemo(
+    () => filterPorCatalogPdfs(formats, { hidePriceCatalog: franchise }),
+    [formats, franchise],
+  );
 
   return (
-    <Layout activePage="test-portfolio">
-      <main className="dash-main portfolio-page">
+    <Layout activePage={franchise ? 'reports-format' : 'test-portfolio'}>
+      <main className={`dash-main portfolio-page${franchise ? ' franchise-module-page' : ''}`}>
         <nav className="breadcrumb" aria-label="Breadcrumb">
           <ul>
-            <li><Link to="/search">Home</Link></li>
-            <li><Link to="/portfolio/test-list">Test Portfolio</Link></li>
-            <li>Sample Report</li>
+            <li><Link to="/dashboard">Home</Link></li>
+            {franchise ? <li>Test Section</li> : <li><Link to="/portfolio/test-list">Test Portfolio</Link></li>}
+            <li>Reports Format</li>
           </ul>
         </nav>
 
-        <h2 className="page-heading">Sample Report</h2>
+        <h2 className="page-heading">Reports Format</h2>
         <p className="portfolio-intro">
-          Preview the CBC report layout, or scan a sample barcode to load patient demographics and machine results.
+          Demo / sample report PDFs and images, plus interactive sample report preview.
         </p>
+        {porPdfs.length > 0 && (
+          <div className="all-tests-por-links">
+            {porPdfs.map((pdf) => (
+              <a
+                key={pdf.id}
+                href={pdf.file_url || pdf.external_url}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {pdf.title}
+              </a>
+            ))}
+          </div>
+        )}
 
-        <section className="content-panel portfolio-panel">
+        <section className={`content-panel portfolio-panel${franchise ? ' franchise-module-panel' : ''}`}>
+          <h3 className="test-addition-subtitle">Demo report files</h3>
+          <div className="report-format-grid">
+            {formats.length === 0 && !loading && (
+              <p className="portfolio-empty">No demo report files uploaded yet.</p>
+            )}
+            {formats.map((asset) => {
+              const href = asset.file_url || asset.external_url;
+              return (
+                <article key={asset.id} className="report-format-card">
+                  <div className={`report-format-badge report-format-badge--${asset.file_type}`}>
+                    {asset.file_type === 'pdf' ? 'PDF' : 'Image'}
+                    {asset.is_demo ? ' · Demo' : ''}
+                  </div>
+                  <h3>{asset.title}</h3>
+                  <p>{asset.description || 'Sample report format'}</p>
+                  {href ? (
+                    <a href={href} target="_blank" rel="noreferrer" className="portfolio-profile-link">
+                      Open {asset.file_type === 'pdf' ? 'PDF' : 'image'} →
+                    </a>
+                  ) : (
+                    <span className="report-format-placeholder">File placeholder — upload via admin media later</span>
+                  )}
+                </article>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className={`content-panel portfolio-panel${franchise ? ' franchise-module-panel' : ''}`}>
+          <h3 className="test-addition-subtitle">Interactive sample preview</h3>
           <form className="sample-report-barcode-bar" onSubmit={handleBarcodeSubmit}>
             <label>
               <span>Sample barcode</span>

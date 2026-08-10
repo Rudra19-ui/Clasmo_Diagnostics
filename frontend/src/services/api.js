@@ -82,6 +82,14 @@ export const api = {
     return request(`/tests/${query ? `?${query}` : ''}`);
   },
   getTestCategories: () => request('/test-categories/'),
+  getTestPackages: (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return request(`/test-packages/${query ? `?${query}` : ''}`);
+  },
+  getReportFormats: (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return request(`/report-formats/${query ? `?${query}` : ''}`);
+  },
   searchRegistrations: (params = {}) => {
     const query = new URLSearchParams(params).toString();
     return request(`/registrations/${query ? `?${query}` : ''}`);
@@ -103,6 +111,34 @@ export const api = {
   getNextLabCode: () => request('/registrations/next-lab-code/'),
   getNextPatientId: () => request('/registrations/next-patient-id/'),
   getRegistration: (labCode) => request(`/registrations/${encodeURIComponent(labCode)}/`),
+  updateRegistration: (labCode, payload) =>
+    request(`/registrations/${encodeURIComponent(labCode)}/edit/`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    }),
+  addRegistrationTests: (labCode, testIds) =>
+    request(`/registrations/${encodeURIComponent(labCode)}/add-tests/`, {
+      method: 'POST',
+      body: JSON.stringify({ test_ids: testIds }),
+    }),
+  cancelRegistrationTests: (labCode, payload) =>
+    request(`/registrations/${encodeURIComponent(labCode)}/cancel-tests/`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+  generateMrpBill: (labCode, payload = {}) =>
+    request(`/registrations/${encodeURIComponent(labCode)}/generate-mrp-bill/`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+  getFranchiseLedger: (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return request(`/franchise/ledger/${query ? `?${query}` : ''}`);
+  },
+  getFranchiseSampleUsage: (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return request(`/franchise/sample-usage/${query ? `?${query}` : ''}`);
+  },
   getPatientBarcodes: (params = {}) => {
     const query = new URLSearchParams(params).toString();
     return request(`/patient-barcodes/${query ? `?${query}` : ''}`);

@@ -1,28 +1,40 @@
-import { useCallback, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Layout from '../../components/Layout';
 import { resolveFranchiseBooking } from './resolveBooking';
 
 export default function FindBarcode() {
+  const [searchParams] = useSearchParams();
   const [barcode, setBarcode] = useState('');
+  const [bookId, setBookId] = useState(searchParams.get('labCode') || '');
   const [searching, setSearching] = useState(false);
   const [error, setError] = useState('');
   const [registration, setRegistration] = useState(null);
 
-  const runSearch = useCallback(async (raw = barcode) => {
+  const runSearch = useCallback(async (raw = barcode, labCode = bookId) => {
     setSearching(true);
     setError('');
     setRegistration(null);
     try {
-      const detail = await resolveFranchiseBooking({ barcode: raw });
+      const detail = await resolveFranchiseBooking({ barcode: raw, bookId: labCode });
       setRegistration(detail);
+      if (detail.lab_code) setBookId(detail.lab_code);
     } catch (err) {
       setError(err.message || 'Barcode search failed.');
     } finally {
       setSearching(false);
     }
-  }, [barcode]);
+  }, [barcode, bookId]);
+
+  useEffect(() => {
+    const labCode = searchParams.get('labCode')?.trim();
+    if (labCode) {
+      setBookId(labCode);
+      runSearch('', labCode);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const patient = registration?.patient;
 

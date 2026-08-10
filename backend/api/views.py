@@ -85,6 +85,7 @@ from .barcode_service import (
     normalize_barcode,
     resolve_patient_for_link,
     scan_sample_by_barcode,
+    mark_registration_sample_scanned,
 )
 
 logger = logging.getLogger(__name__)
@@ -362,7 +363,9 @@ class RegistrationSearchView(generics.ListAPIView):
             return None
 
     def get_queryset(self):
-        qs = Registration.objects.select_related('patient', 'created_by').prefetch_related('tests__test').all()
+        qs = Registration.objects.select_related(
+            'patient', 'created_by', 'clinical_report',
+        ).prefetch_related('tests__test', 'linked_barcodes').all()
         params = self.request.query_params
 
         patient_name = params.get('patient_name', '').strip()
@@ -2598,6 +2601,9 @@ class PatientSampleScanView(APIView):
                 registration = Registration.objects.filter(pk=reg_id).first()
                 if registration and not user_can_access_registration(request.user, registration):
                     return Response({'found': False, 'barcode': normalize_barcode(barcode)})
+                if registration:
+                    mark_registration_sample_scanned(registration)
+                    payload['registration_status'] = registration.status
         return Response(payload)
 
 

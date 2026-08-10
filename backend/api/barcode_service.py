@@ -364,3 +364,14 @@ def scan_sample_by_barcode(barcode):
         }
 
     return build_sample_scan_payload(link)
+
+
+def mark_registration_sample_scanned(registration):
+    """Mark a registration as sample-received after reception QR/barcode scan."""
+    if not registration:
+        return False
+    if registration.status != Registration.STATUS_REGISTERED:
+        return False
+    registration.status = Registration.STATUS_COLLECTION
+    registration.save(update_fields=['status'])
+    return True

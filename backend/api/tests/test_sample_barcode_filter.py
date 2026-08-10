@@ -3,7 +3,12 @@ from decimal import Decimal
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
-from api.barcode_service import link_sample_barcodes, scan_sample_by_barcode, test_matches_sample_type
+from api.barcode_service import (
+    link_sample_barcodes,
+    mark_registration_sample_scanned,
+    scan_sample_by_barcode,
+    test_matches_sample_type,
+)
 from api.models import Patient, PatientSampleBarcode, Registration, RegistrationTest, Test, TestCategory
 
 
@@ -115,3 +120,15 @@ class SampleBarcodeFilterTests(TestCase):
         )
         link = PatientSampleBarcode.objects.get(barcode='SERUM-002')
         self.assertEqual(link.linked_test_ids, [self.serum_test.id, self.blood_test.id])
+
+    def test_mark_registration_sample_scanned_moves_registered_to_collection(self):
+        self.assertEqual(self.registration.status, Registration.STATUS_REGISTERED)
+        changed = mark_registration_sample_scanned(self.registration)
+        self.assertTrue(changed)
+        self.registration.refresh_from_db()
+        self.assertEqual(self.registration.status, Registration.STATUS_COLLECTION)
+
+        changed_again = mark_registration_sample_scanned(self.registration)
+        self.assertFalse(changed_again)
+        self.registration.refresh_from_db()
+        self.assertEqual(self.registration.status, Registration.STATUS_COLLECTION)

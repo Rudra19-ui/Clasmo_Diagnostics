@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import BarcodeLinkForm from '../../components/BarcodeLinkForm';
 import Footer from '../../components/Footer';
 import Layout from '../../components/Layout';
@@ -99,6 +99,7 @@ function testIdsFromRegistration(registration) {
 }
 
 export default function EditEntry() {
+  const [searchParams] = useSearchParams();
   const [query, setQuery] = useState('');
   const [rows, setRows] = useState([]);
   const [catalog, setCatalog] = useState([]);
@@ -241,6 +242,15 @@ export default function EditEntry() {
       setError(err.message || 'Could not open entry for editing.');
     }
   };
+
+  useEffect(() => {
+    const labCode = searchParams.get('labCode')?.trim();
+    if (!labCode) return;
+    setQuery(labCode);
+    loadList(labCode);
+    openEdit({ lab_code: labCode });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const closeEdit = () => {
     setEditing(null);

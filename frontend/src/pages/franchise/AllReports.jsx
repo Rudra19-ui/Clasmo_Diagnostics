@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Layout from '../../components/Layout';
+import ReportSectionTable from '../../components/franchise/ReportSectionTable';
 import { api } from '../../services/api';
 
 function toApiDate(value) {
@@ -53,7 +54,9 @@ export default function AllReports() {
             </ul>
           </nav>
           <h2 className="page-heading">All Reports</h2>
-          <p className="portfolio-intro">Browse bookings and reports filtered by date.</p>
+          <p className="portfolio-intro">
+            Browse bookings and reports filtered by date. Click a patient name to open the full report view.
+          </p>
         </header>
 
         <section className="franchise-module-panel">
@@ -73,35 +76,12 @@ export default function AllReports() {
 
           {error && <p className="login-error" role="alert">{error}</p>}
 
-          <div className="table-wrap">
-            <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Lab Code</th>
-                    <th>Patient</th>
-                    <th>Doctor</th>
-                    <th>Test</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {!loading && rows.length === 0 && (
-                    <tr><td colSpan={6} className="empty-msg">No reports found for the selected dates.</td></tr>
-                  )}
-                  {rows.map((row) => (
-                    <tr key={row.id}>
-                      <td>{row.date || '—'}</td>
-                      <td>{row.lab_code}</td>
-                      <td>{row.patient_name}</td>
-                      <td>{row.patient?.doctor_name || '—'}</td>
-                      <td>{row.test || row.test_names || '—'}</td>
-                      <td>{row.status}</td>
-                    </tr>
-                  ))}
-                </tbody>
-            </table>
-          </div>
+          <ReportSectionTable
+            rows={rows}
+            loading={loading}
+            from="all"
+            emptyMessage="No reports found for the selected dates."
+          />
         </section>
       </main>
       <Footer />

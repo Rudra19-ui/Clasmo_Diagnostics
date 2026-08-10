@@ -701,6 +701,11 @@ class RegistrationSearchSerializer(serializers.ModelSerializer):
     patient = PatientSerializer(read_only=True)
     tests = RegistrationTestSerializer(many=True, read_only=True)
     patient_name = serializers.CharField(source='patient.patient_name', read_only=True)
+    patient_display = serializers.SerializerMethodField()
+    barcodes = serializers.SerializerMethodField()
+    ref_by = serializers.SerializerMethodField()
+    tests_list = serializers.SerializerMethodField()
+    report_progress = serializers.SerializerMethodField()
     test = serializers.SerializerMethodField()
     date = serializers.SerializerMethodField()
     amount = serializers.DecimalField(source='net_amount', max_digits=10, decimal_places=2, read_only=True)
@@ -714,12 +719,60 @@ class RegistrationSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Registration
         fields = [
-            'id', 'lab_code', 'patient', 'patient_name', 'tests', 'test', 'date',
+            'id', 'lab_code', 'patient', 'patient_name', 'patient_display', 'tests', 'tests_list',
+            'barcodes', 'ref_by', 'report_progress', 'test', 'date',
             'status', 'amount', 'total_amount', 'total', 'net_amount', 'paid', 'balance',
             'discount_test', 'discount_regn', 'refund_amount', 'payment_method', 'bill_receipt_no',
             'registration_date', 'collection_date', 'created_at', 'created_by_name', 'created_by_username',
             'can_edit', 'edit_expires_at', 'hours_left',
         ]
+
+    def get_patient_display(self, obj):
+        patient = obj.patient
+        title = (patient.title or '').strip()
+        name = (patient.patient_name or '').strip()
+        years = patient.age_years or 0
+        gender = 'F' if patient.gender == 'female' else 'M' if patient.gender == 'male' else ''
+        age_part = f'{years}Y/{gender}' if gender else f'{years}Y'
+        label = f'{title} {name}'.strip()
+        return f'{label} ({age_part})' if label else age_part
+
+    def get_barcodes(self, obj):
+        codes = [
+            item.barcode
+            for item in obj.linked_barcodes.all()
+            if item.is_active and item.barcode
+        ]
+        return ','.join(codes)
+
+    def get_ref_by(self, obj):
+        doctor = (obj.patient.doctor_name or '').strip()
+        return doctor if doctor else 'Self'
+
+    def get_tests_list(self, obj):
+        return [reg_test.test.name for reg_test in obj.tests.all() if reg_test.test_id]
+
+    def get_report_progress(self, obj):
+        from .models import Registration, Report
+
+        total = obj.tests.count()
+        if total == 0:
+            return '0/0'
+        if obj.status in (Registration.STATUS_RESULT_READY, Registration.STATUS_PRINTED):
+            return f'{total}/{total}'
+
+        report = getattr(obj, 'clinical_report', None)
+        if report and report.status == Report.STATUS_VERIFIED:
+            return f'{total}/{total}'
+        if report and report.status == Report.STATUS_ENTERED:
+            test_ids_with_values = set(
+                report.values.values_list('parameter__test_id', flat=True).distinct()
+            )
+            completed = sum(
+                1 for reg_test in obj.tests.all() if reg_test.test_id in test_ids_with_values
+            )
+            return f'{completed}/{total}'
+        return f'0/{total}'
 
     def get_test(self, obj):
         names = [t.test.name for t in obj.tests.all()]

@@ -57,6 +57,7 @@ import TestAddition from './pages/franchise/TestAddition';
 import EditEntry from './pages/franchise/EditEntry';
 import AllReports from './pages/franchise/AllReports';
 import SearchReports from './pages/franchise/SearchReports';
+import ReportDetail from './pages/franchise/ReportDetail';
 import FindBarcode from './pages/franchise/FindBarcode';
 import ClinicalHistory from './pages/franchise/ClinicalHistory';
 import TestCancellation from './pages/franchise/TestCancellation';
@@ -204,6 +205,14 @@ export default function App() {
             element={(
               <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
                 <SearchReports />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/franchise/manage-reports/detail/:labCode"
+            element={(
+              <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
+                <ReportDetail />
               </ProtectedRoute>
             )}
           />

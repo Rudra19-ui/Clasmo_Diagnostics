@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Layout from '../../components/Layout';
+import ReportSectionTable from '../../components/franchise/ReportSectionTable';
 import { api } from '../../services/api';
 import { sanitizeBarcodeScannedValue } from '../../utils/barcodeScan';
 
@@ -58,7 +59,9 @@ export default function SearchReports() {
             </ul>
           </nav>
           <h2 className="page-heading">Search Reports</h2>
-          <p className="portfolio-intro">Search by doctor, lab, patient name, test, or barcode.</p>
+          <p className="portfolio-intro">
+            Search by doctor, lab, patient name, test, or barcode. Click a patient name to open details.
+          </p>
         </header>
 
         <section className="franchise-module-panel">
@@ -130,35 +133,12 @@ export default function SearchReports() {
           {error && <p className="login-error" role="alert">{error}</p>}
 
           {searched && (
-            <div className="table-wrap">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Lab Code</th>
-                    <th>Patient</th>
-                    <th>Doctor</th>
-                    <th>Test</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {!loading && rows.length === 0 && (
-                    <tr><td colSpan={6} className="empty-msg">No matching reports.</td></tr>
-                  )}
-                  {rows.map((row) => (
-                    <tr key={row.id}>
-                      <td>{row.date || '—'}</td>
-                      <td>{row.lab_code}</td>
-                      <td>{row.patient_name}</td>
-                      <td>{row.patient?.doctor_name || '—'}</td>
-                      <td>{row.test || '—'}</td>
-                      <td>{row.status}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <ReportSectionTable
+              rows={rows}
+              loading={loading}
+              from="search"
+              emptyMessage="No matching reports."
+            />
           )}
         </section>
       </main>

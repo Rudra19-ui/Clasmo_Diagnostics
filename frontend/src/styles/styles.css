@@ -5304,10 +5304,6 @@ input, select, textarea, button {
     grid-template-columns: 1fr;
   }
 }
-  margin-top: 14px;
-  display: flex;
-  justify-content: flex-end;
-}
 
 .franchise-report-filters,
 .franchise-search-reports-form {

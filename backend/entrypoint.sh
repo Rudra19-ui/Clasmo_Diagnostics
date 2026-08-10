@@ -21,7 +21,7 @@ bootstrap() {
       python manage.py ensure_trial_users || true
       python manage.py seed_data || true
       python manage.py seed_clinical_data || true
-      python manage.py shell -c "from django.contrib.auth import get_user_model; User=get_user_model(); print('Trial admin exists:', User.objects.filter(username='admin_test').exists())" || true
+      python manage.py shell -c "from django.contrib.auth import get_user_model; User=get_user_model(); print('Admin login exists:', User.objects.filter(username='admin', is_active=True).exists())" || true
       echo "Background bootstrap finished."
       return 0
     fi

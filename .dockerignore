@@ -7,9 +7,10 @@ terminals
 mcps
 canvases
 
-# Docs & plans
+# Docs & plans (keep backend requirements available for Docker COPY)
 *.md
-*.txt
+/*.txt
+/docs/**/*.txt
 !backend/requirements.txt
 
 # Frontend dev artifacts

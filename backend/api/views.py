@@ -123,7 +123,7 @@ class HealthView(APIView):
             connection.ensure_connection()
             with connection.cursor() as cursor:
                 cursor.execute('SELECT 1')
-            trial_admin_exists = User.objects.filter(username='admin_test', is_active=True).exists()
+            trial_admin_exists = User.objects.filter(username='admin', is_active=True).exists()
             return Response({
                 'status': 'ok',
                 'database': 'connected',

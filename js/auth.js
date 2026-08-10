@@ -5,16 +5,58 @@ window.ClasmoAuth = (function () {
   const STORAGE_KEY = 'clasmo_session';
 
   const ACCOUNTS = {
-    user_test: {
-      password: 'password123',
+    user: {
+      password: 'user123',
       role: 'user',
-      displayName: 'CLASMO_Diag',
+      displayName: 'User',
       labCode: '202505017'
     },
-    admin_test: {
+    admin: {
       password: 'admin123',
       role: 'admin',
       displayName: 'Admin',
+      labCode: '202505017'
+    },
+    technician: {
+      password: 'tech123',
+      role: 'technician',
+      displayName: 'Technician',
+      labCode: '202505017'
+    },
+    pathologist: {
+      password: 'patho123',
+      role: 'pathologist',
+      displayName: 'Pathologist',
+      labCode: '202505017'
+    },
+    hr: {
+      password: 'hr123',
+      role: 'hr',
+      displayName: 'HR',
+      labCode: '202505017'
+    },
+    receptionist: {
+      password: 'reception123',
+      role: 'receptionist',
+      displayName: 'Receptionist',
+      labCode: '202505017'
+    },
+    supreme: {
+      password: 'supreme123',
+      role: 'super_franchisee',
+      displayName: 'Supreme',
+      labCode: '202505017'
+    },
+    prime: {
+      password: 'prime123',
+      role: 'franchisee',
+      displayName: 'Prime',
+      labCode: '202505017'
+    },
+    sub: {
+      password: 'sub123',
+      role: 'sub_franchise',
+      displayName: 'Sub-Franchise',
       labCode: '202505017'
     }
   };

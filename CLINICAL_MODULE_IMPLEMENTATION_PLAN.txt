@@ -117,8 +117,8 @@ src/
 ================================================================================
 
 Users:
-  technician_test / tech123
-  pathologist_test / patho123
+  technician_test / tech123  → use technician / tech123
+  pathologist_test / patho123 → use pathologist / patho123
 
 Parameters:
   CBC: Hemoglobin, WBC, RBC, Platelet, Hematocrit

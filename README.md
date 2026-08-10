@@ -35,16 +35,26 @@ npm run dev
 
 App runs at **http://localhost:5173**
 
-## Trial credentials
+## Login credentials
 
-| Role        | Username           | Password      |
-|-------------|--------------------|---------------|
-| User        | `user_test`        | `password123` |
-| Admin       | `admin_test`       | `admin123`    |
-| Technician  | `technician_test`  | `tech123`     |
-| Pathologist | `pathologist_test` | `patho123`    |
+| Role          | Username        | Password        |
+|---------------|-----------------|-----------------|
+| Admin         | `admin`         | `admin123`      |
+| User          | `user`          | `user123`       |
+| Technician    | `technician`    | `tech123`       |
+| Pathologist   | `pathologist`   | `patho123`      |
+| HR            | `hr`            | `hr123`         |
+| Receptionist  | `receptionist`  | `reception123`  |
+| Supreme       | `supreme`       | `supreme123`    |
+| Prime         | `prime`         | `prime123`      |
+| Sub-Franchise | `sub`           | `sub123`        |
 
-Use the matching login tab (User vs Admin) on the login page. Technician and Pathologist use the User tab.
+Reset/create these accounts with:
+
+```bash
+cd backend
+python manage.py seed_test_roles
+```
 
 ## Clinical module
 

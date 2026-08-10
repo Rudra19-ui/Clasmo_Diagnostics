@@ -37,6 +37,16 @@ TRIAL_USERS = [
 
 
 def ensure_trial_users(*, reset_passwords=True, stdout=None):
+    from api.zones import (
+        NASHIK_ZONE_CODE,
+        assign_existing_users_to_nashik,
+        ensure_zone_admins,
+        ensure_zones,
+    )
+
+    zones_by_code, _ = ensure_zones(stdout=stdout)
+    nashik = zones_by_code[NASHIK_ZONE_CODE]
+
     created_count = 0
     updated_count = 0
 
@@ -51,10 +61,11 @@ def ensure_trial_users(*, reset_passwords=True, stdout=None):
                 email=f'{username}@clasmo.test',
                 is_staff=is_staff,
                 is_active=True,
+                zone=nashik,
             )
             created_count += 1
             if stdout:
-                stdout.write(f'Created login user: {user.username}')
+                stdout.write(f'Created login user: {user.username} (Nashik)')
             continue
 
         changed = False
@@ -76,6 +87,9 @@ def ensure_trial_users(*, reset_passwords=True, stdout=None):
         if not user.email:
             user.email = f'{username}@clasmo.test'
             changed = True
+        if user.zone_id != nashik.id:
+            user.zone = nashik
+            changed = True
 
         if changed:
             user.save()
@@ -83,7 +97,7 @@ def ensure_trial_users(*, reset_passwords=True, stdout=None):
             if stdout:
                 stdout.write(f'Updated login user: {user.username}')
 
-    # Franchise hierarchy: supreme → prime → sub
+    # Franchise hierarchy: supreme → prime → sub (Nashik only)
     try:
         supreme = User.objects.get(username='supreme')
         prime = User.objects.get(username='prime')
@@ -100,5 +114,9 @@ def ensure_trial_users(*, reset_passwords=True, stdout=None):
     deactivated = User.objects.filter(username__in=LEGACY_USERNAMES, is_active=True).update(is_active=False)
     if deactivated and stdout:
         stdout.write(f'Deactivated {deactivated} legacy trial account(s): {", ".join(LEGACY_USERNAMES)}')
+
+    # Zone admins for Pune / Ratnagiri / Mumbai / Dhule (admin already covered above)
+    ensure_zone_admins(reset_passwords=reset_passwords, stdout=stdout)
+    assign_existing_users_to_nashik(stdout=stdout)
 
     return created_count, updated_count

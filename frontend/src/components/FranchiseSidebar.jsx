@@ -146,6 +146,9 @@ export default function FranchiseSidebar({
       <div className="franchise-sidebar-user">
         <strong>{(user?.display_name || user?.username || 'User').toUpperCase()}</strong>
         <span>({roleLabel})</span>
+        {user?.zone_name ? (
+          <span className="franchise-sidebar-zone">Zone: {user.zone_name}</span>
+        ) : null}
       </div>
 
       <ul className="sidebar-menu franchise-sidebar-menu">

@@ -3,6 +3,23 @@ from django.db import models
 from django.utils import timezone
 
 
+class Zone(models.Model):
+    """Geographic operating zone — data and users stay isolated per zone."""
+
+    code = models.CharField(max_length=30, unique=True)
+    name = models.CharField(max_length=100)
+    sort_order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['sort_order', 'id']
+
+    def __str__(self):
+        return f'{self.name} ({self.code})'
+
+
 class User(AbstractUser):
     ROLE_USER = 'user'
     ROLE_ADMIN = 'admin'
@@ -45,6 +62,14 @@ class User(AbstractUser):
     lab_code = models.CharField(max_length=20, default='202505017')
     save_credentials = models.BooleanField(default=False)
     save_info = models.BooleanField(default=False)
+    zone = models.ForeignKey(
+        Zone,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name='users',
+        help_text='Operating zone for this account. Data is isolated by zone.',
+    )
     parent_franchisee = models.ForeignKey(
         'self',
         on_delete=models.SET_NULL,
@@ -260,6 +285,13 @@ class Patient(models.Model):
     is_register = models.BooleanField(default=False)
     home_collection = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    zone = models.ForeignKey(
+        Zone,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name='patients',
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -348,6 +380,13 @@ class Registration(models.Model):
     refund_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     recovery_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     bill_receipt_no = models.CharField(max_length=50, blank=True)
+    zone = models.ForeignKey(
+        Zone,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name='registrations',
+    )
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -643,6 +682,13 @@ class CollectionCenter(models.Model):
     ]
 
     name = models.CharField(max_length=200, unique=True)
+    zone = models.ForeignKey(
+        Zone,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name='collection_centers',
+    )
     center_type = models.CharField(max_length=20, choices=TYPE_CHOICES, blank=True)
     party_type = models.CharField(max_length=20, choices=PARTY_CHOICES, blank=True)
     is_default = models.BooleanField(default=False)
@@ -867,6 +913,13 @@ class Doctor(models.Model):
     ]
 
     registration_number = models.CharField(max_length=50, unique=True)
+    zone = models.ForeignKey(
+        Zone,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name='doctors',
+    )
     first_name = models.CharField(max_length=100)
     middle_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100)

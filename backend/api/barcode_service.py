@@ -35,6 +35,25 @@ def validate_barcode_pair(barcode, confirm_barcode, *, sample_type=''):
     return barcode
 
 
+def _assert_unique_barcodes_per_sample_type(barcodes_data):
+    """Reject the same physical barcode mapped to different sample types in one request."""
+    seen_by_barcode = {}
+    for item in barcodes_data or []:
+        sample_type = _normalize_barcode(item.get('sample_type', '')) or 'Barcode'
+        barcode = _normalize_barcode(item.get('barcode'))
+        if not barcode:
+            continue
+        key = barcode.casefold()
+        previous_type = seen_by_barcode.get(key)
+        if previous_type and previous_type.casefold() != sample_type.casefold():
+            raise BarcodeLinkError(
+                f'Barcode {barcode} cannot be used for both {previous_type} and {sample_type}. '
+                'Use a different barcode for each sample type.',
+                field='barcode',
+            )
+        seen_by_barcode[key] = sample_type
+
+
 @transaction.atomic
 def link_sample_barcodes(*, patient, registration=None, barcodes_data, user=None):
     """
@@ -42,6 +61,7 @@ def link_sample_barcodes(*, patient, registration=None, barcodes_data, user=None
 
     barcodes_data: list of dicts with sample_type, barcode, confirm_barcode
     """
+    _assert_unique_barcodes_per_sample_type(barcodes_data)
     linked = []
 
     for item in barcodes_data or []:
@@ -70,6 +90,21 @@ def link_sample_barcodes(*, patient, registration=None, barcodes_data, user=None
             if registration and existing.registration_id and existing.registration_id != registration.id:
                 raise BarcodeLinkError(
                     f'Barcode {barcode} is already linked to lab code {existing.registration.lab_code}.',
+                    field='barcode',
+                )
+            existing_type = (existing.sample_type or '').strip()
+            if (
+                existing_type
+                and sample_type
+                and existing_type.casefold() != sample_type.casefold()
+                and (
+                    (registration and existing.registration_id == registration.id)
+                    or (not registration and existing.patient_id == patient.id)
+                )
+            ):
+                raise BarcodeLinkError(
+                    f'Barcode {barcode} is already linked to sample type {existing_type}. '
+                    f'It cannot also be used for {sample_type}.',
                     field='barcode',
                 )
 

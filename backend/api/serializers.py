@@ -43,6 +43,9 @@ class UserSerializer(serializers.ModelSerializer):
     parent_franchisee_id = serializers.IntegerField(source='parent_franchisee.id', read_only=True, allow_null=True)
     parent_franchisee_name = serializers.SerializerMethodField()
     parent_franchisee_role = serializers.SerializerMethodField()
+    zone_id = serializers.IntegerField(source='zone.id', read_only=True, allow_null=True)
+    zone_code = serializers.SerializerMethodField()
+    zone_name = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -50,6 +53,7 @@ class UserSerializer(serializers.ModelSerializer):
             'id', 'username', 'role', 'display_name', 'mobile', 'lab_code',
             'is_active', 'save_credentials', 'save_info', 'last_login',
             'parent_franchisee_id', 'parent_franchisee_name', 'parent_franchisee_role',
+            'zone_id', 'zone_code', 'zone_name',
         ]
         read_only_fields = ['last_login']
 
@@ -62,6 +66,12 @@ class UserSerializer(serializers.ModelSerializer):
     def get_parent_franchisee_role(self, obj):
         parent = obj.parent_franchisee
         return parent.role if parent else ''
+
+    def get_zone_code(self, obj):
+        return obj.zone.code if obj.zone_id else ''
+
+    def get_zone_name(self, obj):
+        return obj.zone.name if obj.zone_id else ''
 
 
 class RegisterSerializer(serializers.Serializer):
@@ -163,6 +173,10 @@ class RegisterSerializer(serializers.Serializer):
                         f'Parent must be a {dict(User.ROLE_CHOICES).get(expected_parent_role)}.'
                     ),
                 })
+            if actor and actor.is_authenticated and actor.zone_id and parent.zone_id != actor.zone_id:
+                raise serializers.ValidationError({
+                    'parent_franchisee_id': 'Parent account must be in the same zone.',
+                })
             attrs['parent_franchisee'] = parent
         else:
             attrs['parent_franchisee'] = None
@@ -174,6 +188,12 @@ class RegisterSerializer(serializers.Serializer):
         parent = validated_data.pop('parent_franchisee', None)
         validated_data.pop('parent_franchisee_id', None)
         role = validated_data.get('role', User.ROLE_USER)
+        actor = self._actor()
+        zone = None
+        if actor and getattr(actor, 'is_authenticated', False) and actor.zone_id:
+            zone = actor.zone
+        elif parent and parent.zone_id:
+            zone = parent.zone
         user = User.objects.create_user(
             username=validated_data['username'],
             password=validated_data['password'],
@@ -182,6 +202,7 @@ class RegisterSerializer(serializers.Serializer):
             role=role,
             parent_franchisee=parent,
             is_staff=(role == User.ROLE_ADMIN),
+            zone=zone,
         )
         return user
 

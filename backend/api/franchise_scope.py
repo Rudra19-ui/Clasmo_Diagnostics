@@ -1,12 +1,14 @@
 """
-Franchise hierarchy data isolation.
+Franchise hierarchy + zone data isolation.
 
 Visibility rules:
-- Sub-Franchise: own data only
-- Prime (Franchisee): own data + data from their Sub-Franchisees
-- Supreme (Super Franchisee): own data + all descendants in the hierarchy
-- Prime/Sub never see Supreme-created data (or any other branch)
-- Non-franchise roles (admin/clinical/etc.): unscoped (lab-wide)
+- Every user belongs to exactly one Zone (Nashik, Pune, Ratnagiri, Mumbai, Dhule).
+- Users never see data from another zone.
+- Within a zone:
+  - Sub-Franchise: own data only
+  - Prime: own data + Sub-Franchisees
+  - Supreme: own data + all franchise descendants
+  - Non-franchise roles (admin/clinical/HR/etc.): all data in their zone
 """
 
 from django.db.models import Q, QuerySet
@@ -30,9 +32,16 @@ def is_franchise_user(user) -> bool:
 is_franchise_actor = is_franchise_user
 
 
+def user_zone_id(user) -> int | None:
+    if not user or not getattr(user, 'is_authenticated', False):
+        return None
+    return getattr(user, 'zone_id', None)
+
+
 def franchise_descendant_ids(user) -> set[int]:
-    """All active users under this user in the franchise_children tree."""
+    """All active users under this user in the franchise_children tree (same zone)."""
     ids: set[int] = set()
+    zone_id = user_zone_id(user)
     frontier = list(
         user.franchise_children.filter(is_active=True).values_list('id', flat=True)
     )
@@ -41,19 +50,23 @@ def franchise_descendant_ids(user) -> set[int]:
         if child_id in ids:
             continue
         ids.add(child_id)
-        frontier.extend(
-            User.objects.filter(parent_franchisee_id=child_id, is_active=True)
-            .values_list('id', flat=True)
-        )
+        child_qs = User.objects.filter(parent_franchisee_id=child_id, is_active=True)
+        if zone_id:
+            child_qs = child_qs.filter(zone_id=zone_id)
+        frontier.extend(child_qs.values_list('id', flat=True))
     return ids
 
 
 def visible_creator_ids(user) -> set[int] | None:
     """
-    User IDs whose created records this actor may see.
-    Returns None when no franchise scoping applies (lab-wide access).
+    User IDs whose created records this actor may see (within their zone).
+    Returns None when zone-wide access applies (non-franchise roles).
+    Returns empty set when the user has no zone or is unauthenticated.
     """
     if not user or not getattr(user, 'is_authenticated', False):
+        return set()
+
+    if not user_zone_id(user):
         return set()
 
     if user.role not in User.FRANCHISE_ROLES:
@@ -63,24 +76,31 @@ def visible_creator_ids(user) -> set[int] | None:
         return {user.id}
 
     if user.role == User.ROLE_FRANCHISEE:
-        # Own + Sub-Franchisees only (never Supreme / peer Primes).
         child_ids = set(
             user.franchise_children.filter(
                 is_active=True,
                 role=User.ROLE_SUB_FRANCHISE,
+                zone_id=user.zone_id,
             ).values_list('id', flat=True)
         )
         return {user.id} | child_ids
 
     if user.role == User.ROLE_SUPER_FRANCHISEE:
-        # Own + entire hierarchy under this Supreme.
         return {user.id} | franchise_descendant_ids(user)
 
     return {user.id}
 
 
+def _apply_zone_filter(qs: QuerySet, user, *, zone_field='zone_id'):
+    zone_id = user_zone_id(user)
+    if zone_id is None:
+        return qs.none()
+    return qs.filter(**{zone_field: zone_id})
+
+
 def scope_registrations_for_user(user, qs: QuerySet | None = None) -> QuerySet:
     qs = qs if qs is not None else Registration.objects.all()
+    qs = _apply_zone_filter(qs, user, zone_field='zone_id')
     creator_ids = visible_creator_ids(user)
     if creator_ids is None:
         return qs
@@ -89,6 +109,7 @@ def scope_registrations_for_user(user, qs: QuerySet | None = None) -> QuerySet:
 
 def scope_patients_for_user(user, qs: QuerySet | None = None) -> QuerySet:
     qs = qs if qs is not None else Patient.objects.all()
+    qs = _apply_zone_filter(qs, user, zone_field='zone_id')
     creator_ids = visible_creator_ids(user)
     if creator_ids is None:
         return qs
@@ -97,6 +118,7 @@ def scope_patients_for_user(user, qs: QuerySet | None = None) -> QuerySet:
 
 def scope_reports_for_user(user, qs: QuerySet | None = None) -> QuerySet:
     qs = qs if qs is not None else Report.objects.all()
+    qs = _apply_zone_filter(qs, user, zone_field='registration__zone_id')
     creator_ids = visible_creator_ids(user)
     if creator_ids is None:
         return qs
@@ -105,6 +127,12 @@ def scope_reports_for_user(user, qs: QuerySet | None = None) -> QuerySet:
 
 def scope_barcodes_for_user(user, qs: QuerySet | None = None) -> QuerySet:
     qs = qs if qs is not None else PatientSampleBarcode.objects.all()
+    zone_id = user_zone_id(user)
+    if zone_id is None:
+        return qs.none()
+    qs = qs.filter(
+        Q(registration__zone_id=zone_id) | Q(patient__zone_id=zone_id)
+    ).distinct()
     creator_ids = visible_creator_ids(user)
     if creator_ids is None:
         return qs
@@ -115,16 +143,29 @@ def scope_barcodes_for_user(user, qs: QuerySet | None = None) -> QuerySet:
 
 
 def scope_created_by_for_user(user, qs: QuerySet) -> QuerySet:
-    """Generic filter for models with created_by FK."""
+    """Generic filter for models with created_by FK (also zone via creator)."""
+    zone_id = user_zone_id(user)
+    if zone_id is None:
+        return qs.none()
+    qs = qs.filter(created_by__zone_id=zone_id)
     creator_ids = visible_creator_ids(user)
     if creator_ids is None:
         return qs
     return qs.filter(created_by_id__in=creator_ids)
 
 
+def scope_zone_queryset(user, qs: QuerySet, *, zone_field='zone_id') -> QuerySet:
+    """Filter any queryset that has a direct zone FK."""
+    return _apply_zone_filter(qs, user, zone_field=zone_field)
+
+
 def scope_users_for_user(user, qs: QuerySet | None = None) -> QuerySet:
-    """User directory: franchise actors only see themselves + allowed hierarchy."""
+    """User directory: same zone only; franchise actors further limited by hierarchy."""
     qs = qs if qs is not None else User.objects.all()
+    zone_id = user_zone_id(user)
+    if zone_id is None:
+        return qs.none()
+    qs = qs.filter(zone_id=zone_id)
     creator_ids = visible_creator_ids(user)
     if creator_ids is None:
         return qs
@@ -134,6 +175,17 @@ def scope_users_for_user(user, qs: QuerySet | None = None) -> QuerySet:
 def user_can_access_registration(user, registration) -> bool:
     if not registration:
         return False
+    zone_id = user_zone_id(user)
+    if zone_id is None:
+        return False
+    reg_zone = getattr(registration, 'zone_id', None)
+    if reg_zone and reg_zone != zone_id:
+        return False
+    # Legacy rows without zone: allow only if creator is in same zone
+    if not reg_zone:
+        creator_zone = getattr(getattr(registration, 'created_by', None), 'zone_id', None)
+        if creator_zone != zone_id:
+            return False
     creator_ids = visible_creator_ids(user)
     if creator_ids is None:
         return True
@@ -142,7 +194,7 @@ def user_can_access_registration(user, registration) -> bool:
 
 def get_registration_for_user(user, *, pk=None, lab_code=None):
     """Fetch one registration if visible to user; else None."""
-    qs = Registration.objects.select_related('patient', 'created_by')
+    qs = Registration.objects.select_related('patient', 'created_by', 'zone')
     if pk is not None:
         qs = qs.filter(pk=pk)
     elif lab_code:
@@ -154,11 +206,11 @@ def get_registration_for_user(user, *, pk=None, lab_code=None):
 
 
 def scope_wallets_for_user(user, qs: QuerySet | None = None) -> QuerySet:
-    """
-    Wallet visibility mirrors franchise hierarchy.
-    Supreme wallets are never visible to Prime/Sub (not in their creator set).
-    """
     qs = qs if qs is not None else FranchiseWallet.objects.all()
+    zone_id = user_zone_id(user)
+    if zone_id is None:
+        return qs.none()
+    qs = qs.filter(user__zone_id=zone_id)
     creator_ids = visible_creator_ids(user)
     if creator_ids is None:
         return qs
@@ -167,6 +219,10 @@ def scope_wallets_for_user(user, qs: QuerySet | None = None) -> QuerySet:
 
 def scope_wallet_transactions_for_user(user, qs: QuerySet | None = None) -> QuerySet:
     qs = qs if qs is not None else WalletTransaction.objects.all()
+    zone_id = user_zone_id(user)
+    if zone_id is None:
+        return qs.none()
+    qs = qs.filter(wallet__user__zone_id=zone_id)
     creator_ids = visible_creator_ids(user)
     if creator_ids is None:
         return qs
@@ -175,6 +231,12 @@ def scope_wallet_transactions_for_user(user, qs: QuerySet | None = None) -> Quer
 
 def user_can_access_wallet(user, wallet) -> bool:
     if not wallet:
+        return False
+    zone_id = user_zone_id(user)
+    if zone_id is None:
+        return False
+    owner_zone = getattr(getattr(wallet, 'user', None), 'zone_id', None)
+    if owner_zone != zone_id:
         return False
     creator_ids = visible_creator_ids(user)
     if creator_ids is None:

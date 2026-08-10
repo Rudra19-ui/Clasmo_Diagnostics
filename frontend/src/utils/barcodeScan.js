@@ -47,6 +47,8 @@ export function buildRegistrationBarcodePayload(registrationBarcode, sampleGroup
 }
 
 export function validateSampleBarcodes(sampleGroups, sampleBarcodes) {
+  const seenByBarcode = new Map();
+
   for (const { sampleType } of sampleGroups) {
     const entry = sampleBarcodes[sampleType];
     const barcode = sanitizeBarcodeScannedValue(entry?.enter);
@@ -60,6 +62,16 @@ export function validateSampleBarcodes(sampleGroups, sampleBarcodes) {
     if (barcode !== confirm) {
       return `${sampleType}: barcode and confirmation do not match.`;
     }
+
+    const key = barcode.toUpperCase();
+    const previousType = seenByBarcode.get(key);
+    if (previousType && previousType !== sampleType) {
+      return (
+        `Barcode ${barcode} cannot be used for both ${previousType} and ${sampleType}. `
+        + 'Use a different barcode for each sample type.'
+      );
+    }
+    seenByBarcode.set(key, sampleType);
   }
   return '';
 }
@@ -69,12 +81,24 @@ export function validateRegistrationBarcodes(registrationBarcode, sampleGroups, 
 }
 
 export function validateBarcodePayload(barcodesPayload) {
+  const seenByBarcode = new Map();
+
   for (const item of barcodesPayload || []) {
     const label = item.sample_type || 'Barcode';
     const barcode = sanitizeBarcodeScannedValue(item.barcode);
     const confirm = sanitizeBarcodeScannedValue(item.confirm_barcode);
     if (!barcode) return `${label}: scan or enter the preprinted barcode.`;
     if (barcode !== confirm) return `${label}: barcode and confirmation do not match.`;
+
+    const key = barcode.toUpperCase();
+    const previousType = seenByBarcode.get(key);
+    if (previousType && previousType !== label) {
+      return (
+        `Barcode ${barcode} cannot be used for both ${previousType} and ${label}. `
+        + 'Use a different barcode for each sample type.'
+      );
+    }
+    seenByBarcode.set(key, label);
   }
   return '';
 }

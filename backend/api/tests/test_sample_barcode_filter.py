@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from api.barcode_service import (
+    BarcodeLinkError,
     link_sample_barcodes,
     mark_registration_sample_scanned,
     mark_sample_barcode_scanned,
@@ -122,6 +123,33 @@ class SampleBarcodeFilterTests(TestCase):
         )
         link = PatientSampleBarcode.objects.get(barcode='SERUM-002')
         self.assertEqual(link.linked_test_ids, [self.serum_test.id, self.blood_test.id])
+
+    def test_rejects_same_barcode_for_different_sample_types(self):
+        with self.assertRaises(BarcodeLinkError) as ctx:
+            link_sample_barcodes(
+                patient=self.patient,
+                registration=self.registration,
+                barcodes_data=[
+                    {
+                        'sample_type': 'Urine',
+                        'barcode': 'HEA108080',
+                        'confirm_barcode': 'HEA108080',
+                        'test_ids': [self.urine_test.id],
+                    },
+                    {
+                        'sample_type': 'Serum',
+                        'barcode': 'HEA108080',
+                        'confirm_barcode': 'HEA108080',
+                        'test_ids': [self.serum_test.id],
+                    },
+                ],
+                user=self.user,
+            )
+        self.assertIn('cannot be used for both', str(ctx.exception.message))
+        self.assertEqual(
+            PatientSampleBarcode.objects.filter(barcode='HEA108080', is_active=True).count(),
+            0,
+        )
 
     def test_mark_registration_sample_scanned_moves_registered_to_collection(self):
         self.assertEqual(self.registration.status, Registration.STATUS_REGISTERED)

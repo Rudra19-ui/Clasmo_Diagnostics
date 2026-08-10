@@ -37,24 +37,34 @@ App runs at **http://localhost:5173**
 
 ## Login credentials
 
-| Role          | Username        | Password        |
-|---------------|-----------------|-----------------|
-| Admin         | `admin`         | `admin123`      |
-| User          | `user`          | `user123`       |
-| Technician    | `technician`    | `tech123`       |
-| Pathologist   | `pathologist`   | `patho123`      |
-| HR            | `hr`            | `hr123`         |
-| Receptionist  | `receptionist`  | `reception123`  |
-| Supreme       | `supreme`       | `supreme123`    |
-| Prime         | `prime`         | `prime123`      |
-| Sub-Franchise | `sub`           | `sub123`        |
+All existing demo accounts are in **Zone 1 — Nashik**. Other zones have their own admin (empty data until that zone creates entries).
+
+| Zone | Role | Username | Password |
+|------|------|----------|----------|
+| Nashik | Admin | `admin` | `admin123` |
+| Nashik | User | `user` | `user123` |
+| Nashik | Technician | `technician` | `tech123` |
+| Nashik | Pathologist | `pathologist` | `patho123` |
+| Nashik | HR | `hr` | `hr123` |
+| Nashik | Receptionist | `receptionist` | `reception123` |
+| Nashik | Supreme | `supreme` | `supreme123` |
+| Nashik | Prime | `prime` | `prime123` |
+| Nashik | Sub-Franchise | `sub` | `sub123` |
+| Pune | Admin | `pune_admin` | `pune123` |
+| Ratnagiri | Admin | `ratnagiri_admin` | `ratnagiri123` |
+| Mumbai | Admin | `mumbai_admin` | `mumbai123` |
+| Dhule | Admin | `dhule_admin` | `dhule123` |
 
 Reset/create these accounts with:
 
 ```bash
 cd backend
+python manage.py migrate
+python manage.py seed_zones
 python manage.py seed_test_roles
 ```
+
+Zone admins manage **only their zone** users and operational data. Patient bookings, doctors, and collection centers do not mix across zones.
 
 ## Clinical module
 

@@ -26,6 +26,7 @@ from .franchise_scope import (
     scope_registrations_for_user,
     scope_reports_for_user,
     scope_users_for_user,
+    scope_zone_queryset,
     user_can_access_registration,
     visible_creator_ids,
 )
@@ -1692,11 +1693,14 @@ class RegistrationCreateView(APIView):
 
         _lock_lab_config()
         patient_data['patient_id'] = peek_patient_id()
+        if request.user.zone_id:
+            patient_data['zone'] = request.user.zone
         patient = Patient.objects.create(**patient_data)
         registration = Registration.objects.create(
             lab_code=peek_lab_code(),
             patient=patient,
             created_by=request.user,
+            zone=request.user.zone if request.user.zone_id else None,
             **data,
         )
 
@@ -2028,6 +2032,7 @@ class CollectionCenterListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         qs = CollectionCenter.objects.filter(is_active=True)
+        qs = scope_zone_queryset(self.request.user, qs)
         name = self.request.query_params.get('name', '').strip()
         center_type = self.request.query_params.get('center_type', '').strip()
         area = self.request.query_params.get('area', '').strip()
@@ -2040,20 +2045,23 @@ class CollectionCenterListCreateView(generics.ListCreateAPIView):
         return qs.order_by('name')
 
     def perform_create(self, serializer):
-        instance = serializer.save()
+        zone = self.request.user.zone if self.request.user.zone_id else None
+        instance = serializer.save(zone=zone)
         if instance.is_default:
-            CollectionCenter.objects.exclude(pk=instance.pk).update(is_default=False)
+            CollectionCenter.objects.filter(zone_id=instance.zone_id).exclude(pk=instance.pk).update(is_default=False)
 
 
 class CollectionCenterDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = CollectionCenter.objects.all()
     serializer_class = CollectionCenterSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return scope_zone_queryset(self.request.user, CollectionCenter.objects.all())
 
     def perform_update(self, serializer):
         instance = serializer.save()
         if instance.is_default:
-            CollectionCenter.objects.exclude(pk=instance.pk).update(is_default=False)
+            CollectionCenter.objects.filter(zone_id=instance.zone_id).exclude(pk=instance.pk).update(is_default=False)
 
     def perform_destroy(self, instance):
         instance.is_active = False
@@ -2078,6 +2086,7 @@ class CollectionCenterBoyListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         qs = CollectionCenterBoy.objects.filter(is_active=True).select_related('collection_center')
+        qs = scope_zone_queryset(self.request.user, qs, zone_field='collection_center__zone_id')
         params = self.request.query_params
         filters = {
             'first_name__icontains': params.get('first_name', '').strip(),
@@ -2102,9 +2111,12 @@ class CollectionCenterBoyListCreateView(generics.ListCreateAPIView):
 
 
 class CollectionCenterBoyDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = CollectionCenterBoy.objects.select_related('collection_center')
     serializer_class = CollectionCenterBoySerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        qs = CollectionCenterBoy.objects.select_related('collection_center')
+        return scope_zone_queryset(self.request.user, qs, zone_field='collection_center__zone_id')
 
     def perform_destroy(self, instance):
         instance.is_active = False
@@ -2244,6 +2256,7 @@ class DoctorListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         qs = Doctor.objects.filter(is_active=True)
+        qs = scope_zone_queryset(self.request.user, qs)
         params = self.request.query_params
         filters = {
             'registration_number__icontains': params.get('registration_number', '').strip(),
@@ -2267,11 +2280,17 @@ class DoctorListCreateView(generics.ListCreateAPIView):
             )
         return qs.order_by('first_name', 'last_name')
 
+    def perform_create(self, serializer):
+        zone = self.request.user.zone if self.request.user.zone_id else None
+        serializer.save(zone=zone)
+
 
 class DoctorDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Doctor.objects.all()
     serializer_class = DoctorSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return scope_zone_queryset(self.request.user, Doctor.objects.all())
 
     def perform_destroy(self, instance):
         instance.is_active = False

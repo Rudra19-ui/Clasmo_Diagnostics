@@ -2330,6 +2330,11 @@ input, select, textarea, button {
   font-weight: 600;
 }
 
+.franchise-sidebar-zone {
+  color: #9ec9ff !important;
+  margin-top: 4px !important;
+}
+
 .franchise-sidebar-menu {
   padding-bottom: 28px;
 }

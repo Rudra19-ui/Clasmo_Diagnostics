@@ -5196,6 +5196,27 @@ input, select, textarea, button {
   margin-bottom: 8px;
 }
 
+.test-addition-search-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.test-addition-search-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  color: #4a6480;
+}
+
+.test-addition-search-grid input {
+  padding: 10px 12px;
+  border: 1px solid #c5d8ea;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
 .test-addition-search-row {
   display: flex;
   flex-wrap: wrap;
@@ -5254,6 +5275,61 @@ input, select, textarea, button {
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 8px;
+}
+
+.analytics-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin: 0 0 18px;
+}
+
+.analytics-kpi-card {
+  background: #f4f8fc;
+  border: 1px solid #d5e4f2;
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.analytics-kpi-card span {
+  font-size: 12px;
+  color: #5a738c;
+}
+
+.analytics-kpi-card strong {
+  font-size: 22px;
+  color: #163a5c;
+}
+
+.analytics-kpi-card em {
+  font-style: normal;
+  font-size: 12px;
+  color: #3d5a73;
+}
+
+.analytics-summary-row {
+  margin-bottom: 16px;
+}
+
+.analytics-charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.analytics-chart-panel {
+  margin: 0 !important;
+  min-height: 220px;
+}
+
+@media (max-width: 900px) {
+  .analytics-charts-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .edit-entry-locked {

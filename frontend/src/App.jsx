@@ -63,9 +63,9 @@ import TestCancellation from './pages/franchise/TestCancellation';
 import MakeBill from './pages/franchise/MakeBill';
 import BillingList from './pages/franchise/BillingList';
 import TrackLedger from './pages/franchise/TrackLedger';
+import Analytics from './pages/franchise/Analytics';
 
 const FRANCHISE_PAGES = [
-  { path: 'analytics', title: 'Analytics', activePage: 'analytics', description: 'Franchise performance analytics and trends.', allowedRoles: [ROLES.SUPER_FRANCHISEE, ROLES.FRANCHISEE] },
   { path: 'extra-sample', title: 'Extra Sample', activePage: 'extra-sample', description: 'Extra sample requests and tracking.' },
   { path: 'hold', title: 'Hold', activePage: 'hold', description: 'Samples and reports currently on hold.' },
   { path: 'rejection', title: 'Rejection', activePage: 'rejection', description: 'Rejected bookings and tests.' },
@@ -155,6 +155,14 @@ export default function App() {
           <Route path="/device/trip-management" element={<ProtectedRoute><DeviceStub title="Trip Management" description="Active trips list and management." /></ProtectedRoute>} />
           <Route path="/device/batch-upload" element={<ProtectedRoute><DeviceStub title="Batch Upload" description="Upload CSV/XLSX registration batch files."><input type="file" accept=".csv,.xlsx" /></DeviceStub></ProtectedRoute>} />
           <Route path="/device/test-result-batch" element={<ProtectedRoute><TestResultBatch /></ProtectedRoute>} />
+          <Route
+            path="/franchise/analytics"
+            element={(
+              <ProtectedRoute allowedRoles={[ROLES.SUPER_FRANCHISEE, ROLES.FRANCHISEE]}>
+                <Analytics />
+              </ProtectedRoute>
+            )}
+          />
           <Route
             path="/franchise/manage-booking/new"
             element={(

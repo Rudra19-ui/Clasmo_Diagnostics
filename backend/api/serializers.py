@@ -706,6 +706,7 @@ class RegistrationSearchSerializer(serializers.ModelSerializer):
     ref_by = serializers.SerializerMethodField()
     tests_list = serializers.SerializerMethodField()
     report_progress = serializers.SerializerMethodField()
+    reception_scanned = serializers.SerializerMethodField()
     test = serializers.SerializerMethodField()
     date = serializers.SerializerMethodField()
     amount = serializers.DecimalField(source='net_amount', max_digits=10, decimal_places=2, read_only=True)
@@ -720,7 +721,7 @@ class RegistrationSearchSerializer(serializers.ModelSerializer):
         model = Registration
         fields = [
             'id', 'lab_code', 'patient', 'patient_name', 'patient_display', 'tests', 'tests_list',
-            'barcodes', 'ref_by', 'report_progress', 'test', 'date',
+            'barcodes', 'ref_by', 'report_progress', 'reception_scanned', 'test', 'date',
             'status', 'amount', 'total_amount', 'total', 'net_amount', 'paid', 'balance',
             'discount_test', 'discount_regn', 'refund_amount', 'payment_method', 'bill_receipt_no',
             'registration_date', 'collection_date', 'created_at', 'created_by_name', 'created_by_username',
@@ -773,6 +774,10 @@ class RegistrationSearchSerializer(serializers.ModelSerializer):
             )
             return f'{completed}/{total}'
         return f'0/{total}'
+
+    def get_reception_scanned(self, obj):
+        from .barcode_service import registration_reception_scanned
+        return registration_reception_scanned(obj)
 
     def get_test(self, obj):
         names = [t.test.name for t in obj.tests.all()]

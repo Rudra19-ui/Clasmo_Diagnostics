@@ -63,8 +63,9 @@ function parseReportProgress(reportProgress) {
 }
 
 function isReceptionScanned(registration) {
-  const status = registration?.status || '';
-  return status !== 'Registered';
+  if (registration?.reception_scanned === true) return true;
+  const status = String(registration?.status || '').trim();
+  return status !== '' && status !== 'Registered';
 }
 
 /**

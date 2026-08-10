@@ -6,6 +6,8 @@ from django.test import TestCase
 from api.barcode_service import (
     link_sample_barcodes,
     mark_registration_sample_scanned,
+    mark_sample_barcode_scanned,
+    registration_reception_scanned,
     scan_sample_by_barcode,
     test_matches_sample_type,
 )
@@ -132,3 +134,19 @@ class SampleBarcodeFilterTests(TestCase):
         self.assertFalse(changed_again)
         self.registration.refresh_from_db()
         self.assertEqual(self.registration.status, Registration.STATUS_COLLECTION)
+
+    def test_mark_sample_barcode_scanned_records_timestamp(self):
+        link = PatientSampleBarcode.objects.create(
+            barcode='SCAN-001',
+            patient=self.patient,
+            registration=self.registration,
+            sample_type='Serum',
+            linked_by=self.user,
+        )
+        self.assertFalse(registration_reception_scanned(self.registration))
+        mark_sample_barcode_scanned(link, self.registration)
+        link.refresh_from_db()
+        self.registration.refresh_from_db()
+        self.assertIsNotNone(link.sample_scanned_at)
+        self.assertEqual(self.registration.status, Registration.STATUS_COLLECTION)
+        self.assertTrue(registration_reception_scanned(self.registration))

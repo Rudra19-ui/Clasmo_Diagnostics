@@ -389,6 +389,7 @@ class PatientSampleBarcode(models.Model):
         related_name='linked_sample_barcodes',
     )
     linked_at = models.DateTimeField(auto_now_add=True)
+    sample_scanned_at = models.DateTimeField(null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:

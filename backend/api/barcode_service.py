@@ -1,6 +1,8 @@
 from django.db import transaction
 import re
 
+from django.utils import timezone
+
 from .models import Patient, PatientSampleBarcode, Registration
 
 
@@ -370,8 +372,34 @@ def mark_registration_sample_scanned(registration):
     """Mark a registration as sample-received after reception QR/barcode scan."""
     if not registration:
         return False
-    if registration.status != Registration.STATUS_REGISTERED:
+    if registration.status == Registration.STATUS_REGISTERED:
+        registration.status = Registration.STATUS_COLLECTION
+        registration.save(update_fields=['status'])
+        return True
+    return False
+
+
+def mark_sample_barcode_scanned(link, registration=None):
+    """Record reception scan on the barcode link and advance registration workflow."""
+    changed = False
+    if link and link.is_active and not link.sample_scanned_at:
+        link.sample_scanned_at = timezone.now()
+        link.save(update_fields=['sample_scanned_at', 'updated_at'])
+        changed = True
+
+    reg = registration or (link.registration if link else None)
+    if reg and mark_registration_sample_scanned(reg):
+        changed = True
+    return changed
+
+
+def registration_reception_scanned(registration):
+    """True when reception has scanned at least one linked barcode for this booking."""
+    if not registration:
         return False
-    registration.status = Registration.STATUS_COLLECTION
-    registration.save(update_fields=['status'])
-    return True
+    if registration.status != Registration.STATUS_REGISTERED:
+        return True
+    return registration.linked_barcodes.filter(
+        is_active=True,
+        sample_scanned_at__isnull=False,
+    ).exists()

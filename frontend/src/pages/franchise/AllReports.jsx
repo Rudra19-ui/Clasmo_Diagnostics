@@ -42,6 +42,20 @@ export default function AllReports() {
     load();
   }, [load]);
 
+  useEffect(() => {
+    const refreshOnFocus = () => {
+      if (document.visibilityState === 'visible') {
+        load();
+      }
+    };
+    window.addEventListener('focus', refreshOnFocus);
+    document.addEventListener('visibilitychange', refreshOnFocus);
+    return () => {
+      window.removeEventListener('focus', refreshOnFocus);
+      document.removeEventListener('visibilitychange', refreshOnFocus);
+    };
+  }, [load]);
+
   return (
     <Layout activePage="manage-reports">
       <main className="dash-main franchise-module-page">

@@ -20,6 +20,7 @@ async function request(path, options = {}) {
   if (token) headers.Authorization = `Token ${token}`;
 
   const response = await fetch(`${API_BASE}${path}`, {
+    cache: 'no-store',
     ...options,
     headers,
   });

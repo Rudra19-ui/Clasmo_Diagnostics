@@ -118,6 +118,13 @@ export const FRANCHISE_NAV = [
         href: '/franchise/pricing-credits',
         icon: 'analytics',
       },
+      {
+        id: 'franchisee-pricing',
+        label: 'Prime Pricing',
+        href: '/franchise/franchisee-pricing',
+        icon: 'layers',
+        excludeRoles: [ROLES.FRANCHISEE, ROLES.SUB_FRANCHISE],
+      },
     ],
   },
 
@@ -134,13 +141,6 @@ export const FRANCHISE_NAV = [
     section: 'STAFF',
     items: [
       { id: 'my-staff', label: 'My Staff', href: '/franchise/my-staff', icon: 'layers' },
-      {
-        id: 'franchisee-pricing',
-        label: 'Prime Pricing',
-        href: '/franchise/franchisee-pricing',
-        icon: 'layers',
-        excludeRoles: [ROLES.FRANCHISEE, ROLES.SUB_FRANCHISE],
-      },
     ],
   },
 

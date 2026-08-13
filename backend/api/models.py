@@ -412,6 +412,47 @@ class RegistrationTest(models.Model):
         return f'{self.registration.lab_code} - {self.test.name}'
 
 
+class RegistrationTestHold(models.Model):
+    """Active hold on a registration test, visible to lab staff across the zone."""
+
+    registration = models.ForeignKey(
+        Registration, on_delete=models.CASCADE, related_name='test_holds',
+    )
+    registration_test = models.ForeignKey(
+        RegistrationTest, on_delete=models.CASCADE, related_name='holds',
+    )
+    reason = models.CharField(max_length=255, blank=True)
+    held_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True, related_name='holds_placed',
+    )
+    held_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True, db_index=True)
+    released_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True, related_name='holds_released',
+    )
+    released_at = models.DateTimeField(null=True, blank=True)
+    zone = models.ForeignKey(
+        Zone, on_delete=models.SET_NULL, null=True, blank=True, related_name='test_holds',
+    )
+
+    class Meta:
+        ordering = ['-held_at', '-id']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['registration_test'],
+                condition=models.Q(is_active=True),
+                name='unique_active_hold_per_registration_test',
+            ),
+        ]
+        indexes = [
+            models.Index(fields=['is_active', 'zone', '-held_at']),
+        ]
+
+    def __str__(self):
+        test_name = self.registration_test.test.name if self.registration_test_id else 'test'
+        return f'Hold {self.registration.lab_code} / {test_name}'
+
+
 class PatientSampleBarcode(models.Model):
     """Links a preprinted physical barcode label to a patient / registration sample."""
 

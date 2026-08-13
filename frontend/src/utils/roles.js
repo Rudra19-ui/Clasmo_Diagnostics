@@ -73,6 +73,29 @@ export const PATIENT_ENTRY_ROLES = [
 /** Admin + franchise — pricing, wallets, commissions. */
 export const PRICING_WALLET_ROLES = PATIENT_ENTRY_ROLES;
 
+/** Roles that can view held tests list (staff + franchise). */
+export const HOLD_ACCESS_ROLES = [
+  ROLES.SUPER_ADMIN,
+  ROLES.ADMIN,
+  ROLES.HR,
+  ROLES.PATHOLOGIST,
+  ROLES.TECHNICIAN,
+  ROLES.RECEPTIONIST,
+  ROLES.USER,
+  ...FRANCHISE_ROLES,
+];
+
+/** Lab staff roles — hold list in main dashboard nav. */
+export const HOLD_STAFF_ROLES = [
+  ROLES.SUPER_ADMIN,
+  ROLES.ADMIN,
+  ROLES.HR,
+  ROLES.PATHOLOGIST,
+  ROLES.TECHNICIAN,
+  ROLES.RECEPTIONIST,
+  ROLES.USER,
+];
+
 export const PARENT_REQUIRED_ROLES = [ROLES.FRANCHISEE, ROLES.SUB_FRANCHISE];
 
 /** Roles allowed to open New User Sign Up and create accounts. */

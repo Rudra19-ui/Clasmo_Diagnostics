@@ -17,7 +17,7 @@ from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .clinical_permissions import CanAccessPatientEntry, CanAccessPricingWallet
+from .clinical_permissions import CanAccessHolds, CanAccessPatientEntry, CanAccessPricingWallet
 from .franchise_scope import (
     get_registration_for_user,
     is_franchise_actor,
@@ -32,7 +32,7 @@ from .franchise_scope import (
     visible_creator_ids,
 )
 from .models import (
-    LabMessage, PickupRequest, Registration, RegistrationTest, Test, TestCategory, TestPackage,
+    LabMessage, PickupRequest, Registration, RegistrationTest, RegistrationTestHold, Test, TestCategory, TestPackage,
     ReportFormatAsset, User, LabRole,
     Membership, MembershipType, CollectionCenter, CollectionCenterBoy, DiscountReason, DiscountAuthority,
     WhatsAppMessageLog, ExpenseType, Area, RateMaster, Affiliation, SalesReference, Doctor, Patient, PatientAddress, LabConfiguration, ServiceAreaPincode, LabActivity,
@@ -69,6 +69,8 @@ from .serializers import (
     RegistrationCreateSerializer,
     RegistrationSearchSerializer,
     RegistrationSerializer,
+    RegistrationTestHoldSerializer,
+    HoldCreateSerializer,
     PatientBarcodeLinkSerializer,
     PatientSampleBarcodeSerializer,
     TestCategorySerializer,
@@ -1418,7 +1420,7 @@ class RegistrationDetailView(generics.RetrieveAPIView):
     def get_queryset(self):
         return scope_registrations_for_user(
             self.request.user,
-            Registration.objects.select_related('patient').prefetch_related('tests__test'),
+            Registration.objects.select_related('patient').prefetch_related('tests__test', 'tests__holds'),
         )
 
 
@@ -1724,10 +1726,132 @@ class RegistrationCancelTestsView(APIView):
 
         registration = (
             Registration.objects.select_related('patient')
-            .prefetch_related('tests__test')
+            .prefetch_related('tests__test', 'tests__holds')
             .get(pk=registration.pk)
         )
         return Response(RegistrationSerializer(registration).data)
+
+
+def _scope_holds_for_user(user, qs=None):
+    qs = qs if qs is not None else RegistrationTestHold.objects.all()
+    qs = scope_zone_queryset(user, qs, zone_field='zone_id')
+    if is_franchise_actor(user):
+        creator_ids = visible_creator_ids(user)
+        if creator_ids is not None:
+            qs = qs.filter(
+                Q(held_by_id__in=creator_ids)
+                | Q(registration__created_by_id__in=creator_ids)
+            )
+    return qs
+
+
+class RegistrationTestHoldListCreateView(APIView):
+    """List active holds (staff + franchise) and place holds (franchise / staff)."""
+
+    permission_classes = [permissions.IsAuthenticated, CanAccessHolds]
+
+    def get(self, request):
+        qs = (
+            _scope_holds_for_user(request.user)
+            .filter(is_active=True)
+            .select_related(
+                'registration__patient',
+                'registration_test__test',
+                'held_by',
+                'zone',
+            )
+        )
+        q = str(request.query_params.get('q') or '').strip()
+        if q:
+            qs = qs.filter(
+                Q(registration__lab_code__icontains=q)
+                | Q(registration__patient__patient_name__icontains=q)
+                | Q(registration__patient__patient_id__icontains=q)
+                | Q(registration_test__test__name__icontains=q)
+                | Q(reason__icontains=q)
+            )
+        return Response(RegistrationTestHoldSerializer(qs[:200], many=True).data)
+
+    @transaction.atomic
+    def post(self, request):
+        serializer = HoldCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        lab_code = serializer.validated_data['lab_code']
+        row_ids = serializer.validated_data['registration_test_ids']
+        reason = (serializer.validated_data.get('reason') or '').strip()
+
+        registration = get_registration_for_user(request.user, lab_code=lab_code)
+        if not registration:
+            return Response({'detail': 'Registration not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        rows = list(
+            registration.tests.filter(id__in=row_ids).select_related('test')
+        )
+        if not rows:
+            return Response(
+                {'detail': 'No matching tests found on this registration.'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        already = set(
+            RegistrationTestHold.objects.filter(
+                registration_test_id__in=[row.id for row in rows],
+                is_active=True,
+            ).values_list('registration_test_id', flat=True)
+        )
+        created = []
+        for row in rows:
+            if row.id in already:
+                continue
+            created.append(
+                RegistrationTestHold(
+                    registration=registration,
+                    registration_test=row,
+                    reason=reason,
+                    held_by=request.user,
+                    zone=registration.zone or request.user.zone,
+                    is_active=True,
+                )
+            )
+        if created:
+            RegistrationTestHold.objects.bulk_create(created)
+
+        registration = (
+            Registration.objects.select_related('patient')
+            .prefetch_related('tests__test', 'tests__holds')
+            .get(pk=registration.pk)
+        )
+        return Response(
+            {
+                'held_count': len(created),
+                'skipped_already_held': len(already),
+                'registration': RegistrationSerializer(registration).data,
+            },
+            status=status.HTTP_201_CREATED if created else status.HTTP_200_OK,
+        )
+
+
+class RegistrationTestHoldReleaseView(APIView):
+    """Release an active hold so the test can proceed again."""
+
+    permission_classes = [permissions.IsAuthenticated, CanAccessHolds]
+
+    @transaction.atomic
+    def post(self, request, hold_id):
+        hold = (
+            _scope_holds_for_user(request.user)
+            .filter(pk=hold_id, is_active=True)
+            .select_related('registration', 'registration_test')
+            .first()
+        )
+        if not hold:
+            return Response({'detail': 'Hold not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        hold.is_active = False
+        hold.released_by = request.user
+        hold.released_at = timezone.now()
+        hold.save(update_fields=['is_active', 'released_by', 'released_at'])
+        return Response(RegistrationTestHoldSerializer(hold).data)
 
 
 class RegistrationCreateView(APIView):

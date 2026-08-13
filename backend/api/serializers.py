@@ -37,6 +37,7 @@ from .models import (
     JoinRequest,
     SelfPatientQuery,
     PatientSampleBarcode,
+    RegistrationTestHold,
 )
 
 
@@ -434,10 +435,58 @@ class RegistrationTestSerializer(serializers.ModelSerializer):
     test_name = serializers.CharField(source='test.name', read_only=True)
     sample_type = serializers.CharField(source='test.sample_type', read_only=True)
     mrp = serializers.DecimalField(source='test.mrp', max_digits=10, decimal_places=2, read_only=True)
+    is_on_hold = serializers.SerializerMethodField()
 
     class Meta:
         model = RegistrationTest
-        fields = ['id', 'test', 'test_name', 'sample_type', 'mrp', 'price', 'discount', 'refund']
+        fields = [
+            'id', 'test', 'test_name', 'sample_type', 'mrp', 'price', 'discount', 'refund', 'is_on_hold',
+        ]
+
+    def get_is_on_hold(self, obj):
+        holds = getattr(obj, '_prefetched_objects_cache', {}).get('holds')
+        if holds is not None:
+            return any(h.is_active for h in holds)
+        return obj.holds.filter(is_active=True).exists()
+
+
+class RegistrationTestHoldSerializer(serializers.ModelSerializer):
+    lab_code = serializers.CharField(source='registration.lab_code', read_only=True)
+    patient_name = serializers.SerializerMethodField()
+    patient_id = serializers.CharField(source='registration.patient.patient_id', read_only=True)
+    test_name = serializers.CharField(source='registration_test.test.name', read_only=True)
+    sample_type = serializers.CharField(source='registration_test.test.sample_type', read_only=True)
+    registration_test_id = serializers.IntegerField(read_only=True)
+    held_by_name = serializers.SerializerMethodField()
+    held_by_role = serializers.CharField(source='held_by.role', read_only=True, default='')
+    zone_name = serializers.CharField(source='zone.name', read_only=True, default='')
+
+    class Meta:
+        model = RegistrationTestHold
+        fields = [
+            'id', 'lab_code', 'patient_name', 'patient_id', 'test_name', 'sample_type',
+            'registration_test_id', 'reason', 'held_by_name', 'held_by_role',
+            'held_at', 'is_active', 'zone_name',
+        ]
+
+    def get_patient_name(self, obj):
+        patient = obj.registration.patient if obj.registration_id else None
+        if not patient:
+            return ''
+        return f'{patient.title} {patient.patient_name}'.strip()
+
+    def get_held_by_name(self, obj):
+        if not obj.held_by_id:
+            return ''
+        return obj.held_by.display_name or obj.held_by.username
+
+
+class HoldCreateSerializer(serializers.Serializer):
+    lab_code = serializers.CharField()
+    registration_test_ids = serializers.ListField(
+        child=serializers.IntegerField(), allow_empty=False,
+    )
+    reason = serializers.CharField(required=False, allow_blank=True, max_length=255)
 
 
 class PatientAddressSerializer(serializers.ModelSerializer):

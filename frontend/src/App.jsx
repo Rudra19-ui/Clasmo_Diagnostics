@@ -51,7 +51,7 @@ import DeviceStub from './pages/device/DeviceStub';
 import TestResultBatch from './pages/device/TestResultBatch';
 import ResponsiveProvider from './components/ResponsiveProvider';
 import { NavProvider } from './context/NavContext';
-import { ROLES, ALL_ROLES, SAMPLE_SCAN_ROLES, USER_CREATOR_ROLES, FRANCHISE_ROLES, PATIENT_ENTRY_ROLES, PRICING_WALLET_ROLES, ADMIN_ROLES } from './utils/roles';
+import { ROLES, ALL_ROLES, SAMPLE_SCAN_ROLES, USER_CREATOR_ROLES, FRANCHISE_ROLES, PATIENT_ENTRY_ROLES, PRICING_WALLET_ROLES, ADMIN_ROLES, HOLD_STAFF_ROLES } from './utils/roles';
 import MessageToLab from './pages/device/MessageToLab';
 import PickupRequest from './pages/device/PickupRequest';
 import TestList from './pages/portfolio/TestList';
@@ -66,6 +66,8 @@ import ReportDetail from './pages/franchise/ReportDetail';
 import FindBarcode from './pages/franchise/FindBarcode';
 import ClinicalHistory from './pages/franchise/ClinicalHistory';
 import TestCancellation from './pages/franchise/TestCancellation';
+import FranchiseHold from './pages/franchise/FranchiseHold';
+import HoldTests from './pages/HoldTests';
 import MakeBill from './pages/franchise/MakeBill';
 import BillingList from './pages/franchise/BillingList';
 import TrackLedger from './pages/franchise/TrackLedger';
@@ -74,7 +76,6 @@ import Analytics from './pages/franchise/Analytics';
 
 const FRANCHISE_PAGES = [
   { path: 'extra-sample', title: 'Extra Sample', activePage: 'extra-sample', description: 'Extra sample requests and tracking.' },
-  { path: 'hold', title: 'Hold', activePage: 'hold', description: 'Samples and reports currently on hold.' },
   { path: 'rejection', title: 'Rejection', activePage: 'rejection', description: 'Rejected bookings and tests.' },
   { path: 'online-payment', title: 'Online Payment', activePage: 'online-payment', description: 'Collect and track online payments.' },
   { path: 'payment-history', title: 'Payment History', activePage: 'payment-history', description: 'Historical payment records.' },
@@ -247,6 +248,22 @@ export default function App() {
             element={(
               <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
                 <TestCancellation />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/franchise/hold"
+            element={(
+              <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
+                <FranchiseHold />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/hold-tests"
+            element={(
+              <ProtectedRoute allowedRoles={HOLD_STAFF_ROLES}>
+                <HoldTests />
               </ProtectedRoute>
             )}
           />

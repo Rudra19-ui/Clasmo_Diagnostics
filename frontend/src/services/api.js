@@ -131,6 +131,14 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(payload),
     }),
+  listHolds: (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return request(`/holds/${query ? `?${query}` : ''}`);
+  },
+  createHolds: (payload) =>
+    request('/holds/', { method: 'POST', body: JSON.stringify(payload) }),
+  releaseHold: (holdId) =>
+    request(`/holds/${holdId}/release/`, { method: 'POST', body: '{}' }),
   generateMrpBill: (labCode, payload = {}) =>
     request(`/registrations/${encodeURIComponent(labCode)}/generate-mrp-bill/`, {
       method: 'POST',

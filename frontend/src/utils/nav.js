@@ -1,4 +1,4 @@
-import { ROLES, NO_PATIENT_ENTRY_ROLES } from './roles';
+import { ROLES, NO_PATIENT_ENTRY_ROLES, HOLD_STAFF_ROLES } from './roles';
 
 export const NAV = [
   { id: 'dashboard', label: 'Dashboard', href: '/dashboard' },
@@ -111,6 +111,13 @@ export const STANDARD_NAV = [
     href: '/sample-scan',
     icon: 'chip',
     roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.TECHNICIAN, ROLES.PATHOLOGIST, ROLES.RECEPTIONIST],
+  },
+  {
+    id: 'hold-tests',
+    label: 'Hold Tests',
+    href: '/hold-tests',
+    icon: 'test-result',
+    roles: HOLD_STAFF_ROLES,
   },
   {
     section: 'REGISTRATION',

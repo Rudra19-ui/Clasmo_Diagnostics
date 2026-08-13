@@ -14,6 +14,30 @@ PATIENT_ENTRY_ROLES = frozenset({
 # Admin + franchise hierarchy — pricing, wallets, commissions.
 PRICING_WALLET_ROLES = PATIENT_ENTRY_ROLES
 
+# Franchise can place holds; lab staff + admin roles can view/release held tests.
+HOLD_ACCESS_ROLES = frozenset({
+    User.ROLE_SUPER_ADMIN,
+    User.ROLE_ADMIN,
+    User.ROLE_HR,
+    User.ROLE_PATHOLOGIST,
+    User.ROLE_TECHNICIAN,
+    User.ROLE_RECEPTIONIST,
+    User.ROLE_USER,
+    User.ROLE_SUPER_FRANCHISEE,
+    User.ROLE_FRANCHISEE,
+    User.ROLE_SUB_FRANCHISE,
+})
+
+HOLD_STAFF_ROLES = frozenset({
+    User.ROLE_SUPER_ADMIN,
+    User.ROLE_ADMIN,
+    User.ROLE_HR,
+    User.ROLE_PATHOLOGIST,
+    User.ROLE_TECHNICIAN,
+    User.ROLE_RECEPTIONIST,
+    User.ROLE_USER,
+})
+
 
 class CanAccessPatientEntry(permissions.BasePermission):
     message = 'You do not have permission to access patient entry data.'
@@ -32,6 +56,16 @@ class CanAccessPricingWallet(permissions.BasePermission):
         return (
             request.user.is_authenticated
             and request.user.role in PRICING_WALLET_ROLES
+        )
+
+
+class CanAccessHolds(permissions.BasePermission):
+    message = 'You do not have permission to access hold tests.'
+
+    def has_permission(self, request, view):
+        return (
+            request.user.is_authenticated
+            and request.user.role in HOLD_ACCESS_ROLES
         )
 
 

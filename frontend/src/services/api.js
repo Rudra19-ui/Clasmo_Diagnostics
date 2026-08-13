@@ -112,6 +112,11 @@ export const api = {
   getNextLabCode: () => request('/registrations/next-lab-code/'),
   getNextPatientId: () => request('/registrations/next-patient-id/'),
   getRegistration: (labCode) => request(`/registrations/${encodeURIComponent(labCode)}/`),
+  uploadRegistrationClinicalPdf: (labCode, file) => {
+    const formData = new FormData();
+    formData.append('clinical_pdf', file);
+    return requestForm(`/registrations/${encodeURIComponent(labCode)}/clinical-pdf/`, formData, 'POST');
+  },
   updateRegistration: (labCode, payload) =>
     request(`/registrations/${encodeURIComponent(labCode)}/edit/`, {
       method: 'PATCH',

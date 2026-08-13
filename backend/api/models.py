@@ -372,6 +372,7 @@ class Registration(models.Model):
     collection_date = models.DateTimeField(default=timezone.now)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_REGISTERED)
     comment = models.TextField(blank=True)
+    clinical_pdf = models.FileField(upload_to='clinical-history/', blank=True, null=True)
     urgency = models.BooleanField(default=False)
     discount_test = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     discount_regn = models.DecimalField(max_digits=10, decimal_places=2, default=0)

@@ -89,6 +89,7 @@ export default function Registration({
   const [discountReasons, setDiscountReasons] = useState([]);
   const [discountAuthorities, setDiscountAuthorities] = useState([]);
   const [trfName, setTrfName] = useState('');
+  const [trfFile, setTrfFile] = useState(null);
   const [sampleBarcodes, setSampleBarcodes] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const registerDateTime = useSystemDateTime();
@@ -113,6 +114,7 @@ export default function Registration({
     setDiscountReason('');
     setDiscountAuthorization('');
     setTrfName('');
+    setTrfFile(null);
     setSampleBarcodes({});
     setPaymentMethod('cash');
     const fileInput = document.getElementById('regPdfUpload');
@@ -247,6 +249,15 @@ export default function Registration({
         tests: selected.map((t) => ({ test_id: t.id, price: t.price })),
         sample_barcodes: barcodePayload,
       });
+      if (trfFile && result?.lab_code) {
+        try {
+          await api.uploadRegistrationClinicalPdf(result.lab_code, trfFile);
+        } catch (uploadErr) {
+          alert(
+            `${successNoun} saved, but PDF upload failed: ${uploadErr.message || 'Unknown error'}`,
+          );
+        }
+      }
       const savedPatientId = result.patient?.patient_id || patient.patient_id;
       alert(
         `${successNoun} saved successfully!\n`
@@ -453,7 +464,11 @@ export default function Registration({
                     hidden
                     id="regPdfUpload"
                     accept=".pdf,application/pdf"
-                    onChange={(e) => setTrfName(e.target.files[0]?.name || '')}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] || null;
+                      setTrfFile(file);
+                      setTrfName(file?.name || '');
+                    }}
                   />
                   <button type="button" onClick={() => document.getElementById('regPdfUpload').click()}>
                     Choose File

@@ -26,6 +26,7 @@ urlpatterns = [
     path('registrations/<str:lab_code>/add-tests/', views.RegistrationAddTestsView.as_view(), name='registration-add-tests'),
     path('registrations/<str:lab_code>/cancel-tests/', views.RegistrationCancelTestsView.as_view(), name='registration-cancel-tests'),
     path('registrations/<str:lab_code>/generate-mrp-bill/', views.RegistrationGenerateMrpBillView.as_view(), name='registration-generate-mrp-bill'),
+    path('registrations/<str:lab_code>/clinical-pdf/', views.RegistrationClinicalPdfView.as_view(), name='registration-clinical-pdf'),
     path('registrations/<str:lab_code>/edit/', views.RegistrationEditView.as_view(), name='registration-edit'),
     path('registrations/<str:lab_code>/', views.RegistrationDetailView.as_view(), name='registration-detail'),
     path('holds/', views.RegistrationTestHoldListCreateView.as_view(), name='holds'),

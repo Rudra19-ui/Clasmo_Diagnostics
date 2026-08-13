@@ -47,15 +47,17 @@ export default function ClinicalHistory() {
   }, []);
 
   const unlockHistory = async () => {
-    if (!registration?.id) return;
+    if (!registration?.id && !registration?.lab_code) return;
     setAccessGranted(true);
     setLoadingHistory(true);
     setError('');
     try {
-      const [flow, clinical] = await Promise.all([
+      const [detail, flow, clinical] = await Promise.all([
+        api.getRegistration(registration.lab_code),
         api.getWorkflowHistory(registration.id).catch(() => null),
         api.getReport(registration.id).catch(() => null),
       ]);
+      setRegistration(detail);
       setWorkflow(flow);
       setReport(clinical);
     } catch (err) {
@@ -154,6 +156,28 @@ export default function ClinicalHistory() {
             </div>
 
             {loadingHistory && <p>Loading clinical history…</p>}
+
+            <h3 className="test-addition-subtitle">Comment</h3>
+            <p className="clinical-history-comment">
+              {(registration.comment || '').trim() || 'No comment entered.'}
+            </p>
+
+            <h3 className="test-addition-subtitle">Uploaded PDF</h3>
+            {registration.clinical_pdf_url ? (
+              <p>
+                <a
+                  className="btn-primary"
+                  href={registration.clinical_pdf_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View PDF
+                  {registration.clinical_pdf_name ? ` (${registration.clinical_pdf_name})` : ''}
+                </a>
+              </p>
+            ) : (
+              <p>No PDF uploaded for this booking.</p>
+            )}
 
             <h3 className="test-addition-subtitle">Ordered tests</h3>
             <ul className="test-addition-current-list">

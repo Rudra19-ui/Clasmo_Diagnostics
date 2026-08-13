@@ -1424,6 +1424,36 @@ class RegistrationDetailView(generics.RetrieveAPIView):
         )
 
 
+class RegistrationClinicalPdfView(APIView):
+    """Upload or replace the clinical-history PDF attached at registration."""
+
+    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request, lab_code):
+        registration = get_registration_for_user(request.user, lab_code=lab_code)
+        if not registration:
+            return Response({'detail': 'Registration not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        pdf = request.FILES.get('clinical_pdf') or request.FILES.get('file')
+        if not pdf:
+            return Response({'detail': 'Choose a PDF file to upload.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        name = (pdf.name or '').lower()
+        content_type = (getattr(pdf, 'content_type', '') or '').lower()
+        if not (name.endswith('.pdf') or 'pdf' in content_type):
+            return Response({'detail': 'Only PDF files are allowed.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if registration.clinical_pdf:
+            registration.clinical_pdf.delete(save=False)
+        registration.clinical_pdf = pdf
+        registration.save(update_fields=['clinical_pdf'])
+
+        return Response(
+            RegistrationSerializer(registration, context={'request': request}).data,
+        )
+
+
 class RegistrationEditView(APIView):
     """Update patient / tests / billing fields within 12 hours of registration."""
 

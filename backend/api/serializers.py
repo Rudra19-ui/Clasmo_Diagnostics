@@ -643,6 +643,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
     can_edit = serializers.SerializerMethodField()
     edit_expires_at = serializers.SerializerMethodField()
     hours_left = serializers.SerializerMethodField()
+    clinical_pdf_url = serializers.SerializerMethodField()
+    clinical_pdf_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Registration
@@ -652,7 +654,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
             'discount_reason', 'discount_authorization', 'payment_method', 'total',
             'visiting_charges', 'net_amount', 'paid', 'balance', 'refund_amount',
             'recovery_amount', 'bill_receipt_no', 'tests', 'test_names', 'reg_date',
-            'can_edit', 'edit_expires_at', 'hours_left',
+            'can_edit', 'edit_expires_at', 'hours_left', 'clinical_pdf_url', 'clinical_pdf_name',
         ]
         read_only_fields = ['lab_code', 'total', 'net_amount', 'balance']
 
@@ -673,6 +675,20 @@ class RegistrationSerializer(serializers.ModelSerializer):
     def get_hours_left(self, obj):
         from .registration_edit import registration_edit_hours_left
         return registration_edit_hours_left(obj)
+
+    def get_clinical_pdf_url(self, obj):
+        if not obj.clinical_pdf:
+            return ''
+        request = self.context.get('request')
+        url = obj.clinical_pdf.url
+        if request:
+            return request.build_absolute_uri(url)
+        return url
+
+    def get_clinical_pdf_name(self, obj):
+        if not obj.clinical_pdf:
+            return ''
+        return obj.clinical_pdf.name.rsplit('/', 1)[-1]
 
     def create(self, validated_data):
         patient_data = validated_data.pop('patient')

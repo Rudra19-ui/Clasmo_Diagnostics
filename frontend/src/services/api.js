@@ -366,4 +366,35 @@ export const api = {
     const query = new URLSearchParams({ barcode, ...params }).toString();
     return request(`/instrument/patient-report/?${query}`);
   },
+
+  getMyWallet: () => request('/wallets/me/'),
+  getWallets: (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return request(`/wallets/${query ? `?${query}` : ''}`);
+  },
+  getWalletTransactions: (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return request(`/wallets/transactions/${query ? `?${query}` : ''}`);
+  },
+  getZoneFranchiseRates: () => request('/wallets/zone-franchise-rates/'),
+  saveZoneFranchiseRates: (payload) =>
+    request('/wallets/zone-franchise-rates/', { method: 'PUT', body: JSON.stringify(payload) }),
+  getMyZoneFranchiseRate: () => request('/wallets/zone-franchise-rates/me/'),
+  getMyPricingOverride: () => request('/wallets/pricing-overrides/me/'),
+  saveMyPricingOverride: (payload) =>
+    request('/wallets/pricing-overrides/me/', { method: 'PUT', body: JSON.stringify(payload) }),
+  topUpWallet: (payload) =>
+    request('/wallets/top-up/', { method: 'POST', body: JSON.stringify(payload) }),
+  getWalletCommissionConfig: () => request('/wallets/commission-config/'),
+  getZones: () => request('/zones/'),
+  getFranchiseTestRates: (params = {}) => {
+    const query = new URLSearchParams(
+      Object.fromEntries(Object.entries(params).filter(([, value]) => value !== '' && value != null)),
+    ).toString();
+    return request(`/wallets/franchise-test-rates/${query ? `?${query}` : ''}`);
+  },
+  saveFranchiseTestRates: (payload) =>
+    request('/wallets/franchise-test-rates/', { method: 'PUT', body: JSON.stringify(payload) }),
+  transferFranchiseTestRates: (payload) =>
+    request('/wallets/franchise-test-rates/transfer/', { method: 'POST', body: JSON.stringify(payload) }),
 };

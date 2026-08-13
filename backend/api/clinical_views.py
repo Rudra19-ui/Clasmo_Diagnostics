@@ -18,6 +18,7 @@ from .clinical_serializers import (
 from .clinical_utils import calculate_flag
 from .franchise_scope import scope_registrations_for_user
 from .models import Registration, Report, ReportValue, TestParameter, User
+from .wallet_service import WalletError, assert_can_release_report
 
 
 def _scoped_registration(user, registration_id):
@@ -182,10 +183,17 @@ class ReportDetailView(APIView):
         report.save(update_fields=['entered_by', 'status', 'updated_at'])
 
         if should_verify:
-            if request.user.role not in {User.ROLE_ADMIN, User.ROLE_PATHOLOGIST}:
+            if request.user.role not in {User.ROLE_SUPER_ADMIN, User.ROLE_ADMIN, User.ROLE_PATHOLOGIST}:
                 return Response(
                     {'detail': 'Only pathologists or admins can verify reports.'},
                     status=status.HTTP_403_FORBIDDEN,
+                )
+            try:
+                assert_can_release_report(registration)
+            except WalletError as exc:
+                return Response(
+                    {exc.field or 'detail': exc.message},
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             report.verified_by = request.user
             report.status = Report.STATUS_VERIFIED
@@ -279,6 +287,14 @@ class ReportVerifyView(APIView):
         if report.status == Report.STATUS_PENDING:
             return Response(
                 {'detail': 'Cannot verify a report with no entered values.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            assert_can_release_report(registration)
+        except WalletError as exc:
+            return Response(
+                {exc.field or 'detail': exc.message},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

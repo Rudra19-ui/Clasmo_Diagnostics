@@ -23,6 +23,7 @@ class Zone(models.Model):
 class User(AbstractUser):
     ROLE_USER = 'user'
     ROLE_ADMIN = 'admin'
+    ROLE_SUPER_ADMIN = 'super_admin'
     ROLE_TECHNICIAN = 'technician'
     ROLE_PATHOLOGIST = 'pathologist'
     ROLE_HR = 'hr'
@@ -32,6 +33,7 @@ class User(AbstractUser):
     ROLE_SUB_FRANCHISE = 'sub_franchise'
     ROLE_CHOICES = [
         (ROLE_USER, 'User'),
+        (ROLE_SUPER_ADMIN, 'Super Admin'),
         (ROLE_ADMIN, 'Admin'),
         (ROLE_HR, 'HR'),
         (ROLE_PATHOLOGIST, 'Pathologist'),
@@ -41,7 +43,8 @@ class User(AbstractUser):
         (ROLE_FRANCHISEE, 'Prime'),
         (ROLE_SUB_FRANCHISE, 'Sub-Franchise'),
     ]
-    CLINICAL_ROLES = {ROLE_ADMIN, ROLE_TECHNICIAN, ROLE_PATHOLOGIST}
+    CLINICAL_ROLES = {ROLE_ADMIN, ROLE_SUPER_ADMIN, ROLE_TECHNICIAN, ROLE_PATHOLOGIST}
+    ADMIN_ROLES = {ROLE_ADMIN, ROLE_SUPER_ADMIN}
     FRANCHISE_ROLES = {ROLE_SUPER_FRANCHISEE, ROLE_FRANCHISEE, ROLE_SUB_FRANCHISE}
     PARENT_REQUIRED_ROLES = {ROLE_FRANCHISEE, ROLE_SUB_FRANCHISE}
     SIGNUP_ROLES = {
@@ -55,6 +58,10 @@ class User(AbstractUser):
         ROLE_FRANCHISEE,
         ROLE_SUB_FRANCHISE,
     }
+
+    def has_global_data_access(self) -> bool:
+        """Cross-zone visibility for Super Admin (and Django superusers)."""
+        return bool(self.is_superuser or self.role == self.ROLE_SUPER_ADMIN)
 
     role = models.CharField(max_length=30, choices=ROLE_CHOICES, default=ROLE_USER)
     display_name = models.CharField(max_length=100, blank=True)
@@ -1188,8 +1195,8 @@ class SelfPatientQuery(models.Model):
 
 class FranchiseCommissionConfig(models.Model):
     """
-    Predefined hierarchical commission rates (% of registration net_amount).
-    Credits are awarded to each role present in the booking creator's parent chain.
+    Default hierarchical commission rates (% of registration net_amount).
+    Used as fallback when a zone has no ZoneFranchiseRate row.
     """
 
     sub_franchise_pct = models.DecimalField(
@@ -1220,6 +1227,176 @@ class FranchiseCommissionConfig(models.Model):
     def get_solo(cls):
         obj, _ = cls.objects.get_or_create(pk=1)
         return obj
+
+
+class ZoneFranchiseRate(models.Model):
+    """
+    Per-zone pricing + commission rates for Supreme / Prime / Sub-Franchise.
+    Pricing % is the share of MRP charged to that role when booking.
+    Commission % is credited to that role from registration net_amount.
+    """
+
+    zone = models.OneToOneField(Zone, on_delete=models.CASCADE, related_name='franchise_rate')
+
+    super_franchisee_price_pct = models.DecimalField(
+        max_digits=5, decimal_places=2, default=100,
+        help_text='% of MRP charged to Supreme when booking.',
+    )
+    franchisee_price_pct = models.DecimalField(
+        max_digits=5, decimal_places=2, default=100,
+        help_text='% of MRP charged to Prime when booking.',
+    )
+    sub_franchise_price_pct = models.DecimalField(
+        max_digits=5, decimal_places=2, default=100,
+        help_text='% of MRP charged to Sub-Franchise when booking.',
+    )
+
+    super_franchisee_commission_pct = models.DecimalField(
+        max_digits=5, decimal_places=2, default=2,
+        help_text='Commission % credited to Supreme.',
+    )
+    franchisee_commission_pct = models.DecimalField(
+        max_digits=5, decimal_places=2, default=3,
+        help_text='Commission % credited to Prime.',
+    )
+    sub_franchise_commission_pct = models.DecimalField(
+        max_digits=5, decimal_places=2, default=5,
+        help_text='Commission % credited to Sub-Franchise.',
+    )
+
+    is_active = models.BooleanField(default=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    updated_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='updated_zone_franchise_rates',
+    )
+
+    class Meta:
+        ordering = ['zone__sort_order', 'zone_id']
+        verbose_name = 'Zone franchise rate'
+
+    def __str__(self):
+        return f'{self.zone.name} franchise rates'
+
+    @classmethod
+    def ensure_for_zone(cls, zone, *, defaults_from_solo=True):
+        if not zone:
+            return None
+        existing = cls.objects.filter(zone=zone).first()
+        if existing:
+            return existing
+        defaults = {
+            'super_franchisee_price_pct': 100,
+            'franchisee_price_pct': 100,
+            'sub_franchise_price_pct': 100,
+            'super_franchisee_commission_pct': 2,
+            'franchisee_commission_pct': 3,
+            'sub_franchise_commission_pct': 5,
+            'is_active': True,
+        }
+        if defaults_from_solo:
+            solo = FranchiseCommissionConfig.get_solo()
+            defaults.update({
+                'super_franchisee_commission_pct': solo.super_franchisee_pct,
+                'franchisee_commission_pct': solo.franchisee_pct,
+                'sub_franchise_commission_pct': solo.sub_franchise_pct,
+                'is_active': solo.is_active,
+            })
+        return cls.objects.create(zone=zone, **defaults)
+
+
+class FranchisePricingOverride(models.Model):
+    """
+    Multi-level pricing set by Supreme (for Prime) or Prime (for Sub-Franchise).
+    Overrides the admin ZoneFranchiseRate defaults for downstream roles.
+    """
+
+    TARGET_FRANCHISEE = User.ROLE_FRANCHISEE
+    TARGET_SUB_FRANCHISE = User.ROLE_SUB_FRANCHISE
+    TARGET_ROLE_CHOICES = [
+        (TARGET_FRANCHISEE, 'Prime (Franchise)'),
+        (TARGET_SUB_FRANCHISE, 'Sub-Franchise'),
+    ]
+
+    zone = models.ForeignKey(Zone, on_delete=models.CASCADE, related_name='pricing_overrides')
+    set_by = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='pricing_overrides_set',
+        help_text='Supreme sets Prime rates; Prime sets Sub-Franchise rates.',
+    )
+    target_role = models.CharField(max_length=30, choices=TARGET_ROLE_CHOICES)
+    price_pct_of_mrp = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=100,
+        help_text='% of catalog MRP charged to the downstream role.',
+    )
+    commission_pct = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text='Optional commission override for the target role.',
+    )
+    is_active = models.BooleanField(default=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['zone__sort_order', 'set_by_id', 'target_role']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['zone', 'set_by', 'target_role'],
+                name='unique_pricing_override_per_setter',
+            ),
+        ]
+
+    def __str__(self):
+        return f'{self.zone.name}: {self.set_by.username} → {self.target_role}'
+
+
+class FranchiseTestRate(models.Model):
+    """
+    Per-test markup (%) on Franchisee Price for a franchise account (typically Supreme).
+    Assigned / final price = Franchisee Price × (1 + rate_pct / 100).
+    """
+
+    franchise_user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='test_rates',
+        help_text='Franchise account this rate applies to (usually Supreme).',
+    )
+    test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name='franchise_rates')
+    rate_pct = models.DecimalField(
+        max_digits=6,
+        decimal_places=2,
+        default=0,
+        help_text='% increase on Franchisee Price for this test.',
+    )
+    updated_at = models.DateTimeField(auto_now=True)
+    updated_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='franchise_test_rates_updated',
+    )
+
+    class Meta:
+        ordering = ['test__name', 'id']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['franchise_user', 'test'],
+                name='unique_franchise_test_rate',
+            ),
+        ]
+
+    def __str__(self):
+        return f'{self.franchise_user.username} / {self.test.name}: {self.rate_pct}%'
 
 
 class FranchiseWallet(models.Model):

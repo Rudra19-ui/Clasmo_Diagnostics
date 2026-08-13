@@ -10,6 +10,7 @@ import {
   sanitizeBarcodeScannedValue,
   validateSampleBarcodes,
 } from '../../utils/barcodeScan';
+import { withEffectivePrice } from '../../utils/testPricing';
 
 function formatHoursLeft(hours) {
   const value = Number(hours || 0);
@@ -19,15 +20,6 @@ function formatHoursLeft(hours) {
   const m = totalMinutes % 60;
   if (h <= 0) return `${m}m left`;
   return `${h}h ${m}m left`;
-}
-
-function formatFranchiseEditTest(test) {
-  const price = Number(test.price || 0);
-  const mrp = Number(test.mrp || 0);
-  const bits = [];
-  if (price > 0) bits.push(`Price ₹${price.toFixed(2)}`);
-  if (mrp > 0) bits.push(`MRP ₹${mrp.toFixed(2)}`);
-  return bits.length ? `${test.name} — ${bits.join(' · ')}` : test.name;
 }
 
 function getSampleTypes(sampleType) {
@@ -119,7 +111,10 @@ export default function EditEntry() {
 
   useEffect(() => {
     api.getTests()
-      .then((data) => setCatalog(Array.isArray(data) ? data : []))
+      .then((data) => {
+        const list = Array.isArray(data) ? data : (data?.results || []);
+        setCatalog(list.map(withEffectivePrice));
+      })
       .catch(() => setCatalog([]));
   }, []);
 
@@ -547,7 +542,7 @@ export default function EditEntry() {
                 onTestSearchChange={setTestSearch}
                 selectedTestSearch={selectedTestSearch}
                 onSelectedTestSearchChange={setSelectedTestSearch}
-                formatLabel={formatFranchiseEditTest}
+                formatLabel={(test) => test.name}
               />
 
               <div className="reg-sketch-sample-panel">

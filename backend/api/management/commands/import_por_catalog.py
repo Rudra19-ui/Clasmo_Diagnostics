@@ -37,7 +37,7 @@ class Command(BaseCommand):
         parser.add_argument(
             '--replace-existing',
             action='store_true',
-            help='Update tests that already exist with the same name.',
+            help='Update tests that already exist with the same POR test code.',
         )
         parser.add_argument(
             '--clear-old',
@@ -71,9 +71,12 @@ class Command(BaseCommand):
 
         replace_existing = bool(options.get('replace_existing'))
         clear_old = bool(options.get('clear_old'))
-        existing_by_name = {test.name.lower(): test for test in Test.objects.all()}
+        existing_by_code = {
+            (test.test_code or '').strip().upper(): test
+            for test in Test.objects.exclude(test_code='')
+        }
 
-        import_names: set[str] = set()
+        import_codes: set[str] = set()
         to_create: list[Test] = []
         to_update: list[Test] = []
         skipped = 0
@@ -89,14 +92,13 @@ class Command(BaseCommand):
                 truncated_names += 1
                 name = name[:200]
 
-            import_names.add(name.lower())
             mrp = Decimal(str(row.get('mrp') or 0))
             price = Decimal(str(row.get('price') or 0))
             sample_type = (row.get('sample_type') or '').strip()[:150]
             test_code = f"POR-{int(row.get('sl') or 0):04d}"
-            key = name.lower()
+            import_codes.add(test_code)
 
-            existing = existing_by_name.get(key)
+            existing = existing_by_code.get(test_code)
             if existing:
                 if not replace_existing and not clear_old:
                     skipped += 1
@@ -121,17 +123,13 @@ class Command(BaseCommand):
                 category=category,
             )
             to_create.append(test)
-            existing_by_name[key] = test
+            existing_by_code[test_code] = test
 
         with transaction.atomic():
             if clear_old:
-                stale_ids = [
-                    test.id
-                    for test in Test.objects.all()
-                    if test.name.lower() not in import_names
-                ]
-                if stale_ids:
-                    deleted_count, _ = Test.objects.filter(id__in=stale_ids).delete()
+                stale_qs = Test.objects.exclude(test_code__in=import_codes)
+                deleted_count, _ = stale_qs.delete()
+                if deleted_count:
                     self.stdout.write(
                         self.style.WARNING(f'Removed {deleted_count} old tests not in POR catalog.')
                     )

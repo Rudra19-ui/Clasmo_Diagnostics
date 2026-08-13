@@ -8,6 +8,7 @@ import TestDualListPicker from '../components/TestDualListPicker';
 import { buildSampleBarcodePayload } from '../utils/barcodeScan';
 import { useSystemDateTime } from '../hooks/useSystemDateTime';
 import { api } from '../services/api';
+import { withEffectivePrice } from '../utils/testPricing';
 
 const emptyPatient = () => ({
   patient_type: 'O.P.D.',
@@ -31,15 +32,6 @@ const emptyPatient = () => ({
 });
 
 const formatTestOption = (test) => test.name;
-
-function formatFranchiseRegistrationTest(test) {
-  const price = Number(test.price || 0);
-  const mrp = Number(test.mrp || 0);
-  const bits = [];
-  if (price > 0) bits.push(`Price ₹${price.toFixed(2)}`);
-  if (mrp > 0) bits.push(`MRP ₹${mrp.toFixed(2)}`);
-  return bits.length ? `${test.name} — ${bits.join(' · ')}` : test.name;
-}
 
 function getSampleTypes(sampleType) {
   const raw = (sampleType || 'General').trim();
@@ -80,6 +72,7 @@ export default function Registration({
   const isFranchiseBooking = activePage === 'manage-booking';
   const [patient, setPatient] = useState(emptyPatient());
   const [tests, setTests] = useState([]);
+  const [testsLoading, setTestsLoading] = useState(true);
   const [selected, setSelected] = useState([]);
   const [testSearch, setTestSearch] = useState('');
   const [selectedTestSearch, setSelectedTestSearch] = useState('');
@@ -137,13 +130,32 @@ export default function Registration({
       .catch(console.error);
   }, []);
 
+  const loadTests = useCallback(() => {
+    setTestsLoading(true);
+    return api.getTests()
+      .then((rows) => {
+        const list = Array.isArray(rows) ? rows : (rows?.results || []);
+        setTests(list.map(withEffectivePrice));
+      })
+      .catch(console.error)
+      .finally(() => setTestsLoading(false));
+  }, []);
+
   useEffect(() => {
-    api.getTests().then(setTests).catch(console.error);
+    loadTests();
     api.getNextLabCode().then((d) => setLabCode(d.lab_code)).catch(console.error);
     refreshNextPatientId();
     api.getDiscountReasons({ is_active: true }).then(setDiscountReasons).catch(console.error);
     api.getDiscountAuthorities({ is_active: true }).then(setDiscountAuthorities).catch(console.error);
-  }, [refreshNextPatientId]);
+  }, [refreshNextPatientId, loadTests]);
+
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') loadTests();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, [loadTests]);
 
   const filteredAvailable = useMemo(() => {
     const q = testSearch.toLowerCase();
@@ -475,7 +487,8 @@ export default function Registration({
               onTestSearchChange={setTestSearch}
               selectedTestSearch={selectedTestSearch}
               onSelectedTestSearchChange={setSelectedTestSearch}
-              formatLabel={isFranchiseBooking ? formatFranchiseRegistrationTest : formatTestOption}
+              formatLabel={formatTestOption}
+              loading={testsLoading}
             />
 
             <div className="reg-sketch-sample-panel">

@@ -44,7 +44,18 @@ export default function Layout({ activePage, children }) {
   const languageRef = useRef(null);
   const profileRef = useRef(null);
   const isStandalonePage = activePage === 'enquire-box' || activePage === 'user-signup' || activePage === 'self-patient-query' || activePage === 'give-feedback';
-  const isAdminRoute = !isStandalonePage && (activePage === 'administration' || location.pathname.startsWith('/admin/'));
+  const FRANCHISE_MAIN_NAV_PATHS = [
+    '/admin/list-franchisee',
+    '/admin/add-franchisee',
+    '/admin/franchise-bulk-pricing',
+    '/admin/franchise-transfer-pricing',
+  ];
+  const isFranchiseMainNavRoute = FRANCHISE_MAIN_NAV_PATHS.some(
+    (path) => location.pathname === path || location.pathname.startsWith(`${path}/`),
+  );
+  const isAdminRoute = !isStandalonePage
+    && !isFranchiseMainNavRoute
+    && (activePage === 'administration' || location.pathname.startsWith('/admin/'));
   const isPathologist = user?.role === 'pathologist';
 
   const handleSidebarClick = useCallback((event) => {

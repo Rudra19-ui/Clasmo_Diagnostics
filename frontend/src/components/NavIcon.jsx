@@ -5,6 +5,7 @@ const ICON_COLORS = {
   'test-portfolio': '#26a69a',
   clinical: '#00acc1',
   administration: '#7e57c2',
+  franchise: '#26a69a',
   'user-signup': '#5c6bc0',
   'enquire-box': '#00838f',
   reports: '#8e24aa',
@@ -64,6 +65,14 @@ export default function NavIcon({ id }) {
         <circle cx="12" cy="8" r="3.2" stroke={color} strokeWidth="2" />
         <path d="M6 19c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke={color} strokeWidth="2" strokeLinecap="round" />
         <path d="M17 6l2-2M19 10h2" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
+      </svg>
+    ),
+    franchise: (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+        <circle cx="8" cy="9" r="2.5" stroke={color} strokeWidth="2" />
+        <circle cx="16" cy="9" r="2.5" stroke={color} strokeWidth="2" />
+        <path d="M4 18c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke={color} strokeWidth="2" strokeLinecap="round" />
+        <path d="M12 18c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke={color} strokeWidth="2" strokeLinecap="round" />
       </svg>
     ),
     'user-signup': (

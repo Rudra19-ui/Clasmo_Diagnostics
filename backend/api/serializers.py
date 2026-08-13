@@ -18,6 +18,7 @@ from .models import (
     TestCategory,
     TestPackage,
     User,
+    Zone,
     CollectionCenter,
     CollectionCenterBoy,
     Area,
@@ -46,11 +47,13 @@ class UserSerializer(serializers.ModelSerializer):
     zone_id = serializers.IntegerField(source='zone.id', read_only=True, allow_null=True)
     zone_code = serializers.SerializerMethodField()
     zone_name = serializers.SerializerMethodField()
+    role_label = serializers.SerializerMethodField()
+    email = serializers.EmailField(read_only=True)
 
     class Meta:
         model = User
         fields = [
-            'id', 'username', 'role', 'display_name', 'mobile', 'lab_code',
+            'id', 'username', 'email', 'role', 'role_label', 'display_name', 'mobile', 'lab_code',
             'is_active', 'save_credentials', 'save_info', 'last_login',
             'parent_franchisee_id', 'parent_franchisee_name', 'parent_franchisee_role',
             'zone_id', 'zone_code', 'zone_name',
@@ -73,6 +76,9 @@ class UserSerializer(serializers.ModelSerializer):
     def get_zone_name(self, obj):
         return obj.zone.name if obj.zone_id else ''
 
+    def get_role_label(self, obj):
+        return obj.get_role_display()
+
 
 class RegisterSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=150)
@@ -81,6 +87,7 @@ class RegisterSerializer(serializers.Serializer):
     mobile = serializers.CharField(max_length=20)
     role = serializers.ChoiceField(choices=User.ROLE_CHOICES, default=User.ROLE_USER)
     parent_franchisee_id = serializers.IntegerField(required=False, allow_null=True)
+    zone_id = serializers.IntegerField(required=False, allow_null=True)
 
     def _actor(self):
         return self.context.get('actor') or self.context.get('request') and self.context['request'].user
@@ -89,8 +96,10 @@ class RegisterSerializer(serializers.Serializer):
         actor = self._actor()
         allowed = set()
         if actor and actor.is_authenticated:
-            if actor.is_superuser or actor.role == User.ROLE_ADMIN:
+            if actor.is_superuser or actor.role == User.ROLE_SUPER_ADMIN:
                 allowed = {choice[0] for choice in User.ROLE_CHOICES}
+            elif actor.role == User.ROLE_ADMIN:
+                allowed = {choice[0] for choice in User.ROLE_CHOICES} - {User.ROLE_SUPER_ADMIN}
             elif actor.role == User.ROLE_SUPER_FRANCHISEE:
                 allowed = {User.ROLE_FRANCHISEE, User.ROLE_SUB_FRANCHISE}
             elif actor.role == User.ROLE_FRANCHISEE:
@@ -187,12 +196,15 @@ class RegisterSerializer(serializers.Serializer):
     def create(self, validated_data):
         parent = validated_data.pop('parent_franchisee', None)
         validated_data.pop('parent_franchisee_id', None)
+        zone_id = validated_data.pop('zone_id', None)
         role = validated_data.get('role', User.ROLE_USER)
         actor = self._actor()
         zone = None
-        if actor and getattr(actor, 'is_authenticated', False) and actor.zone_id:
+        if zone_id:
+            zone = Zone.objects.filter(pk=zone_id, is_active=True).first()
+        if zone is None and actor and getattr(actor, 'is_authenticated', False) and actor.zone_id:
             zone = actor.zone
-        elif parent and parent.zone_id:
+        elif zone is None and parent and parent.zone_id:
             zone = parent.zone
         user = User.objects.create_user(
             username=validated_data['username'],
@@ -201,7 +213,8 @@ class RegisterSerializer(serializers.Serializer):
             mobile=validated_data['mobile'],
             role=role,
             parent_franchisee=parent,
-            is_staff=(role == User.ROLE_ADMIN),
+            is_staff=(role in User.ADMIN_ROLES),
+            is_superuser=(role == User.ROLE_SUPER_ADMIN),
             zone=zone,
         )
         return user
@@ -357,13 +370,28 @@ class TestCategorySerializer(serializers.ModelSerializer):
 
 class TestSerializer(serializers.ModelSerializer):
     category_name = serializers.CharField(source='category.name', read_only=True, default=None)
+    effective_price = serializers.SerializerMethodField()
 
     class Meta:
         model = Test
         fields = [
-            'id', 'name', 'short_name', 'test_code', 'mrp', 'price',
+            'id', 'name', 'short_name', 'test_code', 'mrp', 'price', 'effective_price',
             'sample_type', 'tat', 'volume_ml', 'category', 'category_name',
         ]
+
+    def get_effective_price(self, obj):
+        actor = self.context.get('pricing_actor')
+        if not actor:
+            return None
+        from .zone_rates import effective_test_price_for_test
+        price = effective_test_price_for_test(
+            test=obj,
+            actor=actor,
+            zone=self.context.get('pricing_zone'),
+            rate_row=self.context.get('zone_rate_row'),
+            franchise_test_rates=self.context.get('franchise_test_rates'),
+        )
+        return str(price)
 
 
 class TestPackageSerializer(serializers.ModelSerializer):

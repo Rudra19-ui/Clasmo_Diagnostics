@@ -10,6 +10,8 @@ import {
   sanitizeBarcodeScannedValue,
   validateSampleBarcodes,
 } from '../../utils/barcodeScan';
+import { getEffectiveTestPrice, withEffectivePrice } from '../../utils/testPricing';
+
 import { resolveFranchiseBooking } from './resolveBooking';
 
 function formatRegistrationTime(registration) {
@@ -26,15 +28,6 @@ function formatRegistrationTime(registration) {
   });
 }
 
-function formatFranchiseRegistrationTest(test) {
-  const price = Number(test.price || 0);
-  const mrp = Number(test.mrp || 0);
-  const bits = [];
-  if (price > 0) bits.push(`Price ₹${price.toFixed(2)}`);
-  if (mrp > 0) bits.push(`MRP ₹${mrp.toFixed(2)}`);
-  return bits.length ? `${test.name} — ${bits.join(' · ')}` : test.name;
-}
-
 function getSampleTypes(sampleType) {
   const raw = (sampleType || 'General').trim();
   const parts = raw.split(/[,/|]/).map((part) => part.trim()).filter(Boolean);
@@ -42,9 +35,7 @@ function getSampleTypes(sampleType) {
 }
 
 function getFranchiseBillAmount(test) {
-  const mrp = Number(test.mrp || 0);
-  if (mrp > 0) return mrp;
-  return Number(test.price || 0);
+  return getEffectiveTestPrice(test);
 }
 
 function calculateDiscountAmounts(total, discountTest, discountRegn, discountType) {
@@ -101,7 +92,7 @@ export default function TestAddition() {
 
   useEffect(() => {
     api.getTests()
-      .then((rows) => setCatalog(Array.isArray(rows) ? rows : []))
+      .then((rows) => setCatalog(Array.isArray(rows) ? rows.map(withEffectivePrice) : []))
       .catch(() => setCatalog([]));
     api.getDiscountReasons({ is_active: true }).then(setDiscountReasons).catch(() => {});
     api.getDiscountAuthorities({ is_active: true }).then(setDiscountAuthorities).catch(() => {});
@@ -460,7 +451,7 @@ export default function TestAddition() {
                   onTestSearchChange={setTestSearch}
                   selectedTestSearch={selectedTestSearch}
                   onSelectedTestSearchChange={setSelectedTestSearch}
-                  formatLabel={formatFranchiseRegistrationTest}
+                  formatLabel={(test) => test.name}
                 />
 
                 <div className="reg-sketch-sample-panel">

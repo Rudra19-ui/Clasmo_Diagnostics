@@ -24,6 +24,8 @@ export default function TestDualListPicker({
   selectedTestSearch = '',
   onSelectedTestSearchChange,
   formatLabel = (test) => test.name,
+  loading = false,
+  emptyAvailableMessage = 'No tests found',
 }) {
   const availableListRef = useRef(null);
   const selectedListRef = useRef(null);
@@ -200,7 +202,9 @@ export default function TestDualListPicker({
           onKeyDown={handleAvailableKeyDown}
         >
           {available.length === 0 ? (
-            <div className="test-picker-empty">No tests found</div>
+            <div className="test-picker-empty">
+              {loading ? 'Loading tests…' : emptyAvailableMessage}
+            </div>
           ) : (
             available.map((test) => (
               <button

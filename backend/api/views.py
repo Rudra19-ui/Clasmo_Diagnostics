@@ -17,6 +17,7 @@ from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from .clinical_permissions import CanAccessPatientEntry, CanAccessPricingWallet
 from .franchise_scope import (
     get_registration_for_user,
     is_franchise_actor,
@@ -159,7 +160,7 @@ class IsAdmin(permissions.BasePermission):
         return bool(
             user
             and user.is_authenticated
-            and (user.is_superuser or user.role == User.ROLE_ADMIN)
+            and (user.is_superuser or user.role in User.ADMIN_ROLES)
         )
 
 
@@ -172,7 +173,7 @@ class CanCreateUserAccounts(permissions.BasePermission):
         user = request.user
         if not user or not user.is_authenticated:
             return False
-        if user.is_superuser or user.role == User.ROLE_ADMIN:
+        if user.is_superuser or user.role in User.ADMIN_ROLES:
             return True
         if user.role in {User.ROLE_SUPER_FRANCHISEE, User.ROLE_FRANCHISEE, User.ROLE_HR}:
             return True
@@ -183,8 +184,10 @@ def roles_creatable_by(actor):
     """Return role codes the actor is allowed to assign when creating a user."""
     if not actor or not actor.is_authenticated:
         return set()
-    if actor.is_superuser or actor.role == User.ROLE_ADMIN:
+    if actor.is_superuser or actor.role == User.ROLE_SUPER_ADMIN:
         return {choice[0] for choice in User.ROLE_CHOICES}
+    if actor.role == User.ROLE_ADMIN:
+        return {choice[0] for choice in User.ROLE_CHOICES} - {User.ROLE_SUPER_ADMIN}
     if actor.role == User.ROLE_SUPER_FRANCHISEE:
         return {User.ROLE_FRANCHISEE, User.ROLE_SUB_FRANCHISE}
     if actor.role == User.ROLE_FRANCHISEE:
@@ -246,9 +249,11 @@ class RegisterView(APIView):
             )
             serializer.is_valid(raise_exception=True)
             user = serializer.save()
-            if user.role == User.ROLE_ADMIN:
+            if user.role in User.ADMIN_ROLES:
                 user.is_staff = True
-                user.save(update_fields=['is_staff'])
+                if user.role == User.ROLE_SUPER_ADMIN:
+                    user.is_superuser = True
+                user.save(update_fields=['is_staff', 'is_superuser'] if user.role == User.ROLE_SUPER_ADMIN else ['is_staff'])
             return Response({
                 'detail': 'Account created successfully. Please login with your username and password.',
                 'user': UserSerializer(user).data,
@@ -298,6 +303,7 @@ class ChangePasswordView(APIView):
 class TestListView(generics.ListAPIView):
     serializer_class = TestSerializer
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = None
 
     def get_queryset(self):
         qs = Test.objects.select_related('category').all()
@@ -312,6 +318,55 @@ class TestListView(generics.ListAPIView):
         if category:
             qs = qs.filter(category__name__icontains=category)
         return qs.order_by('name')
+
+    def list(self, request, *args, **kwargs):
+        """Fast path: prefetch franchise rates once, avoid N+1 SerializerMethodField queries."""
+        from decimal import Decimal
+        from .models import FranchiseTestRate
+        from .zone_rates import (
+            effective_test_price_for_test,
+            get_zone_franchise_rate,
+            resolve_zone_for_rates,
+        )
+
+        actor = request.user
+        franchise_rates = None
+        zone = None
+        rate_row = None
+        if getattr(actor, 'role', None) in User.FRANCHISE_ROLES:
+            franchise_rates = dict(
+                FranchiseTestRate.objects.filter(franchise_user_id=actor.id)
+                .values_list('test_id', 'rate_pct')
+            )
+            zone = resolve_zone_for_rates(actor=actor)
+            rate_row = get_zone_franchise_rate(zone) if zone else None
+
+        rows = []
+        queryset = self.filter_queryset(self.get_queryset()).select_related('category')
+        for test in queryset:
+            price = effective_test_price_for_test(
+                test=test,
+                actor=actor,
+                zone=zone,
+                rate_row=rate_row,
+                franchise_test_rates=franchise_rates,
+            )
+            category = test.category
+            rows.append({
+                'id': test.id,
+                'name': test.name,
+                'short_name': test.short_name,
+                'test_code': test.test_code,
+                'mrp': str(Decimal(test.mrp or 0)),
+                'price': str(Decimal(test.price or 0)),
+                'effective_price': str(price),
+                'sample_type': test.sample_type,
+                'tat': test.tat,
+                'volume_ml': str(Decimal(test.volume_ml or 0)),
+                'category': category.id if category else None,
+                'category_name': category.name if category else None,
+            })
+        return Response(rows)
 
 
 class TestCategoryListView(generics.ListAPIView):
@@ -354,7 +409,7 @@ class ReportFormatListView(generics.ListAPIView):
 
 class RegistrationSearchView(generics.ListAPIView):
     serializer_class = RegistrationSearchSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
 
     @staticmethod
     def _parse_ddmmyyyy(value):
@@ -570,7 +625,7 @@ def _build_worksheet_patient(registration):
 
 
 class WorksheetView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
 
     def get(self, request):
         ids_param = request.query_params.get('ids', '').strip()
@@ -677,7 +732,7 @@ def _build_workflow_events(registration):
 
 
 class WorkFlowHistoryView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
 
     def get(self, request):
         reg_id = request.query_params.get('id', '').strip()
@@ -773,7 +828,7 @@ def _format_age_sex(patient):
 
 
 class BarcodeView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
 
     def get(self, request):
         reg_id = request.query_params.get('id', '').strip()
@@ -895,7 +950,7 @@ def _validate_notification_send(action, recipients, options):
 
 
 class NotificationView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
 
     def get(self, request):
         reg_id = request.query_params.get('id', '').strip()
@@ -1124,7 +1179,7 @@ def _bulk_deliveries_for_registration(registration, action, options):
 
 
 class BulkNotificationView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
 
     def post(self, request):
         registration_ids = request.data.get('registration_ids') or []
@@ -1269,7 +1324,7 @@ def _build_bill_receipt_payload(registration):
 
 
 class BillReceiptView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
 
     def get(self, request):
         ids_param = request.query_params.get('ids', '').strip()
@@ -1357,7 +1412,7 @@ class BillReceiptView(APIView):
 
 class RegistrationDetailView(generics.RetrieveAPIView):
     serializer_class = RegistrationSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
     lookup_field = 'lab_code'
 
     def get_queryset(self):
@@ -1370,7 +1425,7 @@ class RegistrationDetailView(generics.RetrieveAPIView):
 class RegistrationEditView(APIView):
     """Update patient / tests / billing fields within 12 hours of registration."""
 
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
 
     PATIENT_FIELDS = {
         'patient_type', 'title', 'patient_name', 'gender', 'address', 'city',
@@ -1495,7 +1550,7 @@ class RegistrationEditView(APIView):
 class RegistrationAddTestsView(APIView):
     """Append tests to an existing registration (Test Addition)."""
 
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
 
     @transaction.atomic
     def post(self, request, lab_code):
@@ -1609,7 +1664,7 @@ class RegistrationAddTestsView(APIView):
 class RegistrationCancelTestsView(APIView):
     """Cancel (remove) selected tests from a registration."""
 
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
 
     @transaction.atomic
     def post(self, request, lab_code):
@@ -1676,7 +1731,7 @@ class RegistrationCancelTestsView(APIView):
 
 
 class RegistrationCreateView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
 
     @transaction.atomic
     def post(self, request):
@@ -1733,8 +1788,9 @@ class RegistrationCreateView(APIView):
             except BarcodeLinkError as exc:
                 raise DRFValidationError({exc.field or 'sample_barcodes': exc.message})
 
-        from .wallet_service import distribute_registration_commissions
+        from .wallet_service import debit_registration_charge, distribute_registration_commissions
         registration.refresh_from_db()
+        debit_registration_charge(registration, created_by=request.user)
         distribute_registration_commissions(registration, created_by=request.user)
 
         from .franchise_ledger import record_ledger_event, registration_mrp_total
@@ -1762,7 +1818,7 @@ class RegistrationCreateView(APIView):
 class RegistrationGenerateMrpBillView(APIView):
     """Generate / refresh bill using Test MRP only."""
 
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
 
     @transaction.atomic
     def post(self, request, lab_code):
@@ -1795,7 +1851,7 @@ class RegistrationGenerateMrpBillView(APIView):
 class FranchiseLedgerView(APIView):
     """Track Ledger / Accounting investments summary."""
 
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CanAccessPricingWallet]
 
     def get(self, request):
         from .franchise_ledger import ledger_summary, parse_ddmmyyyy
@@ -1807,7 +1863,7 @@ class FranchiseLedgerView(APIView):
 class FranchiseSampleUsageView(APIView):
     """Sample types, counts, and approx page usage by date period."""
 
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CanAccessPricingWallet]
 
     def get(self, request):
         from .franchise_ledger import parse_ddmmyyyy, sample_usage_summary
@@ -1817,14 +1873,14 @@ class FranchiseSampleUsageView(APIView):
 
 
 class NextLabCodeView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
 
     def get(self, request):
         return Response({'lab_code': peek_lab_code()})
 
 
 class NextPatientIdView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
 
     def get(self, request):
         return Response({'patient_id': peek_patient_id()})
@@ -1859,7 +1915,7 @@ class LabMessageListCreateView(generics.ListCreateAPIView):
 
 
 class DashboardSummaryView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
 
     def get(self, request):
         from . import dashboard_utils as dash
@@ -1924,7 +1980,7 @@ class DashboardSummaryView(APIView):
 
 
 class ReportSummaryView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
 
     def get(self, request):
         report_type = request.query_params.get('type', 'daily')
@@ -1946,7 +2002,7 @@ class UserListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        qs = User.objects.select_related('parent_franchisee').all().order_by('username')
+        qs = User.objects.select_related('parent_franchisee', 'zone').all().order_by('username')
         role = (self.request.query_params.get('role') or '').strip()
         if role:
             qs = qs.filter(role=role)
@@ -1954,6 +2010,27 @@ class UserListView(generics.ListAPIView):
         if active in ('1', 'true', 'True'):
             qs = qs.filter(is_active=True)
         return scope_users_for_user(self.request.user, qs)
+
+
+class ZoneListView(APIView):
+    """GET /api/zones/ — active zones (for franchise signup / filters)."""
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        from .models import Zone
+        qs = Zone.objects.filter(is_active=True).order_by('sort_order', 'id')
+        if (
+            request.user.role in User.ADMIN_ROLES
+            and request.user.role != User.ROLE_SUPER_ADMIN
+            and not request.user.is_superuser
+            and request.user.zone_id
+        ):
+            qs = qs.filter(pk=request.user.zone_id)
+        return Response([
+            {'id': z.id, 'code': z.code, 'name': z.name, 'sort_order': z.sort_order}
+            for z in qs
+        ])
 
 
 class UserRoleUpdateView(APIView):
@@ -1969,8 +2046,9 @@ class UserRoleUpdateView(APIView):
         serializer = UserRoleUpdateSerializer(target, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        user.is_staff = user.role == User.ROLE_ADMIN
-        user.save(update_fields=['is_staff'])
+        user.is_staff = user.role in User.ADMIN_ROLES
+        user.is_superuser = user.role == User.ROLE_SUPER_ADMIN or user.is_superuser
+        user.save(update_fields=['is_staff', 'is_superuser'])
         return Response(UserSerializer(user).data)
 
 
@@ -2311,7 +2389,7 @@ class SalesReferenceListView(generics.ListAPIView):
 
 class PatientMasterListCreateView(generics.ListCreateAPIView):
     serializer_class = PatientMasterSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
 
     def get_queryset(self):
         qs = Patient.objects.filter(is_active=True).select_related('family_doctor').prefetch_related('addresses')
@@ -2333,7 +2411,7 @@ class PatientMasterListCreateView(generics.ListCreateAPIView):
 
 class PatientMasterDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PatientMasterSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
 
     def get_queryset(self):
         return scope_patients_for_user(
@@ -2530,7 +2608,7 @@ class SelfPatientQueryDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class GlobalSearchView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
 
     def get(self, request):
         q = request.query_params.get('q', '').strip()
@@ -2549,7 +2627,7 @@ class GlobalSearchView(APIView):
 
 class PatientBarcodeListView(generics.ListAPIView):
     serializer_class = PatientSampleBarcodeSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
 
     def get_queryset(self):
         qs = PatientSampleBarcode.objects.filter(is_active=True).select_related(
@@ -2635,7 +2713,7 @@ class PatientSampleScanView(APIView):
 
 
 class PatientBarcodeLinkView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
 
     @transaction.atomic
     def post(self, request):

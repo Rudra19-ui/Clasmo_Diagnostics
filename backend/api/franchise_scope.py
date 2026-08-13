@@ -38,6 +38,13 @@ def user_zone_id(user) -> int | None:
     return getattr(user, 'zone_id', None)
 
 
+def user_has_global_data_access(user) -> bool:
+    """Super Admin (and Django superusers) see data across all zones."""
+    if not user or not getattr(user, 'is_authenticated', False):
+        return False
+    return bool(getattr(user, 'has_global_data_access', lambda: False)())
+
+
 def franchise_descendant_ids(user) -> set[int]:
     """All active users under this user in the franchise_children tree (same zone)."""
     ids: set[int] = set()
@@ -60,11 +67,14 @@ def franchise_descendant_ids(user) -> set[int]:
 def visible_creator_ids(user) -> set[int] | None:
     """
     User IDs whose created records this actor may see (within their zone).
-    Returns None when zone-wide access applies (non-franchise roles).
+    Returns None when zone-wide / global access applies (admin roles).
     Returns empty set when the user has no zone or is unauthenticated.
     """
     if not user or not getattr(user, 'is_authenticated', False):
         return set()
+
+    if user_has_global_data_access(user):
+        return None
 
     if not user_zone_id(user):
         return set()
@@ -92,6 +102,8 @@ def visible_creator_ids(user) -> set[int] | None:
 
 
 def _apply_zone_filter(qs: QuerySet, user, *, zone_field='zone_id'):
+    if user_has_global_data_access(user):
+        return qs
     zone_id = user_zone_id(user)
     if zone_id is None:
         return qs.none()
@@ -127,6 +139,8 @@ def scope_reports_for_user(user, qs: QuerySet | None = None) -> QuerySet:
 
 def scope_barcodes_for_user(user, qs: QuerySet | None = None) -> QuerySet:
     qs = qs if qs is not None else PatientSampleBarcode.objects.all()
+    if user_has_global_data_access(user):
+        return qs
     zone_id = user_zone_id(user)
     if zone_id is None:
         return qs.none()
@@ -144,6 +158,8 @@ def scope_barcodes_for_user(user, qs: QuerySet | None = None) -> QuerySet:
 
 def scope_created_by_for_user(user, qs: QuerySet) -> QuerySet:
     """Generic filter for models with created_by FK (also zone via creator)."""
+    if user_has_global_data_access(user):
+        return qs
     zone_id = user_zone_id(user)
     if zone_id is None:
         return qs.none()
@@ -162,6 +178,8 @@ def scope_zone_queryset(user, qs: QuerySet, *, zone_field='zone_id') -> QuerySet
 def scope_users_for_user(user, qs: QuerySet | None = None) -> QuerySet:
     """User directory: same zone only; franchise actors further limited by hierarchy."""
     qs = qs if qs is not None else User.objects.all()
+    if user_has_global_data_access(user):
+        return qs
     zone_id = user_zone_id(user)
     if zone_id is None:
         return qs.none()
@@ -175,6 +193,8 @@ def scope_users_for_user(user, qs: QuerySet | None = None) -> QuerySet:
 def user_can_access_registration(user, registration) -> bool:
     if not registration:
         return False
+    if user_has_global_data_access(user):
+        return True
     zone_id = user_zone_id(user)
     if zone_id is None:
         return False
@@ -207,6 +227,11 @@ def get_registration_for_user(user, *, pk=None, lab_code=None):
 
 def scope_wallets_for_user(user, qs: QuerySet | None = None) -> QuerySet:
     qs = qs if qs is not None else FranchiseWallet.objects.all()
+    if user_has_global_data_access(user):
+        creator_ids = visible_creator_ids(user)
+        if creator_ids is None:
+            return qs
+        return qs.filter(user_id__in=creator_ids)
     zone_id = user_zone_id(user)
     if zone_id is None:
         return qs.none()
@@ -219,6 +244,11 @@ def scope_wallets_for_user(user, qs: QuerySet | None = None) -> QuerySet:
 
 def scope_wallet_transactions_for_user(user, qs: QuerySet | None = None) -> QuerySet:
     qs = qs if qs is not None else WalletTransaction.objects.all()
+    if user_has_global_data_access(user):
+        creator_ids = visible_creator_ids(user)
+        if creator_ids is None:
+            return qs
+        return qs.filter(wallet__user_id__in=creator_ids)
     zone_id = user_zone_id(user)
     if zone_id is None:
         return qs.none()
@@ -232,6 +262,11 @@ def scope_wallet_transactions_for_user(user, qs: QuerySet | None = None) -> Quer
 def user_can_access_wallet(user, wallet) -> bool:
     if not wallet:
         return False
+    if user_has_global_data_access(user):
+        creator_ids = visible_creator_ids(user)
+        if creator_ids is None:
+            return True
+        return wallet.user_id in creator_ids
     zone_id = user_zone_id(user)
     if zone_id is None:
         return False

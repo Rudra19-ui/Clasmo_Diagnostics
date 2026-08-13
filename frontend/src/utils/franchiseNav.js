@@ -112,6 +112,12 @@ export const FRANCHISE_NAV = [
         href: '/franchise/track-ledger',
         icon: 'analytics',
       },
+      {
+        id: 'pricing-credits',
+        label: 'Pricing & Credits',
+        href: '/franchise/pricing-credits',
+        icon: 'analytics',
+      },
     ],
   },
 
@@ -128,24 +134,39 @@ export const FRANCHISE_NAV = [
     section: 'STAFF',
     items: [
       { id: 'my-staff', label: 'My Staff', href: '/franchise/my-staff', icon: 'layers' },
+      {
+        id: 'franchisee-pricing',
+        label: 'Prime Pricing',
+        href: '/franchise/franchisee-pricing',
+        icon: 'layers',
+        excludeRoles: [ROLES.FRANCHISEE, ROLES.SUB_FRANCHISE],
+      },
     ],
   },
 
   {
     section: 'SUB FRANCHISEE',
     items: [
-      { id: 'sub-franchisee', label: 'Sub Franchisee', href: '/franchise/sub-franchisee', icon: 'layers' },
+      {
+        id: 'sub-franchisee',
+        label: 'Sub Franchisee',
+        href: '/franchise/sub-franchisee',
+        icon: 'layers',
+        excludeRoles: [ROLES.SUB_FRANCHISE],
+      },
       {
         id: 'sub-franchisee-pricing',
         label: 'SubFranchisee Pricing',
         href: '/franchise/sub-franchisee-pricing',
         icon: 'layers',
+        excludeRoles: [ROLES.SUPER_FRANCHISEE, ROLES.SUB_FRANCHISE],
       },
       {
         id: 'sub-franchisee-credits',
         label: 'SubFranchisee Credits',
         href: '/franchise/sub-franchisee-credits',
         icon: 'layers',
+        excludeRoles: [ROLES.SUB_FRANCHISE],
       },
     ],
   },

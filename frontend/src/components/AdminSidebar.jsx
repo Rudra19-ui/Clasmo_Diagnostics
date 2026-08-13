@@ -4,9 +4,15 @@ import { ADMIN_COLUMNS } from '../utils/adminModules';
 
 export default function AdminSidebar() {
   const location = useLocation();
-  const [openSections, setOpenSections] = useState(() =>
-    Object.fromEntries(ADMIN_COLUMNS.map((column) => [column.id, false])),
-  );
+  const [openSections, setOpenSections] = useState(() => {
+    const initial = Object.fromEntries(ADMIN_COLUMNS.map((column) => [column.id, false]));
+    const activeSlug = location.pathname.replace(/^\/admin\//, '');
+    const activeColumn = ADMIN_COLUMNS.find((column) =>
+      column.links.some((link) => link.slug === activeSlug),
+    );
+    if (activeColumn) initial[activeColumn.id] = true;
+    return initial;
+  });
 
   const toggleSection = (id) => {
     setOpenSections((prev) => ({ ...prev, [id]: !prev[id] }));

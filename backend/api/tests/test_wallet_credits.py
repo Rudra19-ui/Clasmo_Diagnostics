@@ -12,6 +12,7 @@ from api.models import (
     Registration,
     User,
     WalletTransaction,
+    Zone,
 )
 from api.wallet_service import (
     create_demo_transactions,
@@ -23,24 +24,19 @@ from api.wallet_service import (
 class WalletCommissionServiceTests(TestCase):
     def setUp(self):
         UserModel = get_user_model()
+        self.zone = Zone.objects.create(code='wallet-test', name='Wallet Test', sort_order=50)
         self.supreme = UserModel.objects.create_user(
-            username='w_supreme', password='x', role=User.ROLE_SUPER_FRANCHISEE,
+            username='w_supreme', password='x', role=User.ROLE_SUPER_FRANCHISEE, zone=self.zone,
         )
         self.prime = UserModel.objects.create_user(
             username='w_prime', password='x', role=User.ROLE_FRANCHISEE,
-            parent_franchisee=self.supreme,
+            parent_franchisee=self.supreme, zone=self.zone,
         )
         self.sub = UserModel.objects.create_user(
             username='w_sub', password='x', role=User.ROLE_SUB_FRANCHISE,
-            parent_franchisee=self.prime,
+            parent_franchisee=self.prime, zone=self.zone,
         )
-        FranchiseCommissionConfig.objects.create(
-            pk=1,
-            sub_franchise_pct=Decimal('5.00'),
-            franchisee_pct=Decimal('3.00'),
-            super_franchisee_pct=Decimal('2.00'),
-            is_active=True,
-        )
+        FranchiseCommissionConfig.get_solo()
 
     def _reg(self, user, lab_code, net_amount):
         patient = Patient.objects.create(
@@ -97,23 +93,24 @@ class WalletCommissionServiceTests(TestCase):
 class WalletAPIIsolationTests(TestCase):
     def setUp(self):
         UserModel = get_user_model()
+        self.zone = Zone.objects.create(code='wallet-api', name='Wallet API', sort_order=51)
         self.supreme = UserModel.objects.create_user(
-            username='api_w_supreme', password='x', role=User.ROLE_SUPER_FRANCHISEE,
+            username='api_w_supreme', password='x', role=User.ROLE_SUPER_FRANCHISEE, zone=self.zone,
         )
         self.prime = UserModel.objects.create_user(
             username='api_w_prime', password='x', role=User.ROLE_FRANCHISEE,
-            parent_franchisee=self.supreme,
+            parent_franchisee=self.supreme, zone=self.zone,
         )
         self.sub = UserModel.objects.create_user(
             username='api_w_sub', password='x', role=User.ROLE_SUB_FRANCHISE,
-            parent_franchisee=self.prime,
+            parent_franchisee=self.prime, zone=self.zone,
         )
-        FranchiseCommissionConfig.objects.create(
-            pk=1,
-            sub_franchise_pct=Decimal('5.00'),
-            franchisee_pct=Decimal('3.00'),
-            super_franchisee_pct=Decimal('2.00'),
-        )
+        config = FranchiseCommissionConfig.get_solo()
+        config.sub_franchise_pct = Decimal('5.00')
+        config.franchisee_pct = Decimal('3.00')
+        config.super_franchisee_pct = Decimal('2.00')
+        config.is_active = True
+        config.save()
         create_demo_transactions(actor=self.sub, base_amount=Decimal('1000'))
         self.client = APIClient()
 

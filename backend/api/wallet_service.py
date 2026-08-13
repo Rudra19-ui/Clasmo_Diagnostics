@@ -24,6 +24,12 @@ from .models import (
     User,
     WalletTransaction,
 )
+from .zone_rates import (
+    commission_pct_for_role,
+    get_zone_franchise_rate,
+    rates_are_active,
+    resolve_zone_for_rates,
+)
 
 
 class WalletError(Exception):
@@ -46,13 +52,8 @@ def get_or_create_wallet(user) -> FranchiseWallet:
 
 
 def rate_for_role(config: FranchiseCommissionConfig, role: str) -> Decimal:
-    if role == User.ROLE_SUB_FRANCHISE:
-        return _money(config.sub_franchise_pct)
-    if role == User.ROLE_FRANCHISEE:
-        return _money(config.franchisee_pct)
-    if role == User.ROLE_SUPER_FRANCHISEE:
-        return _money(config.super_franchisee_pct)
-    return Decimal('0.00')
+    """Legacy helper against the solo config (kept for older tests/callers)."""
+    return commission_pct_for_role(None, role, solo=config)
 
 
 def hierarchy_beneficiaries(actor) -> list[User]:
@@ -99,6 +100,7 @@ def apply_ledger_entry(
     beneficiary_role='',
     batch_key='',
     metadata=None,
+    allow_negative=False,
 ) -> WalletTransaction:
     amount = _money(amount)
     if amount <= 0:
@@ -111,7 +113,7 @@ def apply_ledger_entry(
         FranchiseWallet.objects.filter(pk=wallet.pk).update(balance=F('balance') + amount)
     elif direction == WalletTransaction.DIR_DEBIT:
         wallet.refresh_from_db(fields=['balance'])
-        if wallet.balance < amount:
+        if not allow_negative and wallet.balance < amount:
             raise WalletError('Insufficient wallet balance.', field='amount')
         FranchiseWallet.objects.filter(pk=wallet.pk).update(balance=F('balance') - amount)
     else:
@@ -159,9 +161,11 @@ def distribute_registration_commissions(registration: Registration, *, created_b
     if not actor or actor.role not in User.FRANCHISE_ROLES:
         return []
 
-    config = FranchiseCommissionConfig.get_solo()
-    if not config.is_active:
+    if not rates_are_active(registration=registration, actor=actor):
         return []
+
+    zone = resolve_zone_for_rates(registration=registration, actor=actor)
+    rate_row = get_zone_franchise_rate(zone) if zone else None
 
     base = _money(registration.net_amount)
     if base <= 0:
@@ -174,7 +178,12 @@ def distribute_registration_commissions(registration: Registration, *, created_b
     batch_key = f'reg-{registration.id}-{uuid.uuid4().hex[:8]}'
     created: list[WalletTransaction] = []
     for beneficiary in beneficiaries:
-        rate = rate_for_role(config, beneficiary.role)
+        rate = commission_pct_for_role(
+            rate_row,
+            beneficiary.role,
+            beneficiary=beneficiary,
+            zone=zone,
+        )
         if rate <= 0:
             continue
         credit = _money(base * rate / Decimal('100'))
@@ -187,7 +196,8 @@ def distribute_registration_commissions(registration: Registration, *, created_b
             txn_type=WalletTransaction.TYPE_COMMISSION,
             description=(
                 f'Commission {rate}% on registration {registration.lab_code} '
-                f'(base {base})'
+                f'(base {base}'
+                f'{f", zone {zone.name}" if zone else ""})'
             ),
             registration=registration,
             source_user=actor,
@@ -199,6 +209,8 @@ def distribute_registration_commissions(registration: Registration, *, created_b
             metadata={
                 'lab_code': registration.lab_code,
                 'source_role': actor.role,
+                'zone_id': zone.id if zone else None,
+                'zone_code': zone.code if zone else '',
             },
         )
         created.append(txn)
@@ -220,7 +232,11 @@ def create_demo_transactions(
     if not actor or actor.role not in User.FRANCHISE_ROLES:
         raise WalletError('Demo actor must be a franchise role user.', field='actor_id')
 
-    config = FranchiseCommissionConfig.get_solo()
+    if not rates_are_active(actor=actor):
+        raise WalletError('Franchise rates are inactive for this zone.', field='actor_id')
+
+    zone = resolve_zone_for_rates(actor=actor)
+    rate_row = get_zone_franchise_rate(zone) if zone else None
     base = _money(base_amount)
     if base <= 0:
         raise WalletError('base_amount must be greater than zero.', field='base_amount')
@@ -229,7 +245,12 @@ def create_demo_transactions(
     batch_key = f'demo-{uuid.uuid4().hex}'
     transactions: list[WalletTransaction] = []
     for beneficiary in beneficiaries:
-        rate = rate_for_role(config, beneficiary.role)
+        rate = commission_pct_for_role(
+            rate_row,
+            beneficiary.role,
+            beneficiary=beneficiary,
+            zone=zone,
+        )
         if rate <= 0:
             continue
         credit = _money(base * rate / Decimal('100'))
@@ -247,7 +268,12 @@ def create_demo_transactions(
             base_amount=base,
             beneficiary_role=beneficiary.role,
             batch_key=batch_key,
-            metadata={'demo': True, 'source_role': actor.role},
+            metadata={
+                'demo': True,
+                'source_role': actor.role,
+                'zone_id': zone.id if zone else None,
+                'zone_code': zone.code if zone else '',
+            },
         )
         transactions.append(txn)
 
@@ -263,3 +289,96 @@ def create_demo_transactions(
         'transactions': transactions,
         'wallets': wallets,
     }
+
+
+@transaction.atomic
+def debit_registration_charge(registration: Registration, *, created_by=None) -> WalletTransaction | None:
+    """Debit the booking actor's wallet for the registration net amount (may go negative)."""
+    if not registration:
+        return None
+
+    if WalletTransaction.objects.filter(
+        registration=registration,
+        txn_type=WalletTransaction.TYPE_DEBIT,
+    ).exists():
+        return WalletTransaction.objects.filter(
+            registration=registration,
+            txn_type=WalletTransaction.TYPE_DEBIT,
+        ).first()
+
+    actor = registration.created_by
+    if not actor or actor.role not in User.FRANCHISE_ROLES:
+        return None
+
+    amount = _money(registration.net_amount)
+    if amount <= 0:
+        return None
+
+    zone = resolve_zone_for_rates(registration=registration, actor=actor)
+    return apply_ledger_entry(
+        user=actor,
+        amount=amount,
+        direction=WalletTransaction.DIR_DEBIT,
+        txn_type=WalletTransaction.TYPE_DEBIT,
+        description=f'Booking charge for registration {registration.lab_code}',
+        registration=registration,
+        source_user=actor,
+        created_by=created_by or actor,
+        base_amount=amount,
+        batch_key=f'reg-debit-{registration.id}',
+        metadata={
+            'lab_code': registration.lab_code,
+            'zone_id': zone.id if zone else None,
+        },
+        allow_negative=True,
+    )
+
+
+@transaction.atomic
+def admin_top_up_wallet(*, user, amount, created_by, note='') -> WalletTransaction:
+    if user.role not in User.FRANCHISE_ROLES:
+        raise WalletError('Credits can only be added to franchise wallets.', field='user_id')
+    amount = _money(amount)
+    if amount <= 0:
+        raise WalletError('Amount must be greater than zero.', field='amount')
+    return apply_ledger_entry(
+        user=user,
+        amount=amount,
+        direction=WalletTransaction.DIR_CREDIT,
+        txn_type=WalletTransaction.TYPE_TOP_UP,
+        description=note or f'Manual credit top-up by {created_by.username}',
+        created_by=created_by,
+        metadata={'top_up': True, 'admin_id': created_by.id},
+    )
+
+
+def wallet_balance_for_user(user) -> Decimal:
+    if not user or user.role not in User.FRANCHISE_ROLES:
+        return Decimal('0.00')
+    wallet = get_or_create_wallet(user)
+    wallet.refresh_from_db(fields=['balance'])
+    return _money(wallet.balance)
+
+
+def can_release_report(registration: Registration) -> tuple[bool, str]:
+    """
+    Report release (verify/print) is blocked when the booking actor's wallet is negative.
+    Returns (allowed, reason).
+    """
+    actor = registration.created_by if registration else None
+    if not actor or actor.role not in User.FRANCHISE_ROLES:
+        return True, ''
+
+    balance = wallet_balance_for_user(actor)
+    if balance < 0:
+        return False, (
+            f'Report cannot be released. {actor.display_name or actor.username} '
+            f'has a negative wallet balance (₹{balance}). Please add credits first.'
+        )
+    return True, ''
+
+
+def assert_can_release_report(registration: Registration):
+    allowed, reason = can_release_report(registration)
+    if not allowed:
+        raise WalletError(reason, field='wallet_balance')

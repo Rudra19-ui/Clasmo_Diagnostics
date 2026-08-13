@@ -1,5 +1,6 @@
 export const ROLES = {
   USER: 'user',
+  SUPER_ADMIN: 'super_admin',
   ADMIN: 'admin',
   HR: 'hr',
   PATHOLOGIST: 'pathologist',
@@ -14,6 +15,7 @@ export const ALL_ROLES = Object.values(ROLES);
 
 export const ROLE_LABELS = {
   [ROLES.USER]: 'User',
+  [ROLES.SUPER_ADMIN]: 'Super Admin',
   [ROLES.ADMIN]: 'Admin',
   [ROLES.HR]: 'HR',
   [ROLES.PATHOLOGIST]: 'Pathologist',
@@ -25,6 +27,7 @@ export const ROLE_LABELS = {
 };
 
 export const SIGNUP_ROLE_OPTIONS = [
+  { value: ROLES.SUPER_ADMIN, label: 'Super Admin' },
   { value: ROLES.ADMIN, label: 'Admin' },
   { value: ROLES.HR, label: 'HR' },
   { value: ROLES.PATHOLOGIST, label: 'Pathologist' },
@@ -41,7 +44,9 @@ export const ROLE_OPTIONS = ALL_ROLES.map((value) => ({
   label: ROLE_LABELS[value],
 }));
 
-export const CLINICAL_ROLES = [ROLES.ADMIN, ROLES.TECHNICIAN, ROLES.PATHOLOGIST];
+export const CLINICAL_ROLES = [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.TECHNICIAN, ROLES.PATHOLOGIST];
+
+export const ADMIN_ROLES = [ROLES.SUPER_ADMIN, ROLES.ADMIN];
 
 export const FRANCHISE_ROLES = [
   ROLES.SUPER_FRANCHISEE,
@@ -49,10 +54,30 @@ export const FRANCHISE_ROLES = [
   ROLES.SUB_FRANCHISE,
 ];
 
+/** Roles blocked from patient booking / registration entry. */
+export const NO_PATIENT_ENTRY_ROLES = [
+  ROLES.PATHOLOGIST,
+  ROLES.TECHNICIAN,
+  ROLES.RECEPTIONIST,
+  ROLES.HR,
+  ROLES.USER,
+];
+
+/** Roles that can access patient booking / registration entry. */
+export const PATIENT_ENTRY_ROLES = [
+  ROLES.SUPER_ADMIN,
+  ROLES.ADMIN,
+  ...FRANCHISE_ROLES,
+];
+
+/** Admin + franchise — pricing, wallets, commissions. */
+export const PRICING_WALLET_ROLES = PATIENT_ENTRY_ROLES;
+
 export const PARENT_REQUIRED_ROLES = [ROLES.FRANCHISEE, ROLES.SUB_FRANCHISE];
 
 /** Roles allowed to open New User Sign Up and create accounts. */
 export const USER_CREATOR_ROLES = [
+  ROLES.SUPER_ADMIN,
   ROLES.ADMIN,
   ROLES.HR,
   ROLES.SUPER_FRANCHISEE,
@@ -60,6 +85,7 @@ export const USER_CREATOR_ROLES = [
 ];
 
 export const SAMPLE_SCAN_ROLES = [
+  ROLES.SUPER_ADMIN,
   ROLES.ADMIN,
   ROLES.TECHNICIAN,
   ROLES.PATHOLOGIST,
@@ -84,8 +110,11 @@ export function canCreateUserAccounts(user) {
 /** Signup role options the logged-in user is allowed to create. */
 export function getSignupRoleOptionsForUser(user) {
   if (!user) return [];
-  if (user.role === ROLES.ADMIN) {
+  if (user.role === ROLES.SUPER_ADMIN) {
     return SIGNUP_ROLE_OPTIONS;
+  }
+  if (user.role === ROLES.ADMIN) {
+    return SIGNUP_ROLE_OPTIONS.filter((option) => option.value !== ROLES.SUPER_ADMIN);
   }
   if (user.role === ROLES.SUPER_FRANCHISEE) {
     return SIGNUP_ROLE_OPTIONS.filter((option) => (
@@ -113,15 +142,15 @@ export function canScanSampleBarcode(user) {
 }
 
 export function canManageParameters(user) {
-  return user?.role === ROLES.ADMIN;
+  return hasRole(user, ADMIN_ROLES);
 }
 
 export function canEnterResults(user) {
-  return hasRole(user, [ROLES.ADMIN, ROLES.TECHNICIAN]);
+  return hasRole(user, [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.TECHNICIAN]);
 }
 
 export function canVerifyReports(user) {
-  return hasRole(user, [ROLES.ADMIN, ROLES.PATHOLOGIST]);
+  return hasRole(user, [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.PATHOLOGIST]);
 }
 
 export function flagClass(flag) {

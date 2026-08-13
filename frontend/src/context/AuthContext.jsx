@@ -25,7 +25,8 @@ export function AuthProvider({ children }) {
   const value = useMemo(() => ({
     user,
     loading,
-    isAdmin: user?.role === 'admin',
+    isAdmin: user?.role === 'admin' || user?.role === 'super_admin',
+    isSuperAdmin: user?.role === 'super_admin',
     async login(username, password, options = {}) {
       const data = await api.login(username, password, options);
       localStorage.setItem('clasmo_token', data.token);

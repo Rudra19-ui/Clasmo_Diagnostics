@@ -1,4 +1,4 @@
-import { ROLES } from './roles';
+import { ROLES, NO_PATIENT_ENTRY_ROLES } from './roles';
 
 export const NAV = [
   { id: 'dashboard', label: 'Dashboard', href: '/dashboard' },
@@ -6,31 +6,31 @@ export const NAV = [
     id: 'search',
     label: 'Search',
     href: '/search',
-    excludeRoles: [ROLES.PATHOLOGIST],
+    excludeRoles: NO_PATIENT_ENTRY_ROLES,
   },
   {
     id: 'registration',
     label: 'Test Registration',
     href: '/registration',
-    excludeRoles: [ROLES.PATHOLOGIST],
+    excludeRoles: NO_PATIENT_ENTRY_ROLES,
   },
   {
     id: 'barcode-link',
     label: 'Link Barcode',
     href: '/barcode-link',
-    excludeRoles: [ROLES.PATHOLOGIST],
+    excludeRoles: NO_PATIENT_ENTRY_ROLES,
   },
   {
     id: 'sample-scan',
     label: 'Sample Scan',
     href: '/sample-scan',
-    roles: [ROLES.ADMIN, ROLES.TECHNICIAN, ROLES.PATHOLOGIST, ROLES.RECEPTIONIST],
+    roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.TECHNICIAN, ROLES.PATHOLOGIST, ROLES.RECEPTIONIST],
   },
   {
     id: 'test-result',
     label: 'Test Result',
     href: '/test-result',
-    excludeRoles: [ROLES.PATHOLOGIST],
+    excludeRoles: NO_PATIENT_ENTRY_ROLES,
   },
   {
     id: 'test-portfolio',
@@ -54,13 +54,13 @@ export const NAV = [
     id: 'user-signup',
     label: 'New User Sign Up',
     href: '/user-signup',
-    roles: [ROLES.ADMIN, ROLES.HR, ROLES.SUPER_FRANCHISEE, ROLES.FRANCHISEE],
+    roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.HR, ROLES.SUPER_FRANCHISEE, ROLES.FRANCHISEE],
   },
   {
     id: 'reports',
     label: 'Reports',
     href: '/reports',
-    excludeRoles: [ROLES.PATHOLOGIST],
+    excludeRoles: NO_PATIENT_ENTRY_ROLES,
     children: [
       { label: 'Daily Summary', href: '/reports#daily' },
       { label: 'Collection Report', href: '/reports#collection' },
@@ -103,14 +103,14 @@ export const STANDARD_NAV = [
     label: 'Search',
     href: '/search',
     icon: 'search',
-    excludeRoles: [ROLES.PATHOLOGIST],
+    excludeRoles: NO_PATIENT_ENTRY_ROLES,
   },
   {
     id: 'sample-scan',
     label: 'Sample Scan',
     href: '/sample-scan',
     icon: 'chip',
-    roles: [ROLES.ADMIN, ROLES.TECHNICIAN, ROLES.PATHOLOGIST, ROLES.RECEPTIONIST],
+    roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.TECHNICIAN, ROLES.PATHOLOGIST, ROLES.RECEPTIONIST],
   },
   {
     section: 'REGISTRATION',
@@ -120,21 +120,21 @@ export const STANDARD_NAV = [
         label: 'Test Registration',
         href: '/registration',
         icon: 'registration',
-        excludeRoles: [ROLES.PATHOLOGIST],
+        excludeRoles: NO_PATIENT_ENTRY_ROLES,
       },
       {
         id: 'barcode-link',
         label: 'Link Barcode',
         href: '/barcode-link',
         icon: 'chip',
-        excludeRoles: [ROLES.PATHOLOGIST],
+        excludeRoles: NO_PATIENT_ENTRY_ROLES,
       },
       {
         id: 'test-result',
         label: 'Test Result',
         href: '/test-result',
         icon: 'test-result',
-        excludeRoles: [ROLES.PATHOLOGIST],
+        excludeRoles: NO_PATIENT_ENTRY_ROLES,
       },
     ],
   },
@@ -163,7 +163,7 @@ export const STANDARD_NAV = [
         label: 'Reports',
         href: '/reports',
         icon: 'reports',
-        excludeRoles: [ROLES.PATHOLOGIST],
+        excludeRoles: NO_PATIENT_ENTRY_ROLES,
         children: [
           { label: 'Daily Summary', href: '/reports#daily' },
           { label: 'Collection Report', href: '/reports#collection' },
@@ -195,6 +195,39 @@ export const STANDARD_NAV = [
     ],
   },
   {
+    section: 'FRANCHISE',
+    items: [
+      {
+        id: 'list-franchisee',
+        label: 'List Franchisee',
+        href: '/admin/list-franchisee',
+        icon: 'franchise',
+        roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
+      },
+      {
+        id: 'add-franchisee',
+        label: 'Add Franchisee',
+        href: '/admin/add-franchisee',
+        icon: 'user-signup',
+        roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
+      },
+      {
+        id: 'franchise-bulk-pricing',
+        label: 'Franchise Pricing',
+        href: '/admin/franchise-bulk-pricing',
+        icon: 'payment',
+        roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
+      },
+      {
+        id: 'franchise-transfer-pricing',
+        label: 'Transfer Price',
+        href: '/admin/franchise-transfer-pricing',
+        icon: 'layers',
+        roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
+      },
+    ],
+  },
+  {
     section: 'ADMINISTRATION',
     items: [
       {
@@ -209,7 +242,7 @@ export const STANDARD_NAV = [
         label: 'New User Sign Up',
         href: '/user-signup',
         icon: 'user-signup',
-        roles: [ROLES.ADMIN, ROLES.HR, ROLES.SUPER_FRANCHISEE, ROLES.FRANCHISEE],
+        roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.HR, ROLES.SUPER_FRANCHISEE, ROLES.FRANCHISEE],
       },
     ],
   },

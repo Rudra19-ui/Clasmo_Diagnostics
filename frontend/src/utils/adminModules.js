@@ -43,6 +43,7 @@ export const ADMIN_COLUMNS = [
       { slug: 'lab-accounting', label: 'Lab Accounting', desc: 'Revenue and expense summaries.' },
       { slug: 'billing', label: 'Billing', desc: 'Billing and invoices.' },
       { slug: 'rate-master', label: 'Rate Master', desc: 'Test pricing and MRP.' },
+      { slug: 'franchise-pricing-credits', label: 'Franchise Pricing & Credits', desc: 'Zone pricing, commission rates, and wallet credits.' },
     ],
   },
   {

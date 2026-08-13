@@ -18,6 +18,11 @@ import LabConfiguration from './pages/admin/LabConfiguration';
 import ServicesInArea from './pages/admin/ServicesInArea';
 import CreateActivity from './pages/admin/CreateActivity';
 import Activities from './pages/admin/Activities';
+import FranchisePricingCredits from './pages/admin/FranchisePricingCredits';
+import FranchiseSupremeList from './pages/admin/FranchiseSupremeList';
+import FranchiseAddSignUp from './pages/admin/FranchiseAddSignUp';
+import FranchiseBulkPricing from './pages/admin/FranchiseBulkPricing';
+import FranchiseTransferPricing from './pages/admin/FranchiseTransferPricing';
 import EnquireBox from './pages/EnquireBox';
 import UserSignUp from './pages/UserSignUp';
 import SelfPatientQuery from './pages/SelfPatientQuery';
@@ -46,7 +51,7 @@ import DeviceStub from './pages/device/DeviceStub';
 import TestResultBatch from './pages/device/TestResultBatch';
 import ResponsiveProvider from './components/ResponsiveProvider';
 import { NavProvider } from './context/NavContext';
-import { ROLES, ALL_ROLES, SAMPLE_SCAN_ROLES, USER_CREATOR_ROLES, FRANCHISE_ROLES } from './utils/roles';
+import { ROLES, ALL_ROLES, SAMPLE_SCAN_ROLES, USER_CREATOR_ROLES, FRANCHISE_ROLES, PATIENT_ENTRY_ROLES, PRICING_WALLET_ROLES, ADMIN_ROLES } from './utils/roles';
 import MessageToLab from './pages/device/MessageToLab';
 import PickupRequest from './pages/device/PickupRequest';
 import TestList from './pages/portfolio/TestList';
@@ -64,6 +69,7 @@ import TestCancellation from './pages/franchise/TestCancellation';
 import MakeBill from './pages/franchise/MakeBill';
 import BillingList from './pages/franchise/BillingList';
 import TrackLedger from './pages/franchise/TrackLedger';
+import DownstreamPricing from './pages/franchise/DownstreamPricing';
 import Analytics from './pages/franchise/Analytics';
 
 const FRANCHISE_PAGES = [
@@ -74,7 +80,6 @@ const FRANCHISE_PAGES = [
   { path: 'payment-history', title: 'Payment History', activePage: 'payment-history', description: 'Historical payment records.' },
   { path: 'my-staff', title: 'My Staff', activePage: 'my-staff', description: 'Staff accounts under this franchise.' },
   { path: 'sub-franchisee', title: 'Sub Franchisee', activePage: 'sub-franchisee', description: 'Manage sub-franchisee accounts.' },
-  { path: 'sub-franchisee-pricing', title: 'SubFranchisee Pricing', activePage: 'sub-franchisee-pricing', description: 'Pricing for sub-franchisees.' },
   { path: 'sub-franchisee-credits', title: 'SubFranchisee Credits', activePage: 'sub-franchisee-credits', description: 'Credits allocated to sub-franchisees.' },
   { path: 'update-profile', title: 'Update Profile', activePage: 'update-profile', description: 'Update franchise profile details.' },
 ];
@@ -90,10 +95,10 @@ export default function App() {
           <Route path="/test-quorum" element={<TestQuorum />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/search" element={<ProtectedRoute><Search /></ProtectedRoute>} />
+          <Route path="/search" element={<ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}><Search /></ProtectedRoute>} />
           <Route path="/open" element={<ProtectedRoute><OpenBarcode /></ProtectedRoute>} />
           <Route path="/barcode-print" element={<ProtectedRoute><BarcodePrinting /></ProtectedRoute>} />
-          <Route path="/barcode-link" element={<ProtectedRoute><BarcodeLink /></ProtectedRoute>} />
+          <Route path="/barcode-link" element={<ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}><BarcodeLink /></ProtectedRoute>} />
           <Route
             path="/sample-scan"
             element={(
@@ -102,10 +107,10 @@ export default function App() {
               </ProtectedRoute>
             )}
           />
-          <Route path="/bill-receipt" element={<ProtectedRoute><BillReceipt /></ProtectedRoute>} />
+          <Route path="/bill-receipt" element={<ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}><BillReceipt /></ProtectedRoute>} />
           <Route path="/test-result-entry" element={<ProtectedRoute><TestResultEntry /></ProtectedRoute>} />
-          <Route path="/registration" element={<ProtectedRoute><Registration /></ProtectedRoute>} />
-          <Route path="/test-result" element={<ProtectedRoute><TestResult /></ProtectedRoute>} />
+          <Route path="/registration" element={<ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}><Registration /></ProtectedRoute>} />
+          <Route path="/test-result" element={<ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}><TestResult /></ProtectedRoute>} />
           <Route path="/portfolio/test-list" element={<ProtectedRoute><TestList /></ProtectedRoute>} />
           <Route path="/portfolio/test-profile" element={<ProtectedRoute><TestProfile /></ProtectedRoute>} />
           <Route path="/portfolio/sample-report" element={<ProtectedRoute><SampleReport /></ProtectedRoute>} />
@@ -130,8 +135,13 @@ export default function App() {
           <Route path="/admin/services-in-area" element={<ProtectedRoute allowedRoles={ALL_ROLES}><ServicesInArea /></ProtectedRoute>} />
           <Route path="/admin/create-activity" element={<ProtectedRoute allowedRoles={ALL_ROLES}><CreateActivity /></ProtectedRoute>} />
           <Route path="/admin/activities" element={<ProtectedRoute allowedRoles={ALL_ROLES}><Activities /></ProtectedRoute>} />
+          <Route path="/admin/franchise-pricing-credits" element={<ProtectedRoute allowedRoles={PRICING_WALLET_ROLES}><FranchisePricingCredits /></ProtectedRoute>} />
+          <Route path="/admin/list-franchisee" element={<ProtectedRoute allowedRoles={ADMIN_ROLES}><FranchiseSupremeList /></ProtectedRoute>} />
+          <Route path="/admin/add-franchisee" element={<ProtectedRoute allowedRoles={ADMIN_ROLES}><FranchiseAddSignUp /></ProtectedRoute>} />
+          <Route path="/admin/franchise-bulk-pricing" element={<ProtectedRoute allowedRoles={ADMIN_ROLES}><FranchiseBulkPricing /></ProtectedRoute>} />
+          <Route path="/admin/franchise-transfer-pricing" element={<ProtectedRoute allowedRoles={ADMIN_ROLES}><FranchiseTransferPricing /></ProtectedRoute>} />
           {getAllAdminModules()
-            .filter((module) => !['change-password', 'role-management', 'membership', 'collection-center-boy', 'discount-reason', 'discount-authority', 'whatsapp-logger', 'expense-type', 'collection-center-management', 'doctor-management', 'patient-management', 'lab-configuration', 'services-in-area', 'create-activity', 'activities'].includes(module.slug))
+            .filter((module) => !['change-password', 'role-management', 'membership', 'collection-center-boy', 'discount-reason', 'discount-authority', 'whatsapp-logger', 'expense-type', 'collection-center-management', 'doctor-management', 'patient-management', 'lab-configuration', 'services-in-area', 'create-activity', 'activities', 'franchise-pricing-credits'].includes(module.slug))
             .map((module) => (
             <Route
               key={module.slug}
@@ -143,11 +153,11 @@ export default function App() {
               )}
             />
           ))}
-          <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
+          <Route path="/reports" element={<ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}><Reports /></ProtectedRoute>} />
           <Route path="/elab-pay" element={<ProtectedRoute><ElabPay /></ProtectedRoute>} />
           <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
-          <Route path="/clinical/test-parameters" element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]}><TestParameterMaster /></ProtectedRoute>} />
-          <Route path="/clinical/result-entry" element={<ProtectedRoute allowedRoles={[ROLES.ADMIN, ROLES.TECHNICIAN]}><ResultEntry /></ProtectedRoute>} />
+          <Route path="/clinical/test-parameters" element={<ProtectedRoute allowedRoles={ADMIN_ROLES}><TestParameterMaster /></ProtectedRoute>} />
+          <Route path="/clinical/result-entry" element={<ProtectedRoute allowedRoles={[ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.TECHNICIAN]}><ResultEntry /></ProtectedRoute>} />
           <Route path="/clinical/report-preview" element={<ProtectedRoute><ReportPreview /></ProtectedRoute>} />
           <Route path="/device/pickup-request" element={<ProtectedRoute><PickupRequest /></ProtectedRoute>} />
           <Route path="/device/patient-appointment" element={<ProtectedRoute><DeviceStub title="Patient Appointment" description="Schedule home visits and appointments." /></ProtectedRoute>} />
@@ -261,6 +271,30 @@ export default function App() {
             element={(
               <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
                 <TrackLedger />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/franchise/pricing-credits"
+            element={(
+              <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
+                <FranchisePricingCredits franchiseMode />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/franchise/franchisee-pricing"
+            element={(
+              <ProtectedRoute allowedRoles={[ROLES.SUPER_FRANCHISEE]}>
+                <DownstreamPricing forcedRole={ROLES.SUPER_FRANCHISEE} />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/franchise/sub-franchisee-pricing"
+            element={(
+              <ProtectedRoute allowedRoles={[ROLES.FRANCHISEE]}>
+                <DownstreamPricing forcedRole={ROLES.FRANCHISEE} />
               </ProtectedRoute>
             )}
           />

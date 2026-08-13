@@ -40,7 +40,28 @@ function isItemActive(item, location, activePage) {
     return location.pathname.startsWith('/franchise/manage-reports');
   }
   if (item.id === 'administration') {
+    const franchiseMainPaths = [
+      '/admin/list-franchisee',
+      '/admin/add-franchisee',
+      '/admin/franchise-bulk-pricing',
+      '/admin/franchise-transfer-pricing',
+    ];
+    if (franchiseMainPaths.some((path) => location.pathname === path || location.pathname.startsWith(`${path}/`))) {
+      return false;
+    }
     return location.pathname.startsWith('/administration') || location.pathname.startsWith('/admin/');
+  }
+  if (item.id === 'list-franchisee') {
+    return location.pathname.startsWith('/admin/list-franchisee');
+  }
+  if (item.id === 'add-franchisee') {
+    return location.pathname.startsWith('/admin/add-franchisee');
+  }
+  if (item.id === 'franchise-bulk-pricing') {
+    return location.pathname.startsWith('/admin/franchise-bulk-pricing');
+  }
+  if (item.id === 'franchise-transfer-pricing') {
+    return location.pathname.startsWith('/admin/franchise-transfer-pricing');
   }
   if (item.id === 'test-portfolio') {
     return location.pathname.startsWith('/portfolio/');

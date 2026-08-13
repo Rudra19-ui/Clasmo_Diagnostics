@@ -19,7 +19,9 @@ export default function ProtectedRoute({ children, adminOnly = false, allowedRol
     const next = encodeURIComponent(`${location.pathname}${location.search}${location.hash}`);
     return <Navigate to={`/login?next=${next}`} replace />;
   }
-  if (adminOnly && user.role !== 'admin') return <Navigate to={homeForUser(user)} replace />;
+  if (adminOnly && user.role !== 'admin' && user.role !== 'super_admin') {
+    return <Navigate to={homeForUser(user)} replace />;
+  }
   if (allowedRoles?.length && !allowedRoles.includes(user.role)) {
     return <Navigate to={homeForUser(user)} replace />;
   }

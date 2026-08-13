@@ -5526,6 +5526,20 @@ input, select, textarea, button {
   line-height: 1.45;
 }
 
+.clinical-history-comment-cell {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.clinical-history-detail {
+  display: grid;
+  gap: 10px;
+  padding: 8px 4px;
+  color: #334155;
+}
+
 .test-cancel-list {
   list-style: none;
   margin: 0 0 14px;

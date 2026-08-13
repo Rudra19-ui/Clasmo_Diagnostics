@@ -1,73 +1,32 @@
-import { useCallback, useEffect, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Fragment, useCallback, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Layout from '../../components/Layout';
 import { api } from '../../services/api';
-import { resolveFranchiseBooking } from './resolveBooking';
 
 export default function ClinicalHistory() {
-  const [searchParams] = useSearchParams();
-  const [barcode, setBarcode] = useState('');
-  const [bookId, setBookId] = useState(searchParams.get('bookId') || '');
-  const [searching, setSearching] = useState(false);
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [registration, setRegistration] = useState(null);
-  const [accessGranted, setAccessGranted] = useState(false);
-  const [workflow, setWorkflow] = useState(null);
-  const [report, setReport] = useState(null);
-  const [loadingHistory, setLoadingHistory] = useState(false);
+  const [expandedId, setExpandedId] = useState(null);
 
-  const runSearch = useCallback(async (overrides = {}) => {
-    setSearching(true);
-    setError('');
-    setRegistration(null);
-    setAccessGranted(false);
-    setWorkflow(null);
-    setReport(null);
-    try {
-      const detail = await resolveFranchiseBooking({
-        barcode: overrides.barcode ?? barcode,
-        bookId: overrides.bookId ?? bookId,
-      });
-      setRegistration(detail);
-      setBookId(detail.lab_code || bookId);
-    } catch (err) {
-      setError(err.message || 'Search failed.');
-    } finally {
-      setSearching(false);
-    }
-  }, [barcode, bookId]);
-
-  useEffect(() => {
-    const preset = searchParams.get('bookId');
-    if (preset) {
-      runSearch({ bookId: preset, barcode: '' });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const unlockHistory = async () => {
-    if (!registration?.id && !registration?.lab_code) return;
-    setAccessGranted(true);
-    setLoadingHistory(true);
+  const load = useCallback(async () => {
+    setLoading(true);
     setError('');
     try {
-      const [detail, flow, clinical] = await Promise.all([
-        api.getRegistration(registration.lab_code),
-        api.getWorkflowHistory(registration.id).catch(() => null),
-        api.getReport(registration.id).catch(() => null),
-      ]);
-      setRegistration(detail);
-      setWorkflow(flow);
-      setReport(clinical);
+      const data = await api.searchRegistrations({});
+      setRows(Array.isArray(data) ? data : []);
     } catch (err) {
       setError(err.message || 'Could not load clinical history.');
+      setRows([]);
     } finally {
-      setLoadingHistory(false);
+      setLoading(false);
     }
-  };
+  }, []);
 
-  const patient = registration?.patient;
+  useEffect(() => {
+    load();
+  }, [load]);
 
   return (
     <Layout activePage="clinical-history">
@@ -82,137 +41,125 @@ export default function ClinicalHistory() {
           </nav>
           <h2 className="page-heading">Clinical History</h2>
           <p className="portfolio-intro">
-            Search by barcode or Book ID. Access opens only after you click Barcode or Book ID.
+            Comments and uploaded PDFs from New Entry for all bookings in your scope.
           </p>
         </header>
 
-        <section className="franchise-module-panel">
-          <form
-            className="franchise-search-reports-form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              runSearch();
-            }}
-          >
-            <label>
-              <span>Barcode</span>
-              <input
-                type="text"
-                value={barcode}
-                onChange={(e) => setBarcode(e.target.value)}
-                placeholder="Sample barcode"
-              />
-            </label>
-            <label>
-              <span>Book ID / Lab Code</span>
-              <input
-                type="text"
-                value={bookId}
-                onChange={(e) => setBookId(e.target.value)}
-                placeholder="Lab / Book ID"
-              />
-            </label>
-            <div className="franchise-search-reports-actions">
-              <button type="submit" className="btn-primary" disabled={searching}>
-                {searching ? 'Searching…' : 'Search'}
-              </button>
-            </div>
-          </form>
-        </section>
-
         {error && <p className="login-error" role="alert">{error}</p>}
 
-        {registration && !accessGranted && (
-          <section className="franchise-module-panel">
-            <p className="portfolio-intro" style={{ marginBottom: 12 }}>
-              Click <strong>Barcode</strong> or <strong>Book ID</strong> below to unlock clinical history access.
-            </p>
-            <div className="clinical-history-gate">
-              <button type="button" className="clinical-history-key" onClick={unlockHistory}>
-                <span>Barcode</span>
-                <strong>{barcode || registration.lab_code || '—'}</strong>
-              </button>
-              <button type="button" className="clinical-history-key" onClick={unlockHistory}>
-                <span>Book ID</span>
-                <strong>{registration.lab_code}</strong>
-              </button>
+        <section className="franchise-module-panel">
+          <div className="franchise-search-reports-actions" style={{ marginBottom: 12 }}>
+            <button type="button" className="btn-secondary" onClick={load} disabled={loading}>
+              {loading ? 'Loading…' : 'Refresh'}
+            </button>
+          </div>
+
+          {loading && !rows.length ? (
+            <p>Loading clinical history…</p>
+          ) : rows.length === 0 ? (
+            <p>No bookings found.</p>
+          ) : (
+            <div className="admin-table-wrap">
+              <table className="admin-data-table">
+                <thead>
+                  <tr>
+                    <th>Book ID</th>
+                    <th>Patient</th>
+                    <th>Mobile</th>
+                    <th>Comment</th>
+                    <th>PDF</th>
+                    <th>Tests</th>
+                    <th>Status</th>
+                    <th />
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((row) => {
+                    const patient = row.patient || {};
+                    const isOpen = expandedId === row.id;
+                    const comment = (row.comment || '').trim();
+                    const tests = row.tests_list || row.test_names || '';
+                    return (
+                      <Fragment key={row.id}>
+                        <tr>
+                          <td>{row.lab_code}</td>
+                          <td>{row.patient_name || patient.patient_name || '—'}</td>
+                          <td>{patient.mobile || '—'}</td>
+                          <td className="clinical-history-comment-cell">
+                            {comment || '—'}
+                          </td>
+                          <td>
+                            {row.clinical_pdf_url ? (
+                              <a
+                                href={row.clinical_pdf_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                View PDF
+                                {row.clinical_pdf_name ? ` (${row.clinical_pdf_name})` : ''}
+                              </a>
+                            ) : (
+                              '—'
+                            )}
+                          </td>
+                          <td>{Array.isArray(tests) ? tests.join(', ') : tests || '—'}</td>
+                          <td>{row.status || '—'}</td>
+                          <td>
+                            <button
+                              type="button"
+                              className="btn-secondary"
+                              onClick={() => setExpandedId(isOpen ? null : row.id)}
+                            >
+                              {isOpen ? 'Hide' : 'Details'}
+                            </button>
+                          </td>
+                        </tr>
+                        {isOpen && (
+                          <tr className="clinical-history-detail-row">
+                            <td colSpan={8}>
+                              <div className="clinical-history-detail">
+                                <div>
+                                  <strong>Doctor:</strong> {patient.doctor_name || '—'}
+                                </div>
+                                <div>
+                                  <strong>Age / Gender:</strong>{' '}
+                                  {patient.age_years ?? '—'} / {patient.gender || '—'}
+                                </div>
+                                <div>
+                                  <strong>Full comment:</strong>
+                                  <p className="clinical-history-comment">
+                                    {comment || 'No comment entered.'}
+                                  </p>
+                                </div>
+                                {row.clinical_pdf_url && (
+                                  <div>
+                                    <a
+                                      className="btn-primary"
+                                      href={row.clinical_pdf_url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      Open PDF
+                                    </a>
+                                  </div>
+                                )}
+                                <div>
+                                  <Link to={`/clinical/report-preview?id=${row.id}`}>
+                                    Open clinical report →
+                                  </Link>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </Fragment>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
-          </section>
-        )}
-
-        {registration && accessGranted && (
-          <section className="franchise-module-panel">
-            <div className="test-addition-summary">
-              <div><span>Book ID</span><strong>{registration.lab_code}</strong></div>
-              <div><span>Patient</span><strong>{patient?.patient_name || registration.patient_name}</strong></div>
-              <div><span>Age / Gender</span>
-                <strong>
-                  {patient?.age_years ?? '—'} / {patient?.gender || '—'}
-                </strong>
-              </div>
-              <div><span>Doctor</span><strong>{patient?.doctor_name || '—'}</strong></div>
-              <div><span>Status</span><strong>{registration.status}</strong></div>
-              <div><span>Mobile</span><strong>{patient?.mobile || '—'}</strong></div>
-            </div>
-
-            {loadingHistory && <p>Loading clinical history…</p>}
-
-            <h3 className="test-addition-subtitle">Comment</h3>
-            <p className="clinical-history-comment">
-              {(registration.comment || '').trim() || 'No comment entered.'}
-            </p>
-
-            <h3 className="test-addition-subtitle">Uploaded PDF</h3>
-            {registration.clinical_pdf_url ? (
-              <p>
-                <a
-                  className="btn-primary"
-                  href={registration.clinical_pdf_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  View PDF
-                  {registration.clinical_pdf_name ? ` (${registration.clinical_pdf_name})` : ''}
-                </a>
-              </p>
-            ) : (
-              <p>No PDF uploaded for this booking.</p>
-            )}
-
-            <h3 className="test-addition-subtitle">Ordered tests</h3>
-            <ul className="test-addition-current-list">
-              {(registration.tests || []).map((row) => (
-                <li key={row.id}>
-                  {row.test_name || (typeof row.test === 'object' ? row.test?.name : null) || 'Test'}
-                </li>
-              ))}
-              {(registration.tests || []).length === 0 && <li>No tests listed.</li>}
-            </ul>
-
-            <h3 className="test-addition-subtitle">Workflow</h3>
-            <ul className="test-addition-current-list">
-              {(workflow?.events || []).map((event, index) => (
-                <li key={`${event.action_taken}-${index}`}>
-                  {event.action_taken}
-                  {event.action_on ? ` — ${new Date(event.action_on).toLocaleString()}` : ''}
-                  {event.action_by ? ` (${event.action_by})` : ''}
-                </li>
-              ))}
-              {!loadingHistory && !(workflow?.events || []).length && <li>No workflow events yet.</li>}
-            </ul>
-
-            <h3 className="test-addition-subtitle">Clinical report</h3>
-            {report?.status ? (
-              <p>
-                Status: <strong>{report.status}</strong>
-                {' · '}
-                <Link to={`/clinical/report-preview?id=${registration.id}`}>Open full report</Link>
-              </p>
-            ) : (
-              <p>No clinical report entered yet.</p>
-            )}
-          </section>
-        )}
+          )}
+        </section>
       </main>
       <Footer />
     </Layout>

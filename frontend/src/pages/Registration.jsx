@@ -151,14 +151,6 @@ export default function Registration({
     api.getDiscountAuthorities({ is_active: true }).then(setDiscountAuthorities).catch(console.error);
   }, [refreshNextPatientId, loadTests]);
 
-  useEffect(() => {
-    const onVisible = () => {
-      if (document.visibilityState === 'visible') loadTests();
-    };
-    document.addEventListener('visibilitychange', onVisible);
-    return () => document.removeEventListener('visibilitychange', onVisible);
-  }, [loadTests]);
-
   const filteredAvailable = useMemo(() => {
     const q = testSearch.toLowerCase();
     const chosenIds = new Set(selected.map((s) => s.id));

@@ -234,8 +234,8 @@ export default function SampleRejection() {
           ) : rows.length === 0 ? (
             <p>No rejections in your scope.</p>
           ) : (
-            <div className="admin-table-wrap">
-              <table className="admin-data-table">
+            <div className="table-wrap rejection-table-wrap">
+              <table className="data-table rejection-table">
                 <thead>
                   <tr>
                     <th>Book ID</th>

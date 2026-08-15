@@ -59,8 +59,8 @@ export default function ClinicalHistory() {
           ) : rows.length === 0 ? (
             <p>No bookings found.</p>
           ) : (
-            <div className="admin-table-wrap">
-              <table className="admin-data-table">
+            <div className="table-wrap">
+              <table className="data-table">
                 <thead>
                   <tr>
                     <th>Book ID</th>

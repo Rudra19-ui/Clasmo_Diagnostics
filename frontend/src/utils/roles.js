@@ -85,7 +85,7 @@ export const HOLD_ACCESS_ROLES = [
   ...FRANCHISE_ROLES,
 ];
 
-/** Lab staff roles — hold list in main dashboard nav. */
+/** Lab staff who place holds by barcode / QR (list + create). */
 export const HOLD_STAFF_ROLES = [
   ROLES.SUPER_ADMIN,
   ROLES.ADMIN,
@@ -104,6 +104,7 @@ export const REJECTION_STAFF_ROLES = [
   ROLES.PATHOLOGIST,
   ROLES.TECHNICIAN,
   ROLES.RECEPTIONIST,
+  ROLES.USER,
 ];
 
 export const PARENT_REQUIRED_ROLES = [ROLES.FRANCHISEE, ROLES.SUB_FRANCHISE];

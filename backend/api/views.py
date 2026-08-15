@@ -22,7 +22,9 @@ from .clinical_permissions import (
     CanAccessPatientEntry,
     CanAccessPricingWallet,
     CanAccessRejections,
-    CanRejectSamples,
+    CanPlaceHolds,
+    HOLD_STAFF_ROLES,
+    REJECTION_STAFF_ROLES,
 )
 from .franchise_scope import (
     get_registration_for_user,
@@ -35,6 +37,8 @@ from .franchise_scope import (
     scope_users_for_user,
     scope_zone_queryset,
     user_can_access_registration,
+    user_has_global_data_access,
+    user_zone_id,
     visible_creator_ids,
 )
 from .models import (
@@ -352,7 +356,14 @@ class TestListView(generics.ListAPIView):
             rate_row = get_zone_franchise_rate(zone) if zone else None
 
         rows = []
-        queryset = self.filter_queryset(self.get_queryset()).select_related('category')
+        queryset = (
+            self.filter_queryset(self.get_queryset())
+            .select_related('category')
+            .only(
+                'id', 'name', 'short_name', 'test_code', 'mrp', 'price',
+                'sample_type', 'tat', 'volume_ml', 'category_id',
+            )
+        )
         for test in queryset:
             price = effective_test_price_for_test(
                 test=test,
@@ -1771,22 +1782,33 @@ class RegistrationCancelTestsView(APIView):
 
 
 def _scope_holds_for_user(user, qs=None):
+    """
+    Holds are visible only to the franchise/user that initiated the entry,
+    or to lab staff in the same zone (work log).
+    """
     qs = qs if qs is not None else RegistrationTestHold.objects.all()
     qs = scope_zone_queryset(user, qs, zone_field='zone_id')
     if is_franchise_actor(user):
         creator_ids = visible_creator_ids(user)
-        if creator_ids is not None:
-            qs = qs.filter(
-                Q(held_by_id__in=creator_ids)
-                | Q(registration__created_by_id__in=creator_ids)
-            )
-    return qs
+        if creator_ids is None:
+            return qs
+        return qs.filter(registration__created_by_id__in=creator_ids)
+    if getattr(user, 'role', None) in HOLD_STAFF_ROLES:
+        return qs
+    return qs.filter(
+        Q(held_by_id=user.id) | Q(registration__created_by_id=user.id)
+    )
 
 
 class RegistrationTestHoldListCreateView(APIView):
-    """List active holds (staff + franchise) and place holds (franchise / staff)."""
+    """List scoped holds; staff POST to hold tests by barcode / QR / lab code."""
 
     permission_classes = [permissions.IsAuthenticated, CanAccessHolds]
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [permissions.IsAuthenticated(), CanPlaceHolds()]
+        return [permissions.IsAuthenticated(), CanAccessHolds()]
 
     def get(self, request):
         qs = (
@@ -1794,6 +1816,7 @@ class RegistrationTestHoldListCreateView(APIView):
             .filter(is_active=True)
             .select_related(
                 'registration__patient',
+                'registration__created_by',
                 'registration_test__test',
                 'held_by',
                 'zone',
@@ -1814,17 +1837,33 @@ class RegistrationTestHoldListCreateView(APIView):
     def post(self, request):
         serializer = HoldCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        lab_code = serializer.validated_data['lab_code']
-        row_ids = serializer.validated_data['registration_test_ids']
+        barcode = serializer.validated_data.get('barcode') or ''
+        lab_code = serializer.validated_data.get('lab_code') or ''
+        row_ids = serializer.validated_data.get('registration_test_ids') or []
         reason = (serializer.validated_data.get('reason') or '').strip()
 
-        registration = get_registration_for_user(request.user, lab_code=lab_code)
-        if not registration:
-            return Response({'detail': 'Registration not found.'}, status=status.HTTP_404_NOT_FOUND)
+        if not str(barcode).strip() and not str(lab_code).strip():
+            return Response(
+                {'detail': 'Scan or enter a barcode / QR number (or lab code).'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        rows = list(
-            registration.tests.filter(id__in=row_ids).select_related('test')
+        registration, _resolved_barcode = _resolve_registration_for_rejection(
+            request.user, barcode=barcode, lab_code=lab_code,
         )
+        if not registration:
+            return Response(
+                {'detail': 'No patient entry found for that barcode or QR number.'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        tests_qs = registration.tests.select_related('test')
+        if not row_ids:
+            return Response(
+                {'detail': 'Select at least one test to hold.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        rows = list(tests_qs.filter(id__in=row_ids))
         if not rows:
             return Response(
                 {'detail': 'No matching tests found on this registration.'},
@@ -1879,7 +1918,12 @@ class RegistrationTestHoldReleaseView(APIView):
         hold = (
             _scope_holds_for_user(request.user)
             .filter(pk=hold_id, is_active=True)
-            .select_related('registration', 'registration_test')
+            .select_related(
+                'registration__patient',
+                'registration__created_by',
+                'registration_test__test',
+                'held_by',
+            )
             .first()
         )
         if not hold:
@@ -1907,8 +1951,28 @@ def _scope_rejections_for_user(user, qs=None):
             Q(entry_initiated_by_id__in=creator_ids)
             | Q(registration__created_by_id__in=creator_ids)
         )
-    # Staff: own rejections + entries they themselves initiated
+    # Staff: all rejections in their zone (their reject work log).
+    if getattr(user, 'role', None) in REJECTION_STAFF_ROLES:
+        return qs
     return qs.filter(Q(rejected_by_id=user.id) | Q(entry_initiated_by_id=user.id) | Q(registration__created_by_id=user.id))
+
+
+def _user_can_reject_registration(user, registration) -> bool:
+    """Staff may reject any booking in their zone; franchise only their own entries."""
+    if not registration:
+        return False
+    if getattr(user, 'role', None) in REJECTION_STAFF_ROLES:
+        if user_has_global_data_access(user):
+            return True
+        zone_id = user_zone_id(user)
+        if not zone_id:
+            return True
+        reg_zone = getattr(registration, 'zone_id', None)
+        if not reg_zone:
+            creator_zone = getattr(getattr(registration, 'created_by', None), 'zone_id', None)
+            return creator_zone in (None, zone_id)
+        return reg_zone == zone_id
+    return user_can_access_registration(user, registration)
 
 
 def _resolve_registration_for_rejection(user, *, barcode='', lab_code=''):
@@ -1918,17 +1982,24 @@ def _resolve_registration_for_rejection(user, *, barcode='', lab_code=''):
     if cleaned_barcode:
         link = lookup_patient_by_barcode(cleaned_barcode)
         if link and link.registration_id:
-            registration = link.registration
-            if user_can_access_registration(user, registration):
+            registration = (
+                Registration.objects.select_related('patient', 'created_by', 'zone')
+                .filter(pk=link.registration_id)
+                .first()
+            )
+            if _user_can_reject_registration(user, registration):
                 return registration, cleaned_barcode
-        # Fallback: treat scanned value as lab code
-        registration = get_registration_for_user(user, lab_code=cleaned_barcode)
-        if registration:
+        registration = Registration.objects.select_related('patient', 'created_by', 'zone').filter(
+            lab_code__iexact=cleaned_barcode,
+        ).first()
+        if _user_can_reject_registration(user, registration):
             return registration, cleaned_barcode
 
     if cleaned_lab:
-        registration = get_registration_for_user(user, lab_code=cleaned_lab)
-        if registration:
+        registration = Registration.objects.select_related('patient', 'created_by', 'zone').filter(
+            lab_code__iexact=cleaned_lab,
+        ).first()
+        if _user_can_reject_registration(user, registration):
             return registration, cleaned_barcode or cleaned_lab
 
     return None, cleaned_barcode or cleaned_lab
@@ -1940,8 +2011,6 @@ class SampleRejectionListCreateView(APIView):
     permission_classes = [permissions.IsAuthenticated, CanAccessRejections]
 
     def get_permissions(self):
-        if self.request.method == 'POST':
-            return [permissions.IsAuthenticated(), CanRejectSamples()]
         return [permissions.IsAuthenticated(), CanAccessRejections()]
 
     def get(self, request):

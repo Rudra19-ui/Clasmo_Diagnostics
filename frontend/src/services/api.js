@@ -11,6 +11,13 @@ function handleUnauthorized() {
   }
 }
 
+function errorMessageFromResponse(data, status) {
+  const raw = data?.detail || data?.non_field_errors?.[0] || (data && Object.values(data)[0]?.[0]);
+  if (typeof raw === 'string' && raw.trim()) return raw;
+  if (status === 500) return 'Server error. Please retry.';
+  return `Request failed (${status})`;
+}
+
 async function request(path, options = {}) {
   const headers = {
     'Content-Type': 'application/json',
@@ -30,8 +37,7 @@ async function request(path, options = {}) {
     if (response.status === 401) {
       handleUnauthorized();
     }
-    const message = data.detail || data.non_field_errors?.[0] || Object.values(data)[0]?.[0] || 'Request failed';
-    throw new Error(typeof message === 'string' ? message : JSON.stringify(message));
+    throw new Error(errorMessageFromResponse(data, response.status));
   }
   return data;
 }
@@ -52,8 +58,7 @@ async function requestForm(path, formData, method = 'POST') {
     if (response.status === 401) {
       handleUnauthorized();
     }
-    const message = data.detail || data.non_field_errors?.[0] || Object.values(data)[0]?.[0] || 'Request failed';
-    throw new Error(typeof message === 'string' ? message : JSON.stringify(message));
+    throw new Error(errorMessageFromResponse(data, response.status));
   }
   return data;
 }

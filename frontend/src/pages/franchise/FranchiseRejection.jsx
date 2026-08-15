@@ -4,6 +4,19 @@ import Footer from '../../components/Footer';
 import Layout from '../../components/Layout';
 import { api } from '../../services/api';
 
+function formatRejectedAt(value) {
+  if (!value) return '—';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '—';
+  return date.toLocaleString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
 export default function FranchiseRejection() {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -54,68 +67,76 @@ export default function FranchiseRejection() {
           </nav>
           <h2 className="page-heading">Rejection</h2>
           <p className="portfolio-intro">
-            Sample rejections for entries you (or your franchisees) initiated. Lab staff reject by barcode;
-            those rejections appear here only for your bookings.
+            Sample rejections for bookings you (or your franchisees) created.
+            Lab staff reject by barcode; those records appear here only for your entries.
           </p>
         </header>
 
         {error && <p className="login-error" role="alert">{error}</p>}
         {message && <p className="form-success-msg">{message}</p>}
 
-        <section className="franchise-module-panel">
-          <div className="franchise-search-reports-actions" style={{ marginBottom: 12 }}>
+        <section className="franchise-module-panel rejection-panel">
+          <div className="rejection-toolbar">
+            <h3 className="rejection-toolbar-title">
+              Rejected samples
+              <span className="rejection-count">{rows.length}</span>
+            </h3>
             <button type="button" className="btn-secondary" onClick={load} disabled={loading}>
               {loading ? 'Loading…' : 'Refresh'}
             </button>
           </div>
 
-          {loading && !rows.length ? (
-            <p>Loading rejections…</p>
-          ) : rows.length === 0 ? (
-            <p>No rejected samples for your entries.</p>
-          ) : (
-            <div className="admin-table-wrap">
-              <table className="admin-data-table">
-                <thead>
+          <div className="table-wrap rejection-table-wrap">
+            <table className="data-table rejection-table">
+              <thead>
+                <tr>
+                  <th>Book ID</th>
+                  <th>Patient</th>
+                  <th>Barcode</th>
+                  <th>Tests</th>
+                  <th>Reason</th>
+                  <th>Rejected by</th>
+                  <th>Rejected at</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading && !rows.length && (
                   <tr>
-                    <th>Book ID</th>
-                    <th>Patient</th>
-                    <th>Barcode</th>
-                    <th>Tests</th>
-                    <th>Reason</th>
-                    <th>Rejected by</th>
-                    <th>Rejected at</th>
-                    <th />
+                    <td colSpan={8} className="empty-msg">Loading rejections…</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {rows.map((row) => (
-                    <tr key={row.id}>
-                      <td>{row.lab_code}</td>
-                      <td>{row.patient_name || row.patient_id || '—'}</td>
-                      <td>{row.barcode || '—'}</td>
-                      <td>
-                        {Array.isArray(row.tests_list) && row.tests_list.length
-                          ? row.tests_list.join(', ')
-                          : '—'}
-                      </td>
-                      <td>{row.reason || '—'}</td>
-                      <td>
-                        {row.rejected_by_name || '—'}
-                        {row.rejected_by_role ? ` (${row.rejected_by_role})` : ''}
-                      </td>
-                      <td>{row.rejected_at ? new Date(row.rejected_at).toLocaleString() : '—'}</td>
-                      <td>
-                        <button type="button" className="btn-secondary" onClick={() => handleResolve(row.id)}>
-                          Clear
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+                )}
+                {!loading && rows.length === 0 && (
+                  <tr>
+                    <td colSpan={8} className="empty-msg">No rejected samples for your entries.</td>
+                  </tr>
+                )}
+                {rows.map((row) => (
+                  <tr key={row.id}>
+                    <td className="rejection-col-id">{row.lab_code || '—'}</td>
+                    <td>{row.patient_name || row.patient_id || '—'}</td>
+                    <td className="rejection-col-barcode">{row.barcode || '—'}</td>
+                    <td>
+                      {Array.isArray(row.tests_list) && row.tests_list.length
+                        ? row.tests_list.join(', ')
+                        : '—'}
+                    </td>
+                    <td>{row.reason || '—'}</td>
+                    <td>
+                      {row.rejected_by_name || '—'}
+                      {row.rejected_by_role ? ` (${row.rejected_by_role})` : ''}
+                    </td>
+                    <td className="rejection-col-date">{formatRejectedAt(row.rejected_at)}</td>
+                    <td className="rejection-col-action">
+                      <button type="button" className="btn-secondary" onClick={() => handleResolve(row.id)}>
+                        Clear
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </section>
       </main>
       <Footer />

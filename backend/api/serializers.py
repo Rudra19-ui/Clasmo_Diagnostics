@@ -460,6 +460,10 @@ class RegistrationTestHoldSerializer(serializers.ModelSerializer):
     registration_test_id = serializers.IntegerField(read_only=True)
     held_by_name = serializers.SerializerMethodField()
     held_by_role = serializers.CharField(source='held_by.role', read_only=True, default='')
+    entry_initiated_by_name = serializers.SerializerMethodField()
+    entry_initiated_by_role = serializers.CharField(
+        source='registration.created_by.role', read_only=True, default='',
+    )
     zone_name = serializers.CharField(source='zone.name', read_only=True, default='')
 
     class Meta:
@@ -467,6 +471,7 @@ class RegistrationTestHoldSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'lab_code', 'patient_name', 'patient_id', 'test_name', 'sample_type',
             'registration_test_id', 'reason', 'held_by_name', 'held_by_role',
+            'entry_initiated_by_name', 'entry_initiated_by_role',
             'held_at', 'is_active', 'zone_name',
         ]
 
@@ -481,11 +486,18 @@ class RegistrationTestHoldSerializer(serializers.ModelSerializer):
             return ''
         return obj.held_by.display_name or obj.held_by.username
 
+    def get_entry_initiated_by_name(self, obj):
+        creator = obj.registration.created_by if obj.registration_id else None
+        if not creator:
+            return ''
+        return creator.display_name or creator.username
+
 
 class HoldCreateSerializer(serializers.Serializer):
-    lab_code = serializers.CharField()
+    barcode = serializers.CharField(required=False, allow_blank=True, max_length=100)
+    lab_code = serializers.CharField(required=False, allow_blank=True)
     registration_test_ids = serializers.ListField(
-        child=serializers.IntegerField(), allow_empty=False,
+        child=serializers.IntegerField(), required=False, allow_empty=True, default=list,
     )
     reason = serializers.CharField(required=False, allow_blank=True, max_length=255)
 
@@ -529,10 +541,12 @@ class SampleRejectionSerializer(serializers.ModelSerializer):
         return obj.entry_initiated_by.display_name or obj.entry_initiated_by.username
 
     def get_tests_list(self, obj):
+        if not obj.registration_id:
+            return []
         return [
             reg_test.test.name
-            for reg_test in obj.registration.tests.select_related('test').all()
-            if reg_test.test_id
+            for reg_test in obj.registration.tests.all()
+            if getattr(reg_test, 'test_id', None)
         ]
 
 

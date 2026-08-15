@@ -14,7 +14,7 @@ PATIENT_ENTRY_ROLES = frozenset({
 # Admin + franchise hierarchy — pricing, wallets, commissions.
 PRICING_WALLET_ROLES = PATIENT_ENTRY_ROLES
 
-# Franchise can place holds; lab staff + admin roles can view/release held tests.
+# Staff place holds by barcode; franchise (Supreme / Prime / Sub) view holds on their entries.
 HOLD_ACCESS_ROLES = frozenset({
     User.ROLE_SUPER_ADMIN,
     User.ROLE_ADMIN,
@@ -46,6 +46,7 @@ REJECTION_STAFF_ROLES = frozenset({
     User.ROLE_PATHOLOGIST,
     User.ROLE_TECHNICIAN,
     User.ROLE_RECEPTIONIST,
+    User.ROLE_USER,
 })
 
 # Staff + franchise who may view rejection module (list scoped to initiator).
@@ -84,6 +85,16 @@ class CanAccessHolds(permissions.BasePermission):
         return (
             request.user.is_authenticated
             and request.user.role in HOLD_ACCESS_ROLES
+        )
+
+
+class CanPlaceHolds(permissions.BasePermission):
+    message = 'You do not have permission to place hold tests.'
+
+    def has_permission(self, request, view):
+        return (
+            request.user.is_authenticated
+            and request.user.role in HOLD_STAFF_ROLES
         )
 
 

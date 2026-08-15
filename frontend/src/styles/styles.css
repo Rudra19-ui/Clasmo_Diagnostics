@@ -5209,6 +5209,71 @@ input, select, textarea, button {
   box-shadow: 0 8px 20px rgba(18, 38, 60, 0.06);
 }
 
+.rejection-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.rejection-toolbar-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 15px;
+  color: #163a5c;
+}
+
+.rejection-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #e8f4fc;
+  color: #0a3d6b;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.rejection-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #d5e4f2;
+  border-radius: 8px;
+}
+
+.rejection-table {
+  width: 100%;
+  min-width: 960px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.rejection-table th,
+.rejection-table td {
+  padding: 10px 12px;
+  vertical-align: top;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.rejection-table th {
+  white-space: nowrap;
+  background: #e8eef5;
+}
+
+.rejection-table .rejection-col-id { width: 88px; font-weight: 700; color: #0a3d6b; }
+.rejection-table .rejection-col-barcode { width: 120px; font-family: ui-monospace, monospace; }
+.rejection-table .rejection-col-date { width: 150px; white-space: nowrap; }
+.rejection-table .rejection-col-action { width: 92px; text-align: center; }
+.rejection-table td.rejection-col-action { vertical-align: middle; }
+
+
 .test-addition-search-label {
   display: block;
   font-size: 13px;

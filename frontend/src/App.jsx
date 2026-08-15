@@ -51,7 +51,7 @@ import DeviceStub from './pages/device/DeviceStub';
 import TestResultBatch from './pages/device/TestResultBatch';
 import ResponsiveProvider from './components/ResponsiveProvider';
 import { NavProvider } from './context/NavContext';
-import { ROLES, ALL_ROLES, SAMPLE_SCAN_ROLES, USER_CREATOR_ROLES, FRANCHISE_ROLES, PATIENT_ENTRY_ROLES, PRICING_WALLET_ROLES, ADMIN_ROLES, HOLD_STAFF_ROLES } from './utils/roles';
+import { ROLES, ALL_ROLES, SAMPLE_SCAN_ROLES, USER_CREATOR_ROLES, FRANCHISE_ROLES, PATIENT_ENTRY_ROLES, PRICING_WALLET_ROLES, ADMIN_ROLES, HOLD_STAFF_ROLES, REJECTION_STAFF_ROLES } from './utils/roles';
 import MessageToLab from './pages/device/MessageToLab';
 import PickupRequest from './pages/device/PickupRequest';
 import TestList from './pages/portfolio/TestList';
@@ -67,7 +67,9 @@ import FindBarcode from './pages/franchise/FindBarcode';
 import ClinicalHistory from './pages/franchise/ClinicalHistory';
 import TestCancellation from './pages/franchise/TestCancellation';
 import FranchiseHold from './pages/franchise/FranchiseHold';
+import FranchiseRejection from './pages/franchise/FranchiseRejection';
 import HoldTests from './pages/HoldTests';
+import SampleRejection from './pages/SampleRejection';
 import MakeBill from './pages/franchise/MakeBill';
 import BillingList from './pages/franchise/BillingList';
 import TrackLedger from './pages/franchise/TrackLedger';
@@ -76,7 +78,6 @@ import Analytics from './pages/franchise/Analytics';
 
 const FRANCHISE_PAGES = [
   { path: 'extra-sample', title: 'Extra Sample', activePage: 'extra-sample', description: 'Extra sample requests and tracking.' },
-  { path: 'rejection', title: 'Rejection', activePage: 'rejection', description: 'Rejected bookings and tests.' },
   { path: 'online-payment', title: 'Online Payment', activePage: 'online-payment', description: 'Collect and track online payments.' },
   { path: 'payment-history', title: 'Payment History', activePage: 'payment-history', description: 'Historical payment records.' },
   { path: 'my-staff', title: 'My Staff', activePage: 'my-staff', description: 'Staff accounts under this franchise.' },
@@ -264,6 +265,22 @@ export default function App() {
             element={(
               <ProtectedRoute allowedRoles={HOLD_STAFF_ROLES}>
                 <HoldTests />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/sample-rejection"
+            element={(
+              <ProtectedRoute allowedRoles={REJECTION_STAFF_ROLES}>
+                <SampleRejection />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/franchise/rejection"
+            element={(
+              <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
+                <FranchiseRejection />
               </ProtectedRoute>
             )}
           />

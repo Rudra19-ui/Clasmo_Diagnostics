@@ -454,6 +454,46 @@ class RegistrationTestHold(models.Model):
         return f'Hold {self.registration.lab_code} / {test_name}'
 
 
+class SampleRejection(models.Model):
+    """Sample / booking rejection placed by lab staff; visible to entry initiator."""
+
+    registration = models.ForeignKey(
+        Registration, on_delete=models.CASCADE, related_name='sample_rejections',
+    )
+    barcode = models.CharField(max_length=100, blank=True, db_index=True)
+    reason = models.CharField(max_length=500, blank=True)
+    rejected_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True, related_name='sample_rejections_made',
+    )
+    rejected_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True, db_index=True)
+    resolved_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True, related_name='sample_rejections_resolved',
+    )
+    resolved_at = models.DateTimeField(null=True, blank=True)
+    entry_initiated_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='sample_rejections_on_entries',
+        help_text='User/franchise who created the registration (visibility scope).',
+    )
+    zone = models.ForeignKey(
+        Zone, on_delete=models.SET_NULL, null=True, blank=True, related_name='sample_rejections',
+    )
+
+    class Meta:
+        ordering = ['-rejected_at', '-id']
+        indexes = [
+            models.Index(fields=['is_active', 'zone', '-rejected_at']),
+            models.Index(fields=['is_active', 'entry_initiated_by', '-rejected_at']),
+        ]
+
+    def __str__(self):
+        return f'Rejection {self.registration.lab_code} / {self.barcode or "—"}'
+
+
 class PatientSampleBarcode(models.Model):
     """Links a preprinted physical barcode label to a patient / registration sample."""
 

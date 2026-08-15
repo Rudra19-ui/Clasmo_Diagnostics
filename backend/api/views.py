@@ -17,7 +17,13 @@ from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .clinical_permissions import CanAccessHolds, CanAccessPatientEntry, CanAccessPricingWallet
+from .clinical_permissions import (
+    CanAccessHolds,
+    CanAccessPatientEntry,
+    CanAccessPricingWallet,
+    CanAccessRejections,
+    CanRejectSamples,
+)
 from .franchise_scope import (
     get_registration_for_user,
     is_franchise_actor,
@@ -32,7 +38,7 @@ from .franchise_scope import (
     visible_creator_ids,
 )
 from .models import (
-    LabMessage, PickupRequest, Registration, RegistrationTest, RegistrationTestHold, Test, TestCategory, TestPackage,
+    LabMessage, PickupRequest, Registration, RegistrationTest, RegistrationTestHold, SampleRejection, Test, TestCategory, TestPackage,
     ReportFormatAsset, User, LabRole,
     Membership, MembershipType, CollectionCenter, CollectionCenterBoy, DiscountReason, DiscountAuthority,
     WhatsAppMessageLog, ExpenseType, Area, RateMaster, Affiliation, SalesReference, Doctor, Patient, PatientAddress, LabConfiguration, ServiceAreaPincode, LabActivity,
@@ -71,6 +77,8 @@ from .serializers import (
     RegistrationSerializer,
     RegistrationTestHoldSerializer,
     HoldCreateSerializer,
+    SampleRejectionSerializer,
+    SampleRejectionCreateSerializer,
     PatientBarcodeLinkSerializer,
     PatientSampleBarcodeSerializer,
     TestCategorySerializer,
@@ -1882,6 +1890,166 @@ class RegistrationTestHoldReleaseView(APIView):
         hold.released_at = timezone.now()
         hold.save(update_fields=['is_active', 'released_by', 'released_at'])
         return Response(RegistrationTestHoldSerializer(hold).data)
+
+
+def _scope_rejections_for_user(user, qs=None):
+    """
+    Rejections are visible only to the franchise/user that initiated the entry,
+    or to the staff member who performed the rejection (work log).
+    """
+    qs = qs if qs is not None else SampleRejection.objects.all()
+    qs = scope_zone_queryset(user, qs, zone_field='zone_id')
+    if is_franchise_actor(user):
+        creator_ids = visible_creator_ids(user)
+        if creator_ids is None:
+            return qs
+        return qs.filter(
+            Q(entry_initiated_by_id__in=creator_ids)
+            | Q(registration__created_by_id__in=creator_ids)
+        )
+    # Staff: own rejections + entries they themselves initiated
+    return qs.filter(Q(rejected_by_id=user.id) | Q(entry_initiated_by_id=user.id) | Q(registration__created_by_id=user.id))
+
+
+def _resolve_registration_for_rejection(user, *, barcode='', lab_code=''):
+    cleaned_barcode = normalize_barcode(barcode or '')
+    cleaned_lab = str(lab_code or '').strip()
+
+    if cleaned_barcode:
+        link = lookup_patient_by_barcode(cleaned_barcode)
+        if link and link.registration_id:
+            registration = link.registration
+            if user_can_access_registration(user, registration):
+                return registration, cleaned_barcode
+        # Fallback: treat scanned value as lab code
+        registration = get_registration_for_user(user, lab_code=cleaned_barcode)
+        if registration:
+            return registration, cleaned_barcode
+
+    if cleaned_lab:
+        registration = get_registration_for_user(user, lab_code=cleaned_lab)
+        if registration:
+            return registration, cleaned_barcode or cleaned_lab
+
+    return None, cleaned_barcode or cleaned_lab
+
+
+class SampleRejectionListCreateView(APIView):
+    """List scoped rejections; staff POST to reject by barcode / QR / lab code."""
+
+    permission_classes = [permissions.IsAuthenticated, CanAccessRejections]
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [permissions.IsAuthenticated(), CanRejectSamples()]
+        return [permissions.IsAuthenticated(), CanAccessRejections()]
+
+    def get(self, request):
+        qs = (
+            _scope_rejections_for_user(request.user)
+            .filter(is_active=True)
+            .select_related(
+                'registration__patient',
+                'rejected_by',
+                'entry_initiated_by',
+                'zone',
+            )
+            .prefetch_related('registration__tests__test')
+        )
+        q = str(request.query_params.get('q') or '').strip()
+        if q:
+            qs = qs.filter(
+                Q(registration__lab_code__icontains=q)
+                | Q(registration__patient__patient_name__icontains=q)
+                | Q(barcode__icontains=q)
+                | Q(reason__icontains=q)
+            )
+        return Response(SampleRejectionSerializer(qs[:200], many=True).data)
+
+    @transaction.atomic
+    def post(self, request):
+        serializer = SampleRejectionCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        barcode = serializer.validated_data.get('barcode') or ''
+        lab_code = serializer.validated_data.get('lab_code') or ''
+        reason = (serializer.validated_data.get('reason') or '').strip()
+
+        if not str(barcode).strip() and not str(lab_code).strip():
+            return Response(
+                {'detail': 'Scan or enter a barcode / QR number (or lab code).'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        registration, resolved_barcode = _resolve_registration_for_rejection(
+            request.user, barcode=barcode, lab_code=lab_code,
+        )
+        if not registration:
+            return Response(
+                {'detail': 'No patient entry found for that barcode or QR number.'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        active = SampleRejection.objects.filter(
+            registration=registration, is_active=True,
+        ).first()
+        if active:
+            return Response(
+                {
+                    'detail': 'This entry is already rejected.',
+                    'rejection': SampleRejectionSerializer(active).data,
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        rejection = SampleRejection.objects.create(
+            registration=registration,
+            barcode=resolved_barcode or '',
+            reason=reason,
+            rejected_by=request.user,
+            entry_initiated_by=registration.created_by,
+            zone=registration.zone or request.user.zone,
+            is_active=True,
+        )
+
+        note = f'Sample rejected'
+        if resolved_barcode:
+            note = f'{note} (barcode {resolved_barcode})'
+        if reason:
+            note = f'{note}. Reason: {reason}'
+        note = f'{note} by {request.user.display_name or request.user.username}'
+        registration.comment = f'{registration.comment}\n{note}'.strip() if registration.comment else note
+        registration.save(update_fields=['comment'])
+
+        rejection = (
+            SampleRejection.objects.select_related(
+                'registration__patient', 'rejected_by', 'entry_initiated_by', 'zone',
+            )
+            .prefetch_related('registration__tests__test')
+            .get(pk=rejection.pk)
+        )
+        return Response(SampleRejectionSerializer(rejection).data, status=status.HTTP_201_CREATED)
+
+
+class SampleRejectionResolveView(APIView):
+    """Clear an active sample rejection."""
+
+    permission_classes = [permissions.IsAuthenticated, CanAccessRejections]
+
+    @transaction.atomic
+    def post(self, request, rejection_id):
+        rejection = (
+            _scope_rejections_for_user(request.user)
+            .filter(pk=rejection_id, is_active=True)
+            .first()
+        )
+        if not rejection:
+            return Response({'detail': 'Rejection not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        rejection.is_active = False
+        rejection.resolved_by = request.user
+        rejection.resolved_at = timezone.now()
+        rejection.save(update_fields=['is_active', 'resolved_by', 'resolved_at'])
+        return Response(SampleRejectionSerializer(rejection).data)
 
 
 class RegistrationCreateView(APIView):

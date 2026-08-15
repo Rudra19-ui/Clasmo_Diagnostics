@@ -96,6 +96,16 @@ export const HOLD_STAFF_ROLES = [
   ROLES.USER,
 ];
 
+/** Staff who can reject samples by barcode / QR. */
+export const REJECTION_STAFF_ROLES = [
+  ROLES.SUPER_ADMIN,
+  ROLES.ADMIN,
+  ROLES.HR,
+  ROLES.PATHOLOGIST,
+  ROLES.TECHNICIAN,
+  ROLES.RECEPTIONIST,
+];
+
 export const PARENT_REQUIRED_ROLES = [ROLES.FRANCHISEE, ROLES.SUB_FRANCHISE];
 
 /** Roles allowed to open New User Sign Up and create accounts. */

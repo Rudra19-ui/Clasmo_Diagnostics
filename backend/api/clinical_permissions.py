@@ -38,6 +38,24 @@ HOLD_STAFF_ROLES = frozenset({
     User.ROLE_USER,
 })
 
+# Staff who may reject samples via barcode / QR.
+REJECTION_STAFF_ROLES = frozenset({
+    User.ROLE_SUPER_ADMIN,
+    User.ROLE_ADMIN,
+    User.ROLE_HR,
+    User.ROLE_PATHOLOGIST,
+    User.ROLE_TECHNICIAN,
+    User.ROLE_RECEPTIONIST,
+})
+
+# Staff + franchise who may view rejection module (list scoped to initiator).
+REJECTION_ACCESS_ROLES = frozenset({
+    *REJECTION_STAFF_ROLES,
+    User.ROLE_SUPER_FRANCHISEE,
+    User.ROLE_FRANCHISEE,
+    User.ROLE_SUB_FRANCHISE,
+})
+
 
 class CanAccessPatientEntry(permissions.BasePermission):
     message = 'You do not have permission to access patient entry data.'
@@ -66,6 +84,26 @@ class CanAccessHolds(permissions.BasePermission):
         return (
             request.user.is_authenticated
             and request.user.role in HOLD_ACCESS_ROLES
+        )
+
+
+class CanAccessRejections(permissions.BasePermission):
+    message = 'You do not have permission to access sample rejections.'
+
+    def has_permission(self, request, view):
+        return (
+            request.user.is_authenticated
+            and request.user.role in REJECTION_ACCESS_ROLES
+        )
+
+
+class CanRejectSamples(permissions.BasePermission):
+    message = 'You do not have permission to reject samples.'
+
+    def has_permission(self, request, view):
+        return (
+            request.user.is_authenticated
+            and request.user.role in REJECTION_STAFF_ROLES
         )
 
 

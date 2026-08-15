@@ -38,6 +38,7 @@ from .models import (
     SelfPatientQuery,
     PatientSampleBarcode,
     RegistrationTestHold,
+    SampleRejection,
 )
 
 
@@ -487,6 +488,58 @@ class HoldCreateSerializer(serializers.Serializer):
         child=serializers.IntegerField(), allow_empty=False,
     )
     reason = serializers.CharField(required=False, allow_blank=True, max_length=255)
+
+
+class SampleRejectionSerializer(serializers.ModelSerializer):
+    lab_code = serializers.CharField(source='registration.lab_code', read_only=True)
+    patient_name = serializers.SerializerMethodField()
+    patient_id = serializers.CharField(source='registration.patient.patient_id', read_only=True)
+    rejected_by_name = serializers.SerializerMethodField()
+    rejected_by_role = serializers.CharField(source='rejected_by.role', read_only=True, default='')
+    entry_initiated_by_name = serializers.SerializerMethodField()
+    entry_initiated_by_role = serializers.CharField(
+        source='entry_initiated_by.role', read_only=True, default='',
+    )
+    tests_list = serializers.SerializerMethodField()
+    zone_name = serializers.CharField(source='zone.name', read_only=True, default='')
+
+    class Meta:
+        model = SampleRejection
+        fields = [
+            'id', 'lab_code', 'patient_name', 'patient_id', 'barcode', 'reason',
+            'rejected_by_name', 'rejected_by_role', 'rejected_at',
+            'entry_initiated_by_name', 'entry_initiated_by_role',
+            'tests_list', 'is_active', 'zone_name',
+        ]
+
+    def get_patient_name(self, obj):
+        patient = obj.registration.patient if obj.registration_id else None
+        if not patient:
+            return ''
+        return f'{patient.title} {patient.patient_name}'.strip()
+
+    def get_rejected_by_name(self, obj):
+        if not obj.rejected_by_id:
+            return ''
+        return obj.rejected_by.display_name or obj.rejected_by.username
+
+    def get_entry_initiated_by_name(self, obj):
+        if not obj.entry_initiated_by_id:
+            return ''
+        return obj.entry_initiated_by.display_name or obj.entry_initiated_by.username
+
+    def get_tests_list(self, obj):
+        return [
+            reg_test.test.name
+            for reg_test in obj.registration.tests.select_related('test').all()
+            if reg_test.test_id
+        ]
+
+
+class SampleRejectionCreateSerializer(serializers.Serializer):
+    barcode = serializers.CharField(required=False, allow_blank=True)
+    lab_code = serializers.CharField(required=False, allow_blank=True)
+    reason = serializers.CharField(required=False, allow_blank=True, max_length=500)
 
 
 class PatientAddressSerializer(serializers.ModelSerializer):

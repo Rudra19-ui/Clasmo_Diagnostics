@@ -144,6 +144,14 @@ export const api = {
     request('/holds/', { method: 'POST', body: JSON.stringify(payload) }),
   releaseHold: (holdId) =>
     request(`/holds/${holdId}/release/`, { method: 'POST', body: '{}' }),
+  listRejections: (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return request(`/rejections/${query ? `?${query}` : ''}`);
+  },
+  createRejection: (payload) =>
+    request('/rejections/', { method: 'POST', body: JSON.stringify(payload) }),
+  resolveRejection: (rejectionId) =>
+    request(`/rejections/${rejectionId}/resolve/`, { method: 'POST', body: '{}' }),
   generateMrpBill: (labCode, payload = {}) =>
     request(`/registrations/${encodeURIComponent(labCode)}/generate-mrp-bill/`, {
       method: 'POST',

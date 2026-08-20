@@ -44,6 +44,55 @@ def user_can_set_pricing_override(user, target_role: str) -> bool:
     return False
 
 
+def downstream_franchise_role_for_manager(user) -> str | None:
+    """Franchise role a manager may set per-test bulk rates for."""
+    if not user or not getattr(user, 'is_authenticated', False):
+        return None
+    if user.role == User.ROLE_SUPER_FRANCHISEE:
+        return User.ROLE_FRANCHISEE
+    if user.role == User.ROLE_FRANCHISEE:
+        return User.ROLE_SUB_FRANCHISE
+    return None
+
+
+def user_can_manage_franchise_test_rates(user, franchise_user) -> bool:
+    """Admin/Super Admin: any franchise in zone. Supreme→Prime, Prime→Sub direct children."""
+    if not user or not franchise_user:
+        return False
+    if franchise_user.role not in User.FRANCHISE_ROLES or not franchise_user.is_active:
+        return False
+
+    if user_can_manage_all_zone_rates(user):
+        return True
+
+    if user.role == User.ROLE_ADMIN:
+        return bool(user.zone_id and franchise_user.zone_id == user.zone_id)
+
+    expected = downstream_franchise_role_for_manager(user)
+    if not expected or franchise_user.role != expected:
+        return False
+
+    if franchise_user.parent_franchisee_id != user.id:
+        return False
+
+    return bool(user.zone_id and franchise_user.zone_id == user.zone_id)
+
+
+def user_can_transfer_franchise_test_rates(user, source, target) -> bool:
+    if not user_can_manage_franchise_test_rates(user, source):
+        return False
+    if not user_can_manage_franchise_test_rates(user, target):
+        return False
+    if source.role != target.role:
+        return False
+    if user.role in {User.ROLE_SUPER_FRANCHISEE, User.ROLE_FRANCHISEE}:
+        return (
+            source.parent_franchisee_id == user.id
+            and target.parent_franchisee_id == user.id
+        )
+    return True
+
+
 def find_ancestor(user, role: str):
     if not user:
         return None

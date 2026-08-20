@@ -73,7 +73,8 @@ import SampleRejection from './pages/SampleRejection';
 import MakeBill from './pages/franchise/MakeBill';
 import BillingList from './pages/franchise/BillingList';
 import TrackLedger from './pages/franchise/TrackLedger';
-import DownstreamPricing from './pages/franchise/DownstreamPricing';
+import FranchiseDownstreamBulkPricing from './pages/franchise/FranchiseDownstreamBulkPricing';
+import FranchiseDownstreamTransferPricing from './pages/franchise/FranchiseDownstreamTransferPricing';
 import Analytics from './pages/franchise/Analytics';
 
 const FRANCHISE_PAGES = [
@@ -320,7 +321,15 @@ export default function App() {
             path="/franchise/franchisee-pricing"
             element={(
               <ProtectedRoute allowedRoles={[ROLES.SUPER_FRANCHISEE]}>
-                <DownstreamPricing forcedRole={ROLES.SUPER_FRANCHISEE} />
+                <FranchiseDownstreamBulkPricing forcedRole={ROLES.SUPER_FRANCHISEE} />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/franchise/franchisee-transfer-pricing"
+            element={(
+              <ProtectedRoute allowedRoles={[ROLES.SUPER_FRANCHISEE]}>
+                <FranchiseDownstreamTransferPricing forcedRole={ROLES.SUPER_FRANCHISEE} />
               </ProtectedRoute>
             )}
           />
@@ -328,7 +337,15 @@ export default function App() {
             path="/franchise/sub-franchisee-pricing"
             element={(
               <ProtectedRoute allowedRoles={[ROLES.FRANCHISEE]}>
-                <DownstreamPricing forcedRole={ROLES.FRANCHISEE} />
+                <FranchiseDownstreamBulkPricing forcedRole={ROLES.FRANCHISEE} />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/franchise/sub-franchisee-transfer-pricing"
+            element={(
+              <ProtectedRoute allowedRoles={[ROLES.FRANCHISEE]}>
+                <FranchiseDownstreamTransferPricing forcedRole={ROLES.FRANCHISEE} />
               </ProtectedRoute>
             )}
           />

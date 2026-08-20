@@ -3,7 +3,7 @@ from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .clinical_permissions import CanAccessPricingWallet, IsAdmin
+from .clinical_permissions import CanAccessPricingWallet, CanManageFranchiseTestRates, IsAdmin
 from .franchise_scope import (
     scope_wallet_transactions_for_user,
     scope_wallets_for_user,
@@ -43,8 +43,10 @@ from .zone_rates import (
     get_zone_franchise_rate,
     markup_on_franchisee_price,
     user_can_manage_all_zone_rates,
+    user_can_manage_franchise_test_rates,
     user_can_manage_zone_rate,
     user_can_set_pricing_override,
+    user_can_transfer_franchise_test_rates,
 )
 
 
@@ -432,7 +434,7 @@ class FranchiseBulkPricingView(APIView):
          Bulk save rates: { franchise_user_id, rates: [{test_id, rate_pct}], apply_all_pct? }
     """
 
-    permission_classes = [IsAdmin]
+    permission_classes = [permissions.IsAuthenticated, CanManageFranchiseTestRates]
 
     def get(self, request):
         from decimal import Decimal
@@ -450,11 +452,7 @@ class FranchiseBulkPricingView(APIView):
         if franchise_user.role not in User.FRANCHISE_ROLES:
             return Response({'detail': 'Selected user is not a franchise account.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        if (
-            not user_can_manage_all_zone_rates(request.user)
-            and request.user.zone_id
-            and franchise_user.zone_id != request.user.zone_id
-        ):
+        if not user_can_manage_franchise_test_rates(request.user, franchise_user):
             return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
 
         # Default markup % when no custom rate is saved (0 = Final equals Franchisee Price).
@@ -513,11 +511,7 @@ class FranchiseBulkPricingView(APIView):
         data = serializer.validated_data
         franchise_user = get_object_or_404(User, pk=data['franchise_user_id'], is_active=True)
 
-        if (
-            not user_can_manage_all_zone_rates(request.user)
-            and request.user.zone_id
-            and franchise_user.zone_id != request.user.zone_id
-        ):
+        if not user_can_manage_franchise_test_rates(request.user, franchise_user):
             return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
 
         apply_all = data.get('apply_all_pct')
@@ -600,7 +594,7 @@ class FranchiseTransferPricingView(APIView):
     }
     """
 
-    permission_classes = [IsAdmin]
+    permission_classes = [permissions.IsAuthenticated, CanManageFranchiseTestRates]
 
     def post(self, request):
         serializer = FranchiseTestRateTransferSerializer(data=request.data)
@@ -622,12 +616,9 @@ class FranchiseTransferPricingView(APIView):
                     {'detail': 'Both accounts must be franchise users.'},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            if (
-                not user_can_manage_all_zone_rates(request.user)
-                and request.user.zone_id
-                and actor.zone_id != request.user.zone_id
-            ):
-                return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        if not user_can_transfer_franchise_test_rates(request.user, source, target):
+            return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
 
         source_rates = FranchiseTestRate.objects.filter(franchise_user=source).select_related('test')
         test_ids = data.get('test_ids') or []

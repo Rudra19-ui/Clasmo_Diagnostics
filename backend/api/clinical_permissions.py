@@ -78,6 +78,22 @@ class CanAccessPricingWallet(permissions.BasePermission):
         )
 
 
+class CanManageFranchiseTestRates(permissions.BasePermission):
+    """Admin or franchise parent (Supreme/Prime) bulk per-test pricing."""
+
+    message = 'You do not have permission to manage franchise test rates.'
+
+    def has_permission(self, request, view):
+        if not request.user.is_authenticated:
+            return False
+        return request.user.role in {
+            User.ROLE_SUPER_ADMIN,
+            User.ROLE_ADMIN,
+            User.ROLE_SUPER_FRANCHISEE,
+            User.ROLE_FRANCHISEE,
+        }
+
+
 class CanAccessHolds(permissions.BasePermission):
     message = 'You do not have permission to access hold tests.'
 

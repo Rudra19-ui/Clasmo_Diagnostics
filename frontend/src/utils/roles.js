@@ -175,6 +175,15 @@ export function canScanSampleBarcode(user) {
   return hasRole(user, SAMPLE_SCAN_ROLES);
 }
 
+/** Safe landing route after login or when a page denies access. */
+export function defaultHomeForRole(role) {
+  if (!role) return '/login';
+  if (FRANCHISE_ROLES.includes(role)) return '/dashboard';
+  if (NO_PATIENT_ENTRY_ROLES.includes(role)) return '/dashboard';
+  if (role === ROLES.ADMIN || role === ROLES.SUPER_ADMIN) return '/dashboard';
+  return '/search';
+}
+
 export function canManageParameters(user) {
   return hasRole(user, ADMIN_ROLES);
 }

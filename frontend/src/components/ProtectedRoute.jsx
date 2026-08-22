@@ -1,11 +1,6 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { FRANCHISE_ROLES } from '../utils/roles';
-
-function homeForUser(user) {
-  if (FRANCHISE_ROLES.includes(user?.role)) return '/dashboard';
-  return '/search';
-}
+import { defaultHomeForRole } from '../utils/roles';
 
 export default function ProtectedRoute({ children, adminOnly = false, allowedRoles }) {
   const { user, loading } = useAuth();
@@ -20,10 +15,10 @@ export default function ProtectedRoute({ children, adminOnly = false, allowedRol
     return <Navigate to={`/login?next=${next}`} replace />;
   }
   if (adminOnly && user.role !== 'admin' && user.role !== 'super_admin') {
-    return <Navigate to={homeForUser(user)} replace />;
+    return <Navigate to={defaultHomeForRole(user.role)} replace />;
   }
   if (allowedRoles?.length && !allowedRoles.includes(user.role)) {
-    return <Navigate to={homeForUser(user)} replace />;
+    return <Navigate to={defaultHomeForRole(user.role)} replace />;
   }
 
   return children;

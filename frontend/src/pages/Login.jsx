@@ -2,22 +2,11 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import LandingBrandTitle from '../components/landing/LandingBrandTitle';
-import { ROLES, FRANCHISE_ROLES } from '../utils/roles';
+import { FRANCHISE_ROLES, NO_PATIENT_ENTRY_ROLES, defaultHomeForRole } from '../utils/roles';
 import '../styles/landing.css';
 import '../styles/login.css';
 
 const SAVE_INFO_KEY = 'clasmo_save_info';
-
-function defaultHomeForRole(role) {
-  if (
-    role === ROLES.ADMIN
-    || role === ROLES.PATHOLOGIST
-    || FRANCHISE_ROLES.includes(role)
-  ) {
-    return '/dashboard';
-  }
-  return '/search';
-}
 
 export default function Login() {
   const { login } = useAuth();
@@ -52,9 +41,12 @@ export default function Login() {
       localStorage.setItem(SAVE_INFO_KEY, saveInfo ? 'true' : 'false');
 
       const fallback = defaultHomeForRole(loggedInUser?.role);
-      // Franchise roles should not land on Search even if an old bookmark/next points there
       const wantsSearch = nextPath === '/search' || nextPath?.startsWith('/search?');
-      const destination = nextPath && nextPath.startsWith('/') && !(FRANCHISE_ROLES.includes(loggedInUser?.role) && wantsSearch)
+      const blockedFromSearch = (
+        FRANCHISE_ROLES.includes(loggedInUser?.role)
+        || NO_PATIENT_ENTRY_ROLES.includes(loggedInUser?.role)
+      );
+      const destination = nextPath && nextPath.startsWith('/') && !(blockedFromSearch && wantsSearch)
         ? nextPath
         : fallback;
       navigate(destination);

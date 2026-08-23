@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import PatientStatusBadge from '../dashboard/PatientStatusBadge';
 import {
   WORKFLOW_STAGE_ORDER,
@@ -7,6 +7,7 @@ import {
   getWorkflowStageMeta,
   summarizeWorkflowStages,
 } from '../../utils/patientWorkflowStatus';
+import { getReportSectionPaths } from '../../utils/reportSection';
 
 function formatTestsList(tests) {
   const names = Array.isArray(tests)
@@ -29,6 +30,8 @@ export default function ReportSectionTable({
   from = 'all',
   showLegend = true,
 }) {
+  const location = useLocation();
+  const reportPaths = getReportSectionPaths(location.pathname);
   const [selected, setSelected] = useState(() => new Set());
 
   const enrichedRows = useMemo(
@@ -137,7 +140,7 @@ export default function ReportSectionTable({
                 <td>{row.lab_code}</td>
                 <td>
                   <Link
-                    to={`/franchise/manage-reports/detail/${encodeURIComponent(row.lab_code)}?from=${from}`}
+                    to={`${reportPaths.detail(row.lab_code)}?from=${from}`}
                     className="report-section-patient-link"
                   >
                     {patientLabel}

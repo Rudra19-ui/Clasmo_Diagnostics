@@ -1,4 +1,4 @@
-import { memo, startTransition, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, startTransition, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import Footer from '../Footer';
 import Layout from '../Layout';
@@ -124,47 +124,80 @@ export default function FranchiseBulkPricingPanel({ mode = 'admin_supreme' }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const loadSeqRef = useRef(0);
 
   useEffect(() => {
+    let cancelled = false;
     api.getUsers({ role: config.targetRole, is_active: true })
-      .then((data) => setFranchisees(Array.isArray(data) ? data : []))
-      .catch(() => setFranchisees([]));
+      .then((data) => {
+        if (!cancelled) setFranchisees(Array.isArray(data) ? data : []);
+      })
+      .catch(() => {
+        if (!cancelled) setFranchisees([]);
+      });
+    return () => { cancelled = true; };
   }, [config.targetRole]);
 
-  const loadRates = useCallback(async (userId, { keepExistingOnError = true } = {}) => {
+  const loadRates = useCallback(async (userId) => {
     if (!userId) {
       setCatalog([]);
       setMeta(null);
       setGlobalRate(null);
       setOverrides({});
+      setError('');
       return false;
     }
+    const seq = ++loadSeqRef.current;
     setLoading(true);
     setError('');
     try {
       const data = await api.getFranchiseTestRates({ franchise_user_id: userId });
+      if (seq !== loadSeqRef.current) return false;
       setMeta(data.franchise_user || null);
       setCatalog(data.rows || []);
       setGlobalRate(null);
       setOverrides({});
       setPage(1);
+      setError('');
       return true;
     } catch (err) {
-      const msg = err.message || 'Unable to load rate list.';
-      setError(msg);
-      if (!keepExistingOnError) {
-        setCatalog([]);
-        setMeta(null);
-      }
+      if (seq !== loadSeqRef.current) return false;
+      setError(err.message || 'Unable to load rate list.');
+      setCatalog([]);
+      setMeta(null);
       return false;
     } finally {
-      setLoading(false);
+      if (seq === loadSeqRef.current) setLoading(false);
     }
   }, []);
 
+  // Resolve a valid franchise target first, then load rates.
+  // Prevents stale ?franchise_user_id= requests from racing and leaving "Not found."
   useEffect(() => {
-    if (franchiseUserId) loadRates(franchiseUserId, { keepExistingOnError: false });
-  }, [franchiseUserId, loadRates]);
+    if (franchisees.length === 0) return;
+
+    const isValid = franchisees.some((row) => String(row.id) === String(franchiseUserId));
+    if (!isValid) {
+      if (franchisees.length === 1) {
+        const onlyId = String(franchisees[0].id);
+        setFranchiseUserId(onlyId);
+        setSearchParams({ franchise_user_id: onlyId });
+        return;
+      }
+      if (franchiseUserId) {
+        loadSeqRef.current += 1;
+        setFranchiseUserId('');
+        setSearchParams({});
+        setError('');
+        setCatalog([]);
+        setMeta(null);
+        setLoading(false);
+      }
+      return;
+    }
+
+    loadRates(franchiseUserId);
+  }, [franchisees, franchiseUserId, loadRates, setSearchParams]);
 
   useEffect(() => {
     setPage(1);
@@ -201,6 +234,7 @@ export default function FranchiseBulkPricingPanel({ mode = 'admin_supreme' }) {
   const onSelectFranchise = (value) => {
     setFranchiseUserId(value);
     setSuccess('');
+    setError('');
     if (value) setSearchParams({ franchise_user_id: value });
     else setSearchParams({});
   };
@@ -374,7 +408,8 @@ export default function FranchiseBulkPricingPanel({ mode = 'admin_supreme' }) {
 
         <h2 className="page-heading">{config.pageTitle}</h2>
         <p className="portfolio-intro">
-          Rate % increases Franchisee Price. Final Price = Franchisee Price × (1 + Rate%).
+          Rate % increases the upstream Franchisee Price (parent tier&apos;s Assigned Price, or catalog for Supreme).
+          Final Price = Franchisee Price × (1 + Rate%).
           {' '}
           <Link to={config.transferPath}>Transfer Price</Link>
           {' '}to copy rates between {config.entryLabel} accounts.

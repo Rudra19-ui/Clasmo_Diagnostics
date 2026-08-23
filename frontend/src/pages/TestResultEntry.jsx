@@ -213,7 +213,7 @@ export default function TestResultEntry() {
               <span>Ref : {patient?.affiliation}</span>
             </div>
             <div className="tre-patient-actions no-print">
-              <button type="button" onClick={() => navigate('/registration')}>Test Registration</button>
+              <button type="button" onClick={() => navigate('/entry/new')}>Test Registration</button>
               <button type="button" disabled={!hasPrev} onClick={() => navigateToRegistration(registrationIds[currentIndex - 1])}>&lt;&lt;</button>
               <button type="button" disabled={!hasNext} onClick={() => navigateToRegistration(registrationIds[currentIndex + 1])}>&gt;&gt;</button>
               <button type="button" onClick={() => navigate('/search')}>SMS</button>

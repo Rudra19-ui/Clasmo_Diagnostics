@@ -151,6 +151,38 @@ class WalletTopUpSerializer(serializers.Serializer):
         return value
 
 
+class WalletAdjustmentSerializer(serializers.Serializer):
+    user_id = serializers.IntegerField()
+    mode = serializers.ChoiceField(choices=['credit', 'debit', 'set_balance'])
+    amount = serializers.DecimalField(max_digits=14, decimal_places=2)
+    note = serializers.CharField(required=False, allow_blank=True, max_length=255)
+
+    def validate_user_id(self, value):
+        user = User.objects.filter(pk=value, is_active=True).first()
+        if not user or user.role not in User.FRANCHISE_ROLES:
+            raise serializers.ValidationError('user_id must be an active franchise user.')
+        return value
+
+    def validate(self, attrs):
+        mode = attrs.get('mode')
+        amount = attrs.get('amount')
+        if mode in {'credit', 'debit'} and amount <= 0:
+            raise serializers.ValidationError({'amount': 'Amount must be greater than zero.'})
+        if mode == 'set_balance' and amount < 0:
+            raise serializers.ValidationError({'amount': 'Target balance cannot be negative.'})
+        return attrs
+
+
+class WalletSelfTopUpSerializer(serializers.Serializer):
+    amount = serializers.DecimalField(max_digits=14, decimal_places=2)
+    payment_reference = serializers.CharField(required=False, allow_blank=True, max_length=100)
+
+    def validate_amount(self, value):
+        if value <= 0:
+            raise serializers.ValidationError('Amount must be greater than zero.')
+        return value
+
+
 class FranchiseTestRateItemSerializer(serializers.Serializer):
     test_id = serializers.IntegerField()
     rate_pct = serializers.DecimalField(max_digits=6, decimal_places=2)

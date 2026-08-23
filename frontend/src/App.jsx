@@ -76,11 +76,17 @@ import TrackLedger from './pages/franchise/TrackLedger';
 import FranchiseDownstreamBulkPricing from './pages/franchise/FranchiseDownstreamBulkPricing';
 import FranchiseDownstreamTransferPricing from './pages/franchise/FranchiseDownstreamTransferPricing';
 import Analytics from './pages/franchise/Analytics';
+import OnlinePayment from './pages/franchise/OnlinePayment';
 
 const FRANCHISE_PAGES = [
   { path: 'extra-sample', title: 'Extra Sample', activePage: 'extra-sample', description: 'Extra sample requests and tracking.' },
-  { path: 'online-payment', title: 'Online Payment', activePage: 'online-payment', description: 'Collect and track online payments.' },
-  { path: 'payment-history', title: 'Payment History', activePage: 'payment-history', description: 'Historical payment records.' },
+  {
+    path: 'payment-history',
+    title: 'Payment History',
+    activePage: 'payment-history',
+    description: 'Historical payment records.',
+    allowedRoles: [...FRANCHISE_ROLES, ...ADMIN_ROLES],
+  },
   { path: 'my-staff', title: 'My Staff', activePage: 'my-staff', description: 'Staff accounts under this franchise.' },
   { path: 'sub-franchisee', title: 'Sub Franchisee', activePage: 'sub-franchisee', description: 'Manage sub-franchisee accounts.' },
   { path: 'sub-franchisee-credits', title: 'SubFranchisee Credits', activePage: 'sub-franchisee-credits', description: 'Credits allocated to sub-franchisees.' },
@@ -110,9 +116,129 @@ export default function App() {
               </ProtectedRoute>
             )}
           />
+          <Route
+            path="/notifications/find-barcode"
+            element={(
+              <ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}>
+                <FindBarcode />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/notifications/clinical-history"
+            element={(
+              <ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}>
+                <ClinicalHistory />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/notifications/test-cancellation"
+            element={(
+              <ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}>
+                <TestCancellation />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/notifications/extra-sample"
+            element={(
+              <ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}>
+                <FranchiseStub
+                  title="Extra Sample"
+                  activePage="extra-sample"
+                  description="Extra sample requests and tracking for lab bookings."
+                />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/hold-tests"
+            element={(
+              <ProtectedRoute allowedRoles={HOLD_STAFF_ROLES}>
+                <HoldTests />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/sample-rejection"
+            element={(
+              <ProtectedRoute allowedRoles={REJECTION_STAFF_ROLES}>
+                <SampleRejection />
+              </ProtectedRoute>
+            )}
+          />
           <Route path="/bill-receipt" element={<ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}><BillReceipt /></ProtectedRoute>} />
           <Route path="/test-result-entry" element={<ProtectedRoute><TestResultEntry /></ProtectedRoute>} />
-          <Route path="/registration" element={<ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}><Registration /></ProtectedRoute>} />
+          <Route path="/registration" element={<ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}><Navigate to="/entry/new" replace /></ProtectedRoute>} />
+          <Route
+            path="/entry"
+            element={(
+              <ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}>
+                <Navigate to="/entry/new" replace />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/entry/new"
+            element={(
+              <ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}>
+                <Registration
+                  activePage="registration-entry"
+                  pageTitle="New Entry"
+                  successNoun="Entry"
+                />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/entry/list"
+            element={(
+              <ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}>
+                <EditEntry />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/entry/test-addition"
+            element={(
+              <ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}>
+                <TestAddition />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/reports-section"
+            element={(
+              <ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}>
+                <Navigate to="/reports-section/all" replace />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/reports-section/all"
+            element={(
+              <ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}>
+                <AllReports />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/reports-section/search"
+            element={(
+              <ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}>
+                <SearchReports />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/reports-section/detail/:labCode"
+            element={(
+              <ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}>
+                <ReportDetail />
+              </ProtectedRoute>
+            )}
+          />
           <Route path="/test-result" element={<ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}><TestResult /></ProtectedRoute>} />
           <Route path="/portfolio/test-list" element={<ProtectedRoute><TestList /></ProtectedRoute>} />
           <Route path="/portfolio/test-profile" element={<ProtectedRoute><TestProfile /></ProtectedRoute>} />
@@ -262,22 +388,6 @@ export default function App() {
             )}
           />
           <Route
-            path="/hold-tests"
-            element={(
-              <ProtectedRoute allowedRoles={HOLD_STAFF_ROLES}>
-                <HoldTests />
-              </ProtectedRoute>
-            )}
-          />
-          <Route
-            path="/sample-rejection"
-            element={(
-              <ProtectedRoute allowedRoles={REJECTION_STAFF_ROLES}>
-                <SampleRejection />
-              </ProtectedRoute>
-            )}
-          />
-          <Route
             path="/franchise/rejection"
             element={(
               <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
@@ -314,6 +424,14 @@ export default function App() {
             element={(
               <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
                 <FranchisePricingCredits franchiseMode />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/franchise/online-payment"
+            element={(
+              <ProtectedRoute allowedRoles={[...FRANCHISE_ROLES, ...ADMIN_ROLES]}>
+                <OnlinePayment />
               </ProtectedRoute>
             )}
           />

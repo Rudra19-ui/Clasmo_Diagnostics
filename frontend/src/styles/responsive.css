@@ -306,11 +306,11 @@ body.nav-scroll-lock {
     max-height: none;
     position: static;
     border-right: none;
-    border-bottom: 1px solid var(--gray-border);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .admin-sidebar-nav {
-    max-height: 280px;
+    max-height: 320px;
   }
 
   .role-management-layout,

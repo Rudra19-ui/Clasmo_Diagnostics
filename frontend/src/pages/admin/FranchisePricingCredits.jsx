@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Layout from '../../components/Layout';
 import { useAuth } from '../../context/AuthContext';
+import { notifyWalletUpdated } from '../../components/WalletBalanceBadge';
 import { api } from '../../services/api';
 import { FRANCHISE_ROLES, ROLE_LABELS, ROLES } from '../../utils/roles';
 
@@ -27,6 +28,10 @@ function emptyTopUp() {
   return { user_id: '', amount: '', note: '' };
 }
 
+function emptyAdjust() {
+  return { user_id: '', mode: 'credit', amount: '', note: '' };
+}
+
 export default function FranchisePricingCredits({ franchiseMode = false }) {
   const { user } = useAuth();
   const isAdmin = user?.role === ROLES.ADMIN || user?.role === ROLES.SUPER_ADMIN;
@@ -39,9 +44,11 @@ export default function FranchisePricingCredits({ franchiseMode = false }) {
   const [wallets, setWallets] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [topUp, setTopUp] = useState(emptyTopUp());
+  const [adjust, setAdjust] = useState(emptyAdjust());
   const [loading, setLoading] = useState(true);
   const [savingRates, setSavingRates] = useState(false);
   const [toppingUp, setToppingUp] = useState(false);
+  const [adjusting, setAdjusting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -143,11 +150,38 @@ export default function FranchisePricingCredits({ franchiseMode = false }) {
       });
       setSuccess('Credits added successfully.');
       setTopUp(emptyTopUp());
+      notifyWalletUpdated();
       await loadAll();
     } catch (err) {
       setError(err.message || 'Unable to add credits.');
     } finally {
       setToppingUp(false);
+    }
+  };
+
+  const handleAdjust = async () => {
+    if (!adjust.user_id || adjust.amount === '') {
+      setError('Select a franchise wallet and enter an amount.');
+      return;
+    }
+    setAdjusting(true);
+    setError('');
+    setSuccess('');
+    try {
+      const result = await api.adjustWallet({
+        user_id: Number(adjust.user_id),
+        mode: adjust.mode,
+        amount: adjust.amount,
+        note: adjust.note,
+      });
+      setSuccess(result.detail || 'Wallet adjusted successfully.');
+      setAdjust(emptyAdjust());
+      notifyWalletUpdated();
+      await loadAll();
+    } catch (err) {
+      setError(err.message || 'Unable to adjust wallet.');
+    } finally {
+      setAdjusting(false);
     }
   };
 
@@ -167,12 +201,21 @@ export default function FranchisePricingCredits({ franchiseMode = false }) {
           </ul>
         </nav>
 
-        <h2 className="page-heading">Franchise Pricing &amp; Credits</h2>
+        <h2 className="page-heading">{isAdmin ? 'Franchise Credits & Pricing' : 'Franchise Pricing & Credits'}</h2>
         <p className="portfolio-intro">
           {SCOPE_HINT[user?.role] || 'Wallet balances and commission activity in your scope.'}
           {' '}
-          Bookings debit the actor&apos;s wallet. Reports cannot be released while that balance is negative.
+          Bookings debit the actor&apos;s wallet (may go negative). Parent wallets are credited
+          with cascade margin (selling price − buying/assigned price):
+          Sub entry → Prime + Supreme; Prime entry → Supreme only.
+          Reports cannot be released while the booking actor&apos;s balance is negative.
         </p>
+
+        {isFranchise && (
+          <p className="portfolio-intro">
+            <Link to="/franchise/online-payment">Add credits online →</Link>
+          </p>
+        )}
 
         {isFranchise && user?.role === ROLES.SUPER_FRANCHISEE && (
           <p className="portfolio-intro">
@@ -328,6 +371,64 @@ export default function FranchisePricingCredits({ franchiseMode = false }) {
               </label>
               <button type="button" className="btn-primary" onClick={handleTopUp} disabled={toppingUp}>
                 {toppingUp ? 'Adding…' : 'Add credits'}
+              </button>
+            </div>
+          </section>
+        )}
+
+        {isAdmin && (
+          <section className="content-panel">
+            <h3 className="test-addition-subtitle">Adjust or reset balance</h3>
+            <p className="portfolio-intro">Use for offline settlements — credit, debit, or set an exact balance.</p>
+            <div className="franchise-report-filters">
+              <label>
+                <span>Franchise wallet</span>
+                <select
+                  value={adjust.user_id}
+                  onChange={(e) => setAdjust((prev) => ({ ...prev, user_id: e.target.value }))}
+                >
+                  <option value="">Select user</option>
+                  {franchiseWallets.map((wallet) => (
+                    <option key={wallet.user_id} value={wallet.user_id}>
+                      {wallet.display_name || wallet.username}
+                      {' '}
+                      — ₹{Number(wallet.balance).toFixed(2)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                <span>Action</span>
+                <select
+                  value={adjust.mode}
+                  onChange={(e) => setAdjust((prev) => ({ ...prev, mode: e.target.value }))}
+                >
+                  <option value="credit">Add credit</option>
+                  <option value="debit">Deduct credit</option>
+                  <option value="set_balance">Set exact balance</option>
+                </select>
+              </label>
+              <label>
+                <span>{adjust.mode === 'set_balance' ? 'Target balance (₹)' : 'Amount (₹)'}</span>
+                <input
+                  type="number"
+                  min={adjust.mode === 'set_balance' ? '0' : '0.01'}
+                  step="0.01"
+                  value={adjust.amount}
+                  onChange={(e) => setAdjust((prev) => ({ ...prev, amount: e.target.value }))}
+                />
+              </label>
+              <label>
+                <span>Note</span>
+                <input
+                  type="text"
+                  value={adjust.note}
+                  onChange={(e) => setAdjust((prev) => ({ ...prev, note: e.target.value }))}
+                  placeholder="Settlement note"
+                />
+              </label>
+              <button type="button" className="btn-orange" onClick={handleAdjust} disabled={adjusting}>
+                {adjusting ? 'Saving…' : 'Apply adjustment'}
               </button>
             </div>
           </section>

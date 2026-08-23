@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import BarcodeLinkForm from '../../components/BarcodeLinkForm';
 import Footer from '../../components/Footer';
 import Layout from '../../components/Layout';
@@ -10,6 +10,7 @@ import {
   sanitizeBarcodeScannedValue,
   validateSampleBarcodes,
 } from '../../utils/barcodeScan';
+import { getEntrySectionPaths } from '../../utils/entrySection';
 import { getEffectiveTestPrice, withEffectivePrice } from '../../utils/testPricing';
 
 import { resolveFranchiseBooking } from './resolveBooking';
@@ -65,6 +66,8 @@ function buildSampleGroups(tests) {
 }
 
 export default function TestAddition() {
+  const location = useLocation();
+  const entryPaths = getEntrySectionPaths(location.pathname);
   const [searchParams] = useSearchParams();
   const [barcode, setBarcode] = useState(searchParams.get('barcode') || '');
   const [labCode, setLabCode] = useState(searchParams.get('labCode') || '');
@@ -313,13 +316,13 @@ export default function TestAddition() {
   const patient = registration?.patient;
 
   return (
-    <Layout activePage="manage-booking">
+    <Layout activePage={entryPaths.activePage}>
       <main className="dash-main franchise-module-page">
         <header className="franchise-booking-header">
           <nav className="breadcrumb" aria-label="Breadcrumb">
             <ul>
               <li><Link to="/dashboard">Home</Link></li>
-              <li><Link to="/franchise/manage-booking/list">Entry Section</Link></li>
+              <li><Link to={entryPaths.list}>Entry Section</Link></li>
               <li>Test Addition</li>
             </ul>
           </nav>

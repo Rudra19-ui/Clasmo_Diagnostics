@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Layout from '../../components/Layout';
 import ReportSectionTable from '../../components/franchise/ReportSectionTable';
 import { api } from '../../services/api';
 import { sanitizeBarcodeScannedValue } from '../../utils/barcodeScan';
+import { getReportSectionPaths } from '../../utils/reportSection';
 
 const EMPTY = {
   doctor: '',
@@ -15,6 +16,8 @@ const EMPTY = {
 };
 
 export default function SearchReports() {
+  const location = useLocation();
+  const reportPaths = getReportSectionPaths(location.pathname);
   const [filters, setFilters] = useState(EMPTY);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -48,13 +51,13 @@ export default function SearchReports() {
   };
 
   return (
-    <Layout activePage="manage-reports">
+    <Layout activePage={reportPaths.activePage}>
       <main className="dash-main franchise-module-page">
         <header className="franchise-booking-header">
           <nav className="breadcrumb" aria-label="Breadcrumb">
             <ul>
               <li><Link to="/dashboard">Home</Link></li>
-              <li><Link to="/franchise/manage-reports/all">Report Section</Link></li>
+              <li><Link to={reportPaths.all}>Report Section</Link></li>
               <li>Search Reports</li>
             </ul>
           </nav>

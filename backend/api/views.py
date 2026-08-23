@@ -1,6 +1,7 @@
 import logging
 import os
 from datetime import datetime, timedelta
+from decimal import Decimal
 
 from django.shortcuts import get_object_or_404
 
@@ -336,7 +337,6 @@ class TestListView(generics.ListAPIView):
     def list(self, request, *args, **kwargs):
         """Fast path: prefetch franchise rates once, avoid N+1 SerializerMethodField queries."""
         from decimal import Decimal
-        from .models import FranchiseTestRate
         from .zone_rates import (
             effective_test_price_for_test,
             get_zone_franchise_rate,
@@ -344,14 +344,13 @@ class TestListView(generics.ListAPIView):
         )
 
         actor = request.user
-        franchise_rates = None
+        franchise_rates_index = None
         zone = None
         rate_row = None
         if getattr(actor, 'role', None) in User.FRANCHISE_ROLES:
-            franchise_rates = dict(
-                FranchiseTestRate.objects.filter(franchise_user_id=actor.id)
-                .values_list('test_id', 'rate_pct')
-            )
+            from .zone_rates import build_franchise_rates_index, franchise_ancestor_chain
+            chain_ids = [u.id for u in franchise_ancestor_chain(actor)]
+            franchise_rates_index = build_franchise_rates_index(chain_ids)
             zone = resolve_zone_for_rates(actor=actor)
             rate_row = get_zone_franchise_rate(zone) if zone else None
 
@@ -370,7 +369,7 @@ class TestListView(generics.ListAPIView):
                 actor=actor,
                 zone=zone,
                 rate_row=rate_row,
-                franchise_test_rates=franchise_rates,
+                franchise_rates_index=franchise_rates_index,
             )
             category = test.category
             rows.append({
@@ -1631,18 +1630,34 @@ class RegistrationAddTestsView(APIView):
         if missing:
             return Response({'detail': f'Unknown test ids: {missing}'}, status=status.HTTP_400_BAD_REQUEST)
 
-        RegistrationTest.objects.bulk_create([
-            RegistrationTest(
-                registration=registration,
-                test=tests_by_id[tid],
-                price=(
-                    tests_by_id[tid].mrp
-                    if tests_by_id[tid].mrp and float(tests_by_id[tid].mrp) > 0
-                    else tests_by_id[tid].price
-                ),
+        from .zone_rates import effective_test_price_for_test
+
+        created_rows = []
+        addition_charge = Decimal('0.00')
+        for tid in new_ids:
+            test = tests_by_id[tid]
+            line_price = effective_test_price_for_test(test=test, actor=request.user)
+            if line_price <= 0:
+                line_price = (
+                    test.mrp
+                    if test.mrp and float(test.mrp) > 0
+                    else test.price
+                )
+            created_rows.append(
+                RegistrationTest(
+                    registration=registration,
+                    test=test,
+                    price=line_price,
+                )
             )
-            for tid in new_ids
-        ])
+            addition_charge += Decimal(str(line_price or 0))
+
+        RegistrationTest.objects.bulk_create(created_rows)
+        added_line_ids = list(
+            registration.tests.filter(test_id__in=new_ids)
+            .order_by('id')
+            .values_list('id', flat=True)
+        )
 
         sample_barcodes = request.data.get('sample_barcodes') or []
         if sample_barcodes:
@@ -1689,12 +1704,20 @@ class RegistrationAddTestsView(APIView):
             'payment_method',
         ])
 
+        from .wallet_service import settle_registration_test_addition
+        net_debit = addition_charge - Decimal(str(addition_discount_test + addition_discount_regn))
+        if net_debit < 0:
+            net_debit = Decimal('0.00')
+        settle_registration_test_addition(
+            registration,
+            added_line_ids=added_line_ids,
+            debit_amount=net_debit,
+            created_by=request.user,
+        )
+
         from .franchise_ledger import record_ledger_event
         from .models import FranchiseLedgerEvent
-        addition_amount = sum(
-            float(tests_by_id[tid].mrp or tests_by_id[tid].price)
-            for tid in new_ids
-        )
+        addition_amount = float(addition_charge)
         record_ledger_event(
             event_type=FranchiseLedgerEvent.TYPE_TEST_ADDITION,
             amount=addition_amount,
@@ -2179,10 +2202,9 @@ class RegistrationCreateView(APIView):
             except BarcodeLinkError as exc:
                 raise DRFValidationError({exc.field or 'sample_barcodes': exc.message})
 
-        from .wallet_service import debit_registration_charge, distribute_registration_commissions
+        from .wallet_service import settle_registration_booking
         registration.refresh_from_db()
-        debit_registration_charge(registration, created_by=request.user)
-        distribute_registration_commissions(registration, created_by=request.user)
+        settle_registration_booking(registration, created_by=request.user)
 
         from .franchise_ledger import record_ledger_event, registration_mrp_total
         from .models import FranchiseLedgerEvent
@@ -2400,7 +2422,12 @@ class UserListView(generics.ListAPIView):
         active = self.request.query_params.get('is_active')
         if active in ('1', 'true', 'True'):
             qs = qs.filter(is_active=True)
-        return scope_users_for_user(self.request.user, qs)
+        qs = scope_users_for_user(self.request.user, qs)
+        from .zone_rates import downstream_franchise_role_for_manager
+        expected = downstream_franchise_role_for_manager(self.request.user)
+        if expected and role == expected:
+            qs = qs.filter(parent_franchisee_id=self.request.user.id)
+        return qs
 
 
 class ZoneListView(APIView):

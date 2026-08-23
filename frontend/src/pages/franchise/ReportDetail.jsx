@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Layout from '../../components/Layout';
 import { api } from '../../services/api';
+import { getEntrySectionPaths } from '../../utils/entrySection';
+import { getReportSectionPaths } from '../../utils/reportSection';
 
 function getSampleTypes(sampleType) {
   const raw = (sampleType || 'General').trim();
@@ -62,6 +64,13 @@ function testStatusLabel(testId, registration, report) {
 
 export default function ReportDetail() {
   const { labCode } = useParams();
+  const location = useLocation();
+  const reportPaths = getReportSectionPaths(location.pathname);
+  const entryPaths = getEntrySectionPaths(
+    location.pathname.startsWith('/franchise')
+      ? '/franchise/manage-booking'
+      : '/entry',
+  );
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const from = searchParams.get('from') || 'all';
@@ -72,10 +81,7 @@ export default function ReportDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const backHref = from === 'search'
-    ? '/franchise/manage-reports/search'
-    : '/franchise/manage-reports/all';
-
+  const backHref = from === 'search' ? reportPaths.search : reportPaths.all;
   const loadDetail = useCallback(async () => {
     if (!labCode) return;
     setLoading(true);
@@ -128,7 +134,7 @@ export default function ReportDetail() {
   const bookingDate = formatBookingDate(registration?.registration_date || registration?.created_at);
 
   return (
-    <Layout activePage="manage-reports">
+    <Layout activePage={reportPaths.activePage}>
       <main className="dash-main franchise-module-page report-detail-page">
         <header className="franchise-booking-header">
           <nav className="breadcrumb" aria-label="Breadcrumb">
@@ -201,7 +207,7 @@ export default function ReportDetail() {
                   ← Go Back
                 </button>
                 <Link
-                  to={`/franchise/manage-booking/list?labCode=${encodeURIComponent(registration.lab_code)}`}
+                  to={`${entryPaths.list}?labCode=${encodeURIComponent(registration.lab_code)}`}
                   className="btn-primary report-detail-action report-detail-action--edit"
                 >
                   Edit Booking Details

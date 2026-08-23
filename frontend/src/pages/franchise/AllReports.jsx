@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Layout from '../../components/Layout';
 import ReportSectionTable from '../../components/franchise/ReportSectionTable';
 import { api } from '../../services/api';
+import { getReportSectionPaths } from '../../utils/reportSection';
 
 function toApiDate(value) {
   if (!value) return '';
@@ -13,6 +14,8 @@ function toApiDate(value) {
 }
 
 export default function AllReports() {
+  const location = useLocation();
+  const reportPaths = getReportSectionPaths(location.pathname);
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [rows, setRows] = useState([]);
@@ -57,13 +60,13 @@ export default function AllReports() {
   }, [load]);
 
   return (
-    <Layout activePage="manage-reports">
+    <Layout activePage={reportPaths.activePage}>
       <main className="dash-main franchise-module-page">
         <header className="franchise-booking-header">
           <nav className="breadcrumb" aria-label="Breadcrumb">
             <ul>
               <li><Link to="/dashboard">Home</Link></li>
-              <li><Link to="/franchise/manage-reports/all">Report Section</Link></li>
+              <li><Link to={reportPaths.all}>Report Section</Link></li>
               <li>All Reports</li>
             </ul>
           </nav>

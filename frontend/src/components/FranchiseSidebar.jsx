@@ -15,9 +15,31 @@ function canSeeNavItem(item, role) {
 
 function menuIdForPath(pathname) {
   if (pathname.startsWith('/franchise/manage-reports')) return 'manage-reports';
+  if (pathname.startsWith('/reports-section')) return 'registration-report';
   if (pathname.startsWith('/franchise/manage-booking')) return 'manage-booking';
+  if (pathname.startsWith('/entry') || pathname.startsWith('/registration') || pathname.startsWith('/barcode-link')) {
+    return 'registration-entry';
+  }
+  if (pathname.startsWith('/test-result')) return 'registration-report';
+  if (pathname.startsWith('/notifications/find-barcode') || pathname.startsWith('/franchise/find-barcode')) {
+    return 'find-barcode';
+  }
+  if (pathname.startsWith('/notifications/clinical-history') || pathname.startsWith('/franchise/clinical-history')) {
+    return 'clinical-history';
+  }
+  if (pathname.startsWith('/notifications/test-cancellation') || pathname.startsWith('/franchise/test-cancellation')) {
+    return 'test-cancellation';
+  }
+  if (pathname.startsWith('/notifications/extra-sample') || pathname.startsWith('/franchise/extra-sample')) {
+    return 'extra-sample';
+  }
+  if (pathname.startsWith('/sample-scan')) return 'sample-scan';
+  if (pathname.startsWith('/hold-tests') || pathname.startsWith('/franchise/hold')) return 'hold-tests';
+  if (pathname.startsWith('/sample-rejection') || pathname.startsWith('/franchise/rejection')) {
+    return 'sample-rejection';
+  }
   if (pathname.startsWith('/portfolio/')) return 'test-portfolio';
-  if (pathname.startsWith('/reports')) return 'reports';
+  if (pathname === '/reports' || pathname.startsWith('/reports#')) return 'reports';
   if (pathname.startsWith('/device/')) return 'device-request';
   return null;
 }
@@ -38,6 +60,15 @@ function isItemActive(item, location, activePage) {
   }
   if (item.id === 'manage-reports') {
     return location.pathname.startsWith('/franchise/manage-reports');
+  }
+  if (item.id === 'registration-entry') {
+    return location.pathname.startsWith('/entry')
+      || location.pathname.startsWith('/registration')
+      || location.pathname.startsWith('/barcode-link');
+  }
+  if (item.id === 'registration-report') {
+    return location.pathname.startsWith('/reports-section')
+      || location.pathname.startsWith('/test-result');
   }
   if (item.id === 'administration') {
     const franchiseMainPaths = [
@@ -70,7 +101,7 @@ function isItemActive(item, location, activePage) {
   if (item.id === 'package-list' && location.pathname === '/portfolio/test-profile') return true;
   if (item.id === 'reports-format' && location.pathname === '/portfolio/sample-report') return true;
   if (item.id === 'reports') {
-    return location.pathname.startsWith('/reports');
+    return location.pathname === '/reports' || location.pathname.startsWith('/reports#');
   }
   if (item.id === 'device-request') {
     return location.pathname.startsWith('/device/');
@@ -95,6 +126,7 @@ function NavRow({
     'franchise-nav-link',
     isActive ? 'is-active' : '',
     item.accent ? 'is-accent' : '',
+    item.action === 'logout' || item.icon === 'logout' ? 'is-logout' : '',
   ].filter(Boolean).join(' ');
 
   const content = (

@@ -15,7 +15,7 @@ export default function Help() {
           </ul>
           <h3>Quick guides</h3>
           <ul>
-            <li><Link to="/registration">How to register a patient test</Link></li>
+            <li><Link to="/entry/new">How to register a patient test</Link></li>
             <li><Link to="/search">How to search records</Link></li>
             <li><Link to="/test-result">How to enter and authorize results</Link></li>
           </ul>

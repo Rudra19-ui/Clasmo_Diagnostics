@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Footer from '../components/Footer';
 import Layout from '../components/Layout';
 import GenderRadioGroup from '../components/GenderRadioGroup';
 import BarcodeLinkForm, { validateSampleBarcodes } from '../components/BarcodeLinkForm';
 import TestDualListPicker from '../components/TestDualListPicker';
 import { buildSampleBarcodePayload } from '../utils/barcodeScan';
+import { getEntrySectionPaths } from '../utils/entrySection';
 import { useSystemDateTime } from '../hooks/useSystemDateTime';
 import { api } from '../services/api';
 import { withEffectivePrice } from '../utils/testPricing';
@@ -69,7 +70,10 @@ export default function Registration({
   pageTitle = '',
   successNoun = 'Registration',
 }) {
-  const isFranchiseBooking = activePage === 'manage-booking';
+  const location = useLocation();
+  const entryPaths = getEntrySectionPaths(location.pathname);
+  const isEntrySection = activePage === 'manage-booking' || activePage === 'registration-entry';
+  const resolvedActivePage = isEntrySection ? entryPaths.activePage : activePage;
   const [patient, setPatient] = useState(emptyPatient());
   const [tests, setTests] = useState([]);
   const [testsLoading, setTestsLoading] = useState(true);
@@ -275,14 +279,14 @@ export default function Registration({
   };
 
   return (
-    <Layout activePage={activePage}>
+    <Layout activePage={resolvedActivePage}>
       <main className="dash-main page-registration page-registration-sketch">
-        {isFranchiseBooking && (
+        {isEntrySection && (
           <header className="franchise-booking-header">
             <nav className="breadcrumb" aria-label="Breadcrumb">
               <ul>
                 <li><Link to="/dashboard">Home</Link></li>
-                <li><Link to="/franchise/manage-booking/list">Entry Section</Link></li>
+                <li><Link to={entryPaths.list}>Entry Section</Link></li>
                 <li>{pageTitle || 'New Entry'}</li>
               </ul>
             </nav>

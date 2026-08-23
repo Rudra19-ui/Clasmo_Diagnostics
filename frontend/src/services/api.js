@@ -411,12 +411,17 @@ export const api = {
     request('/wallets/pricing-overrides/me/', { method: 'PUT', body: JSON.stringify(payload) }),
   topUpWallet: (payload) =>
     request('/wallets/top-up/', { method: 'POST', body: JSON.stringify(payload) }),
+  adjustWallet: (payload) =>
+    request('/wallets/adjust/', { method: 'POST', body: JSON.stringify(payload) }),
+  onlineTopUpWallet: (payload) =>
+    request('/wallets/online-top-up/', { method: 'POST', body: JSON.stringify(payload) }),
   getWalletCommissionConfig: () => request('/wallets/commission-config/'),
   getZones: () => request('/zones/'),
   getFranchiseTestRates: (params = {}) => {
     const query = new URLSearchParams(
       Object.fromEntries(Object.entries(params).filter(([, value]) => value !== '' && value != null)),
     ).toString();
+    // Trailing slash avoids Django APPEND_SLASH 301 (can drop auth on redirect).
     return request(`/wallets/franchise-test-rates/${query ? `?${query}` : ''}`);
   },
   saveFranchiseTestRates: (payload) =>

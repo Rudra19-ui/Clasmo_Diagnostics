@@ -162,6 +162,205 @@ def markup_on_franchisee_price(*, catalog_price, rate_pct) -> Decimal:
     return _money(catalog * (Decimal('1') + rate / Decimal('100')))
 
 
+def catalog_base_for_test(test) -> Decimal:
+    """Admin/Supreme upstream base before any franchise markup."""
+    catalog = _money(getattr(test, 'price', 0))
+    mrp = _money(getattr(test, 'mrp', 0))
+    return catalog if catalog > 0 else mrp
+
+
+def franchise_ancestor_chain(franchise_user) -> list:
+    """Leaf → root franchise users (actor first, then parents)."""
+    if not franchise_user or franchise_user.role not in User.FRANCHISE_ROLES:
+        return []
+    chain = []
+    seen: set[int] = set()
+    node = franchise_user
+    while node is not None and node.role in User.FRANCHISE_ROLES:
+        if node.id in seen:
+            break
+        seen.add(node.id)
+        chain.append(node)
+        node = node.parent_franchisee
+    return chain
+
+
+def build_franchise_rates_index(user_ids) -> dict[int, dict[int, Decimal]]:
+    """Map franchise_user_id → {test_id: rate_pct} for bulk pricing lookups."""
+    if not user_ids:
+        return {}
+    from .models import FranchiseTestRate
+
+    index: dict[int, dict[int, Decimal]] = {}
+    for uid, tid, pct in FranchiseTestRate.objects.filter(
+        franchise_user_id__in=user_ids,
+    ).values_list('franchise_user_id', 'test_id', 'rate_pct'):
+        index.setdefault(uid, {})[tid] = _money(pct)
+    return index
+
+
+def rate_pct_for_franchise_user(
+    *,
+    franchise_user,
+    test_id: int,
+    rates_index: dict[int, dict[int, Decimal]] | None,
+    default: Decimal | None = None,
+) -> Decimal | None:
+    """Saved bulk markup % for a franchise user/test, or default when unset."""
+    if rates_index and franchise_user.id in rates_index:
+        user_rates = rates_index[franchise_user.id]
+        if test_id in user_rates:
+            return user_rates[test_id]
+    if default is not None:
+        return _money(default)
+    return None
+
+
+def assigned_price_for_franchise_user(
+    *,
+    franchise_user,
+    test,
+    zone=None,
+    rate_row=None,
+    rates_index: dict[int, dict[int, Decimal]] | None = None,
+    cache: dict | None = None,
+    _visit: set | None = None,
+) -> Decimal:
+    """
+    Final price assigned to a franchise tier for a test.
+
+    Cascade: upstream base (parent's assigned price, or catalog for Supreme)
+    × (1 + this tier's saved bulk Rate%/100). Default rate is 0%.
+    Falls back to zone % of MRP when no bulk rates exist anywhere on the chain.
+    """
+    if not franchise_user or franchise_user.role not in User.FRANCHISE_ROLES:
+        return catalog_base_for_test(test)
+
+    test_id = getattr(test, 'id', test)
+    cache_key = (franchise_user.id, test_id)
+    if cache is not None and cache_key in cache:
+        return cache[cache_key]
+
+    if _visit is None:
+        _visit = set()
+    if franchise_user.id in _visit:
+        result = catalog_base_for_test(test)
+        if cache is not None:
+            cache[cache_key] = result
+        return result
+    _visit.add(franchise_user.id)
+
+    parent = franchise_user.parent_franchisee
+    if parent and parent.role in User.FRANCHISE_ROLES:
+        upstream = assigned_price_for_franchise_user(
+            franchise_user=parent,
+            test=test,
+            zone=zone,
+            rate_row=rate_row,
+            rates_index=rates_index,
+            cache=cache,
+            _visit=_visit,
+        )
+    else:
+        upstream = catalog_base_for_test(test)
+
+    saved_rate = rate_pct_for_franchise_user(
+        franchise_user=franchise_user,
+        test_id=test_id,
+        rates_index=rates_index,
+        default=None,
+    )
+    if saved_rate is not None:
+        result = markup_on_franchisee_price(catalog_price=upstream, rate_pct=saved_rate)
+        if cache is not None:
+            cache[cache_key] = result
+        return result
+
+    # No saved bulk rate on this tier — use 0% markup (assigned = upstream).
+    if upstream > 0:
+        result = _money(upstream)
+        if cache is not None:
+            cache[cache_key] = result
+        return result
+
+    # Legacy fallback: zone % of MRP when catalog/upstream is zero.
+    if zone is None:
+        zone = resolve_zone_for_rates(actor=franchise_user)
+    row = rate_row
+    if row is None and zone is not None:
+        row = get_zone_franchise_rate(zone)
+    pct = price_pct_for_actor(row, franchise_user)
+    mrp_val = _money(getattr(test, 'mrp', 0))
+    catalog = _money(getattr(test, 'price', 0))
+    base = mrp_val if mrp_val > 0 else catalog
+    result = _money(base * pct / Decimal('100')) if base > 0 else Decimal('0.00')
+    if cache is not None:
+        cache[cache_key] = result
+    return result
+
+
+def upstream_franchisee_price_for_test(
+    *,
+    franchise_user,
+    test,
+    zone=None,
+    rate_row=None,
+    rates_index: dict[int, dict[int, Decimal]] | None = None,
+    cache: dict | None = None,
+) -> Decimal:
+    """
+    Base shown in the Franchisee Price column when a manager sets downstream bulk rates.
+    Supreme→Prime uses Supreme's assigned price; Prime→Sub uses Prime's assigned price.
+    Admin→Supreme uses catalog/MRP.
+    """
+    parent = getattr(franchise_user, 'parent_franchisee', None)
+    if parent and parent.role in User.FRANCHISE_ROLES:
+        return assigned_price_for_franchise_user(
+            franchise_user=parent,
+            test=test,
+            zone=zone,
+            rate_row=rate_row,
+            rates_index=rates_index,
+            cache=cache,
+        )
+    return catalog_base_for_test(test)
+
+
+def bulk_pricing_row_for_test(
+    *,
+    franchise_user,
+    test,
+    saved_rate_pct: Decimal,
+    zone=None,
+    rate_row=None,
+    rates_index: dict[int, dict[int, Decimal]] | None = None,
+    cache: dict | None = None,
+) -> dict:
+    """Build one rate-list row for bulk pricing UI/API."""
+    franchisee_price = upstream_franchisee_price_for_test(
+        franchise_user=franchise_user,
+        test=test,
+        zone=zone,
+        rate_row=rate_row,
+        rates_index=rates_index,
+        cache=cache,
+    )
+    assigned = markup_on_franchisee_price(
+        catalog_price=franchisee_price,
+        rate_pct=saved_rate_pct,
+    )
+    mrp = _money(getattr(test, 'mrp', 0))
+    catalog = _money(getattr(test, 'price', 0))
+    return {
+        'mrp': str(mrp),
+        'catalog_price': str(catalog),
+        'franchisee_price': str(franchisee_price),
+        'rate_pct': str(saved_rate_pct),
+        'assigned_price': str(assigned),
+        'final_price': str(assigned),
+    }
+
+
 def price_pct_for_actor(rate_row: ZoneFranchiseRate | None, actor, *, test=None) -> Decimal:
     """Admin base + Supreme/Prime cascade overrides (zone % of MRP)."""
     if not actor or actor.role not in User.FRANCHISE_ROLES:
@@ -278,55 +477,44 @@ def effective_test_price_for_test(
     rate_row=None,
     franchise_test_rates=None,
     custom_rate_pct=None,
+    franchise_rates_index=None,
 ) -> Decimal:
-    """Resolve price for a specific Test row (supports per-test franchise markup rates).
-
-    Pass franchise_test_rates={test_id: rate_pct} to avoid N+1 queries in list views.
-    """
+    """Resolve booking price for a franchise actor (cascading assigned prices)."""
     mrp_val = _money(getattr(test, 'mrp', 0))
     catalog = _money(getattr(test, 'price', 0))
     resolved_role = actor.role if actor else None
     if resolved_role not in User.FRANCHISE_ROLES:
         return catalog if catalog > 0 else mrp_val
 
-    rate_value = None
-    if custom_rate_pct is not None:
-        rate_value = custom_rate_pct
-    elif franchise_test_rates is not None and test is not None:
-        test_id = getattr(test, 'id', test)
-        if test_id in franchise_test_rates:
-            rate_value = franchise_test_rates[test_id]
-    elif actor is not None and test is not None:
-        from .models import FranchiseTestRate
-        test_id = getattr(test, 'id', test)
-        custom = FranchiseTestRate.objects.filter(
-            franchise_user_id=actor.id,
-            test_id=test_id,
-        ).only('rate_pct').first()
-        if custom is not None:
-            rate_value = custom.rate_pct
-
-    if rate_value is not None:
-        # Bulk pricing rate = % increase on Franchisee Price (catalog).
-        if catalog > 0:
-            return markup_on_franchisee_price(catalog_price=catalog, rate_pct=rate_value)
-        if mrp_val > 0:
-            return markup_on_franchisee_price(catalog_price=mrp_val, rate_pct=rate_value)
-        return Decimal('0.00')
-
-    row = rate_row
-    if row is None and zone is not None:
-        row = get_zone_franchise_rate(zone)
-    elif row is None and actor is not None:
+    if zone is None and actor is not None:
         zone = resolve_zone_for_rates(actor=actor)
-        if zone is not None:
-            row = get_zone_franchise_rate(zone)
+    if rate_row is None and zone is not None:
+        rate_row = get_zone_franchise_rate(zone)
 
-    pct = price_pct_for_actor(row, actor) if actor else price_pct_for_role(row, resolved_role)
-    base = mrp_val if mrp_val > 0 else catalog
-    if base <= 0:
-        return Decimal('0.00')
-    return _money(base * pct / Decimal('100'))
+    rates_index = franchise_rates_index
+    if rates_index is None and actor is not None:
+        chain_ids = [u.id for u in franchise_ancestor_chain(actor)]
+        rates_index = build_franchise_rates_index(chain_ids)
+    elif rates_index is None and franchise_test_rates is not None:
+        rates_index = {actor.id: franchise_test_rates}
+
+    if custom_rate_pct is not None and actor is not None:
+        upstream = upstream_franchisee_price_for_test(
+            franchise_user=actor,
+            test=test,
+            zone=zone,
+            rate_row=rate_row,
+            rates_index=rates_index,
+        )
+        return markup_on_franchisee_price(catalog_price=upstream, rate_pct=custom_rate_pct)
+
+    return assigned_price_for_franchise_user(
+        franchise_user=actor,
+        test=test,
+        zone=zone,
+        rate_row=rate_row,
+        rates_index=rates_index,
+    )
 
 
 def rates_are_active(*, registration=None, actor=None) -> bool:
@@ -335,3 +523,101 @@ def rates_are_active(*, registration=None, actor=None) -> bool:
     if row is not None:
         return bool(row.is_active)
     return bool(FranchiseCommissionConfig.get_solo().is_active)
+
+
+def compute_tier_margin_credits(
+    *,
+    actor,
+    line_items,
+    zone=None,
+    rates_index: dict[int, dict[int, Decimal]] | None = None,
+) -> dict[int, dict]:
+    """
+    Multi-tier margin = selling price − buying price along the franchise chain.
+
+    For each booked line (test, selling_price):
+      - Direct parent margin uses the charged selling price vs parent's assigned (buying) price
+      - Higher ancestors use each child's assigned price as selling into the next tier
+
+    Returns {beneficiary_user_id: {'user', 'amount', 'lines'}} where lines hold
+    per-test selling/buying/margin snapshots.
+    """
+    if not actor or actor.role not in User.FRANCHISE_ROLES or not line_items:
+        return {}
+
+    chain = franchise_ancestor_chain(actor)
+    if len(chain) < 2:
+        return {}
+
+    if zone is None:
+        zone = resolve_zone_for_rates(actor=actor)
+    if rates_index is None:
+        rates_index = build_franchise_rates_index([user.id for user in chain])
+
+    price_cache: dict = {}
+    credits: dict[int, dict] = {}
+
+    for item in line_items:
+        if isinstance(item, (list, tuple)):
+            test, selling_raw, line_id = (item[0], item[1], item[2] if len(item) > 2 else None)
+        else:
+            test = item.get('test')
+            selling_raw = item.get('selling_price')
+            line_id = item.get('line_id')
+        if test is None:
+            continue
+
+        selling = _money(selling_raw)
+        if selling <= 0:
+            # Fall back to actor assigned price when line price is missing.
+            selling = assigned_price_for_franchise_user(
+                franchise_user=actor,
+                test=test,
+                zone=zone,
+                rates_index=rates_index,
+                cache=price_cache,
+            )
+        if selling <= 0:
+            continue
+
+        for index in range(len(chain) - 1):
+            child = chain[index]
+            parent = chain[index + 1]
+            if index == 0:
+                child_selling = selling
+            else:
+                child_selling = assigned_price_for_franchise_user(
+                    franchise_user=child,
+                    test=test,
+                    zone=zone,
+                    rates_index=rates_index,
+                    cache=price_cache,
+                )
+            buying = assigned_price_for_franchise_user(
+                franchise_user=parent,
+                test=test,
+                zone=zone,
+                rates_index=rates_index,
+                cache=price_cache,
+            )
+            margin = _money(child_selling - buying)
+            if margin <= 0:
+                continue
+
+            bucket = credits.setdefault(
+                parent.id,
+                {'user': parent, 'amount': Decimal('0.00'), 'lines': []},
+            )
+            bucket['amount'] = _money(bucket['amount'] + margin)
+            bucket['lines'].append({
+                'line_id': line_id,
+                'test_id': getattr(test, 'id', None),
+                'test_code': getattr(test, 'test_code', '') or '',
+                'selling_price': str(child_selling),
+                'buying_price': str(buying),
+                'margin': str(margin),
+                'child_role': child.role,
+                'parent_role': parent.role,
+            })
+
+    return credits

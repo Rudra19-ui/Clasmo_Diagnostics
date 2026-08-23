@@ -548,7 +548,7 @@ export default function Search() {
       return;
     }
     if (label === 'Registration') {
-      navigate('/registration');
+      navigate('/entry/new');
       return;
     }
     if (label === 'Print Report') {

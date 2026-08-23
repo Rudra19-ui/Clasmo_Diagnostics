@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 const NavContext = createContext(null);
 
@@ -10,9 +10,11 @@ function readInitialNavOpen() {
 export function NavProvider({ children }) {
   const [navOpen, setNavOpen] = useState(readInitialNavOpen);
   const [openMenu, setOpenMenu] = useState(null);
+  // Survives Layout remounts between routes so the sidebar does not jump to top.
+  const sidebarScrollTopRef = useRef(0);
 
   const closeNav = useCallback(() => {
-    setOpenMenu(null);
+    // Desktop sidebar stays open; do not collapse open sections (that jumps scroll upward).
     if (typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches) {
       return;
     }
@@ -22,6 +24,12 @@ export function NavProvider({ children }) {
   const toggleNav = useCallback(() => {
     setNavOpen((open) => !open);
   }, []);
+
+  const rememberSidebarScroll = useCallback((top) => {
+    sidebarScrollTopRef.current = Number(top) || 0;
+  }, []);
+
+  const getSidebarScroll = useCallback(() => sidebarScrollTopRef.current, []);
 
   useEffect(() => {
     const media = window.matchMedia('(min-width: 1024px)');
@@ -41,8 +49,10 @@ export function NavProvider({ children }) {
       setOpenMenu,
       closeNav,
       toggleNav,
+      rememberSidebarScroll,
+      getSidebarScroll,
     }),
-    [navOpen, openMenu, closeNav, toggleNav],
+    [navOpen, openMenu, closeNav, toggleNav, rememberSidebarScroll, getSidebarScroll],
   );
 
   return <NavContext.Provider value={value}>{children}</NavContext.Provider>;

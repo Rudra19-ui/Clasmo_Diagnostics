@@ -111,7 +111,7 @@ export default function OpenBarcode() {
               <p className="open-barcode-message open-barcode-message--warn">
                 This barcode is not linked to any patient yet. Register the patient in Registration and submit with this barcode.
               </p>
-              <button type="button" className="open-barcode-open-btn" onClick={() => navigate('/registration')}>
+              <button type="button" className="open-barcode-open-btn" onClick={() => navigate('/entry/new')}>
                 Go to Registration
               </button>
             </div>

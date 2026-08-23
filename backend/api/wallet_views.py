@@ -31,11 +31,16 @@ from .wallet_serializers import (
     ZoneFranchiseRateBulkSerializer,
     ZoneFranchiseRateSerializer,
     FranchiseTestRateTransferSerializer,
+    WalletAdjustmentSerializer,
+    WalletSelfTopUpSerializer,
 )
 from .wallet_service import (
     WalletError,
+    admin_adjust_wallet,
+    admin_set_wallet_balance,
     admin_top_up_wallet,
     create_demo_transactions,
+    franchise_online_top_up,
     get_or_create_wallet,
 )
 from .zone_rates import (
@@ -359,6 +364,93 @@ class WalletTopUpView(APIView):
         )
 
 
+class WalletAdjustmentView(APIView):
+    """POST /api/wallets/adjust/ — admin manual credit, debit, or balance reset."""
+
+    permission_classes = [IsAdmin]
+
+    def post(self, request):
+        serializer = WalletAdjustmentSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        user = get_object_or_404(User, pk=data['user_id'], is_active=True)
+
+        try:
+            if data['mode'] == 'set_balance':
+                txn = admin_set_wallet_balance(
+                    user=user,
+                    target_balance=data['amount'],
+                    created_by=request.user,
+                    note=data.get('note', ''),
+                )
+            elif data['mode'] == 'credit':
+                txn = admin_adjust_wallet(
+                    user=user,
+                    amount=data['amount'],
+                    direction=WalletTransaction.DIR_CREDIT,
+                    created_by=request.user,
+                    note=data.get('note', ''),
+                )
+            else:
+                txn = admin_adjust_wallet(
+                    user=user,
+                    amount=data['amount'],
+                    direction=WalletTransaction.DIR_DEBIT,
+                    created_by=request.user,
+                    note=data.get('note', ''),
+                    allow_negative=True,
+                )
+        except WalletError as exc:
+            return Response(
+                {exc.field or 'detail': exc.message},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        wallet = get_or_create_wallet(user)
+        payload = {'wallet': FranchiseWalletSerializer(wallet).data}
+        if txn:
+            payload['transaction'] = WalletTransactionSerializer(txn).data
+        else:
+            payload['detail'] = 'Balance already at target.'
+        return Response(payload, status=status.HTTP_201_CREATED)
+
+
+class WalletSelfTopUpView(APIView):
+    """POST /api/wallets/online-top-up/ — franchise credits own wallet (online payment)."""
+
+    permission_classes = [permissions.IsAuthenticated, CanAccessPricingWallet]
+
+    def post(self, request):
+        if request.user.role not in User.FRANCHISE_ROLES:
+            return Response(
+                {'detail': 'Online top-up is available for franchise accounts only.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        serializer = WalletSelfTopUpSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        try:
+            txn = franchise_online_top_up(
+                user=request.user,
+                amount=data['amount'],
+                created_by=request.user,
+                payment_reference=data.get('payment_reference', ''),
+            )
+        except WalletError as exc:
+            return Response(
+                {exc.field or 'detail': exc.message},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        wallet = get_or_create_wallet(request.user)
+        return Response(
+            {
+                'transaction': WalletTransactionSerializer(txn).data,
+                'wallet': FranchiseWalletSerializer(wallet).data,
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+
 class DemoWalletTransactionView(APIView):
     """
     POST /api/wallets/demo-transaction/
@@ -455,6 +547,14 @@ class FranchiseBulkPricingView(APIView):
         if not user_can_manage_franchise_test_rates(request.user, franchise_user):
             return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
 
+        from .zone_rates import (
+            bulk_pricing_row_for_test,
+            build_franchise_rates_index,
+            franchise_ancestor_chain,
+            resolve_zone_for_rates,
+            get_zone_franchise_rate,
+        )
+
         # Default markup % when no custom rate is saved (0 = Final equals Franchisee Price).
         default_pct = Decimal('0.00')
 
@@ -463,29 +563,39 @@ class FranchiseBulkPricingView(APIView):
             for row in FranchiseTestRate.objects.filter(franchise_user=franchise_user)
         }
 
+        zone = resolve_zone_for_rates(actor=franchise_user)
+        rate_row = get_zone_franchise_rate(zone) if zone else None
+        chain_ids = [u.id for u in franchise_ancestor_chain(franchise_user)]
+        rates_index = build_franchise_rates_index(chain_ids)
+        price_cache = {}
+
         search = (request.query_params.get('search') or '').strip().lower()
         tests = Test.objects.select_related('category').order_by('name')
         rows = []
         for idx, test in enumerate(tests, start=1):
             if search and search not in (test.name or '').lower() and search not in (test.test_code or '').lower():
                 continue
-            mrp = Decimal(str(test.mrp or 0))
-            catalog = Decimal(str(test.price or 0))
             is_custom = test.id in saved
             rate = Decimal(str(saved.get(test.id, default_pct)))
-            assigned = markup_on_franchisee_price(catalog_price=catalog, rate_pct=rate)
-            if assigned <= 0 and mrp > 0 and catalog <= 0:
-                assigned = markup_on_franchisee_price(catalog_price=mrp, rate_pct=rate)
+            pricing = bulk_pricing_row_for_test(
+                franchise_user=franchise_user,
+                test=test,
+                saved_rate_pct=rate,
+                zone=zone,
+                rate_row=rate_row,
+                rates_index=rates_index,
+                cache=price_cache,
+            )
             rows.append({
                 'index': idx,
                 'test_id': test.id,
                 'test_code': test.test_code or f'TID{test.id:06d}',
                 'test_name': test.name,
-                'mrp': str(mrp),
-                'franchisee_price': str(catalog),
-                'rate_pct': str(rate),
-                'assigned_price': str(assigned),
-                'final_price': str(assigned),
+                'mrp': pricing['mrp'],
+                'franchisee_price': pricing['franchisee_price'],
+                'rate_pct': pricing['rate_pct'],
+                'assigned_price': pricing['assigned_price'],
+                'final_price': pricing['final_price'],
                 'is_custom': is_custom,
             })
 

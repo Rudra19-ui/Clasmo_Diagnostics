@@ -1,12 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useNav } from '../context/NavContext';
 import AdminSidebar from './AdminSidebar';
 import FranchiseSidebar from './FranchiseSidebar';
 import LandingBrandTitle from './landing/LandingBrandTitle';
+import WalletBalanceBadge from './WalletBalanceBadge';
 import { getSidebarNavForRole } from '../utils/franchiseNav';
-import { ROLE_LABELS } from '../utils/roles';
+import { FRANCHISE_ROLES, ROLE_LABELS } from '../utils/roles';
 
 function formatUserDateTime(value) {
   if (!value) return '—';
@@ -35,7 +36,7 @@ export default function Layout({ activePage, children }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const { navOpen, openMenu, setOpenMenu, closeNav, toggleNav } = useNav();
+  const { navOpen, openMenu, setOpenMenu, closeNav, toggleNav, rememberSidebarScroll, getSidebarScroll } = useNav();
   const [globalQuery, setGlobalQuery] = useState('');
   const [language, setLanguage] = useState(readStoredLanguage);
   const [languageOpen, setLanguageOpen] = useState(false);
@@ -43,6 +44,7 @@ export default function Layout({ activePage, children }) {
   const [utilityNote, setUtilityNote] = useState('');
   const languageRef = useRef(null);
   const profileRef = useRef(null);
+  const sidebarRef = useRef(null);
   const isStandalonePage = activePage === 'enquire-box' || activePage === 'user-signup' || activePage === 'self-patient-query' || activePage === 'give-feedback';
   const FRANCHISE_MAIN_NAV_PATHS = [
     '/admin/list-franchisee',
@@ -59,9 +61,31 @@ export default function Layout({ activePage, children }) {
   const isPathologist = user?.role === 'pathologist';
 
   const handleSidebarClick = useCallback((event) => {
+    const sidebar = sidebarRef.current;
+    if (sidebar) rememberSidebarScroll(sidebar.scrollTop);
     const link = event.target.closest('#main-navigation a[href]');
     if (link) closeNav();
-  }, [closeNav]);
+  }, [closeNav, rememberSidebarScroll]);
+
+  // Restore before paint so route remounts do not flash the sidebar back to top.
+  useLayoutEffect(() => {
+    const sidebar = sidebarRef.current;
+    if (!sidebar) return undefined;
+
+    const saved = getSidebarScroll();
+    if (saved > 0) {
+      sidebar.scrollTop = saved;
+      requestAnimationFrame(() => {
+        if (sidebarRef.current) sidebarRef.current.scrollTop = saved;
+      });
+    }
+
+    const onScroll = () => {
+      rememberSidebarScroll(sidebar.scrollTop);
+    };
+    sidebar.addEventListener('scroll', onScroll, { passive: true });
+    return () => sidebar.removeEventListener('scroll', onScroll);
+  }, [getSidebarScroll, rememberSidebarScroll, location.pathname]);
 
   const handleLogout = () => {
     setProfileOpen(false);
@@ -82,6 +106,10 @@ export default function Layout({ activePage, children }) {
   };
 
   const handlePayments = () => {
+    if (FRANCHISE_ROLES.includes(user?.role)) {
+      navigate('/franchise/online-payment');
+      return;
+    }
     navigate('/reports#outstanding');
   };
 
@@ -161,6 +189,7 @@ export default function Layout({ activePage, children }) {
 
       <aside
         id="main-navigation"
+        ref={sidebarRef}
         className={`app-sidebar franchise-sidebar${navOpen ? ' nav-open' : ''}`}
         aria-label="Main navigation"
         onClick={handleSidebarClick}
@@ -220,6 +249,7 @@ export default function Layout({ activePage, children }) {
             {utilityNote && (
               <div className="utility-note" role="status" aria-live="polite">{utilityNote}</div>
             )}
+            <WalletBalanceBadge user={user} compact />
             <ul className="utility-icons">
             {!isPathologist && (
               <>

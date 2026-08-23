@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import BarcodeLinkForm from '../../components/BarcodeLinkForm';
 import Footer from '../../components/Footer';
 import Layout from '../../components/Layout';
@@ -10,6 +10,7 @@ import {
   sanitizeBarcodeScannedValue,
   validateSampleBarcodes,
 } from '../../utils/barcodeScan';
+import { getEntrySectionPaths } from '../../utils/entrySection';
 import { withEffectivePrice } from '../../utils/testPricing';
 
 function formatHoursLeft(hours) {
@@ -91,6 +92,8 @@ function testIdsFromRegistration(registration) {
 }
 
 export default function EditEntry() {
+  const location = useLocation();
+  const entryPaths = getEntrySectionPaths(location.pathname);
   const [searchParams] = useSearchParams();
   const [query, setQuery] = useState('');
   const [rows, setRows] = useState([]);
@@ -338,13 +341,13 @@ export default function EditEntry() {
   };
 
   return (
-    <Layout activePage="manage-booking">
+    <Layout activePage={entryPaths.activePage}>
       <main className="dash-main franchise-module-page">
         <header className="franchise-booking-header">
           <nav className="breadcrumb" aria-label="Breadcrumb">
             <ul>
               <li><Link to="/dashboard">Home</Link></li>
-              <li><Link to="/franchise/manage-booking/new">Entry Section</Link></li>
+              <li><Link to={entryPaths.new}>Entry Section</Link></li>
               <li>Edit Entry</li>
             </ul>
           </nav>

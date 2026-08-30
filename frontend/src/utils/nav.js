@@ -6,7 +6,9 @@ import {
   REJECTION_STAFF_ROLES,
   SAMPLE_SCAN_ROLES,
   PATIENT_ENTRY_ROLES,
+  EXTRA_SAMPLE_ROLES,
 } from './roles';
+import { RECEPTION_NAV_ITEMS } from './receptionNav';
 
 export const NAV = [
   { id: 'dashboard', label: 'Dashboard', href: '/dashboard' },
@@ -32,7 +34,7 @@ export const NAV = [
     id: 'sample-scan',
     label: 'Sample Scan',
     href: '/sample-scan',
-    roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.TECHNICIAN, ROLES.PATHOLOGIST, ROLES.RECEPTIONIST],
+    roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.TECHNICIAN, ROLES.PATHOLOGIST],
   },
   {
     id: 'test-result',
@@ -44,7 +46,7 @@ export const NAV = [
     id: 'test-portfolio',
     label: 'Test Portfolio',
     href: '/portfolio/test-list',
-    excludeRoles: [ROLES.PATHOLOGIST],
+    excludeRoles: [ROLES.PATHOLOGIST, ROLES.RECEPTIONIST],
     children: [
       { label: 'Test List', href: '/portfolio/test-list' },
       { label: 'Test Profile', href: '/portfolio/test-profile' },
@@ -56,7 +58,7 @@ export const NAV = [
     label: 'Administration',
     href: '/administration',
     megaMenu: true,
-    excludeRoles: [ROLES.PATHOLOGIST],
+    excludeRoles: [ROLES.PATHOLOGIST, ROLES.RECEPTIONIST],
   },
   {
     id: 'user-signup',
@@ -114,6 +116,23 @@ export const STANDARD_NAV = [
     excludeRoles: NO_PATIENT_ENTRY_ROLES,
   },
   {
+    section: 'SAMPLE WORKFLOW',
+    items: RECEPTION_NAV_ITEMS,
+  },
+  {
+    section: 'SCAN',
+    items: [
+      {
+        id: 'barcode-scan',
+        label: 'Scan',
+        href: '/notifications/scan',
+        icon: 'chip',
+        roles: EXTRA_SAMPLE_ROLES,
+        excludeRoles: [ROLES.RECEPTIONIST],
+      },
+    ],
+  },
+  {
     section: 'REGISTRATION SECTIONS',
     items: [
       {
@@ -150,6 +169,7 @@ export const STANDARD_NAV = [
         href: '/sample-scan',
         icon: 'chip',
         roles: SAMPLE_SCAN_ROLES,
+        excludeRoles: [ROLES.RECEPTIONIST],
       },
       {
         id: 'find-barcode',
@@ -173,18 +193,12 @@ export const STANDARD_NAV = [
         roles: PATIENT_ENTRY_ROLES,
       },
       {
-        id: 'extra-sample',
-        label: 'Extra Sample',
-        href: '/notifications/extra-sample',
-        icon: 'chip',
-        roles: PATIENT_ENTRY_ROLES,
-      },
-      {
         id: 'hold-tests',
         label: 'Hold',
         href: '/hold-tests',
         icon: 'chip',
         roles: HOLD_STAFF_ROLES,
+        excludeRoles: [ROLES.RECEPTIONIST],
       },
       {
         id: 'sample-rejection',
@@ -192,6 +206,7 @@ export const STANDARD_NAV = [
         href: '/sample-rejection',
         icon: 'layers',
         roles: REJECTION_STAFF_ROLES,
+        excludeRoles: [ROLES.RECEPTIONIST],
       },
     ],
   },
@@ -223,7 +238,7 @@ export const STANDARD_NAV = [
         label: 'Test Portfolio',
         href: '/portfolio/test-list',
         icon: 'layers',
-        excludeRoles: [ROLES.PATHOLOGIST],
+        excludeRoles: [ROLES.PATHOLOGIST, ROLES.RECEPTIONIST],
         children: [
           { label: 'Test List', href: '/portfolio/test-list' },
           { label: 'Test Profile', href: '/portfolio/test-profile' },
@@ -273,7 +288,7 @@ export const STANDARD_NAV = [
         label: 'Administration',
         href: '/administration',
         icon: 'administration',
-        excludeRoles: [ROLES.PATHOLOGIST],
+        excludeRoles: [ROLES.PATHOLOGIST, ROLES.RECEPTIONIST],
       },
       {
         id: 'user-signup',

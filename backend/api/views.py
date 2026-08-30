@@ -19,12 +19,17 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .clinical_permissions import (
+    CanAccessExtraSamples,
     CanAccessHolds,
+    CanAccessOutsource,
     CanAccessPatientEntry,
     CanAccessPricingWallet,
     CanAccessRejections,
+    CanAccessSampleAccession,
+    CanAccessScanLog,
     CanPlaceHolds,
     HOLD_STAFF_ROLES,
+    OUTSOURCE_ROLES,
     REJECTION_STAFF_ROLES,
 )
 from .franchise_scope import (
@@ -34,6 +39,7 @@ from .franchise_scope import (
     scope_created_by_for_user,
     scope_patients_for_user,
     scope_registrations_for_user,
+    scope_zone_registrations_for_accession,
     scope_reports_for_user,
     scope_users_for_user,
     scope_zone_queryset,
@@ -43,7 +49,7 @@ from .franchise_scope import (
     visible_creator_ids,
 )
 from .models import (
-    LabMessage, PickupRequest, Registration, RegistrationTest, RegistrationTestHold, SampleRejection, Test, TestCategory, TestPackage,
+    LabMessage, PickupRequest, Registration, RegistrationTest, RegistrationTestHold, SampleRejection, ExtraSample, OutsourceTransfer, BarcodeScanLog, Test, TestCategory, TestPackage,
     ReportFormatAsset, User, LabRole,
     Membership, MembershipType, CollectionCenter, CollectionCenterBoy, DiscountReason, DiscountAuthority,
     WhatsAppMessageLog, ExpenseType, Area, RateMaster, Affiliation, SalesReference, Doctor, Patient, PatientAddress, LabConfiguration, ServiceAreaPincode, LabActivity,
@@ -84,6 +90,12 @@ from .serializers import (
     HoldCreateSerializer,
     SampleRejectionSerializer,
     SampleRejectionCreateSerializer,
+    ExtraSampleSerializer,
+    ExtraSampleCreateSerializer,
+    BarcodeScanLogSerializer,
+    OutsourceTransferSerializer,
+    OutsourceTransferCreateSerializer,
+    OutsourceTransferReceiveSerializer,
     PatientBarcodeLinkSerializer,
     PatientSampleBarcodeSerializer,
     TestCategorySerializer,
@@ -104,7 +116,7 @@ from .barcode_service import (
     scan_sample_by_barcode,
     mark_registration_sample_scanned,
     mark_sample_barcode_scanned,
-    lookup_patient_by_barcode,
+    record_barcode_scan_log,
 )
 
 logger = logging.getLogger(__name__)
@@ -144,10 +156,15 @@ class HealthView(APIView):
             with connection.cursor() as cursor:
                 cursor.execute('SELECT 1')
             trial_admin_exists = User.objects.filter(username='admin', is_active=True).exists()
+            nashik_demo_count = User.objects.filter(
+                username__in=['admin', 'user', 'technician', 'pathologist', 'hr', 'receptionist', 'supreme', 'prime', 'sub'],
+                is_active=True,
+            ).count()
             return Response({
                 'status': 'ok',
                 'database': 'connected',
                 'trial_admin_ready': trial_admin_exists,
+                'nashik_demo_accounts_ready': nashik_demo_count,
             })
         except (OperationalError, ProgrammingError) as exc:
             logger.exception('Health check database error')
@@ -577,6 +594,79 @@ class RegistrationSearchView(generics.ListAPIView):
 
         qs = scope_registrations_for_user(self.request.user, qs)
         return qs.order_by('-registration_date')
+
+
+class SampleAccessionListView(generics.ListAPIView):
+    """Zone-wide booking list for reception sample accession (all roles in the zone)."""
+
+    serializer_class = RegistrationSearchSerializer
+    permission_classes = [permissions.IsAuthenticated, CanAccessSampleAccession]
+
+    def get_queryset(self):
+        qs = Registration.objects.select_related(
+            'patient', 'created_by', 'clinical_report',
+        ).prefetch_related('tests__test', 'linked_barcodes').all()
+        params = self.request.query_params
+
+        from_date = params.get('from_date', '').strip()
+        to_date = params.get('to_date', '').strip()
+        start = RegistrationSearchView._parse_ddmmyyyy(from_date)
+        if start:
+            qs = qs.filter(registration_date__date__gte=start)
+        end = RegistrationSearchView._parse_ddmmyyyy(to_date)
+        if end:
+            qs = qs.filter(registration_date__date__lte=end)
+
+        barcode = params.get('barcode', '').strip()
+        if barcode:
+            qs = filter_registrations_by_barcode(qs, barcode)
+
+        qs = scope_zone_registrations_for_accession(self.request.user, qs)
+        return qs.order_by('-registration_date')
+
+
+class ScanLogListView(APIView):
+    """QR/barcode scan audit log grouped by zone."""
+
+    permission_classes = [permissions.IsAuthenticated, CanAccessScanLog]
+
+    def get(self, request):
+        from .models import Zone
+
+        params = request.query_params
+        from_date = params.get('from_date', '').strip()
+        to_date = params.get('to_date', '').strip()
+
+        logs_qs = BarcodeScanLog.objects.select_related(
+            'zone', 'scanned_by', 'registration',
+        ).all()
+
+        if not user_has_global_data_access(request.user):
+            zone_id = user_zone_id(request.user)
+            if not zone_id:
+                return Response([])
+            logs_qs = logs_qs.filter(zone_id=zone_id)
+            zones = Zone.objects.filter(pk=zone_id, is_active=True)
+        else:
+            zones = Zone.objects.filter(is_active=True).order_by('sort_order', 'name')
+
+        start = RegistrationSearchView._parse_ddmmyyyy(from_date)
+        if start:
+            logs_qs = logs_qs.filter(scanned_at__date__gte=start)
+        end = RegistrationSearchView._parse_ddmmyyyy(to_date)
+        if end:
+            logs_qs = logs_qs.filter(scanned_at__date__lte=end)
+
+        grouped = []
+        for zone in zones:
+            zone_logs = logs_qs.filter(zone=zone).order_by('-scanned_at')[:500]
+            grouped.append({
+                'zone_id': zone.id,
+                'zone_name': zone.name,
+                'zone_code': zone.code,
+                'entries': BarcodeScanLogSerializer(zone_logs, many=True).data,
+            })
+        return Response(grouped)
 
 
 def _format_age_display(patient):
@@ -2144,13 +2234,458 @@ class SampleRejectionResolveView(APIView):
         return Response(SampleRejectionSerializer(rejection).data)
 
 
+def _scope_extra_samples_for_user(user, qs=None):
+    qs = qs if qs is not None else ExtraSample.objects.all()
+    qs = qs.filter(is_active=True)
+    return scope_zone_queryset(user, qs, zone_field='zone_id')
+
+
+class ExtraSampleListCreateView(APIView):
+    """List and add unlinked barcodes flagged as extra samples for the current zone."""
+
+    permission_classes = [permissions.IsAuthenticated, CanAccessExtraSamples]
+
+    def get(self, request):
+        qs = _scope_extra_samples_for_user(request.user).select_related('added_by', 'zone')
+        return Response(ExtraSampleSerializer(qs[:200], many=True).data)
+
+    @transaction.atomic
+    def post(self, request):
+        serializer = ExtraSampleCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        barcode = normalize_barcode(serializer.validated_data['barcode'])
+        if not barcode:
+            return Response(
+                {'detail': 'Barcode is required.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        zone_id = user_zone_id(request.user)
+        if not zone_id:
+            return Response(
+                {'detail': 'Your account is not assigned to a zone.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if lookup_patient_by_barcode(barcode):
+            return Response(
+                {'detail': 'This barcode is already linked to a patient entry.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        existing = ExtraSample.objects.filter(
+            zone_id=zone_id,
+            barcode=barcode,
+            is_active=True,
+        ).first()
+        if existing:
+            return Response(ExtraSampleSerializer(existing).data, status=status.HTTP_200_OK)
+
+        row = ExtraSample.objects.create(
+            barcode=barcode,
+            zone_id=zone_id,
+            added_by=request.user,
+            is_active=True,
+        )
+        return Response(ExtraSampleSerializer(row).data, status=status.HTTP_201_CREATED)
+
+
+class ExtraSampleRemoveView(APIView):
+    """Remove a barcode from the active extra sample list."""
+
+    permission_classes = [permissions.IsAuthenticated, CanAccessExtraSamples]
+
+    @transaction.atomic
+    def post(self, request, sample_id):
+        row = _scope_extra_samples_for_user(request.user).filter(pk=sample_id).first()
+        if not row:
+            return Response({'detail': 'Extra sample not found.'}, status=status.HTTP_404_NOT_FOUND)
+        row.is_active = False
+        row.save(update_fields=['is_active'])
+        return Response({'detail': 'Removed.'})
+
+
+def _scope_outsource_for_user(user, qs=None):
+    """Transfers visible when the user's zone is sender or receiver."""
+    qs = qs if qs is not None else OutsourceTransfer.objects.all()
+    if user_has_global_data_access(user):
+        return qs
+    zone_id = user_zone_id(user)
+    if not zone_id:
+        if getattr(user, 'role', None) in OUTSOURCE_ROLES:
+            return qs
+        return qs.none()
+    return qs.filter(Q(from_zone_id=zone_id) | Q(to_zone_id=zone_id))
+
+
+def _user_can_outsource_registration(user, registration) -> bool:
+    if not registration:
+        return False
+    if getattr(user, 'role', None) in OUTSOURCE_ROLES:
+        if user_has_global_data_access(user):
+            return True
+        zone_id = user_zone_id(user)
+        if not zone_id:
+            return True
+        reg_zone = getattr(registration, 'zone_id', None)
+        if not reg_zone:
+            creator_zone = getattr(getattr(registration, 'created_by', None), 'zone_id', None)
+            return creator_zone in (None, zone_id)
+        return reg_zone == zone_id
+    return user_can_access_registration(user, registration)
+
+
+def _resolve_registration_for_outsource(user, *, barcode='', lab_code=''):
+    cleaned_barcode = normalize_barcode(barcode or '')
+    cleaned_lab = str(lab_code or '').strip()
+
+    if cleaned_barcode:
+        link = lookup_patient_by_barcode(cleaned_barcode)
+        if link and link.registration_id:
+            registration = (
+                Registration.objects.select_related('patient', 'created_by', 'zone')
+                .filter(pk=link.registration_id)
+                .first()
+            )
+            if _user_can_outsource_registration(user, registration):
+                return registration, cleaned_barcode
+        registration = Registration.objects.select_related('patient', 'created_by', 'zone').filter(
+            lab_code__iexact=cleaned_barcode,
+        ).first()
+        if _user_can_outsource_registration(user, registration):
+            return registration, cleaned_barcode
+
+    if cleaned_lab:
+        registration = Registration.objects.select_related('patient', 'created_by', 'zone').filter(
+            lab_code__iexact=cleaned_lab,
+        ).first()
+        if _user_can_outsource_registration(user, registration):
+            return registration, cleaned_barcode or cleaned_lab
+
+    return None, cleaned_barcode or cleaned_lab
+
+
+def _outsource_transfer_queryset():
+    return OutsourceTransfer.objects.filter(is_active=True).select_related(
+        'registration__patient',
+        'from_zone',
+        'to_zone',
+        'sent_by',
+        'received_by',
+        'report_uploaded_by',
+    ).prefetch_related('registration__tests__test')
+
+
+def _active_outsource_registration_test_ids(registration_id):
+    """Registration test IDs already on active outsource transfers for this booking."""
+    covered = set()
+    transfers = OutsourceTransfer.objects.filter(
+        registration_id=registration_id,
+        is_active=True,
+        status__in=[
+            OutsourceTransfer.STATUS_OUTSOURCED,
+            OutsourceTransfer.STATUS_RECEIVED,
+        ],
+    ).only('registration_test_ids')
+    all_reg_test_ids = set(
+        RegistrationTest.objects.filter(registration_id=registration_id).values_list('id', flat=True)
+    )
+    for transfer in transfers:
+        selected = {int(x) for x in (transfer.registration_test_ids or []) if str(x).isdigit()}
+        if selected:
+            covered.update(selected)
+        elif all_reg_test_ids:
+            covered.update(all_reg_test_ids)
+    return covered
+
+
+class OutsourceTransferListCreateView(APIView):
+    """List sent/incoming outsource transfers; POST to send a sample to another zone."""
+
+    permission_classes = [permissions.IsAuthenticated, CanAccessOutsource]
+
+    def get(self, request):
+        qs = _outsource_transfer_queryset()
+        qs = _scope_outsource_for_user(request.user, qs)
+
+        direction = str(request.query_params.get('direction') or '').strip().lower()
+        zone_id = user_zone_id(request.user)
+        if direction == 'sent' and zone_id:
+            qs = qs.filter(from_zone_id=zone_id)
+        elif direction == 'incoming' and zone_id:
+            qs = qs.filter(to_zone_id=zone_id)
+
+        q = str(request.query_params.get('q') or '').strip()
+        if q:
+            qs = qs.filter(
+                Q(registration__lab_code__icontains=q)
+                | Q(registration__patient__patient_name__icontains=q)
+                | Q(barcode__icontains=q)
+                | Q(notes__icontains=q)
+            )
+
+        status_filter = str(request.query_params.get('status') or '').strip()
+        if status_filter:
+            qs = qs.filter(status=status_filter)
+
+        serializer = OutsourceTransferSerializer(
+            qs[:200],
+            many=True,
+            context={'request': request},
+        )
+        return Response(serializer.data)
+
+    @transaction.atomic
+    def post(self, request):
+        from .models import Zone
+
+        serializer = OutsourceTransferCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        barcode = serializer.validated_data.get('barcode') or ''
+        lab_code = serializer.validated_data.get('lab_code') or ''
+        to_zone_id = serializer.validated_data['to_zone_id']
+        notes = (serializer.validated_data.get('notes') or '').strip()
+        registration_test_ids = serializer.validated_data['registration_test_ids']
+
+        if not str(barcode).strip() and not str(lab_code).strip():
+            return Response(
+                {'detail': 'Scan or enter a barcode / QR number (or lab code).'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        from_zone_id = user_zone_id(request.user)
+        if not from_zone_id:
+            return Response(
+                {'detail': 'Your account is not assigned to a zone. Cannot send outsource samples.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if to_zone_id == from_zone_id:
+            return Response(
+                {'detail': 'Destination zone must be different from your zone.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        to_zone = Zone.objects.filter(pk=to_zone_id, is_active=True).first()
+        if not to_zone:
+            return Response({'detail': 'Destination zone not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        registration, resolved_barcode = _resolve_registration_for_outsource(
+            request.user, barcode=barcode, lab_code=lab_code,
+        )
+        if not registration:
+            return Response(
+                {'detail': 'No patient entry found for that barcode or QR number.'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        valid_test_ids = set(
+            RegistrationTest.objects.filter(registration=registration).values_list('id', flat=True)
+        )
+        requested_ids = {int(x) for x in registration_test_ids}
+        if not requested_ids:
+            return Response(
+                {'detail': 'Select at least one test to outsource.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if not requested_ids.issubset(valid_test_ids):
+            return Response(
+                {'detail': 'One or more selected tests are not on this booking.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        already_outsourced = _active_outsource_registration_test_ids(registration.id)
+        overlap = requested_ids & already_outsourced
+        if overlap:
+            return Response(
+                {'detail': 'One or more selected tests are already in an active outsource transfer.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        transfer = OutsourceTransfer.objects.create(
+            registration=registration,
+            barcode=resolved_barcode or '',
+            from_zone_id=from_zone_id,
+            to_zone=to_zone,
+            status=OutsourceTransfer.STATUS_OUTSOURCED,
+            notes=notes,
+            registration_test_ids=sorted(requested_ids),
+            sent_by=request.user,
+            sent_at=timezone.now(),
+            is_active=True,
+        )
+        return Response(
+            OutsourceTransferSerializer(transfer, context={'request': request}).data,
+            status=status.HTTP_201_CREATED,
+        )
+
+
+def _mark_outsource_transfer_received(transfer, user):
+    transfer.status = OutsourceTransfer.STATUS_RECEIVED
+    transfer.received_by = user
+    transfer.received_at = timezone.now()
+    transfer.save(update_fields=['status', 'received_by', 'received_at', 'updated_at'])
+    return transfer
+
+
+class OutsourceTransferReceiveView(APIView):
+    """Scan barcode at destination zone to mark an outsourced sample as received."""
+
+    permission_classes = [permissions.IsAuthenticated, CanAccessOutsource]
+
+    @transaction.atomic
+    def post(self, request):
+        serializer = OutsourceTransferReceiveSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        transfer_id = serializer.validated_data.get('transfer_id')
+        barcode = serializer.validated_data.get('barcode') or ''
+        lab_code = serializer.validated_data.get('lab_code') or ''
+
+        to_zone_id = user_zone_id(request.user)
+        if not to_zone_id:
+            return Response(
+                {'detail': 'Your account is not assigned to a zone. Cannot receive outsource samples.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if transfer_id:
+            transfer = (
+                _scope_outsource_for_user(request.user, _outsource_transfer_queryset())
+                .filter(
+                    pk=transfer_id,
+                    to_zone_id=to_zone_id,
+                    status=OutsourceTransfer.STATUS_OUTSOURCED,
+                )
+                .first()
+            )
+            if not transfer:
+                return Response(
+                    {'detail': 'Outsource transfer not found or already received.'},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+            transfer = _mark_outsource_transfer_received(transfer, request.user)
+            return Response(OutsourceTransferSerializer(transfer, context={'request': request}).data)
+
+        if not str(barcode).strip() and not str(lab_code).strip():
+            return Response(
+                {'detail': 'Scan or enter a barcode / QR number (or lab code).'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        cleaned_barcode = normalize_barcode(barcode or '')
+        cleaned_lab = str(lab_code or '').strip()
+
+        qs = _outsource_transfer_queryset().filter(
+            to_zone_id=to_zone_id,
+            status=OutsourceTransfer.STATUS_OUTSOURCED,
+        )
+        qs = _scope_outsource_for_user(request.user, qs)
+
+        transfer = None
+        if cleaned_barcode:
+            transfer = qs.filter(
+                Q(barcode__iexact=cleaned_barcode)
+                | Q(registration__lab_code__iexact=cleaned_barcode),
+            ).first()
+        if not transfer and cleaned_lab:
+            transfer = qs.filter(registration__lab_code__iexact=cleaned_lab).first()
+        if not transfer and cleaned_barcode:
+            link = lookup_patient_by_barcode(cleaned_barcode)
+            if link and link.registration_id:
+                transfer = qs.filter(registration_id=link.registration_id).first()
+
+        if not transfer:
+            return Response(
+                {'detail': 'No pending outsource transfer found for that barcode at your zone.'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        transfer = _mark_outsource_transfer_received(transfer, request.user)
+        return Response(OutsourceTransferSerializer(transfer, context={'request': request}).data)
+
+
+class OutsourceTransferReceiveByIdView(APIView):
+    """Mark a specific incoming outsource transfer as received."""
+
+    permission_classes = [permissions.IsAuthenticated, CanAccessOutsource]
+
+    @transaction.atomic
+    def post(self, request, transfer_id):
+        to_zone_id = user_zone_id(request.user)
+        if not to_zone_id:
+            return Response(
+                {'detail': 'Your account is not assigned to a zone. Cannot receive outsource samples.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        transfer = (
+            _scope_outsource_for_user(request.user, _outsource_transfer_queryset())
+            .filter(
+                pk=transfer_id,
+                to_zone_id=to_zone_id,
+                status=OutsourceTransfer.STATUS_OUTSOURCED,
+            )
+            .first()
+        )
+        if not transfer:
+            return Response(
+                {'detail': 'Outsource transfer not found or already received.'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        transfer = _mark_outsource_transfer_received(transfer, request.user)
+        return Response(OutsourceTransferSerializer(transfer, context={'request': request}).data)
+
+
+class OutsourceTransferUploadReportView(APIView):
+    """Upload lab report for a received outsource sample."""
+
+    permission_classes = [permissions.IsAuthenticated, CanAccessOutsource]
+    parser_classes = [MultiPartParser, FormParser]
+
+    @transaction.atomic
+    def post(self, request, transfer_id):
+        transfer = (
+            _scope_outsource_for_user(request.user, _outsource_transfer_queryset())
+            .filter(pk=transfer_id)
+            .first()
+        )
+        if not transfer:
+            return Response({'detail': 'Transfer not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        to_zone_id = user_zone_id(request.user)
+        if to_zone_id and transfer.to_zone_id != to_zone_id and not user_has_global_data_access(request.user):
+            return Response(
+                {'detail': 'You can only upload reports for samples received at your zone.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        if transfer.status != OutsourceTransfer.STATUS_RECEIVED:
+            return Response(
+                {'detail': 'Sample must be received before uploading a report.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        report_file = request.FILES.get('report_file')
+        if not report_file:
+            return Response({'detail': 'Report file is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        transfer.report_file = report_file
+        transfer.status = OutsourceTransfer.STATUS_REPORT_UPLOADED
+        transfer.report_uploaded_by = request.user
+        transfer.report_uploaded_at = timezone.now()
+        transfer.save(update_fields=[
+            'report_file', 'status', 'report_uploaded_by', 'report_uploaded_at', 'updated_at',
+        ])
+        return Response(OutsourceTransferSerializer(transfer, context={'request': request}).data)
+
+
 class RegistrationCreateView(APIView):
     permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
 
     @transaction.atomic
     def post(self, request):
         from .models import Patient
-        from .utils import _lock_lab_config
+        from .utils import _lock_lab_config, allocate_patient_id
 
         serializer = RegistrationCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -2160,13 +2695,13 @@ class RegistrationCreateView(APIView):
         registration_barcode = normalize_barcode(data.pop('registration_barcode', ''))
         patient_data = data.pop('patient')
 
-        _lock_lab_config()
-        patient_data['patient_id'] = peek_patient_id()
+        lab_config = _lock_lab_config()
+        patient_data['patient_id'] = allocate_patient_id(lab_config)
         if request.user.zone_id:
             patient_data['zone'] = request.user.zone
         patient = Patient.objects.create(**patient_data)
         registration = Registration.objects.create(
-            lab_code=peek_lab_code(),
+            lab_code=peek_lab_code(lab_config),
             patient=patient,
             created_by=request.user,
             zone=request.user.zone if request.user.zone_id else None,
@@ -2203,7 +2738,6 @@ class RegistrationCreateView(APIView):
                 raise DRFValidationError({exc.field or 'sample_barcodes': exc.message})
 
         from .wallet_service import settle_registration_booking
-        registration.refresh_from_db()
         settle_registration_booking(registration, created_by=request.user)
 
         from .franchise_ledger import record_ledger_event, registration_mrp_total
@@ -2213,7 +2747,7 @@ class RegistrationCreateView(APIView):
             amount=registration_mrp_total(registration),
             user=request.user,
             registration=registration,
-            quantity=registration.tests.count() or 1,
+            quantity=len(tests_data) or 1,
             description=f'New entry {registration.lab_code}',
         )
 
@@ -2223,6 +2757,8 @@ class RegistrationCreateView(APIView):
                 'lab_code': registration.lab_code,
                 'patient': {'patient_id': patient.patient_id, 'bar_code': patient.bar_code},
                 'linked_barcodes': PatientSampleBarcodeSerializer(linked_barcodes, many=True).data,
+                'next_lab_code': peek_lab_code(lab_config),
+                'next_patient_id': peek_patient_id(lab_config),
             },
             status=status.HTTP_201_CREATED,
         )
@@ -3122,6 +3658,12 @@ class PatientSampleScanView(APIView):
                 link = lookup_patient_by_barcode(normalized) if normalized else None
                 if registration:
                     mark_sample_barcode_scanned(link, registration)
+                    record_barcode_scan_log(
+                        user=request.user,
+                        barcode=normalized,
+                        link=link,
+                        registration=registration,
+                    )
                     registration.refresh_from_db()
                     payload['registration_status'] = registration.status
                     payload['reception_scanned'] = registration.status != Registration.STATUS_REGISTERED or bool(

@@ -100,6 +100,14 @@ export const api = {
     const query = new URLSearchParams(params).toString();
     return request(`/registrations/${query ? `?${query}` : ''}`);
   },
+  listSampleAccession: (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return request(`/sample-accession/${query ? `?${query}` : ''}`);
+  },
+  listScanLogs: (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return request(`/scan-logs/${query ? `?${query}` : ''}`);
+  },
   getWorksheet: (ids) => request(`/registrations/worksheet/?ids=${ids}`),
   getWorkflowHistory: (id) => request(`/registrations/workflow/?id=${id}`),
   getBarcodeData: (id) => request(`/registrations/barcode/?id=${id}`),
@@ -157,6 +165,29 @@ export const api = {
     request('/rejections/', { method: 'POST', body: JSON.stringify(payload) }),
   resolveRejection: (rejectionId) =>
     request(`/rejections/${rejectionId}/resolve/`, { method: 'POST', body: '{}' }),
+  listExtraSamples: (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return request(`/extra-samples/${query ? `?${query}` : ''}`);
+  },
+  createExtraSample: (payload) =>
+    request('/extra-samples/', { method: 'POST', body: JSON.stringify(payload) }),
+  removeExtraSample: (sampleId) =>
+    request(`/extra-samples/${sampleId}/remove/`, { method: 'POST', body: '{}' }),
+  listOutsourceTransfers: (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return request(`/outsource-transfers/${query ? `?${query}` : ''}`);
+  },
+  createOutsourceTransfer: (payload) =>
+    request('/outsource-transfers/', { method: 'POST', body: JSON.stringify(payload) }),
+  receiveOutsourceTransfer: (payload) =>
+    request('/outsource-transfers/receive/', { method: 'POST', body: JSON.stringify(payload) }),
+  receiveOutsourceTransferById: (transferId) =>
+    request(`/outsource-transfers/${transferId}/receive/`, { method: 'POST', body: '{}' }),
+  uploadOutsourceReport: (transferId, file) => {
+    const formData = new FormData();
+    formData.append('report_file', file);
+    return requestForm(`/outsource-transfers/${transferId}/upload-report/`, formData, 'POST');
+  },
   generateMrpBill: (labCode, payload = {}) =>
     request(`/registrations/${encodeURIComponent(labCode)}/generate-mrp-bill/`, {
       method: 'POST',

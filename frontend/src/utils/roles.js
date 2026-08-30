@@ -54,6 +54,16 @@ export const FRANCHISE_ROLES = [
   ROLES.SUB_FRANCHISE,
 ];
 
+/** Roles that can open the admin module hub. */
+export const ADMINISTRATION_ROLES = ALL_ROLES.filter(
+  (role) => role !== ROLES.RECEPTIONIST,
+);
+
+/** Roles that can browse the test portfolio catalog. */
+export const TEST_PORTFOLIO_ROLES = ALL_ROLES.filter(
+  (role) => role !== ROLES.RECEPTIONIST,
+);
+
 /** Roles blocked from patient booking / registration entry. */
 export const NO_PATIENT_ENTRY_ROLES = [
   ROLES.PATHOLOGIST,
@@ -92,20 +102,21 @@ export const HOLD_STAFF_ROLES = [
   ROLES.HR,
   ROLES.PATHOLOGIST,
   ROLES.TECHNICIAN,
-  ROLES.RECEPTIONIST,
   ROLES.USER,
 ];
 
-/** Staff who can reject samples by barcode / QR. */
+/** Lab staff who can reject samples by barcode / QR. */
 export const REJECTION_STAFF_ROLES = [
   ROLES.SUPER_ADMIN,
   ROLES.ADMIN,
   ROLES.HR,
   ROLES.PATHOLOGIST,
   ROLES.TECHNICIAN,
-  ROLES.RECEPTIONIST,
   ROLES.USER,
 ];
+
+/** Roles that can view and add extra samples (all zone dashboard users). */
+export const EXTRA_SAMPLE_ROLES = HOLD_ACCESS_ROLES;
 
 export const PARENT_REQUIRED_ROLES = [ROLES.FRANCHISEE, ROLES.SUB_FRANCHISE];
 
@@ -123,7 +134,6 @@ export const SAMPLE_SCAN_ROLES = [
   ROLES.ADMIN,
   ROLES.TECHNICIAN,
   ROLES.PATHOLOGIST,
-  ROLES.RECEPTIONIST,
 ];
 
 /** Expected parent role for franchise hierarchy signup/edit. */

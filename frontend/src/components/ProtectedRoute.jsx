@@ -6,7 +6,7 @@ export default function ProtectedRoute({ children, adminOnly = false, allowedRol
   const { user, loading } = useAuth();
   const location = useLocation();
 
-  if (loading) {
+  if (loading && !user) {
     return <div className="dash-main"><p>Loading...</p></div>;
   }
 

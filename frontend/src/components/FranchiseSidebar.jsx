@@ -14,6 +14,10 @@ function canSeeNavItem(item, role) {
 }
 
 function menuIdForPath(pathname) {
+  if (pathname.startsWith('/reception/')) {
+    const segment = pathname.split('/')[2];
+    if (segment) return segment;
+  }
   if (pathname.startsWith('/franchise/manage-reports')) return 'manage-reports';
   if (pathname.startsWith('/reports-section')) return 'registration-report';
   if (pathname.startsWith('/franchise/manage-booking')) return 'manage-booking';
@@ -30,7 +34,9 @@ function menuIdForPath(pathname) {
   if (pathname.startsWith('/notifications/test-cancellation') || pathname.startsWith('/franchise/test-cancellation')) {
     return 'test-cancellation';
   }
-  if (pathname.startsWith('/notifications/extra-sample') || pathname.startsWith('/franchise/extra-sample')) {
+  if (pathname.startsWith('/notifications/extra-sample') || pathname.startsWith('/franchise/extra-sample')
+    || pathname.startsWith('/reception/extra-sample')
+    || pathname.startsWith('/notifications/scan') || pathname.startsWith('/franchise/scan')) {
     return 'extra-sample';
   }
   if (pathname.startsWith('/sample-scan')) return 'sample-scan';
@@ -55,6 +61,13 @@ function hrefMatchesLocation(href, location) {
 }
 
 function isItemActive(item, location, activePage) {
+  if (item.id === 'barcode-scan' || item.id === 'extra-sample') {
+    return location.pathname.startsWith('/notifications/scan')
+      || location.pathname.startsWith('/franchise/scan')
+      || location.pathname.startsWith('/reception/extra-sample')
+      || location.pathname.startsWith('/notifications/extra-sample')
+      || location.pathname.startsWith('/franchise/extra-sample');
+  }
   if (item.id === 'manage-booking') {
     return location.pathname.startsWith('/franchise/manage-booking');
   }

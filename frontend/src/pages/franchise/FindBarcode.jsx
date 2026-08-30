@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Layout from '../../components/Layout';
+import ExtraSampleNoDataModal from '../../components/ExtraSampleNoDataModal';
+import { sanitizeBarcodeScannedValue } from '../../utils/barcodeScan';
 import { resolveFranchiseBooking } from './resolveBooking';
 
 export default function FindBarcode() {
@@ -11,6 +13,7 @@ export default function FindBarcode() {
   const [searching, setSearching] = useState(false);
   const [error, setError] = useState('');
   const [registration, setRegistration] = useState(null);
+  const [noDataBarcode, setNoDataBarcode] = useState(null);
 
   const runSearch = useCallback(async (raw = barcode, labCode = bookId) => {
     setSearching(true);
@@ -22,6 +25,11 @@ export default function FindBarcode() {
       if (detail.lab_code) setBookId(detail.lab_code);
     } catch (err) {
       setError(err.message || 'Barcode search failed.');
+      const cleaned = sanitizeBarcodeScannedValue(raw);
+      if (cleaned && !String(labCode || '').trim()) {
+        setNoDataBarcode(cleaned);
+        setError('');
+      }
     } finally {
       setSearching(false);
     }
@@ -110,6 +118,7 @@ export default function FindBarcode() {
         )}
       </main>
       <Footer />
+      <ExtraSampleNoDataModal barcode={noDataBarcode} onClose={() => setNoDataBarcode(null)} />
     </Layout>
   );
 }

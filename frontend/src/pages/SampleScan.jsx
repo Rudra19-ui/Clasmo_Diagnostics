@@ -4,6 +4,7 @@ import Footer from '../components/Footer';
 import Layout from '../components/Layout';
 import { QrScanButton } from '../components/QrCameraScanner';
 import SampleScanResultPanel from '../components/SampleScanResultPanel';
+import ExtraSampleNoDataModal from '../components/ExtraSampleNoDataModal';
 import { api } from '../services/api';
 import { canEnterResults, canVerifyReports } from '../utils/roles';
 import { useAuth } from '../context/AuthContext';
@@ -17,6 +18,7 @@ export default function SampleScan() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
+  const [noDataBarcode, setNoDataBarcode] = useState(null);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -39,7 +41,8 @@ export default function SampleScan() {
       const data = await api.scanSampleBarcode(cleaned);
       setResult(data);
       if (!data.found) {
-        setError(data.message || 'Barcode not linked to any patient.');
+        setNoDataBarcode(cleaned);
+        setError('');
       }
     } catch (err) {
       setError(err.message || 'Scan failed. Try again.');
@@ -129,6 +132,7 @@ export default function SampleScan() {
         </section>
       </main>
       <Footer />
+      <ExtraSampleNoDataModal barcode={noDataBarcode} onClose={() => setNoDataBarcode(null)} />
     </Layout>
   );
 }

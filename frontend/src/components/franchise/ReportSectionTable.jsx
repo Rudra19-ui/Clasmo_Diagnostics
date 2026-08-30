@@ -29,6 +29,7 @@ export default function ReportSectionTable({
   emptyMessage,
   from = 'all',
   showLegend = true,
+  linkPatient = true,
 }) {
   const location = useLocation();
   const reportPaths = getReportSectionPaths(location.pathname);
@@ -139,12 +140,16 @@ export default function ReportSectionTable({
                 </td>
                 <td>{row.lab_code}</td>
                 <td>
-                  <Link
-                    to={`${reportPaths.detail(row.lab_code)}?from=${from}`}
-                    className="report-section-patient-link"
-                  >
-                    {patientLabel}
-                  </Link>
+                  {linkPatient ? (
+                    <Link
+                      to={`${reportPaths.detail(row.lab_code)}?from=${from}`}
+                      className="report-section-patient-link"
+                    >
+                      {patientLabel}
+                    </Link>
+                  ) : (
+                    <span className="report-section-patient-link">{patientLabel}</span>
+                  )}
                 </td>
                 <td>{row.barcodes || '—'}</td>
                 <td>{row.ref_by || row.patient?.doctor_name || 'Self'}</td>

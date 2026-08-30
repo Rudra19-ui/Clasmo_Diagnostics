@@ -354,6 +354,7 @@ def build_sample_scan_payload(link):
         }
 
     sample_tests, display_sample_type = _tests_for_link(registration, link)
+    all_registration_tests = list(registration.tests.select_related('test__category').all())
     linked_barcodes = [
         {
             'barcode': item.barcode,
@@ -382,6 +383,17 @@ def build_sample_scan_payload(link):
                 'price': str(reg_test.price),
             }
             for reg_test in sample_tests
+        ],
+        'all_tests': [
+            {
+                'id': reg_test.id,
+                'test_id': reg_test.test_id,
+                'name': reg_test.test.name,
+                'sample_type': reg_test.test.sample_type or sample_group_for_test(reg_test.test),
+                'category': reg_test.test.category.name if reg_test.test.category_id else '',
+                'price': str(reg_test.price),
+            }
+            for reg_test in all_registration_tests
         ],
         'linked_barcodes': linked_barcodes,
     }
@@ -438,3 +450,36 @@ def registration_reception_scanned(registration):
         is_active=True,
         sample_scanned_at__isnull=False,
     ).exists()
+
+
+def record_barcode_scan_log(*, user, barcode, link=None, registration=None):
+    """Persist an audit row whenever a linked barcode is scanned successfully."""
+    from .franchise_scope import user_zone_id
+
+    if not user or not getattr(user, 'is_authenticated', False):
+        return None
+
+    normalized = normalize_barcode(barcode)
+    if not normalized:
+        return None
+
+    reg = registration or (link.registration if link else None)
+    patient = link.patient if link else (reg.patient if reg else None)
+    zone_id = getattr(reg, 'zone_id', None) or getattr(patient, 'zone_id', None) or user_zone_id(user)
+    if not zone_id:
+        return None
+
+    patient_name = ''
+    if patient:
+        patient_name = f'{(patient.title or "").strip()} {(patient.patient_name or "").strip()}'.strip()
+
+    from .models import BarcodeScanLog
+    return BarcodeScanLog.objects.create(
+        barcode=normalized,
+        zone_id=zone_id,
+        registration=reg,
+        lab_code=(reg.lab_code if reg else '') or '',
+        patient_name=patient_name,
+        sample_type=(link.sample_type if link else '') or '',
+        scanned_by=user,
+    )

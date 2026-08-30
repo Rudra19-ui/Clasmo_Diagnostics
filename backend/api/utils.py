@@ -1,5 +1,4 @@
 from datetime import datetime
-import re
 
 from django.db import transaction
 from django.db.models import IntegerField, Max, Q
@@ -14,7 +13,31 @@ def get_lab_config():
 
 
 def _lock_lab_config():
-    LabConfiguration.objects.select_for_update().get(pk=1)
+    return LabConfiguration.objects.select_for_update().get(pk=1)
+
+
+def _ensure_patient_sequence(config):
+    if config.next_patient_sequence:
+        return
+    agg = Patient.objects.exclude(patient_id='').aggregate(
+        max_num=Max(Cast('patient_id', IntegerField())),
+    )
+    config.next_patient_sequence = int(agg['max_num'] or 0)
+    config.save(update_fields=['next_patient_sequence'])
+
+
+def peek_patient_id(config=None):
+    if config is None:
+        config = get_lab_config()
+    _ensure_patient_sequence(config)
+    return str(config.next_patient_sequence + 1).zfill(6)
+
+
+def allocate_patient_id(config):
+    _ensure_patient_sequence(config)
+    config.next_patient_sequence += 1
+    config.save(update_fields=['next_patient_sequence'])
+    return str(config.next_patient_sequence).zfill(6)
 
 
 def _lab_code_period_filter(frequency):
@@ -36,8 +59,9 @@ def _parse_lab_code_number(lab_code, prefix):
     return None
 
 
-def peek_lab_code():
-    config = get_lab_config()
+def peek_lab_code(config=None):
+    if config is None:
+        config = get_lab_config()
     if config.lab_code_auto_increment:
         prefix = (config.lab_code_prefix or '1').strip()
         start_raw = (config.lab_code_start or '69').strip()
@@ -87,18 +111,11 @@ def peek_lab_code():
 
 @transaction.atomic
 def generate_lab_code():
-    _lock_lab_config()
-    return peek_lab_code()
-
-
-def peek_patient_id():
-    agg = Patient.objects.exclude(patient_id='').aggregate(
-        max_num=Max(Cast('patient_id', IntegerField()))
-    )
-    return str((agg['max_num'] or 0) + 1).zfill(6)
+    config = _lock_lab_config()
+    return peek_lab_code(config)
 
 
 @transaction.atomic
 def generate_patient_id():
-    _lock_lab_config()
-    return peek_patient_id()
+    config = _lock_lab_config()
+    return allocate_patient_id(config)

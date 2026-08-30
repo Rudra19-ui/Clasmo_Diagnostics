@@ -119,6 +119,22 @@ def scope_registrations_for_user(user, qs: QuerySet | None = None) -> QuerySet:
     return qs.filter(created_by_id__in=creator_ids)
 
 
+def scope_zone_registrations_for_accession(user, qs: QuerySet | None = None) -> QuerySet:
+    """
+    All registrations in the user's zone regardless of who created the entry.
+    Used by reception sample accession so every role's bookings in the zone appear.
+    """
+    qs = qs if qs is not None else Registration.objects.all()
+    zone_id = user_zone_id(user)
+    if not zone_id:
+        if user_has_global_data_access(user):
+            return qs
+        return qs.none()
+    return qs.filter(
+        Q(zone_id=zone_id) | Q(zone__isnull=True, created_by__zone_id=zone_id)
+    ).distinct()
+
+
 def scope_patients_for_user(user, qs: QuerySet | None = None) -> QuerySet:
     qs = qs if qs is not None else Patient.objects.all()
     qs = _apply_zone_filter(qs, user, zone_field='zone_id')

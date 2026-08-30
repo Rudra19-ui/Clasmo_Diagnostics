@@ -134,6 +134,61 @@ class CanRejectSamples(permissions.BasePermission):
         )
 
 
+OUTSOURCE_ROLES = REJECTION_STAFF_ROLES
+
+EXTRA_SAMPLE_ROLES = HOLD_ACCESS_ROLES
+
+SAMPLE_ACCESSION_ROLES = frozenset({
+    User.ROLE_RECEPTIONIST,
+})
+
+SCAN_LOG_ROLES = frozenset({
+    User.ROLE_RECEPTIONIST,
+    User.ROLE_SUPER_ADMIN,
+    User.ROLE_ADMIN,
+})
+
+
+class CanAccessSampleAccession(permissions.BasePermission):
+    message = 'You do not have permission to access sample accession.'
+
+    def has_permission(self, request, view):
+        return (
+            request.user.is_authenticated
+            and request.user.role in SAMPLE_ACCESSION_ROLES
+        )
+
+
+class CanAccessExtraSamples(permissions.BasePermission):
+    message = 'You do not have permission to access extra samples.'
+
+    def has_permission(self, request, view):
+        return (
+            request.user.is_authenticated
+            and request.user.role in EXTRA_SAMPLE_ROLES
+        )
+
+
+class CanAccessScanLog(permissions.BasePermission):
+    message = 'You do not have permission to access scan logs.'
+
+    def has_permission(self, request, view):
+        return (
+            request.user.is_authenticated
+            and request.user.role in SCAN_LOG_ROLES
+        )
+
+
+class CanAccessOutsource(permissions.BasePermission):
+    message = 'You do not have permission to access outsource transfers.'
+
+    def has_permission(self, request, view):
+        return (
+            request.user.is_authenticated
+            and request.user.role in OUTSOURCE_ROLES
+        )
+
+
 class IsAdmin(permissions.BasePermission):
     """Zone Admin or Super Admin."""
 

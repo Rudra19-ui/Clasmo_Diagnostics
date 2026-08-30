@@ -39,6 +39,9 @@ from .models import (
     PatientSampleBarcode,
     RegistrationTestHold,
     SampleRejection,
+    ExtraSample,
+    OutsourceTransfer,
+    BarcodeScanLog,
 )
 
 
@@ -554,6 +557,121 @@ class SampleRejectionCreateSerializer(serializers.Serializer):
     barcode = serializers.CharField(required=False, allow_blank=True)
     lab_code = serializers.CharField(required=False, allow_blank=True)
     reason = serializers.CharField(required=False, allow_blank=True, max_length=500)
+
+
+class OutsourceTransferSerializer(serializers.ModelSerializer):
+    lab_code = serializers.CharField(source='registration.lab_code', read_only=True)
+    patient_name = serializers.SerializerMethodField()
+    patient_id = serializers.CharField(source='registration.patient.patient_id', read_only=True)
+    from_zone_name = serializers.CharField(source='from_zone.name', read_only=True)
+    from_zone_code = serializers.CharField(source='from_zone.code', read_only=True)
+    to_zone_name = serializers.CharField(source='to_zone.name', read_only=True)
+    to_zone_code = serializers.CharField(source='to_zone.code', read_only=True)
+    sent_by_name = serializers.SerializerMethodField()
+    received_by_name = serializers.SerializerMethodField()
+    report_uploaded_by_name = serializers.SerializerMethodField()
+    tests_list = serializers.SerializerMethodField()
+    report_file_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = OutsourceTransfer
+        fields = [
+            'id', 'lab_code', 'patient_name', 'patient_id', 'barcode', 'status', 'notes',
+            'registration_test_ids',
+            'from_zone', 'from_zone_name', 'from_zone_code',
+            'to_zone', 'to_zone_name', 'to_zone_code',
+            'sent_by_name', 'sent_at', 'received_by_name', 'received_at',
+            'report_uploaded_by_name', 'report_uploaded_at', 'report_file_url',
+            'tests_list', 'is_active', 'created_at',
+        ]
+
+    def get_patient_name(self, obj):
+        patient = obj.registration.patient if obj.registration_id else None
+        if not patient:
+            return ''
+        return f'{patient.title} {patient.patient_name}'.strip()
+
+    def get_sent_by_name(self, obj):
+        if not obj.sent_by_id:
+            return ''
+        return obj.sent_by.display_name or obj.sent_by.username
+
+    def get_received_by_name(self, obj):
+        if not obj.received_by_id:
+            return ''
+        return obj.received_by.display_name or obj.received_by.username
+
+    def get_report_uploaded_by_name(self, obj):
+        if not obj.report_uploaded_by_id:
+            return ''
+        return obj.report_uploaded_by.display_name or obj.report_uploaded_by.username
+
+    def get_tests_list(self, obj):
+        if not obj.registration_id:
+            return []
+        selected_ids = {int(x) for x in (obj.registration_test_ids or []) if str(x).isdigit()}
+        tests = []
+        for reg_test in obj.registration.tests.select_related('test').all():
+            if selected_ids and reg_test.id not in selected_ids:
+                continue
+            if reg_test.test_id:
+                tests.append(reg_test.test.name)
+        return tests
+
+    def get_report_file_url(self, obj):
+        if not obj.report_file:
+            return ''
+        request = self.context.get('request')
+        url = obj.report_file.url
+        if request is not None:
+            return request.build_absolute_uri(url)
+        return url
+
+
+class ExtraSampleSerializer(serializers.ModelSerializer):
+    added_by_name = serializers.CharField(source='added_by.display_name', read_only=True, default='')
+
+    class Meta:
+        model = ExtraSample
+        fields = [
+            'id', 'barcode', 'zone', 'added_by', 'added_by_name', 'added_at', 'is_active',
+        ]
+        read_only_fields = fields
+
+
+class ExtraSampleCreateSerializer(serializers.Serializer):
+    barcode = serializers.CharField(max_length=100)
+
+
+class BarcodeScanLogSerializer(serializers.ModelSerializer):
+    scanned_by_name = serializers.CharField(source='scanned_by.display_name', read_only=True, default='')
+    scanned_by_username = serializers.CharField(source='scanned_by.username', read_only=True, default='')
+    zone_name = serializers.CharField(source='zone.name', read_only=True, default='')
+
+    class Meta:
+        model = BarcodeScanLog
+        fields = [
+            'id', 'barcode', 'zone', 'zone_name', 'lab_code', 'patient_name', 'sample_type',
+            'scanned_by', 'scanned_by_name', 'scanned_by_username', 'scanned_at',
+        ]
+        read_only_fields = fields
+
+
+class OutsourceTransferCreateSerializer(serializers.Serializer):
+    barcode = serializers.CharField(required=False, allow_blank=True)
+    lab_code = serializers.CharField(required=False, allow_blank=True)
+    to_zone_id = serializers.IntegerField()
+    notes = serializers.CharField(required=False, allow_blank=True, max_length=500)
+    registration_test_ids = serializers.ListField(
+        child=serializers.IntegerField(min_value=1),
+        allow_empty=False,
+    )
+
+
+class OutsourceTransferReceiveSerializer(serializers.Serializer):
+    transfer_id = serializers.IntegerField(required=False, min_value=1)
+    barcode = serializers.CharField(required=False, allow_blank=True)
+    lab_code = serializers.CharField(required=False, allow_blank=True)
 
 
 class PatientAddressSerializer(serializers.ModelSerializer):

@@ -8,7 +8,9 @@ import TestDualListPicker from '../components/TestDualListPicker';
 import { buildSampleBarcodePayload } from '../utils/barcodeScan';
 import { getEntrySectionPaths } from '../utils/entrySection';
 import { useSystemDateTime } from '../hooks/useSystemDateTime';
+import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
+import { FRANCHISE_ROLES, PATIENT_ENTRY_ROLES } from '../utils/roles';
 import { withEffectivePrice } from '../utils/testPricing';
 
 const emptyPatient = () => ({
@@ -70,6 +72,7 @@ export default function Registration({
   pageTitle = '',
   successNoun = 'Registration',
 }) {
+  const { user } = useAuth();
   const location = useLocation();
   const entryPaths = getEntrySectionPaths(location.pathname);
   const isEntrySection = activePage === 'manage-booking' || activePage === 'registration-entry';
@@ -207,6 +210,12 @@ export default function Registration({
   };
 
   const handleSave = async () => {
+    const allowedRoles = isEntrySection ? FRANCHISE_ROLES : PATIENT_ENTRY_ROLES;
+    if (!allowedRoles.includes(user?.role)) {
+      alert('Your account cannot create patient entries. Log out and sign in with a franchise booking account (Supreme, Prime, or Sub-Franchise).');
+      return false;
+    }
+
     if (!patient.patient_name.trim()) {
       alert('Please enter Patient Name (required).');
       return false;
@@ -245,28 +254,36 @@ export default function Registration({
         tests: selected.map((t) => ({ test_id: t.id, price: t.price })),
         sample_barcodes: barcodePayload,
       });
+      setIsSubmitting(false);
+
+      const nextIds = {
+        lab_code: result.next_lab_code || nextLabCode(result.lab_code),
+        patient_id: result.next_patient_id || nextPatientId(result.patient?.patient_id || patient.patient_id),
+      };
+      resetForm(nextIds);
+
       if (trfFile && result?.lab_code) {
-        try {
-          await api.uploadRegistrationClinicalPdf(result.lab_code, trfFile);
-        } catch (uploadErr) {
+        api.uploadRegistrationClinicalPdf(result.lab_code, trfFile).catch((uploadErr) => {
           alert(
             `${successNoun} saved, but PDF upload failed: ${uploadErr.message || 'Unknown error'}`,
           );
-        }
+        });
       }
+
       const savedPatientId = result.patient?.patient_id || patient.patient_id;
       alert(
         `${successNoun} saved successfully!\n`
         + `Patient ID: ${savedPatientId}\n`
         + `Lab Code: ${result.lab_code}`,
       );
-      resetForm({
-        lab_code: nextLabCode(result.lab_code),
-        patient_id: nextPatientId(result.patient?.patient_id || patient.patient_id),
-      });
       return true;
     } catch (err) {
-      alert(err.message);
+      const message = err.message || 'Could not save entry.';
+      if (message.includes('permission to access patient entry')) {
+        alert(`${message}\n\nYour login session may have changed. Log out, sign in again as Supreme/Prime/Sub-Franchise, then retry.`);
+      } else {
+        alert(message);
+      }
       return false;
     } finally {
       setIsSubmitting(false);

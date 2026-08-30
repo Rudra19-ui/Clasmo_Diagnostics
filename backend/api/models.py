@@ -494,6 +494,98 @@ class SampleRejection(models.Model):
         return f'Rejection {self.registration.lab_code} / {self.barcode or "—"}'
 
 
+class ExtraSample(models.Model):
+    """Unlinked barcode flagged at scan time for follow-up collection."""
+
+    barcode = models.CharField(max_length=100, db_index=True)
+    zone = models.ForeignKey(
+        Zone, on_delete=models.CASCADE, related_name='extra_samples',
+    )
+    added_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True, related_name='extra_samples_added',
+    )
+    added_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True, db_index=True)
+
+    class Meta:
+        ordering = ['-added_at', '-id']
+        indexes = [
+            models.Index(fields=['is_active', 'zone', '-added_at']),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=['zone', 'barcode'],
+                condition=models.Q(is_active=True),
+                name='uniq_active_extra_sample_barcode_per_zone',
+            ),
+        ]
+
+    def __str__(self):
+        return f'Extra sample {self.barcode}'
+
+
+class OutsourceTransfer(models.Model):
+    """Inter-zone sample outsource: send from one branch zone to another."""
+
+    STATUS_PENDING = 'pending'
+    STATUS_OUTSOURCED = 'outsourced'
+    STATUS_RECEIVED = 'received'
+    STATUS_REPORT_UPLOADED = 'report_uploaded'
+    STATUS_CHOICES = [
+        (STATUS_PENDING, 'Pending'),
+        (STATUS_OUTSOURCED, 'Outsourced'),
+        (STATUS_RECEIVED, 'Received'),
+        (STATUS_REPORT_UPLOADED, 'Report uploaded'),
+    ]
+
+    registration = models.ForeignKey(
+        Registration, on_delete=models.CASCADE, related_name='outsource_transfers',
+    )
+    barcode = models.CharField(max_length=100, blank=True, db_index=True)
+    from_zone = models.ForeignKey(
+        Zone, on_delete=models.PROTECT, related_name='outsource_sent',
+    )
+    to_zone = models.ForeignKey(
+        Zone, on_delete=models.PROTECT, related_name='outsource_received',
+    )
+    status = models.CharField(
+        max_length=30, choices=STATUS_CHOICES, default=STATUS_OUTSOURCED, db_index=True,
+    )
+    notes = models.CharField(max_length=500, blank=True)
+    registration_test_ids = models.JSONField(default=list, blank=True)
+    sent_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True, related_name='outsource_sent',
+    )
+    sent_at = models.DateTimeField(null=True, blank=True)
+    received_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True, related_name='outsource_received_by',
+    )
+    received_at = models.DateTimeField(null=True, blank=True)
+    report_file = models.FileField(upload_to='outsource-reports/', null=True, blank=True)
+    report_uploaded_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='outsource_reports_uploaded',
+    )
+    report_uploaded_at = models.DateTimeField(null=True, blank=True)
+    is_active = models.BooleanField(default=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-sent_at', '-created_at', '-id']
+        indexes = [
+            models.Index(fields=['is_active', 'from_zone', 'status', '-sent_at']),
+            models.Index(fields=['is_active', 'to_zone', 'status', '-sent_at']),
+            models.Index(fields=['barcode', 'is_active']),
+        ]
+
+    def __str__(self):
+        return f'Outsource {self.registration.lab_code} {self.from_zone_id}→{self.to_zone_id} ({self.status})'
+
+
 class PatientSampleBarcode(models.Model):
     """Links a preprinted physical barcode label to a patient / registration sample."""
 
@@ -529,6 +621,42 @@ class PatientSampleBarcode(models.Model):
 
     def __str__(self):
         return f'{self.barcode} → {self.patient.patient_id or self.patient_id}'
+
+
+class BarcodeScanLog(models.Model):
+    """Audit log of QR / barcode tube scans at reception and sample workflow."""
+
+    barcode = models.CharField(max_length=100, db_index=True)
+    zone = models.ForeignKey(
+        Zone, on_delete=models.CASCADE, related_name='barcode_scan_logs',
+    )
+    registration = models.ForeignKey(
+        Registration,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='barcode_scan_logs',
+    )
+    lab_code = models.CharField(max_length=20, blank=True, db_index=True)
+    patient_name = models.CharField(max_length=200, blank=True)
+    sample_type = models.CharField(max_length=100, blank=True)
+    scanned_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='barcode_scan_logs',
+    )
+    scanned_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ['-scanned_at', '-id']
+        indexes = [
+            models.Index(fields=['zone', '-scanned_at']),
+        ]
+
+    def __str__(self):
+        return f'{self.barcode} @ {self.scanned_at:%Y-%m-%d %H:%M}'
 
 
 class PickupRequest(models.Model):
@@ -1098,6 +1226,10 @@ class LabConfiguration(models.Model):
     lab_code_start = models.CharField(max_length=20, default='69')
     lab_code_frequency = models.CharField(max_length=20, choices=FREQ_CHOICES, default=FREQ_DAILY)
     lab_code_auto_increment = models.BooleanField(default=True)
+    next_patient_sequence = models.PositiveIntegerField(
+        default=0,
+        help_text='Last allocated numeric patient ID; 0 means backfill from patients on first use.',
+    )
 
     report_show_header = models.BooleanField(default=True)
     report_show_footer = models.BooleanField(default=True)

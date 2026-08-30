@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import Footer from '../components/Footer';
 import Layout from '../components/Layout';
 import { QrScanButton } from '../components/QrCameraScanner';
+import ExtraSampleNoDataModal from '../components/ExtraSampleNoDataModal';
 import { api } from '../services/api';
 import { sanitizeBarcodeScannedValue } from '../utils/barcodeScan';
 
@@ -13,6 +14,7 @@ export default function OpenBarcode() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
+  const [noDataBarcode, setNoDataBarcode] = useState(null);
 
   const runLookup = useCallback(async (rawValue) => {
     const cleaned = sanitizeBarcodeScannedValue(rawValue);
@@ -31,6 +33,9 @@ export default function OpenBarcode() {
       const data = await api.lookupPatientBarcode(cleaned);
       setResult(data);
       setSearchParams({ barcode: cleaned }, { replace: true });
+      if (!data?.found) {
+        setNoDataBarcode(cleaned);
+      }
     } catch (err) {
       setError(err.message || 'Could not look up barcode.');
     } finally {
@@ -106,19 +111,10 @@ export default function OpenBarcode() {
             </div>
           )}
 
-          {result && !result.found && (
-            <div className="open-barcode-result">
-              <p className="open-barcode-message open-barcode-message--warn">
-                This barcode is not linked to any patient yet. Register the patient in Registration and submit with this barcode.
-              </p>
-              <button type="button" className="open-barcode-open-btn" onClick={() => navigate('/entry/new')}>
-                Go to Registration
-              </button>
-            </div>
-          )}
         </section>
       </main>
       <Footer />
+      <ExtraSampleNoDataModal barcode={noDataBarcode} onClose={() => setNoDataBarcode(null)} />
     </Layout>
   );
 }

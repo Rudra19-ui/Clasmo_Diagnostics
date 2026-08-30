@@ -51,7 +51,7 @@ import DeviceStub from './pages/device/DeviceStub';
 import TestResultBatch from './pages/device/TestResultBatch';
 import ResponsiveProvider from './components/ResponsiveProvider';
 import { NavProvider } from './context/NavContext';
-import { ROLES, ALL_ROLES, SAMPLE_SCAN_ROLES, USER_CREATOR_ROLES, FRANCHISE_ROLES, PATIENT_ENTRY_ROLES, PRICING_WALLET_ROLES, ADMIN_ROLES, HOLD_STAFF_ROLES, REJECTION_STAFF_ROLES } from './utils/roles';
+import { ROLES, ALL_ROLES, SAMPLE_SCAN_ROLES, USER_CREATOR_ROLES, FRANCHISE_ROLES, PATIENT_ENTRY_ROLES, PRICING_WALLET_ROLES, ADMIN_ROLES, ADMINISTRATION_ROLES, TEST_PORTFOLIO_ROLES, HOLD_STAFF_ROLES, REJECTION_STAFF_ROLES, EXTRA_SAMPLE_ROLES } from './utils/roles';
 import MessageToLab from './pages/device/MessageToLab';
 import PickupRequest from './pages/device/PickupRequest';
 import TestList from './pages/portfolio/TestList';
@@ -77,9 +77,16 @@ import FranchiseDownstreamBulkPricing from './pages/franchise/FranchiseDownstrea
 import FranchiseDownstreamTransferPricing from './pages/franchise/FranchiseDownstreamTransferPricing';
 import Analytics from './pages/franchise/Analytics';
 import OnlinePayment from './pages/franchise/OnlinePayment';
+import ReceptionModule from './pages/reception/ReceptionModule';
+import OutSources from './pages/reception/OutSources';
+import OutReceived from './pages/reception/OutReceived';
+import SampleAccession from './pages/reception/SampleAccession';
+import ScanLog from './pages/reception/ScanLog';
+import Scan from './pages/Scan';
+import { ExtraSampleProvider } from './context/ExtraSampleContext';
+import { RECEPTION_PAGES, RECEPTION_WORKFLOW_ROLES } from './utils/receptionNav';
 
 const FRANCHISE_PAGES = [
-  { path: 'extra-sample', title: 'Extra Sample', activePage: 'extra-sample', description: 'Extra sample requests and tracking.' },
   {
     path: 'payment-history',
     title: 'Payment History',
@@ -96,6 +103,7 @@ const FRANCHISE_PAGES = [
 export default function App() {
   return (
     <AuthProvider>
+      <ExtraSampleProvider>
       <BrowserRouter>
         <NavProvider>
         <ResponsiveProvider>
@@ -141,17 +149,69 @@ export default function App() {
             )}
           />
           <Route
-            path="/notifications/extra-sample"
+            path="/notifications/scan"
             element={(
-              <ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}>
-                <FranchiseStub
-                  title="Extra Sample"
-                  activePage="extra-sample"
-                  description="Extra sample requests and tracking for lab bookings."
-                />
+              <ProtectedRoute allowedRoles={EXTRA_SAMPLE_ROLES}>
+                <Scan activePage="barcode-scan" />
               </ProtectedRoute>
             )}
           />
+          <Route path="/notifications/extra-sample" element={<Navigate to="/notifications/scan" replace />} />
+          <Route
+            path="/reception/out-sources"
+            element={(
+              <ProtectedRoute allowedRoles={RECEPTION_WORKFLOW_ROLES}>
+                <OutSources />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/reception/out-received"
+            element={(
+              <ProtectedRoute allowedRoles={RECEPTION_WORKFLOW_ROLES}>
+                <OutReceived />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/reception/extra-sample"
+            element={(
+              <ProtectedRoute allowedRoles={RECEPTION_WORKFLOW_ROLES}>
+                <Scan activePage="extra-sample" pageTitle="Extra Sample" />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/reception/sample-accession"
+            element={(
+              <ProtectedRoute allowedRoles={RECEPTION_WORKFLOW_ROLES}>
+                <SampleAccession />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/reception/scan-log"
+            element={(
+              <ProtectedRoute allowedRoles={[...RECEPTION_WORKFLOW_ROLES, ...ADMIN_ROLES]}>
+                <ScanLog />
+              </ProtectedRoute>
+            )}
+          />
+          {RECEPTION_PAGES.filter((page) => !['out-sources', 'out-received', 'extra-sample', 'sample-accession', 'scan-log'].includes(page.path)).map((page) => (
+            <Route
+              key={page.path}
+              path={`/reception/${page.path}`}
+              element={(
+                <ProtectedRoute allowedRoles={RECEPTION_WORKFLOW_ROLES}>
+                  <ReceptionModule
+                    title={page.title}
+                    activePage={page.activePage}
+                    description={page.description}
+                  />
+                </ProtectedRoute>
+              )}
+            />
+          ))}
           <Route
             path="/hold-tests"
             element={(
@@ -240,15 +300,15 @@ export default function App() {
             )}
           />
           <Route path="/test-result" element={<ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}><TestResult /></ProtectedRoute>} />
-          <Route path="/portfolio/test-list" element={<ProtectedRoute><TestList /></ProtectedRoute>} />
-          <Route path="/portfolio/test-profile" element={<ProtectedRoute><TestProfile /></ProtectedRoute>} />
-          <Route path="/portfolio/sample-report" element={<ProtectedRoute><SampleReport /></ProtectedRoute>} />
+          <Route path="/portfolio/test-list" element={<ProtectedRoute allowedRoles={TEST_PORTFOLIO_ROLES}><TestList /></ProtectedRoute>} />
+          <Route path="/portfolio/test-profile" element={<ProtectedRoute allowedRoles={TEST_PORTFOLIO_ROLES}><TestProfile /></ProtectedRoute>} />
+          <Route path="/portfolio/sample-report" element={<ProtectedRoute allowedRoles={TEST_PORTFOLIO_ROLES}><SampleReport /></ProtectedRoute>} />
           <Route path="/user-signup" element={<ProtectedRoute allowedRoles={USER_CREATOR_ROLES}><UserSignUp /></ProtectedRoute>} />
           <Route path="/enquire-box" element={<ProtectedRoute adminOnly><EnquireBox /></ProtectedRoute>} />
           <Route path="/self-patient-query" element={<ProtectedRoute><SelfPatientQuery /></ProtectedRoute>} />
           <Route path="/give-feedback" element={<ProtectedRoute><GiveFeedback /></ProtectedRoute>} />
           <Route path="/admin/enquiries" element={<Navigate to="/enquire-box" replace />} />
-          <Route path="/administration" element={<ProtectedRoute allowedRoles={ALL_ROLES}><Administration /></ProtectedRoute>} />
+          <Route path="/administration" element={<ProtectedRoute allowedRoles={ADMINISTRATION_ROLES}><Administration /></ProtectedRoute>} />
           <Route path="/admin/change-password" element={<ProtectedRoute allowedRoles={ALL_ROLES}><ChangePassword /></ProtectedRoute>} />
           <Route path="/admin/role-management" element={<ProtectedRoute allowedRoles={ALL_ROLES}><RoleManagement /></ProtectedRoute>} />
           <Route path="/admin/membership" element={<ProtectedRoute allowedRoles={ALL_ROLES}><Membership /></ProtectedRoute>} />
@@ -468,6 +528,15 @@ export default function App() {
             )}
           />
           <Route path="/franchise/clinical" element={<Navigate to="/franchise/clinical-history" replace />} />
+          <Route
+            path="/franchise/scan"
+            element={(
+              <ProtectedRoute allowedRoles={EXTRA_SAMPLE_ROLES}>
+                <Scan activePage="barcode-scan" />
+              </ProtectedRoute>
+            )}
+          />
+          <Route path="/franchise/extra-sample" element={<Navigate to="/franchise/scan" replace />} />
           {FRANCHISE_PAGES.map((page) => (
             <Route
               key={page.path}
@@ -504,6 +573,7 @@ export default function App() {
         </ResponsiveProvider>
         </NavProvider>
       </BrowserRouter>
+      </ExtraSampleProvider>
     </AuthProvider>
   );
 }

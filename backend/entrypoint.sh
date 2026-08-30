@@ -18,10 +18,12 @@ bootstrap() {
   while [ "$attempt" -le 30 ]; do
     if python manage.py migrate --noinput; then
       echo "Migrations complete."
-      python manage.py ensure_trial_users || true
+      if ! python manage.py seed_test_roles; then
+        echo "WARNING: seed_test_roles failed; Nashik demo logins may be unavailable."
+      fi
       python manage.py seed_data || true
       python manage.py seed_clinical_data || true
-      python manage.py shell -c "from django.contrib.auth import get_user_model; User=get_user_model(); print('Admin login exists:', User.objects.filter(username='admin', is_active=True).exists())" || true
+      python manage.py shell -c "from django.contrib.auth import get_user_model; User=get_user_model(); print('Nashik demo logins ready:', User.objects.filter(username__in=['admin','hr','supreme','prime','sub'], is_active=True).count(), '/ 5')" || true
       echo "Background bootstrap finished."
       return 0
     fi

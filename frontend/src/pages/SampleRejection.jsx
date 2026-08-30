@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 import Layout from '../components/Layout';
 import { QrScanButton } from '../components/QrCameraScanner';
+import ExtraSampleNoDataModal from '../components/ExtraSampleNoDataModal';
 import { api } from '../services/api';
 import { sanitizeBarcodeScannedValue } from '../utils/barcodeScan';
 
@@ -17,6 +18,7 @@ export default function SampleRejection() {
   const [loadingList, setLoadingList] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const [noDataBarcode, setNoDataBarcode] = useState(null);
 
   const loadList = useCallback(async () => {
     setLoadingList(true);
@@ -80,7 +82,8 @@ export default function SampleRejection() {
         return;
       }
 
-      setError(data?.message || 'No patient entry found for that barcode or QR number.');
+      setNoDataBarcode(cleaned);
+      setError('');
     } catch (err) {
       setError(err.message || 'Lookup failed.');
     } finally {
@@ -273,6 +276,7 @@ export default function SampleRejection() {
         </section>
       </main>
       <Footer />
+      <ExtraSampleNoDataModal barcode={noDataBarcode} onClose={() => setNoDataBarcode(null)} />
     </Layout>
   );
 }

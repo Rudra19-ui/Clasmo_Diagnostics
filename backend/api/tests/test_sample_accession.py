@@ -18,6 +18,12 @@ class SampleAccessionTests(TestCase):
             role=User.ROLE_RECEPTIONIST,
             zone=self.nashik,
         )
+        self.technician = User.objects.create_user(
+            username='nashik_technician_acc',
+            password='test12345',
+            role=User.ROLE_TECHNICIAN,
+            zone=self.nashik,
+        )
         self.supreme = User.objects.create_user(
             username='nashik_supreme_acc',
             password='test12345',
@@ -45,6 +51,13 @@ class SampleAccessionTests(TestCase):
 
     def test_reception_sees_all_zone_entries_regardless_of_creator_role(self):
         self._auth(self.reception)
+        resp = self.client.get('/api/sample-accession/')
+        self.assertEqual(resp.status_code, 200)
+        lab_codes = [row['lab_code'] for row in resp.data]
+        self.assertIn('1110', lab_codes)
+
+    def test_technician_sees_all_zone_entries_like_reception(self):
+        self._auth(self.technician)
         resp = self.client.get('/api/sample-accession/')
         self.assertEqual(resp.status_code, 200)
         lab_codes = [row['lab_code'] for row in resp.data]

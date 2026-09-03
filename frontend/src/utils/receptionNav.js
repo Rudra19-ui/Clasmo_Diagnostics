@@ -1,7 +1,7 @@
 import { ROLES } from './roles';
 
-/** Front-desk reception sample workflow modules. */
-export const RECEPTION_WORKFLOW_ROLES = [ROLES.RECEPTIONIST];
+/** Reception and technician sample workflow modules. */
+export const RECEPTION_WORKFLOW_ROLES = [ROLES.RECEPTIONIST, ROLES.TECHNICIAN];
 
 export const RECEPTION_NAV_ITEMS = [
   {
@@ -54,6 +54,38 @@ export const RECEPTION_NAV_ITEMS = [
     roles: RECEPTION_WORKFLOW_ROLES,
   },
 ];
+
+/** Minimal portal sidebar for reception and technician (Dashboard + Sample Workflow + Settings). */
+export const SAMPLE_WORKFLOW_PORTAL_NAV = [
+  { id: 'dashboard', label: 'Dashboard', href: '/dashboard', icon: 'dashboard' },
+  {
+    section: 'SAMPLE WORKFLOW',
+    items: RECEPTION_NAV_ITEMS,
+  },
+  {
+    section: 'SETTINGS',
+    items: [
+      {
+        id: 'change-password',
+        label: 'Change Password',
+        href: '/admin/change-password',
+        icon: 'settings',
+      },
+      {
+        id: 'give-feedback',
+        label: 'Give Feedback',
+        href: '/give-feedback',
+        icon: 'give-feedback',
+      },
+      { id: 'help', label: 'Help', href: '/help', icon: 'help' },
+      { id: 'logout', label: 'Logout', href: '#logout', icon: 'logout', action: 'logout' },
+    ],
+  },
+];
+
+export function usesSampleWorkflowPortalNav(role) {
+  return RECEPTION_WORKFLOW_ROLES.includes(role);
+}
 
 export const RECEPTION_PAGES = [
   {

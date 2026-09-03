@@ -1,4 +1,5 @@
 import { STANDARD_NAV } from './nav';
+import { RECEPTION_WORKFLOW_ROLES, SAMPLE_WORKFLOW_PORTAL_NAV } from './receptionNav';
 import { FRANCHISE_ROLES, ROLES } from './roles';
 
 /** Shared franchise portal sidebar for Supreme, Prime, and Sub-Franchise. */
@@ -198,6 +199,7 @@ export function getNavForRole(role) {
 
 export function getSidebarNavForRole(role) {
   if (isFranchiseRole(role)) return FRANCHISE_NAV;
+  if (RECEPTION_WORKFLOW_ROLES.includes(role)) return SAMPLE_WORKFLOW_PORTAL_NAV;
   return STANDARD_NAV;
 }
 

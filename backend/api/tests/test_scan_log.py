@@ -27,6 +27,12 @@ class ScanLogTests(TestCase):
             role=User.ROLE_RECEPTIONIST,
             zone=self.mumbai,
         )
+        self.technician = User.objects.create_user(
+            username='nashik_technician_scanlog',
+            password='test12345',
+            role=User.ROLE_TECHNICIAN,
+            zone=self.nashik,
+        )
         patient = Patient.objects.create(
             patient_name='Scan Log Patient',
             patient_id='SL001',
@@ -66,6 +72,19 @@ class ScanLogTests(TestCase):
         entry = resp.data[0]['entries'][0]
         self.assertEqual(entry['barcode'], 'SCANLOG-001')
         self.assertEqual(entry['scanned_by_username'], self.reception.username)
+
+    def test_technician_can_list_scan_logs_in_own_zone(self):
+        record_barcode_scan_log(
+            user=self.reception,
+            barcode='SCANLOG-001',
+            link=self.link,
+            registration=self.registration,
+        )
+        self._auth(self.technician)
+        resp = self.client.get('/api/scan-logs/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(len(resp.data), 1)
+        self.assertEqual(len(resp.data[0]['entries']), 1)
 
     def test_scan_api_creates_log_entry(self):
         self._auth(self.reception)

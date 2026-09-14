@@ -138,6 +138,32 @@ export const STANDARD_NAV = [
     ],
   },
   {
+    section: 'CLINICAL REPORTING',
+    items: [
+      {
+        id: 'machine-result-entry',
+        label: 'Machine Result Entry',
+        href: '/clinical/result-entry',
+        icon: 'layers',
+        roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.TECHNICIAN, ROLES.PATHOLOGIST],
+      },
+      {
+        id: 'report-preview-verify',
+        label: 'Report Preview / Verify',
+        href: '/clinical/report-preview',
+        icon: 'layers',
+        roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.TECHNICIAN, ROLES.PATHOLOGIST],
+      },
+      {
+        id: 'test-parameter-master',
+        label: 'Test Parameters',
+        href: '/clinical/test-parameters',
+        icon: 'layers',
+        roles: ADMIN_ROLES,
+      },
+    ],
+  },
+  {
     section: 'REGISTRATION SECTIONS',
     items: [
       {

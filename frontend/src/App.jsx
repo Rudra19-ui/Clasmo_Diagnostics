@@ -346,7 +346,7 @@ export default function App() {
           <Route path="/elab-pay" element={<ProtectedRoute><ElabPay /></ProtectedRoute>} />
           <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
           <Route path="/clinical/test-parameters" element={<ProtectedRoute allowedRoles={ADMIN_ROLES}><TestParameterMaster /></ProtectedRoute>} />
-          <Route path="/clinical/result-entry" element={<ProtectedRoute allowedRoles={[ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.TECHNICIAN]}><ResultEntry /></ProtectedRoute>} />
+          <Route path="/clinical/result-entry" element={<ProtectedRoute allowedRoles={[ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.TECHNICIAN, ROLES.PATHOLOGIST]}><ResultEntry /></ProtectedRoute>} />
           <Route path="/clinical/report-preview" element={<ProtectedRoute><ReportPreview /></ProtectedRoute>} />
           <Route path="/device/pickup-request" element={<ProtectedRoute><PickupRequest /></ProtectedRoute>} />
           <Route path="/device/patient-appointment" element={<ProtectedRoute><DeviceStub title="Patient Appointment" description="Schedule home visits and appointments." /></ProtectedRoute>} />

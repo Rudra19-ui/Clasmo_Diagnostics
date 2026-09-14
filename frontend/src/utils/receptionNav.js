@@ -78,6 +78,25 @@ export const SAMPLE_WORKFLOW_PORTAL_NAV = [
     ],
   },
   {
+    section: 'CLINICAL REPORTING',
+    items: [
+      {
+        id: 'machine-result-entry',
+        label: 'Machine Result Entry',
+        href: '/clinical/result-entry',
+        icon: 'layers',
+        roles: [ROLES.TECHNICIAN, ROLES.SUPER_ADMIN, ROLES.ADMIN],
+      },
+      {
+        id: 'report-preview-verify',
+        label: 'Report Preview',
+        href: '/clinical/report-preview',
+        icon: 'layers',
+        roles: [ROLES.TECHNICIAN, ROLES.SUPER_ADMIN, ROLES.ADMIN],
+      },
+    ],
+  },
+  {
     section: 'SAMPLE WORKFLOW',
     items: RECEPTION_NAV_ITEMS,
   },

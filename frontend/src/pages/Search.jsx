@@ -505,7 +505,7 @@ export default function Search() {
       return;
     }
 
-    navigate(`/test-result-entry?registrationId=${selectedRow.id}`, {
+    navigate(`/clinical/result-entry?registrationId=${selectedRow.id}`, {
       state: { registrationIds: rows.map((row) => row.id).filter(Boolean) },
     });
   };

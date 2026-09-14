@@ -66,6 +66,12 @@ def _patient_details_payload(registration):
     patient = registration.patient
     gender = 'M' if patient.gender == 'male' else 'F' if patient.gender == 'female' else '—'
     regn_dt = registration.created_at or registration.registration_date
+    barcode = (
+        registration.linked_barcodes.filter(is_active=True)
+        .order_by('id')
+        .values_list('barcode', flat=True)
+        .first()
+    ) or ''
     return {
         'title': patient.title,
         'patient_name': patient.patient_name,
@@ -81,8 +87,17 @@ def _patient_details_payload(registration):
         'affiliation': patient.affiliation or patient.patient_type or '—',
         'patient_type': patient.patient_type or 'O.P.D.',
         'mobile': patient.mobile or '',
+        'barcode': barcode,
         'registration_date': regn_dt.strftime('%d-%m-%Y %H:%M:%S') if regn_dt else '',
     }
+
+
+ENTER_RESULT_ROLES = {
+    User.ROLE_SUPER_ADMIN,
+    User.ROLE_ADMIN,
+    User.ROLE_TECHNICIAN,
+    User.ROLE_PATHOLOGIST,  # may correct values during cross-verification
+}
 
 
 class ReportDetailView(APIView):
@@ -128,10 +143,23 @@ class ReportDetailView(APIView):
             self._parameters_for_registration(registration),
             many=True,
         ).data
+        # Franchise accounts only receive result values after pathologist approval.
+        if (
+            request.user.role in User.FRANCHISE_ROLES
+            and data.get('status') != Report.STATUS_VERIFIED
+        ):
+            data['values'] = []
+            data['parameters'] = []
+            data['release_pending'] = True
         return Response(data)
 
     @transaction.atomic
     def post(self, request, registration_id):
+        if request.user.role not in ENTER_RESULT_ROLES:
+            return Response(
+                {'detail': 'Only lab clinical staff can enter or correct report values.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
         registration = _scoped_registration(request.user, registration_id)
 
         if hasattr(registration, 'clinical_report') and registration.clinical_report.status == Report.STATUS_VERIFIED:

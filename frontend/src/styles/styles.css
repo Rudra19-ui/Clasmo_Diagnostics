@@ -7961,9 +7961,25 @@ input, select, textarea, button {
   font-weight: 600;
 }
 
+.report-detail-status--awaiting-verification {
+  color: #ef6c00;
+  font-weight: 600;
+}
+
+.report-detail-status--report-ready {
+  color: #2e7d32;
+  font-weight: 600;
+}
+
 .report-detail-status--closed {
   color: #2e7d32;
   font-weight: 600;
+}
+
+.report-detail-waiting {
+  color: #ef6c00;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .report-detail-toolbar {

@@ -24,7 +24,17 @@ export default function SampleScan() {
     inputRef.current?.focus();
   }, []);
 
-  const runScan = useCallback(async (rawValue) => {
+  const openMachineEntry = useCallback((registrationId) => {
+    if (!registrationId) return;
+    navigate(`/clinical/result-entry?registrationId=${registrationId}`);
+  }, [navigate]);
+
+  const openReportPreview = useCallback((registrationId) => {
+    if (!registrationId) return;
+    navigate(`/clinical/report-preview?id=${registrationId}`);
+  }, [navigate]);
+
+  const runScan = useCallback(async (rawValue, { autoOpen = false } = {}) => {
     const cleaned = sanitizeBarcodeScannedValue(rawValue ?? barcode);
     if (!cleaned) {
       setError('Scan or enter the barcode from the blood tube.');
@@ -43,6 +53,11 @@ export default function SampleScan() {
       if (!data.found) {
         setNoDataBarcode(cleaned);
         setError('');
+        return;
+      }
+      // Technician workflow: scan opens report format with machine-reading placeholders.
+      if (autoOpen && canEnterResults(user) && data.registration_id) {
+        openMachineEntry(data.registration_id);
       }
     } catch (err) {
       setError(err.message || 'Scan failed. Try again.');
@@ -51,22 +66,12 @@ export default function SampleScan() {
       inputRef.current?.focus();
       inputRef.current?.select();
     }
-  }, [barcode]);
+  }, [barcode, openMachineEntry, user]);
 
   const handleScannerInput = (event) => {
     if (event.key !== 'Enter' && event.key !== 'Tab') return;
     event.preventDefault();
-    runScan(event.currentTarget.value);
-  };
-
-  const openReportPreview = () => {
-    if (!result?.registration_id) return;
-    navigate(`/clinical/report-preview?id=${result.registration_id}`);
-  };
-
-  const openResultEntry = () => {
-    if (!result?.registration_id) return;
-    navigate(`/test-result-entry?registrationId=${result.registration_id}`);
+    runScan(event.currentTarget.value, { autoOpen: true });
   };
 
   return (
@@ -75,8 +80,12 @@ export default function SampleScan() {
         <section className="sample-scan-panel">
           <h1 className="sample-scan-title">Scan Sample Tube</h1>
           <p className="sample-scan-intro">
-            Scan the tube barcode to see Lab Code, Patient ID, Patient Name, Age, Gender,
-            Register Date, Test Type, and all tests for that sample.
+            Scan the tube barcode to load patient and ordered tests.
+            {canEnterResults(user)
+              ? ' After a successful scan, open the report format and enter machine readings in the placeholders.'
+              : canVerifyReports(user)
+                ? ' After entry, open Verify Report to cross-check values and approve the final report for the franchisee.'
+                : ' View patient details for this sample.'}
           </p>
 
           <div className="sample-scan-input-row">
@@ -98,9 +107,14 @@ export default function SampleScan() {
             <QrScanButton
               label="Scan QR"
               title="Scan tube barcode with phone camera"
-              onScan={runScan}
+              onScan={(value) => runScan(value, { autoOpen: true })}
             />
-            <button type="button" className="sample-scan-submit" onClick={() => runScan(barcode)} disabled={loading}>
+            <button
+              type="button"
+              className="sample-scan-submit"
+              onClick={() => runScan(barcode, { autoOpen: true })}
+              disabled={loading}
+            >
               {loading ? 'Loading…' : 'Look up'}
             </button>
           </div>
@@ -113,19 +127,31 @@ export default function SampleScan() {
             showActions
             actions={(
               <div className="sample-scan-actions">
-                <button type="button" className="sample-scan-action-btn" onClick={openReportPreview}>
+                {canEnterResults(user) && (
+                  <button
+                    type="button"
+                    className="sample-scan-action-btn"
+                    onClick={() => openMachineEntry(result?.registration_id)}
+                  >
+                    Enter Machine Readings
+                  </button>
+                )}
+                {canVerifyReports(user) && (
+                  <button
+                    type="button"
+                    className="sample-scan-action-btn sample-scan-action-btn--secondary"
+                    onClick={() => openReportPreview(result?.registration_id)}
+                  >
+                    Cross-verify / Approve
+                  </button>
+                )}
+                <button
+                  type="button"
+                  className="sample-scan-action-btn sample-scan-action-btn--secondary"
+                  onClick={() => openReportPreview(result?.registration_id)}
+                >
                   View Report
                 </button>
-                {canEnterResults(user) && (
-                  <button type="button" className="sample-scan-action-btn sample-scan-action-btn--secondary" onClick={openResultEntry}>
-                    Enter Results
-                  </button>
-                )}
-                {canVerifyReports(user) && !canEnterResults(user) && (
-                  <button type="button" className="sample-scan-action-btn sample-scan-action-btn--secondary" onClick={openReportPreview}>
-                    Verify Report
-                  </button>
-                )}
               </div>
             )}
           />

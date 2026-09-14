@@ -117,3 +117,60 @@
   font-weight: 600;
   padding: 8px 12px;
 }
+
+.clinical-success-msg {
+  color: #2e7d32;
+  background: #e8f5e9;
+  border: 1px solid #a5d6a7;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin: 8px 0 16px;
+}
+
+.machine-report-panel {
+  background: #f7f8fa;
+}
+
+.machine-report-sheet {
+  max-width: 960px;
+  margin: 0 auto;
+  background: #fff;
+}
+
+.machine-result-input {
+  width: 100%;
+  min-width: 88px;
+  max-width: 140px;
+  border: none;
+  border-bottom: 1.5px dashed #90a4ae;
+  background: transparent;
+  font: inherit;
+  font-weight: 600;
+  text-align: center;
+  padding: 4px 2px;
+  letter-spacing: 0.04em;
+}
+
+.machine-result-input::placeholder {
+  color: #90a4ae;
+  letter-spacing: 0.12em;
+}
+
+.machine-result-input:focus {
+  outline: none;
+  border-bottom-color: var(--blue-deep, #1565c0);
+  background: #f5f9ff;
+}
+
+.machine-report-table td:nth-child(2) {
+  min-width: 110px;
+}
+
+.report-preview-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--gray-border, #e0e0e0);
+}

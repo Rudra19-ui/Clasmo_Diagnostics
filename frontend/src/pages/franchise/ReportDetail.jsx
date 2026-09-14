@@ -38,27 +38,19 @@ function barcodeForTest(test, linkedBarcodes) {
   return linkedBarcodes[0]?.barcode || '—';
 }
 
-function testHasReportValues(testId, report) {
-  if (!report?.values?.length) return false;
-  return report.values.some((value) => Number(value.test_id) === Number(testId));
-}
-
 function clinicalStatusForTest(testId, registration, report) {
   if (registration?.status === 'Result Ready' || registration?.status === 'Printed') {
     return 'Closed';
   }
   if (report?.status === 'verified') return 'Closed';
-  if (testHasReportValues(testId, report)) return 'Closed';
+  if (report?.status === 'entered') return 'In Review';
   return 'Pending';
 }
 
 function testStatusLabel(testId, registration, report) {
   const clinical = clinicalStatusForTest(testId, registration, report);
-  if (clinical === 'Closed') {
-    if (report?.status === 'verified') return 'Report Uploaded';
-    if (report?.status === 'entered') return 'Result Entered';
-    return 'Report Uploaded';
-  }
+  if (clinical === 'Closed') return 'Report Ready';
+  if (clinical === 'In Review') return 'Awaiting Verification';
   return 'Pending';
 }
 
@@ -263,14 +255,20 @@ export default function ReportDetail() {
                     )}
                     {filteredTests.map((test, index) => {
                       const statusLabel = testStatusLabel(test.testId, registration, report);
-                      const canDownload = statusLabel !== 'Pending';
+                      const canDownload = report?.status === 'verified'
+                        || registration?.status === 'Result Ready'
+                        || registration?.status === 'Printed';
                       return (
                         <tr key={test.id || test.testId}>
                           <td>{index + 1}</td>
                           <td>{index === 0 ? bookingDate : ''}</td>
                           <td>{test.name}</td>
                           <td>{barcodeForTest(test, linkedBarcodes)}</td>
-                          <td>{statusLabel}</td>
+                          <td>
+                            <span className={`report-detail-status report-detail-status--${statusLabel.toLowerCase().replace(/\s+/g, '-')}`}>
+                              {statusLabel}
+                            </span>
+                          </td>
                           <td className="report-detail-download-cell">
                             {canDownload ? (
                               <>
@@ -287,6 +285,8 @@ export default function ReportDetail() {
                                   Without Letterhead
                                 </Link>
                               </>
+                            ) : statusLabel === 'Awaiting Verification' ? (
+                              <span className="report-detail-waiting">Awaiting pathologist approval</span>
                             ) : (
                               '—'
                             )}

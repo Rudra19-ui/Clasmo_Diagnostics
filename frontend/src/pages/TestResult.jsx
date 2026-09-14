@@ -252,7 +252,7 @@ export default function TestResult() {
 
   const openResultEntry = (row) => {
     if (!row?.id) return;
-    navigate(`/test-result-entry?registrationId=${row.id}`, {
+    navigate(`/clinical/result-entry?registrationId=${row.id}`, {
       state: { registrationIds: filteredRows.map((r) => r.id).filter(Boolean) },
     });
   };

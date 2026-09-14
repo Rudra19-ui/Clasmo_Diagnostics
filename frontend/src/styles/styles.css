@@ -1986,9 +1986,19 @@ input, select, textarea, button {
 
 .reg-sketch-submit-row {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 12px;
   padding-top: 8px;
+}
+
+.reg-sketch-submit-error {
+  flex: 1 0 100%;
+  margin: 0 0 4px;
+  text-align: center;
+  color: #b71c1c;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .reg-sketch-submit {
@@ -7337,6 +7347,26 @@ input, select, textarea, button {
   background: #fff;
 }
 
+.report-format-card.is-active {
+  border-color: #1a6bb5;
+  box-shadow: 0 0 0 2px rgba(26, 107, 181, 0.15);
+}
+
+.report-format-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.report-format-card-actions .portfolio-profile-link {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
 .report-format-card h3 {
   margin: 8px 0 6px;
   font-size: 15px;
@@ -7535,6 +7565,46 @@ input, select, textarea, button {
 .sample-report-patient-grid strong {
   font-size: 13px;
   color: #12354f;
+}
+
+.sample-report-patient-grid strong.is-placeholder,
+.report-result-placeholder {
+  color: #7a8fa3;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
+
+.sample-report-linked-files {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 12px;
+}
+
+.sample-report-notes {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border: 1px solid #d5e4f2;
+  border-radius: 10px;
+  background: #f7fbff;
+  font-size: 12.5px;
+  color: #2d455c;
+}
+
+.sample-report-notes h4 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: #0a3d6b;
+}
+
+.sample-report-notes ul {
+  margin: 0 0 10px;
+  padding-left: 18px;
+}
+
+.sample-report-notes p {
+  margin: 0;
+  line-height: 1.45;
 }
 
 .sample-report-test-title {

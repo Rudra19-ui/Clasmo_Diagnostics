@@ -46,13 +46,21 @@ export function buildRegistrationBarcodePayload(registrationBarcode, sampleGroup
   return payloads;
 }
 
-export function validateSampleBarcodes(sampleGroups, sampleBarcodes) {
+export function validateSampleBarcodes(sampleGroups, sampleBarcodes, { required = true } = {}) {
   const seenByBarcode = new Map();
 
   for (const { sampleType } of sampleGroups) {
     const entry = sampleBarcodes[sampleType];
     const barcode = sanitizeBarcodeScannedValue(entry?.enter);
     const confirm = sanitizeBarcodeScannedValue(entry?.confirm);
+
+    // Empty pair: skip when optional (can link later via Link Barcode).
+    if (!barcode && !confirm) {
+      if (required) {
+        return `${sampleType}: enter the barcode number.`;
+      }
+      continue;
+    }
     if (!barcode) {
       return `${sampleType}: enter the barcode number.`;
     }

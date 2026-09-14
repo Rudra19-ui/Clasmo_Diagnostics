@@ -6,7 +6,6 @@ import {
   REJECTION_STAFF_ROLES,
   SAMPLE_SCAN_ROLES,
   PATIENT_ENTRY_ROLES,
-  EXTRA_SAMPLE_ROLES,
 } from './roles';
 import { RECEPTION_NAV_ITEMS } from './receptionNav';
 
@@ -34,7 +33,7 @@ export const NAV = [
     id: 'sample-scan',
     label: 'Sample Scan',
     href: '/sample-scan',
-    roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.TECHNICIAN, ROLES.PATHOLOGIST],
+    roles: SAMPLE_SCAN_ROLES,
   },
   {
     id: 'test-result',
@@ -127,8 +126,14 @@ export const STANDARD_NAV = [
         label: 'Scan',
         href: '/notifications/scan',
         icon: 'chip',
-        roles: EXTRA_SAMPLE_ROLES,
-        excludeRoles: [ROLES.RECEPTIONIST],
+        roles: SAMPLE_SCAN_ROLES,
+      },
+      {
+        id: 'sample-scan',
+        label: 'Sample Scan',
+        href: '/sample-scan',
+        icon: 'chip',
+        roles: SAMPLE_SCAN_ROLES,
       },
     ],
   },
@@ -163,14 +168,6 @@ export const STANDARD_NAV = [
   {
     section: 'NOTIFICATIONS',
     items: [
-      {
-        id: 'sample-scan',
-        label: 'Sample Scan',
-        href: '/sample-scan',
-        icon: 'chip',
-        roles: SAMPLE_SCAN_ROLES,
-        excludeRoles: [ROLES.RECEPTIONIST],
-      },
       {
         id: 'find-barcode',
         label: 'Find Barcode',

@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Clasmo Diagnostics LIMS — Full Project Documentation</title>
+  <style>
+    @page { size: A4; margin: 16mm 14mm 18mm 14mm; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: #122033;
+      font-size: 11pt;
+      line-height: 1.45;
+      margin: 0;
+    }
+    h1 { font-size: 22pt; margin: 0 0 6px; color: #0b2a4a; }
+    h2 { font-size: 15pt; color: #0d3b66; border-bottom: 2px solid #0d3b66; padding-bottom: 4px; margin: 22px 0 10px; page-break-after: avoid; }
+    h3 { font-size: 12.5pt; color: #164e7a; margin: 16px 0 6px; page-break-after: avoid; }
+    h4 { font-size: 11pt; margin: 12px 0 4px; color: #1d3557; }
+    p, li { margin: 0 0 6px; }
+    .cover {
+      border: 2px solid #0d3b66;
+      padding: 28px;
+      margin-bottom: 22px;
+      background: #f4f8fc;
+    }
+    .muted { color: #4d5d70; font-size: 10pt; }
+    table { width: 100%; border-collapse: collapse; margin: 8px 0 14px; font-size: 9.5pt; page-break-inside: auto; }
+    th, td { border: 1px solid #c5d3e0; padding: 5px 7px; vertical-align: top; }
+    th { background: #0d3b66; color: #fff; text-align: left; }
+    tr:nth-child(even) td { background: #f7fbff; }
+    code, .mono { font-family: Menlo, Consolas, monospace; font-size: 9pt; }
+    pre {
+      background: #0f2133;
+      color: #e8f1fa;
+      padding: 10px 12px;
+      font-size: 8.5pt;
+      overflow: hidden;
+      white-space: pre-wrap;
+    }
+    ul { margin: 4px 0 10px 18px; padding: 0; }
+    .note { background: #fff6e5; border-left: 4px solid #d9a441; padding: 8px 10px; margin: 10px 0; }
+    .toc a { color: #0d3b66; text-decoration: none; }
+    .footer-note { font-size: 9pt; color: #667; margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <section class="cover">
+    <h1>Clasmo Diagnostics — LIMS</h1>
+    <p><strong>Complete Project Documentation</strong></p>
+    <p>Laboratory Information Management System for Clasmo Diagnostics Pvt. Ltd.</p>
+    <p class="muted">
+      Repository: https://github.com/Rudra19-ui/Clasmo_Diagnostics.git<br>
+      Generated: 4 September 2026<br>
+      Stack: React (Vite) frontend + Django REST Framework backend
+    </p>
+  </section>
+
+  <h2>1. Project Overview</h2>
+  <p>Clasmo Diagnostics is a multi-zone Laboratory Information Management System (LIMS). It covers patient search and registration, billing, barcode linking and scanning, sample workflow, clinical result entry, report verification, franchise wallets and pricing, administration masters, dashboards, reports, and home-collection device modules.</p>
+  <h3>Architecture</h3>
+  <table>
+    <tr><th>Layer</th><th>Technology</th></tr>
+    <tr><td>Frontend</td><td>React 19, Vite 8, React Router 7, html5-qrcode</td></tr>
+    <tr><td>Backend</td><td>Django 6, Django REST Framework, Token authentication</td></tr>
+    <tr><td>Database</td><td>PostgreSQL 16 (Docker / production); SQLite possible locally</td></tr>
+    <tr><td>Media / PDF</td><td>Pillow, pypdf, WhiteNoise</td></tr>
+    <tr><td>Deploy</td><td>Docker, Gunicorn, Railway (railway.toml)</td></tr>
+    <tr><td>Legacy prototype</td><td>Static HTML/CSS/JS in repo root (index.html, css/, js/, device/)</td></tr>
+  </table>
+  <h3>Folder structure</h3>
+  <pre>CLASMO_DIAGNOSTICS/
+├── backend/                 Django API
+│   ├── api/                 models, views, serializers, permissions, tests
+│   ├── clasmo_backend/      Django project settings
+│   └── manage.py
+├── frontend/                React SPA
+│   └── src/
+│       ├── components/      reusable UI
+│       ├── pages/           route pages
+│       ├── services/api.js  HTTP client
+│       ├── context/         Auth, Nav, ExtraSample
+│       └── utils/           roles, nav, helpers
+├── css/, js/, device/       legacy static prototype
+├── docker-compose.yml
+├── Dockerfile
+└── docs/                    this documentation</pre>
+
+  <h2>2. Quick start</h2>
+  <h3>Backend</h3>
+  <pre>cd backend
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py seed_zones
+python manage.py seed_test_roles
+python manage.py seed_clinical_data
+python manage.py runserver
+# API: http://127.0.0.1:8000/api/</pre>
+  <h3>Frontend</h3>
+  <pre>cd frontend
+npm install
+npm run dev
+# App: http://localhost:5173</pre>
+  <h3>Docker</h3>
+  <pre>docker-compose up
+# API at http://localhost:8000
+# Postgres: clasmo / clasmo / db clasmo</pre>
+  <p>After production deploy, run <code>python manage.py migrate</code>.</p>
+
+  <h2>3. Zones and demo logins</h2>
+  <p>Operating zones: Nashik, Pune, Ratnagiri, Mumbai, Dhule. Zone admins only see their own zone. Patient bookings, doctors, and collection centers do not mix across zones.</p>
+  <h3>Nashik demo accounts</h3>
+  <table>
+    <tr><th>Role</th><th>Username</th><th>Password</th></tr>
+    <tr><td>Admin</td><td>admin</td><td>admin123</td></tr>
+    <tr><td>User</td><td>user</td><td>user123</td></tr>
+    <tr><td>Technician</td><td>technician</td><td>tech123</td></tr>
+    <tr><td>Pathologist</td><td>pathologist</td><td>patho123</td></tr>
+    <tr><td>HR</td><td>hr</td><td>hr123</td></tr>
+    <tr><td>Receptionist</td><td>receptionist</td><td>reception123</td></tr>
+    <tr><td>Supreme</td><td>supreme</td><td>supreme123</td></tr>
+    <tr><td>Prime</td><td>prime</td><td>prime123</td></tr>
+    <tr><td>Sub-Franchise</td><td>sub</td><td>sub123</td></tr>
+  </table>
+  <h3>Other zone admins</h3>
+  <table>
+    <tr><th>Zone</th><th>Username</th><th>Password</th></tr>
+    <tr><td>Pune</td><td>pune_admin</td><td>pune123</td></tr>
+    <tr><td>Ratnagiri</td><td>ratnagiri_admin</td><td>ratnagiri123</td></tr>
+    <tr><td>Mumbai</td><td>mumbai_admin</td><td>mumbai123</td></tr>
+    <tr><td>Dhule</td><td>dhule_admin</td><td>dhule123</td></tr>
+  </table>
+  <p>Other-zone staff use <code>{zone}_{role}</code> usernames, for example <code>mumbai_technician</code> / <code>mumbai_tech123</code>.</p>
+
+  <h2>4. User roles and access</h2>
+  <table>
+    <tr><th>Code</th><th>Label</th><th>Typical access</th></tr>
+    <tr><td>super_admin</td><td>Super Admin</td><td>Full system, all zones</td></tr>
+    <tr><td>admin</td><td>Admin</td><td>Zone admin, all operational modules</td></tr>
+    <tr><td>user</td><td>User</td><td>Front desk / general staff</td></tr>
+    <tr><td>technician</td><td>Technician</td><td>Sample workflow portal (same as reception) + clinical result entry APIs</td></tr>
+    <tr><td>receptionist</td><td>Receptionist</td><td>Sample workflow portal only</td></tr>
+    <tr><td>pathologist</td><td>Pathologist</td><td>Report verify, limited nav</td></tr>
+    <tr><td>hr</td><td>HR</td><td>Users, enquiries, administration</td></tr>
+    <tr><td>super_franchisee</td><td>Supreme</td><td>Top franchise: booking, pricing, wallets, Prime accounts</td></tr>
+    <tr><td>franchisee</td><td>Prime</td><td>Mid franchise: booking, Sub-Franchise pricing</td></tr>
+    <tr><td>sub_franchise</td><td>Sub-Franchise</td><td>Bottom franchise: booking and reports</td></tr>
+  </table>
+  <h3>Important role groups (frontend/src/utils/roles.js)</h3>
+  <ul>
+    <li><strong>PATIENT_ENTRY_ROLES:</strong> super_admin, admin, Supreme, Prime, Sub-Franchise</li>
+    <li><strong>NO_PATIENT_ENTRY_ROLES:</strong> pathologist, technician, receptionist, hr, user</li>
+    <li><strong>RECEPTION_WORKFLOW_ROLES:</strong> receptionist, technician (Sample Accession, Extra Sample, Outsource, Scan Log, etc.)</li>
+    <li><strong>SAMPLE_SCAN_ROLES:</strong> super_admin, admin, technician, pathologist</li>
+    <li><strong>HOLD / REJECTION staff:</strong> admin roles, hr, pathologist, technician, user (reception excluded from those sidebar items)</li>
+    <li><strong>CLINICAL_ROLES:</strong> super_admin, admin, technician, pathologist</li>
+  </ul>
+  <h3>Sidebar layouts</h3>
+  <p><strong>Receptionist and Technician</strong> use SAMPLE_WORKFLOW_PORTAL_NAV:</p>
+  <ul>
+    <li>Dashboard</li>
+    <li>SAMPLE WORKFLOW: Sample Accession, Extra Sample, Out Sources, Out Received, Sample Rack, Sample Log, Scan Log</li>
+    <li>SETTINGS: Change Password, Give Feedback, Help, Logout</li>
+  </ul>
+  <p><strong>Franchise roles</strong> use FRANCHISE_NAV (booking, reports, notifications, payments, pricing).</p>
+  <p><strong>Admin / other staff</strong> use STANDARD_NAV (registration sections, scan, notifications, portfolio, administration).</p>
+  <h3>Default LabRole permission keys</h3>
+  <p>search, registration, test_result, administration, reports, device_request, dashboard, elab_pay, help, result_entry, report_preview, test_parameters, manage_users, manage_roles.</p>
+
+  <h2>5. Database models</h2>
+  <p>File: <code>backend/api/models.py</code></p>
+  <table>
+    <tr><th>Model</th><th>Purpose</th></tr>
+    <tr><td>Zone</td><td>Lab operating zones</td></tr>
+    <tr><td>User</td><td>Extended user: role, zone, franchise parent, display name</td></tr>
+    <tr><td>LoginLog</td><td>Login attempt audit</td></tr>
+    <tr><td>LabRole</td><td>Role permission JSON</td></tr>
+    <tr><td>TestCategory / Test / TestPackage</td><td>Test catalog, MRP, sample type, packages</td></tr>
+    <tr><td>ReportFormatAsset</td><td>Report format templates</td></tr>
+    <tr><td>Patient / PatientAddress</td><td>Patient master</td></tr>
+    <tr><td>Registration / RegistrationTest</td><td>Booking and ordered tests</td></tr>
+    <tr><td>RegistrationTestHold</td><td>Held tests by barcode</td></tr>
+    <tr><td>SampleRejection</td><td>Rejected samples</td></tr>
+    <tr><td>ExtraSample</td><td>Unlinked barcodes saved for follow-up</td></tr>
+    <tr><td>OutsourceTransfer</td><td>Samples sent to partner labs</td></tr>
+    <tr><td>PatientSampleBarcode</td><td>Barcode linked to patient / registration / sample type</td></tr>
+    <tr><td>BarcodeScanLog</td><td>Scan audit: barcode, zone, user, timestamp</td></tr>
+    <tr><td>PickupRequest / LabMessage</td><td>Home pickup and messages to lab</td></tr>
+    <tr><td>TestParameter / Report / ReportValue</td><td>Clinical parameters and results</td></tr>
+    <tr><td>InstrumentResultBatch</td><td>Analyzer ingest batches</td></tr>
+    <tr><td>MembershipType / Membership</td><td>Membership plans</td></tr>
+    <tr><td>CollectionCenter / CollectionCenterBoy</td><td>Centers and collection staff</td></tr>
+    <tr><td>Area / RateMaster</td><td>Geography and rate lists</td></tr>
+    <tr><td>DiscountReason / DiscountAuthority</td><td>Discount controls</td></tr>
+    <tr><td>WhatsAppMessageLog</td><td>WhatsApp delivery log</td></tr>
+    <tr><td>ExpenseType</td><td>Expense categories</td></tr>
+    <tr><td>Affiliation / SalesReference / Doctor</td><td>Referral masters</td></tr>
+    <tr><td>LabConfiguration</td><td>Lab profile, QR, next patient sequence</td></tr>
+    <tr><td>ServiceAreaPincode / LabActivity</td><td>Service pincodes and activities</td></tr>
+    <tr><td>JoinRequest / SelfPatientQuery</td><td>Public join and patient queries</td></tr>
+    <tr><td>FranchiseCommissionConfig</td><td>Commission rules</td></tr>
+    <tr><td>ZoneFranchiseRate / FranchisePricingOverride / FranchiseTestRate</td><td>Franchise pricing</td></tr>
+    <tr><td>FranchiseWallet / WalletTransaction / FranchiseLedgerEvent</td><td>Wallets, credits, ledger</td></tr>
+  </table>
+
+  <h2>6. Backend API endpoints</h2>
+  <p>Base path: <code>/api/</code>. File: <code>backend/api/urls.py</code>.</p>
+  <h3>Auth and health</h3>
+  <table>
+    <tr><th>Method</th><th>Endpoint</th><th>View</th><th>Function</th></tr>
+    <tr><td>GET</td><td>/health/</td><td>HealthView</td><td>Health check, optional seed</td></tr>
+    <tr><td>POST</td><td>/auth/login/</td><td>LoginView</td><td>Token login</td></tr>
+    <tr><td>POST</td><td>/auth/register/</td><td>RegisterView</td><td>Create account (allowed creators)</td></tr>
+    <tr><td>POST</td><td>/auth/logout/</td><td>LogoutView</td><td>Invalidate token</td></tr>
+    <tr><td>GET</td><td>/auth/me/</td><td>MeView</td><td>Current user</td></tr>
+    <tr><td>POST</td><td>/auth/change-password/</td><td>ChangePasswordView</td><td>Change password</td></tr>
+  </table>
+  <h3>Catalog</h3>
+  <table>
+    <tr><th>Method</th><th>Endpoint</th><th>View</th></tr>
+    <tr><td>GET</td><td>/tests/</td><td>TestListView</td></tr>
+    <tr><td>GET</td><td>/test-categories/</td><td>TestCategoryListView</td></tr>
+    <tr><td>GET</td><td>/test-packages/</td><td>TestPackageListView</td></tr>
+    <tr><td>GET</td><td>/report-formats/</td><td>ReportFormatListView</td></tr>
+  </table>
+  <h3>Registrations and billing</h3>
+  <table>
+    <tr><th>Method</th><th>Endpoint</th><th>View</th><th>Function</th></tr>
+    <tr><td>GET</td><td>/registrations/</td><td>RegistrationSearchView</td><td>Search bookings (franchise-scoped)</td></tr>
+    <tr><td>POST</td><td>/registrations/create/</td><td>RegistrationCreateView</td><td>New booking; wallet debit; next IDs</td></tr>
+    <tr><td>GET</td><td>/registrations/next-lab-code/</td><td>NextLabCodeView</td><td>Preview next lab code</td></tr>
+    <tr><td>GET</td><td>/registrations/next-patient-id/</td><td>NextPatientIdView</td><td>Preview next patient ID</td></tr>
+    <tr><td>GET</td><td>/registrations/&lt;lab_code&gt;/</td><td>RegistrationDetailView</td><td>Booking detail</td></tr>
+    <tr><td>PATCH</td><td>/registrations/&lt;lab_code&gt;/edit/</td><td>RegistrationEditView</td><td>Edit booking</td></tr>
+    <tr><td>POST</td><td>/registrations/&lt;lab_code&gt;/add-tests/</td><td>RegistrationAddTestsView</td><td>Add tests after booking</td></tr>
+    <tr><td>POST</td><td>/registrations/&lt;lab_code&gt;/cancel-tests/</td><td>RegistrationCancelTestsView</td><td>Cancel tests</td></tr>
+    <tr><td>POST</td><td>/registrations/&lt;lab_code&gt;/generate-mrp-bill/</td><td>RegistrationGenerateMrpBillView</td><td>MRP bill</td></tr>
+    <tr><td>POST</td><td>/registrations/&lt;lab_code&gt;/clinical-pdf/</td><td>RegistrationClinicalPdfView</td><td>Upload clinical PDF</td></tr>
+    <tr><td>GET</td><td>/registrations/worksheet/</td><td>WorksheetView</td><td>Printable worksheet</td></tr>
+    <tr><td>GET</td><td>/registrations/workflow/</td><td>WorkFlowHistoryView</td><td>Status history</td></tr>
+    <tr><td>GET</td><td>/registrations/barcode/</td><td>BarcodeView</td><td>Barcode print payload</td></tr>
+    <tr><td>GET/PATCH</td><td>/registrations/bill-receipt/</td><td>BillReceiptView</td><td>Bill receipt</td></tr>
+    <tr><td>GET/POST</td><td>/registrations/notifications/</td><td>NotificationView</td><td>SMS / WhatsApp</td></tr>
+    <tr><td>POST</td><td>/registrations/notifications/bulk/</td><td>BulkNotificationView</td><td>Bulk release SMS</td></tr>
+  </table>
+  <h3>Sample workflow</h3>
+  <table>
+    <tr><th>Method</th><th>Endpoint</th><th>View</th><th>Function</th></tr>
+    <tr><td>GET</td><td>/sample-accession/</td><td>SampleAccessionListView</td><td>All zone bookings for accession</td></tr>
+    <tr><td>GET</td><td>/scan-logs/</td><td>ScanLogListView</td><td>Scan audit grouped by zone</td></tr>
+    <tr><td>GET/POST</td><td>/holds/</td><td>RegistrationTestHoldListCreateView</td><td>List/create holds</td></tr>
+    <tr><td>POST</td><td>/holds/&lt;id&gt;/release/</td><td>RegistrationTestHoldReleaseView</td><td>Release hold</td></tr>
+    <tr><td>GET/POST</td><td>/rejections/</td><td>SampleRejectionListCreateView</td><td>List/create rejections</td></tr>
+    <tr><td>POST</td><td>/rejections/&lt;id&gt;/resolve/</td><td>SampleRejectionResolveView</td><td>Resolve rejection</td></tr>
+    <tr><td>GET/POST</td><td>/extra-samples/</td><td>ExtraSampleListCreateView</td><td>Save unlinked barcodes</td></tr>
+    <tr><td>POST</td><td>/extra-samples/&lt;id&gt;/remove/</td><td>ExtraSampleRemoveView</td><td>Remove extra sample</td></tr>
+    <tr><td>GET/POST</td><td>/outsource-transfers/</td><td>OutsourceTransferListCreateView</td><td>Send outsource</td></tr>
+    <tr><td>POST</td><td>/outsource-transfers/receive/</td><td>OutsourceTransferReceiveView</td><td>Receive by barcode/lab</td></tr>
+    <tr><td>POST</td><td>/outsource-transfers/&lt;id&gt;/receive/</td><td>OutsourceTransferReceiveByIdView</td><td>Receive by id</td></tr>
+    <tr><td>POST</td><td>/outsource-transfers/&lt;id&gt;/upload-report/</td><td>OutsourceTransferUploadReportView</td><td>Upload partner report</td></tr>
+  </table>
+  <h3>Barcodes</h3>
+  <table>
+    <tr><th>Method</th><th>Endpoint</th><th>View</th></tr>
+    <tr><td>GET</td><td>/patient-barcodes/</td><td>PatientBarcodeListView</td></tr>
+    <tr><td>GET</td><td>/patient-barcodes/lookup/</td><td>PatientBarcodeLookupView</td></tr>
+    <tr><td>GET</td><td>/patient-barcodes/scan/</td><td>PatientSampleScanView (also writes BarcodeScanLog)</td></tr>
+    <tr><td>POST</td><td>/patient-barcodes/link/</td><td>PatientBarcodeLinkView</td></tr>
+    <tr><td>GET/DELETE</td><td>/patient-barcodes/&lt;id&gt;/</td><td>PatientBarcodeDetailView</td></tr>
+  </table>
+  <h3>Clinical and instruments</h3>
+  <table>
+    <tr><th>Method</th><th>Endpoint</th><th>View</th></tr>
+    <tr><td>GET/POST</td><td>/test-parameters/</td><td>TestParameterListCreateView</td></tr>
+    <tr><td>GET/PUT/DELETE</td><td>/test-parameters/&lt;id&gt;/</td><td>TestParameterDetailView</td></tr>
+    <tr><td>GET/POST</td><td>/reports/&lt;registration_id&gt;/</td><td>ReportDetailView</td></tr>
+    <tr><td>PATCH</td><td>/reports/&lt;registration_id&gt;/verify/</td><td>ReportVerifyView</td></tr>
+    <tr><td>POST</td><td>/public/patient-report/</td><td>PublicPatientReportView</td></tr>
+    <tr><td>POST</td><td>/instrument/results/</td><td>InstrumentResultsIngestView</td></tr>
+    <tr><td>GET</td><td>/instrument/patient-report/</td><td>PatientReportByBarcodeView</td></tr>
+  </table>
+  <h3>Franchise wallet and pricing</h3>
+  <table>
+    <tr><th>Method</th><th>Endpoint</th><th>View</th></tr>
+    <tr><td>GET</td><td>/franchise/ledger/</td><td>FranchiseLedgerView</td></tr>
+    <tr><td>GET</td><td>/franchise/sample-usage/</td><td>FranchiseSampleUsageView</td></tr>
+    <tr><td>GET</td><td>/wallets/me/</td><td>MyWalletView</td></tr>
+    <tr><td>GET</td><td>/wallets/</td><td>WalletListView</td></tr>
+    <tr><td>GET</td><td>/wallets/&lt;user_id&gt;/</td><td>WalletDetailView</td></tr>
+    <tr><td>GET</td><td>/wallets/transactions/</td><td>WalletTransactionListView</td></tr>
+    <tr><td>GET/PUT</td><td>/wallets/commission-config/</td><td>CommissionConfigView</td></tr>
+    <tr><td>GET/PUT</td><td>/wallets/zone-franchise-rates/</td><td>ZoneFranchiseRateListView</td></tr>
+    <tr><td>GET</td><td>/wallets/zone-franchise-rates/me/</td><td>MyZoneFranchiseRateView</td></tr>
+    <tr><td>GET/PUT</td><td>/wallets/pricing-overrides/me/</td><td>MyPricingOverrideView</td></tr>
+    <tr><td>POST</td><td>/wallets/top-up/</td><td>WalletTopUpView</td></tr>
+    <tr><td>POST</td><td>/wallets/adjust/</td><td>WalletAdjustmentView</td></tr>
+    <tr><td>POST</td><td>/wallets/online-top-up/</td><td>WalletSelfTopUpView</td></tr>
+    <tr><td>GET/PUT</td><td>/wallets/franchise-test-rates/</td><td>FranchiseBulkPricingView</td></tr>
+    <tr><td>POST</td><td>/wallets/franchise-test-rates/transfer/</td><td>FranchiseTransferPricingView</td></tr>
+    <tr><td>POST</td><td>/wallets/demo-transaction/</td><td>DemoWalletTransactionView</td></tr>
+  </table>
+  <h3>Dashboard, search, device</h3>
+  <table>
+    <tr><th>Method</th><th>Endpoint</th><th>View</th></tr>
+    <tr><td>GET</td><td>/dashboard/summary/</td><td>DashboardSummaryView</td></tr>
+    <tr><td>GET</td><td>/reports/summary/</td><td>ReportSummaryView</td></tr>
+    <tr><td>GET</td><td>/search/global/</td><td>GlobalSearchView</td></tr>
+    <tr><td>GET/POST</td><td>/pickup-requests/</td><td>PickupRequestListCreateView</td></tr>
+    <tr><td>GET/POST</td><td>/messages/</td><td>LabMessageListCreateView</td></tr>
+  </table>
+  <h3>Administration masters</h3>
+  <p>CRUD or list endpoints exist for: users, user role update, zones, roles, membership types/memberships, collection centers, areas, rate masters, collection center boys, discount reasons/authorities, WhatsApp logs, expense types, doctors, affiliations, sales references, patients, lab configuration + QR upload, service area pincodes, activities, join requests, self-patient queries.</p>
+
+  <h2>7. Backend services and functions</h2>
+  <h3>Permissions (clinical_permissions.py)</h3>
+  <ul>
+    <li>CanAccessPatientEntry, CanAccessPricingWallet, CanManageFranchiseTestRates</li>
+    <li>CanAccessHolds, CanPlaceHolds, CanAccessRejections, CanRejectSamples</li>
+    <li>CanAccessSampleAccession (receptionist + technician)</li>
+    <li>CanAccessExtraSamples, CanAccessScanLog (reception, technician, admin, super_admin)</li>
+    <li>CanAccessOutsource</li>
+    <li>IsAdmin, IsClinicalStaff, IsTechnicianOrAdmin, IsPathologistOrAdmin, TestParameterPermission</li>
+  </ul>
+  <h3>Franchise / zone scoping (franchise_scope.py)</h3>
+  <ul>
+    <li>is_franchise_user, user_zone_id, user_has_global_data_access</li>
+    <li>franchise_descendant_ids, visible_creator_ids</li>
+    <li>scope_registrations_for_user — hierarchy-scoped bookings</li>
+    <li>scope_zone_registrations_for_accession — all bookings in the user’s zone</li>
+    <li>scope_patients_for_user, scope_reports_for_user, scope_barcodes_for_user</li>
+    <li>scope_created_by_for_user, scope_zone_queryset, scope_users_for_user</li>
+    <li>user_can_access_registration, get_registration_for_user</li>
+    <li>scope_wallets_for_user, scope_wallet_transactions_for_user, user_can_access_wallet</li>
+  </ul>
+  <h3>Barcode service (barcode_service.py)</h3>
+  <ul>
+    <li>normalize_barcode, validate_barcode_pair, link_sample_barcodes</li>
+    <li>resolve_patient_for_link, lookup_patient_by_barcode, barcode_lookup_candidates</li>
+    <li>filter_registrations_by_barcode, sample_group_for_test, test_matches_sample_type</li>
+    <li>build_sample_scan_payload, scan_sample_by_barcode</li>
+    <li>mark_registration_sample_scanned, mark_sample_barcode_scanned</li>
+    <li>record_barcode_scan_log — writes BarcodeScanLog with username</li>
+  </ul>
+  <h3>Wallet service (wallet_service.py)</h3>
+  <ul>
+    <li>get_or_create_wallet, hierarchy_beneficiaries, commission_beneficiaries</li>
+    <li>distribute_registration_commissions, settle_registration_booking</li>
+    <li>settle_registration_test_addition, debit_registration_charge</li>
+    <li>admin_adjust_wallet, admin_set_wallet_balance, admin_top_up_wallet</li>
+    <li>franchise_online_top_up, can_release_report, assert_can_release_report</li>
+    <li>apply_ledger_entry, create_demo_transactions</li>
+  </ul>
+  <h3>Main API views (views.py) — class list</h3>
+  <p>HealthView, LoginView, RegisterView, LogoutView, MeView, ChangePasswordView, TestListView, TestCategoryListView, TestPackageListView, ReportFormatListView, RegistrationSearchView, SampleAccessionListView, ScanLogListView, WorksheetView, WorkFlowHistoryView, BarcodeView, NotificationView, BulkNotificationView, BillReceiptView, RegistrationDetailView, RegistrationClinicalPdfView, RegistrationEditView, RegistrationAddTestsView, RegistrationCancelTestsView, RegistrationTestHoldListCreateView, RegistrationTestHoldReleaseView, SampleRejectionListCreateView, SampleRejectionResolveView, ExtraSampleListCreateView, ExtraSampleRemoveView, OutsourceTransferListCreateView, OutsourceTransferReceiveView, OutsourceTransferReceiveByIdView, OutsourceTransferUploadReportView, RegistrationCreateView, RegistrationGenerateMrpBillView, FranchiseLedgerView, FranchiseSampleUsageView, NextLabCodeView, NextPatientIdView, PickupRequestListCreateView, LabMessageListCreateView, DashboardSummaryView, ReportSummaryView, UserListView, ZoneListView, UserRoleUpdateView, RoleListView, RoleDetailView, MembershipTypeListView, MembershipListCreateView, CollectionCenterListCreateView, CollectionCenterDetailView, AreaListView, RateMasterListView, CollectionCenterBoyListCreateView, CollectionCenterBoyDetailView, DiscountReasonListCreateView, DiscountReasonDetailView, DiscountAuthorityListCreateView, DiscountAuthorityDetailView, WhatsAppLogListView, ExpenseTypeListCreateView, ExpenseTypeDetailView, DoctorListCreateView, DoctorDetailView, AffiliationListView, SalesReferenceListView, PatientMasterListCreateView, PatientMasterDetailView, LabConfigurationView, LabQrCodeUploadView, ServiceAreaPincodeListCreateView, ServiceAreaPincodeDetailView, LabActivityListCreateView, LabActivityDetailView, JoinRequestListCreateView, JoinRequestDetailView, SelfPatientQueryListCreateView, SelfPatientQueryDetailView, GlobalSearchView, PatientBarcodeListView, PatientBarcodeLookupView, PatientSampleScanView, PatientBarcodeLinkView, PatientBarcodeDetailView.</p>
+  <h3>Clinical views</h3>
+  <p>TestParameterListCreateView, TestParameterDetailView, ReportDetailView, PublicPatientReportView, ReportVerifyView.</p>
+  <h3>Wallet views</h3>
+  <p>MyWalletView, WalletListView, WalletDetailView, WalletTransactionListView, CommissionConfigView, ZoneFranchiseRateListView, MyZoneFranchiseRateView, MyPricingOverrideView, WalletTopUpView, WalletAdjustmentView, WalletSelfTopUpView, DemoWalletTransactionView, FranchiseBulkPricingView, FranchiseTransferPricingView.</p>
+  <h3>Instrument views</h3>
+  <p>InstrumentResultsIngestView, PatientReportByBarcodeView.</p>
+
+  <h2>8. Frontend pages and routes</h2>
+  <h3>Public</h3>
+  <table>
+    <tr><th>Route</th><th>Page</th></tr>
+    <tr><td>/</td><td>Landing (Join with Clasmo, departments, public patient report)</td></tr>
+    <tr><td>/login</td><td>Login</td></tr>
+    <tr><td>/test-quorum</td><td>TestQuorum</td></tr>
+  </table>
+  <h3>Core authenticated</h3>
+  <table>
+    <tr><th>Route</th><th>Page</th><th>Roles</th></tr>
+    <tr><td>/dashboard</td><td>Dashboard</td><td>All logged-in</td></tr>
+    <tr><td>/search</td><td>Search</td><td>Patient entry</td></tr>
+    <tr><td>/open</td><td>OpenBarcode</td><td>Logged-in</td></tr>
+    <tr><td>/barcode-print</td><td>BarcodePrinting</td><td>Logged-in</td></tr>
+    <tr><td>/barcode-link</td><td>BarcodeLink</td><td>Patient entry</td></tr>
+    <tr><td>/sample-scan</td><td>SampleScan</td><td>Admin, technician, pathologist</td></tr>
+    <tr><td>/hold-tests</td><td>HoldTests</td><td>Hold staff</td></tr>
+    <tr><td>/sample-rejection</td><td>SampleRejection</td><td>Rejection staff</td></tr>
+    <tr><td>/bill-receipt</td><td>BillReceipt</td><td>Patient entry</td></tr>
+    <tr><td>/test-result / test-result-entry</td><td>TestResult / TestResultEntry</td><td>Patient entry / logged-in</td></tr>
+    <tr><td>/entry/new, /entry/list, /entry/test-addition</td><td>Registration, EditEntry, TestAddition</td><td>Patient entry</td></tr>
+    <tr><td>/reports-section/all|search|detail/:labCode</td><td>AllReports, SearchReports, ReportDetail</td><td>Patient entry</td></tr>
+    <tr><td>/reports</td><td>Reports</td><td>Patient entry</td></tr>
+    <tr><td>/portfolio/*</td><td>TestList, TestProfile, SampleReport</td><td>Test portfolio roles</td></tr>
+    <tr><td>/user-signup</td><td>UserSignUp</td><td>Creators</td></tr>
+    <tr><td>/enquire-box</td><td>EnquireBox</td><td>Admin</td></tr>
+    <tr><td>/self-patient-query</td><td>SelfPatientQuery</td><td>Logged-in</td></tr>
+    <tr><td>/give-feedback</td><td>GiveFeedback</td><td>Logged-in</td></tr>
+    <tr><td>/help, /elab-pay</td><td>Help, ElabPay</td><td>Logged-in</td></tr>
+  </table>
+  <h3>Reception / technician sample workflow</h3>
+  <table>
+    <tr><th>Route</th><th>Page</th><th>Status</th></tr>
+    <tr><td>/reception/sample-accession</td><td>SampleAccession</td><td>Live zone-wide list</td></tr>
+    <tr><td>/reception/extra-sample</td><td>Scan (title Extra Sample)</td><td>Live scan + save extra sample</td></tr>
+    <tr><td>/reception/out-sources</td><td>OutSources</td><td>Live send outsource</td></tr>
+    <tr><td>/reception/out-received</td><td>OutReceived</td><td>Live receive + upload report</td></tr>
+    <tr><td>/reception/scan-log</td><td>ScanLog</td><td>Live audit log with username</td></tr>
+    <tr><td>/reception/sample-rack</td><td>ReceptionModule stub</td><td>Placeholder</td></tr>
+    <tr><td>/reception/sample-log</td><td>ReceptionModule stub</td><td>Placeholder</td></tr>
+    <tr><td>/notifications/scan</td><td>Scan</td><td>Staff/franchise scan UI</td></tr>
+  </table>
+  <h3>Clinical</h3>
+  <table>
+    <tr><th>Route</th><th>Page</th><th>Roles</th></tr>
+    <tr><td>/clinical/test-parameters</td><td>TestParameterMaster</td><td>Admin</td></tr>
+    <tr><td>/clinical/result-entry</td><td>ResultEntry</td><td>Admin, technician</td></tr>
+    <tr><td>/clinical/report-preview</td><td>ReportPreview</td><td>Logged-in</td></tr>
+  </table>
+  <h3>Franchise portal</h3>
+  <table>
+    <tr><th>Route</th><th>Page</th></tr>
+    <tr><td>/franchise/analytics</td><td>Analytics (Supreme, Prime)</td></tr>
+    <tr><td>/franchise/manage-booking/new|list|test-addition</td><td>Registration, EditEntry, TestAddition</td></tr>
+    <tr><td>/franchise/manage-reports/all|search|detail/:labCode</td><td>Reports</td></tr>
+    <tr><td>/franchise/find-barcode</td><td>FindBarcode</td></tr>
+    <tr><td>/franchise/clinical-history</td><td>ClinicalHistory</td></tr>
+    <tr><td>/franchise/test-cancellation</td><td>TestCancellation</td></tr>
+    <tr><td>/franchise/hold / rejection</td><td>FranchiseHold, FranchiseRejection</td></tr>
+    <tr><td>/franchise/make-bill / billing-list / track-ledger</td><td>MakeBill, BillingList, TrackLedger</td></tr>
+    <tr><td>/franchise/pricing-credits</td><td>FranchisePricingCredits</td></tr>
+    <tr><td>/franchise/online-payment</td><td>OnlinePayment</td></tr>
+    <tr><td>/franchise/franchisee-pricing and transfer</td><td>Supreme bulk/transfer pricing for Prime</td></tr>
+    <tr><td>/franchise/sub-franchisee-pricing and transfer</td><td>Prime bulk/transfer pricing for Sub</td></tr>
+    <tr><td>/franchise/scan</td><td>Scan</td></tr>
+    <tr><td>/franchise/payment-history, my-staff, sub-franchisee, update-profile</td><td>FranchiseStub placeholders</td></tr>
+  </table>
+  <h3>Admin hub (/administration and /admin/*)</h3>
+  <p>Live pages: Change Password, Role Management, Membership, Collection Center Boy, Discount Reason/Authority, WhatsApp Logger, Expense Type, Collection Center Management, Doctor Management, Patient Management, Lab Configuration, Services In Area, Create Activity, Activities, Franchise Credits, List Franchisee, Add Franchisee, Franchise Bulk Pricing, Transfer Price.</p>
+  <p>Stub modules via AdminModule: User Lock, User Management, CRM, QC Report, ICMR Batches, Download offline data, CheckList, Machine Mapping, Area Master, Sales Reference Master, Lab Accounting, Billing, Rate Master, Test Details/Category/Group/Profile/Unit, Special Offers, Notes, Machine Interface, Popular Test, Complete Test List, OutSource Lab, External Test Mapping.</p>
+  <h3>Device</h3>
+  <table>
+    <tr><th>Route</th><th>Page</th></tr>
+    <tr><td>/device/pickup-request</td><td>PickupRequest (live)</td></tr>
+    <tr><td>/device/message-to-lab</td><td>MessageToLab (live)</td></tr>
+    <tr><td>/device/test-result-batch</td><td>TestResultBatch</td></tr>
+    <tr><td>/device/patient-appointment, schedular, trip-management, batch-upload</td><td>DeviceStub</td></tr>
+  </table>
+
+  <h2>9. Frontend API client (api.js)</h2>
+  <p>Token stored as <code>clasmo_token</code>. Base URL: <code>VITE_API_URL</code> or <code>/api</code>.</p>
+  <p>Auth: login, register, logout, me, changePassword.</p>
+  <p>Catalog: getTests, getTestCategories, getTestPackages, getReportFormats.</p>
+  <p>Registrations: searchRegistrations, listSampleAccession, listScanLogs, getWorksheet, getWorkflowHistory, getBarcodeData, getBillReceipt, getMultipleBillReceipts, saveBillReceipt, getNotificationPrefill, sendNotification, sendBulkNotification, createRegistration, getNextLabCode, getNextPatientId, getRegistration, uploadRegistrationClinicalPdf, updateRegistration, addRegistrationTests, cancelRegistrationTests, generateMrpBill.</p>
+  <p>Workflow: listHolds, createHolds, releaseHold, listRejections, createRejection, resolveRejection, listExtraSamples, createExtraSample, removeExtraSample, listOutsourceTransfers, createOutsourceTransfer, receiveOutsourceTransfer, receiveOutsourceTransferById, uploadOutsourceReport.</p>
+  <p>Barcodes: getPatientBarcodes, lookupPatientBarcode, scanSampleBarcode, linkPatientBarcodes.</p>
+  <p>Clinical: getTestParameters, create/update/delete TestParameter, getReport, submitReport, verifyReport, ingestInstrumentResults, getPatientReportByBarcode.</p>
+  <p>Wallets: getMyWallet, getWallets, getWalletTransactions, zone franchise rates, pricing overrides, topUpWallet, adjustWallet, onlineTopUpWallet, getFranchiseTestRates, saveFranchiseTestRates, transferFranchiseTestRates.</p>
+  <p>Admin CRUD: users, roles, memberships, collection centers, doctors, patients, lab config, activities, join requests, self-patient queries, discounts, WhatsApp logs, expense types, service pincodes, areas, rate masters.</p>
+  <p>Other: getDashboardSummary, getReportSummary, pickup requests, messages, globalSearch, getPublicPatientReport, submitJoinRequest.</p>
+
+  <h2>10. Frontend components</h2>
+  <table>
+    <tr><th>Component</th><th>Role</th></tr>
+    <tr><td>Layout / FranchiseSidebar / AdminSidebar</td><td>App chrome and nav</td></tr>
+    <tr><td>ProtectedRoute</td><td>Auth + allowedRoles</td></tr>
+    <tr><td>QrCameraScanner</td><td>Camera barcode/QR scan</td></tr>
+    <tr><td>BarcodeLinkForm</td><td>Link barcodes to patient</td></tr>
+    <tr><td>ExtraSampleNoDataModal / Panel</td><td>No-data scan → Extra Sample</td></tr>
+    <tr><td>SampleScanResultPanel</td><td>Scan result display</td></tr>
+    <tr><td>ReportSectionTable</td><td>Booking table (accession/reports)</td></tr>
+    <tr><td>WorkFlowHistoryModal</td><td>Registration workflow events</td></tr>
+    <tr><td>SendSMSModal / BulkReleaseSMSModal</td><td>Notifications</td></tr>
+    <tr><td>TestBillModal / TestDualListPicker</td><td>Billing and test pickers</td></tr>
+    <tr><td>WalletBalanceBadge</td><td>Header wallet</td></tr>
+    <tr><td>FranchiseBulkPricingPanel / TransferPricingPanel</td><td>Pricing UI</td></tr>
+    <tr><td>DashboardCharts / PatientStatusBadge</td><td>Dashboard</td></tr>
+    <tr><td>DatePicker, GenderRadioGroup, DataTable, FilterPanel, StatusTabs</td><td>Forms and tables</td></tr>
+    <tr><td>JoinWithClasmo, DepartmentGrid, LandingBrandTitle</td><td>Public landing</td></tr>
+    <tr><td>EnquireBoxPanel, SelfPatientQueryPanel, FeedbackPanel</td><td>Queries and feedback</td></tr>
+  </table>
+  <h3>Context</h3>
+  <ul>
+    <li>AuthContext — login state, user, token</li>
+    <li>NavContext — mobile drawer and sidebar scroll</li>
+    <li>ExtraSampleContext — saved extra-sample barcodes</li>
+  </ul>
+
+  <h2>11. Feature modules (what they do)</h2>
+  <h3>Registration / New Entry</h3>
+  <p>Creates patient + registration + tests. Uses LabConfiguration.next_patient_sequence (no full-table MAX scan). Returns next_lab_code and next_patient_id. Debits franchise wallet and distributes cascade commissions. Clinical PDF upload is non-blocking after success.</p>
+  <h3>Sample Accession</h3>
+  <p>Reception and technician see all bookings in their zone regardless of creator role. Uses ReportSectionTable format (Booking ID, Patient, Barcodes, Ref By, Tests, Status).</p>
+  <h3>Scan / Extra Sample</h3>
+  <p>Scan or type barcode. If found, show patient/sample. If not found, option to save as Extra Sample. Extra samples are zone-scoped.</p>
+  <h3>Scan Log</h3>
+  <p>Audit of successful scans from PatientSampleScanView. Shows barcode, patient, lab code, sample type, scanned-by username, time. Reception/technician see own zone; global admins see all zones in separate sections. Historical scans before this feature are not backfilled.</p>
+  <h3>Out Sources / Out Received</h3>
+  <p>Send selected tests to partner labs; receive them back; optional report file upload. Row coloring indicates status.</p>
+  <h3>Hold and Rejection</h3>
+  <p>Staff place holds or reject samples by barcode. Franchise users see holds/rejections on their hierarchy entries.</p>
+  <h3>Clinical</h3>
+  <p>Parameter master (admin). Result entry (technician/admin). Pathologist verifies. Instrument ingest can post analyzer results. Public patient report lookup exists.</p>
+  <h3>Franchise money</h3>
+  <p>Per-user wallets. Booking charges debit the creator. Commissions credit Supreme → Prime → Sub cascade. Admin can top up/adjust. Online top-up for franchise. Bulk per-test rates and transfer pricing from parent to child franchisees. Report release can be blocked if wallet rules fail.</p>
+  <h3>Zone isolation</h3>
+  <p>Most operational data is filtered by user.zone. Super admin / selected global roles can see all zones.</p>
+
+  <h2>12. Management commands</h2>
+  <table>
+    <tr><th>Command</th><th>Purpose</th></tr>
+    <tr><td>seed_data</td><td>Initial demo catalog/data</td></tr>
+    <tr><td>seed_zones</td><td>Create five zones and zone admins</td></tr>
+    <tr><td>seed_test_roles</td><td>Create role accounts per zone</td></tr>
+    <tr><td>seed_clinical_data</td><td>Clinical parameters</td></tr>
+    <tr><td>ensure_trial_users</td><td>Ensure trial users exist</td></tr>
+    <tr><td>import_por_catalog</td><td>Import POR test catalog</td></tr>
+    <tr><td>import_ratnagiri_rates</td><td>Import Ratnagiri rates</td></tr>
+  </table>
+
+  <h2>13. Automated tests</h2>
+  <table>
+    <tr><th>File</th><th>Coverage</th></tr>
+    <tr><td>test_sample_accession.py</td><td>Zone-wide accession; technician access</td></tr>
+    <tr><td>test_scan_log.py</td><td>Scan log username, zone isolation, technician list</td></tr>
+    <tr><td>test_extra_sample.py</td><td>Extra sample create/list</td></tr>
+    <tr><td>test_outsource_transfer.py</td><td>Outsource send/receive</td></tr>
+    <tr><td>test_patient_entry_permissions.py</td><td>Who can book</td></tr>
+    <tr><td>test_franchise_scope.py</td><td>Hierarchy scoping</td></tr>
+    <tr><td>test_zone_isolation.py</td><td>Zone data isolation</td></tr>
+    <tr><td>test_wallet_credits.py / test_pricing_wallet.py</td><td>Wallet and pricing</td></tr>
+    <tr><td>test_cascade_pricing.py / test_franchise_bulk_pricing.py</td><td>Cascade and bulk rates</td></tr>
+    <tr><td>test_registration_add_tests.py / test_registration_edit.py</td><td>Add tests and edit</td></tr>
+    <tr><td>test_sample_barcode_filter.py</td><td>Barcode search</td></tr>
+    <tr><td>test_instrument_ingest.py</td><td>Analyzer ingest</td></tr>
+  </table>
+
+  <h2>14. Migrations of note</h2>
+  <table>
+    <tr><th>Migration</th><th>Change</th></tr>
+    <tr><td>0034</td><td>Franchise wallet credit</td></tr>
+    <tr><td>0038</td><td>Zone structure</td></tr>
+    <tr><td>0041</td><td>Franchise test rate</td></tr>
+    <tr><td>0044</td><td>Sample rejection</td></tr>
+    <tr><td>0046 / 0047</td><td>Outsource transfer + test IDs</td></tr>
+    <tr><td>0048</td><td>LabConfiguration.next_patient_sequence</td></tr>
+    <tr><td>0049</td><td>Extra Sample</td></tr>
+    <tr><td>0050</td><td>BarcodeScanLog</td></tr>
+  </table>
+
+  <h2>15. Environment and deploy</h2>
+  <ul>
+    <li>Backend env: DATABASE_URL, SECRET_KEY, DEBUG, ALLOWED_HOSTS, RUN_SEED, PORT</li>
+    <li>Frontend env: VITE_API_URL</li>
+    <li>Docker Compose: postgres:16-alpine + web build, RUN_SEED=true</li>
+    <li>entrypoint.sh runs migrations (and optional seed) then gunicorn</li>
+    <li>Auth header: <code>Authorization: Token &lt;key&gt;</code></li>
+  </ul>
+  <div class="note">
+    <strong>Production checklist:</strong> migrate through 0050; keep zone isolation; Scan Log only records scans after that feature went live; Sample Rack and Sample Log pages are still placeholders.
+  </div>
+
+  <h2>16. Tech dependencies</h2>
+  <p><strong>Python:</strong> django 6.x, djangorestframework 3.17, django-cors-headers, pillow, pypdf, gunicorn, whitenoise, psycopg2-binary, dj-database-url, python-dotenv.</p>
+  <p><strong>Node:</strong> react 19, react-dom, react-router-dom 7, html5-qrcode, vite 8.</p>
+
+  <p class="footer-note">This document describes the Clasmo Diagnostics LIMS as of 4 September 2026. Source of truth is the GitHub repository. HTML source: docs/CLASMO_PROJECT_DOCUMENTATION.html</p>
+</body>
+</html>

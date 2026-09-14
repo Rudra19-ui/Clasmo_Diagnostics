@@ -419,12 +419,14 @@ class TestPackageSerializer(serializers.ModelSerializer):
 
 class ReportFormatAssetSerializer(serializers.ModelSerializer):
     file_url = serializers.SerializerMethodField()
+    test_name = serializers.CharField(source='test.name', read_only=True, default=None)
 
     class Meta:
         model = ReportFormatAsset
         fields = [
             'id', 'title', 'description', 'file', 'file_url', 'external_url',
-            'file_type', 'is_demo', 'is_active', 'sort_order', 'created_at',
+            'file_type', 'test', 'test_name', 'is_demo', 'is_active', 'sort_order',
+            'created_at',
         ]
 
     def get_file_url(self, obj):

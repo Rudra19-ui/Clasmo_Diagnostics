@@ -429,13 +429,16 @@ class ReportFormatListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        qs = ReportFormatAsset.objects.filter(is_active=True)
+        qs = ReportFormatAsset.objects.select_related('test').filter(is_active=True)
         search = self.request.query_params.get('search', '').strip()
         file_type = self.request.query_params.get('file_type', '').strip()
+        test_id = self.request.query_params.get('test_id', '').strip()
         if search:
             qs = qs.filter(Q(title__icontains=search) | Q(description__icontains=search))
         if file_type:
             qs = qs.filter(file_type=file_type)
+        if test_id.isdigit():
+            qs = qs.filter(test_id=int(test_id))
         return qs
 
     def get_serializer_context(self):

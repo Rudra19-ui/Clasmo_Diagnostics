@@ -1,4 +1,4 @@
-import { ROLES } from './roles';
+import { ROLES, SAMPLE_SCAN_ROLES } from './roles';
 
 /** Reception and technician sample workflow modules. */
 export const RECEPTION_WORKFLOW_ROLES = [ROLES.RECEPTIONIST, ROLES.TECHNICIAN];
@@ -55,9 +55,28 @@ export const RECEPTION_NAV_ITEMS = [
   },
 ];
 
-/** Minimal portal sidebar for reception and technician (Dashboard + Sample Workflow + Settings). */
+/** Minimal portal sidebar for reception and technician (Dashboard + Scan + Sample Workflow + Settings). */
 export const SAMPLE_WORKFLOW_PORTAL_NAV = [
   { id: 'dashboard', label: 'Dashboard', href: '/dashboard', icon: 'dashboard' },
+  {
+    section: 'SCAN',
+    items: [
+      {
+        id: 'sample-scan',
+        label: 'Sample Scan',
+        href: '/sample-scan',
+        icon: 'chip',
+        roles: SAMPLE_SCAN_ROLES,
+      },
+      {
+        id: 'barcode-scan',
+        label: 'Scan',
+        href: '/notifications/scan',
+        icon: 'chip',
+        roles: SAMPLE_SCAN_ROLES,
+      },
+    ],
+  },
   {
     section: 'SAMPLE WORKFLOW',
     items: RECEPTION_NAV_ITEMS,

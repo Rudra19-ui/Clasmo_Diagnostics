@@ -5,6 +5,7 @@ from .models import (
     JoinRequest,
     LoginLog,
     LabMessage,
+    ReportFormatAsset,
     SelfPatientQuery,
     Patient,
     PatientSampleBarcode,
@@ -80,6 +81,15 @@ admin.site.register(LabMessage)
 admin.site.register(TestParameter)
 admin.site.register(Report)
 admin.site.register(ReportValue)
+
+
+@admin.register(ReportFormatAsset)
+class ReportFormatAssetAdmin(admin.ModelAdmin):
+    list_display = ['title', 'test', 'file_type', 'is_active', 'is_demo', 'sort_order', 'created_at']
+    list_filter = ['file_type', 'is_active', 'is_demo']
+    search_fields = ['title', 'description', 'test__name']
+    raw_id_fields = ['test']
+    ordering = ['sort_order', 'title']
 
 
 @admin.register(JoinRequest)

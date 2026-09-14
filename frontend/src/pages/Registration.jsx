@@ -10,7 +10,7 @@ import { getEntrySectionPaths } from '../utils/entrySection';
 import { useSystemDateTime } from '../hooks/useSystemDateTime';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
-import { FRANCHISE_ROLES, PATIENT_ENTRY_ROLES } from '../utils/roles';
+import { PATIENT_ENTRY_ROLES } from '../utils/roles';
 import { withEffectivePrice } from '../utils/testPricing';
 
 const emptyPatient = () => ({
@@ -98,6 +98,7 @@ export default function Registration({
   const [trfName, setTrfName] = useState('');
   const [trfFile, setTrfFile] = useState(null);
   const [sampleBarcodes, setSampleBarcodes] = useState({});
+  const [formError, setFormError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const registerDateTime = useSystemDateTime();
 
@@ -123,6 +124,7 @@ export default function Registration({
     setTrfName('');
     setTrfFile(null);
     setSampleBarcodes({});
+    setFormError('');
     setPaymentMethod('cash');
     const fileInput = document.getElementById('regPdfUpload');
     if (fileInput) fileInput.value = '';
@@ -210,24 +212,35 @@ export default function Registration({
   };
 
   const handleSave = async () => {
-    const allowedRoles = isEntrySection ? FRANCHISE_ROLES : PATIENT_ENTRY_ROLES;
-    if (!allowedRoles.includes(user?.role)) {
-      alert('Your account cannot create patient entries. Log out and sign in with a franchise booking account (Supreme, Prime, or Sub-Franchise).');
+    setFormError('');
+    // Same roles as the /entry/new route: Admin, Super Admin, Supreme, Prime, Sub-Franchise.
+    if (!PATIENT_ENTRY_ROLES.includes(user?.role)) {
+      const message = 'Your account cannot create patient entries. Log out and sign in as Admin, Supreme, Prime, or Sub-Franchise.';
+      setFormError(message);
+      alert(message);
       return false;
     }
 
     if (!patient.patient_name.trim()) {
-      alert('Please enter Patient Name (required).');
+      const message = 'Please enter Patient Name (required).';
+      setFormError(message);
+      alert(message);
+      document.querySelector('.reg-sketch-name-row input, input[placeholder="Patient Name"]')?.focus?.();
       return false;
     }
     if (selected.length === 0) {
-      alert('Please add at least one test.');
+      const message = 'Please add at least one test.';
+      setFormError(message);
+      alert(message);
       return false;
     }
 
-    const barcodeError = validateSampleBarcodes(sampleGroups, sampleBarcodes);
+    // Barcodes are optional on new entry; only validate when the user started entering them.
+    const barcodeError = validateSampleBarcodes(sampleGroups, sampleBarcodes, { required: false });
     if (barcodeError) {
+      setFormError(barcodeError);
       alert(barcodeError);
+      document.querySelector('.reg-sketch-sample-panel')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return false;
     }
 
@@ -279,6 +292,7 @@ export default function Registration({
       return true;
     } catch (err) {
       const message = err.message || 'Could not save entry.';
+      setFormError(message);
       if (message.includes('permission to access patient entry')) {
         alert(`${message}\n\nYour login session may have changed. Log out, sign in again as Supreme/Prime/Sub-Franchise, then retry.`);
       } else {
@@ -520,11 +534,15 @@ export default function Registration({
             />
 
             <div className="reg-sketch-sample-panel">
+              <p className="reg-sketch-barcode-help">
+                Sample barcode is optional on Submit. Enter/scan now, or link later from Link Barcode.
+              </p>
               <BarcodeLinkForm
                 sampleGroups={sampleGroups}
                 sampleBarcodes={sampleBarcodes}
                 onBarcodeChange={updateBarcode}
                 registrationLayout
+                singleScanMode
               />
             </div>
           </div>
@@ -643,6 +661,9 @@ export default function Registration({
           </div>
 
           <div className="reg-sketch-submit-row">
+            {formError ? (
+              <p className="reg-sketch-submit-error" role="alert">{formError}</p>
+            ) : null}
             <button
               type="button"
               className="reg-sketch-submit"

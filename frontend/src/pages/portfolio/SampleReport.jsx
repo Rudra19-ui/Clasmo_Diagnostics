@@ -15,7 +15,17 @@ function splitSampleTypes(sampleType) {
   return parts.length ? parts : ['General'];
 }
 
-function pickDefaultTestId(list) {
+function isOhProgesteroneTest(name = '') {
+  return /17\s*-?\s*oh\s*progesterone/i.test(name);
+}
+
+function pickDefaultTestId(list, preferredName = '') {
+  if (preferredName) {
+    const preferred = list.find((test) => (test.name || '').toLowerCase() === preferredName.toLowerCase());
+    if (preferred) return String(preferred.id);
+  }
+  const oh = list.find((test) => isOhProgesteroneTest(test.name));
+  if (oh) return String(oh.id);
   const cbc = list.find((test) => /complete blood count|\bcbc\b/i.test(test.name || ''));
   return String((cbc || list[0]).id);
 }
@@ -23,11 +33,25 @@ function pickDefaultTestId(list) {
 function referenceInterval(param) {
   const male = (param.reference_range_male || '').trim();
   const female = (param.reference_range_female || '').trim();
-  if (male && female && male !== female) {
-    return `M: ${male} · F: ${female}`;
-  }
-  return male || female || param.reference_range_child || 'As per method / kit insert';
+  const child = (param.reference_range_child || '').trim();
+  const parts = [];
+  if (male) parts.push(`M: ${male}`);
+  if (female) parts.push(`F: ${female}`);
+  if (child) parts.push(`Child: ${child}`);
+  if (parts.length) return parts.join(' · ');
+  return 'As per method / kit insert';
 }
+
+const PLACEHOLDER_DEMOGRAPHICS = {
+  patient_name: '____________________',
+  age_gender: '____ Y / ________',
+  lab_code: '____________________',
+  registration_date: '____/____/________',
+  doctor_name: '____________________',
+  barcode: '____________________',
+  sample_collected_at: '____/____/________',
+  reported_on: '____/____/________',
+};
 
 export default function SampleReport() {
   const { user } = useAuth();
@@ -36,7 +60,7 @@ export default function SampleReport() {
   const [tests, setTests] = useState([]);
   const [formats, setFormats] = useState([]);
   const [parameters, setParameters] = useState([]);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(searchParams.get('q') || '');
   const [selectedId, setSelectedId] = useState('');
   const [loading, setLoading] = useState(true);
   const [paramsLoading, setParamsLoading] = useState(false);
@@ -55,10 +79,14 @@ export default function SampleReport() {
         const list = Array.isArray(rows) ? rows : [];
         setTests(list);
         setFormats(Array.isArray(formatRows) ? formatRows : []);
-        if (list.length) setSelectedId(pickDefaultTestId(list));
+        if (list.length) {
+          setSelectedId(pickDefaultTestId(list, searchParams.get('test') || ''));
+        }
       })
       .catch((err) => setError(err.message || 'Could not load tests.'))
       .finally(() => setLoading(false));
+    // Intentionally run once on mount; URL test/barcode handled separately.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -103,6 +131,11 @@ export default function SampleReport() {
     [tests, selectedId],
   );
 
+  const linkedFormats = useMemo(() => {
+    if (!selectedId) return [];
+    return formats.filter((asset) => String(asset.test) === String(selectedId));
+  }, [formats, selectedId]);
+
   const sampleTypes = patientReport?.sample_types?.length
     ? patientReport.sample_types
     : (selectedTest ? splitSampleTypes(selectedTest.sample_type) : []);
@@ -143,23 +176,26 @@ export default function SampleReport() {
     loadPatientReport(barcodeInput);
   }
 
-  const demo = {
-    patient_name: 'Sample Patient',
-    age_gender: '35 Y / Male',
-    lab_code: 'SAMPLE-001',
-    registration_date: '31-07-2026 19:30',
-    doctor_name: 'Dr. Reference',
-    barcode: 'SAMPLE-BC-1001',
-  };
+  function selectLinkedFormat(asset) {
+    if (asset.test) {
+      setSelectedId(String(asset.test));
+      clearPatientReport();
+      const linkedTest = tests.find((test) => String(test.id) === String(asset.test));
+      if (linkedTest?.name) setSearch(linkedTest.name);
+    }
+  }
 
-  const demographics = patientReport?.demographics || demo;
-  const title = patientReport?.test_name || selectedTest?.name || 'CBC (COMPLETE BLOOD COUNT)';
-  const rows = patientReport?.rows;
   const isLive = Boolean(patientReport?.found);
+  const demographics = isLive
+    ? (patientReport?.demographics || PLACEHOLDER_DEMOGRAPHICS)
+    : PLACEHOLDER_DEMOGRAPHICS;
+  const title = patientReport?.test_name || selectedTest?.name || '17 OH Progesterone';
+  const rows = patientReport?.rows;
   const porPdfs = useMemo(
     () => filterPorCatalogPdfs(formats, { hidePriceCatalog: franchise }),
     [formats, franchise],
   );
+  const showOhLayout = isOhProgesteroneTest(title);
 
   return (
     <Layout activePage={franchise ? 'reports-format' : 'test-portfolio'}>
@@ -174,7 +210,7 @@ export default function SampleReport() {
 
         <h2 className="page-heading">Reports Format</h2>
         <p className="portfolio-intro">
-          Demo / sample report PDFs and images, plus interactive sample report preview.
+          Sample report formats by test. Patient and result fields are placeholders until booking and result entry.
         </p>
         {porPdfs.length > 0 && (
           <div className="all-tests-por-links">
@@ -192,28 +228,43 @@ export default function SampleReport() {
         )}
 
         <section className={`content-panel portfolio-panel${franchise ? ' franchise-module-panel' : ''}`}>
-          <h3 className="test-addition-subtitle">Demo report files</h3>
+          <h3 className="test-addition-subtitle">Sample report files</h3>
           <div className="report-format-grid">
             {formats.length === 0 && !loading && (
-              <p className="portfolio-empty">No demo report files uploaded yet.</p>
+              <p className="portfolio-empty">No sample report files uploaded yet.</p>
             )}
             {formats.map((asset) => {
               const href = asset.file_url || asset.external_url;
+              const isActive = selectedId && String(asset.test) === String(selectedId);
               return (
-                <article key={asset.id} className="report-format-card">
+                <article
+                  key={asset.id}
+                  className={`report-format-card${isActive ? ' is-active' : ''}`}
+                >
                   <div className={`report-format-badge report-format-badge--${asset.file_type}`}>
                     {asset.file_type === 'pdf' ? 'PDF' : 'Image'}
-                    {asset.is_demo ? ' · Demo' : ''}
+                    {asset.test_name ? ` · ${asset.test_name}` : (asset.is_demo ? ' · Demo' : '')}
                   </div>
                   <h3>{asset.title}</h3>
                   <p>{asset.description || 'Sample report format'}</p>
-                  {href ? (
-                    <a href={href} target="_blank" rel="noreferrer" className="portfolio-profile-link">
-                      Open {asset.file_type === 'pdf' ? 'PDF' : 'image'} →
-                    </a>
-                  ) : (
-                    <span className="report-format-placeholder">File placeholder — upload via admin media later</span>
-                  )}
+                  <div className="report-format-card-actions">
+                    {asset.test ? (
+                      <button
+                        type="button"
+                        className="portfolio-profile-link"
+                        onClick={() => selectLinkedFormat(asset)}
+                      >
+                        Open format preview →
+                      </button>
+                    ) : null}
+                    {href ? (
+                      <a href={href} target="_blank" rel="noreferrer" className="portfolio-profile-link">
+                        Open {asset.file_type === 'pdf' ? 'PDF' : 'image'} →
+                      </a>
+                    ) : (
+                      <span className="report-format-placeholder">File placeholder — upload via admin media later</span>
+                    )}
+                  </div>
                 </article>
               );
             })}
@@ -228,7 +279,7 @@ export default function SampleReport() {
               <input
                 value={barcodeInput}
                 onChange={(e) => setBarcodeInput(e.target.value)}
-                placeholder="Scan barcode to load patient CBC report"
+                placeholder="Scan barcode to load live patient report"
                 autoComplete="off"
               />
             </label>
@@ -257,7 +308,7 @@ export default function SampleReport() {
                   type="search"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Type to search…"
+                  placeholder="Type to search… e.g. 17 OH"
                   disabled={isLive}
                 />
               </label>
@@ -290,7 +341,7 @@ export default function SampleReport() {
               {!selectedTest && !isLive ? (
                 <p className="portfolio-empty">Select a test to view its sample report.</p>
               ) : (
-                <article className="sample-report-sheet">
+                <article className={`sample-report-sheet${showOhLayout ? ' sample-report-sheet--ohpg' : ''}`}>
                   <header className="sample-report-header">
                     <LandingBrandTitle showLogo compact />
                     <div className="sample-report-meta">
@@ -298,32 +349,56 @@ export default function SampleReport() {
                       <span>
                         {isLive
                           ? `Status: ${patientReport.report_status || 'pending'}`
-                          : 'For reference / format preview only'}
+                          : 'Placeholders — filled after patient booking / result entry'}
                       </span>
                     </div>
                   </header>
 
+                  {linkedFormats.length > 0 && (
+                    <div className="sample-report-linked-files">
+                      {linkedFormats.map((asset) => {
+                        const href = asset.file_url || asset.external_url;
+                        if (!href) return null;
+                        return (
+                          <a
+                            key={asset.id}
+                            href={href}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="sample-report-btn sample-report-btn--secondary"
+                          >
+                            Open {asset.title} PDF
+                          </a>
+                        );
+                      })}
+                    </div>
+                  )}
+
                   <div className="sample-report-patient-grid">
-                    <div><span>Patient Name</span><strong>{demographics.patient_name}</strong></div>
-                    <div><span>Age / Gender</span><strong>{demographics.age_gender || demographics.age_display}</strong></div>
-                    <div><span>Lab Code</span><strong>{demographics.lab_code || '—'}</strong></div>
-                    <div><span>Register Date</span><strong>{demographics.registration_date || '—'}</strong></div>
-                    <div><span>Doctor</span><strong>{demographics.doctor_name || '—'}</strong></div>
-                    <div><span>Barcode</span><strong>{demographics.barcode || '—'}</strong></div>
+                    <div><span>PT Name</span><strong className={!isLive ? 'is-placeholder' : ''}>{demographics.patient_name}</strong></div>
+                    <div><span>Age / Sex</span><strong className={!isLive ? 'is-placeholder' : ''}>{demographics.age_gender || demographics.age_display}</strong></div>
+                    <div><span>Sample Collected At</span><strong className={!isLive ? 'is-placeholder' : ''}>{demographics.sample_collected_at || '—'}</strong></div>
+                    <div><span>Ref By</span><strong className={!isLive ? 'is-placeholder' : ''}>{demographics.doctor_name || '—'}</strong></div>
+                    <div><span>Registered On</span><strong className={!isLive ? 'is-placeholder' : ''}>{demographics.registration_date || '—'}</strong></div>
+                    <div><span>Barcode</span><strong className={!isLive ? 'is-placeholder' : ''}>{demographics.barcode || '—'}</strong></div>
+                    <div><span>Lab Code / INV</span><strong className={!isLive ? 'is-placeholder' : ''}>{demographics.lab_code || '—'}</strong></div>
+                    <div><span>Reported On</span><strong className={!isLive ? 'is-placeholder' : ''}>{demographics.reported_on || '—'}</strong></div>
                   </div>
 
                   <h3 className="sample-report-test-title">{title}</h3>
                   <p className="sample-report-sample-type">
-                    <strong>Test Type / Sample:</strong> {sampleTypes.join(', ')}
+                    <strong>INV:</strong> {title}
+                    {' · '}
+                    <strong>SAMPLE:</strong> {sampleTypes.join(', ')}
                   </p>
 
                   <table className="sample-report-table">
                     <thead>
                       <tr>
-                        <th>Investigation</th>
+                        <th>Test Description</th>
                         <th>Result</th>
-                        <th>Unit</th>
-                        <th>Biological Ref. Interval</th>
+                        <th>Units</th>
+                        <th>Biological Reference Range</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -354,7 +429,7 @@ export default function SampleReport() {
                       {!isLive && !paramsLoading && parameters.length === 0 && (
                         <tr>
                           <td>{title}</td>
-                          <td>—</td>
+                          <td><span className="report-result-placeholder">________</span></td>
                           <td>—</td>
                           <td>As per method / kit insert</td>
                         </tr>
@@ -367,7 +442,11 @@ export default function SampleReport() {
                               <div className="sample-report-method">Method: {param.method}</div>
                             ) : null}
                           </td>
-                          <td>—</td>
+                          <td>
+                            <span className="report-result-placeholder" title="Technician enters machine reading here">
+                              ________
+                            </span>
+                          </td>
                           <td>{param.unit || '—'}</td>
                           <td>{referenceInterval(param)}</td>
                         </tr>
@@ -382,14 +461,34 @@ export default function SampleReport() {
                     </tbody>
                   </table>
 
+                  {showOhLayout && !isLive && (
+                    <div className="sample-report-notes">
+                      <h4>Reference Range</h4>
+                      <ul>
+                        <li>&lt;1 yr: &lt;3.00 ng/mL</li>
+                        <li>&gt;1 yr: &lt;2.00 ng/mL</li>
+                        <li>Adult Males: 0.63 – 2.15 ng/mL</li>
+                        <li>Premenopausal females — Follicular: 0.32–1.47; Luteal: 0.25–2.91; Contraception: 0.20–1.90</li>
+                        <li>Postmenopausal Females: 0.19–0.71 ng/mL</li>
+                      </ul>
+                      <p>
+                        Clinical significance: The adrenal glands, ovaries, testes, and placenta produce 17-OHPG.
+                        Please correlate with clinical conditions. ~~End of report~~
+                      </p>
+                    </div>
+                  )}
+
                   <footer className="sample-report-footer">
                     <p>
                       {isLive
                         ? 'Patient demographics and results loaded via sample barcode. Machine values appear after analyzer ingest or result entry.'
-                        : 'This is a sample report format from Test Portfolio. Scan a barcode above to load a live patient CBC report.'}
+                        : 'Blank fields are placeholders. Patient details come from booking; result is entered by the technician and verified by the pathologist.'}
                     </p>
                     <div className="sample-report-actions">
-                      <Link to="/clinical/report-preview" className="sample-report-btn">
+                      <Link to="/clinical/result-entry" className="sample-report-btn">
+                        Open Result Entry
+                      </Link>
+                      <Link to="/clinical/report-preview" className="sample-report-btn sample-report-btn--secondary">
                         Open Live Report Preview
                       </Link>
                       <Link to="/portfolio/test-list" className="sample-report-btn sample-report-btn--secondary">

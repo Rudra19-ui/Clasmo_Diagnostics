@@ -207,6 +207,14 @@ class ReportFormatAsset(models.Model):
     file = models.FileField(upload_to='report-formats/', blank=True, null=True)
     external_url = models.URLField(blank=True)
     file_type = models.CharField(max_length=20, choices=TYPE_CHOICES, default=TYPE_PDF)
+    test = models.ForeignKey(
+        'Test',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='report_formats',
+        help_text='Optional link to the catalog test this sample report belongs to.',
+    )
     is_demo = models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)
     sort_order = models.PositiveIntegerField(default=0)

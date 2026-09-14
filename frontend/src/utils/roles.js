@@ -129,11 +129,14 @@ export const USER_CREATOR_ROLES = [
   ROLES.FRANCHISEE,
 ];
 
+/** Roles that can open Sample Scan (barcode / tube scan). */
 export const SAMPLE_SCAN_ROLES = [
   ROLES.SUPER_ADMIN,
   ROLES.ADMIN,
   ROLES.TECHNICIAN,
   ROLES.PATHOLOGIST,
+  ROLES.RECEPTIONIST,
+  ROLES.HR,
 ];
 
 /** Expected parent role for franchise hierarchy signup/edit. */

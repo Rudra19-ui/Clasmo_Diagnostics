@@ -151,7 +151,7 @@ export default function App() {
           <Route
             path="/notifications/scan"
             element={(
-              <ProtectedRoute allowedRoles={EXTRA_SAMPLE_ROLES}>
+              <ProtectedRoute allowedRoles={SAMPLE_SCAN_ROLES}>
                 <Scan activePage="barcode-scan" />
               </ProtectedRoute>
             )}

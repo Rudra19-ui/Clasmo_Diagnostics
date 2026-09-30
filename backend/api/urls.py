@@ -92,6 +92,31 @@ urlpatterns = [
     path('search/global/', views.GlobalSearchView.as_view(), name='global-search'),
     path('test-parameters/', clinical_views.TestParameterListCreateView.as_view(), name='test-parameters'),
     path('test-parameters/<int:pk>/', clinical_views.TestParameterDetailView.as_view(), name='test-parameter-detail'),
+    path(
+        'test-parameters/import/template/',
+        clinical_views.TestParameterImportTemplateView.as_view(),
+        name='test-parameters-import-template',
+    ),
+    path(
+        'test-parameters/import/',
+        clinical_views.TestParameterImportView.as_view(),
+        name='test-parameters-import',
+    ),
+    path(
+        'sample-reports/coverage/',
+        clinical_views.SampleReportCoverageView.as_view(),
+        name='sample-reports-coverage',
+    ),
+    path(
+        'sample-reports/auto-generate/',
+        clinical_views.SampleReportAutoGenerateView.as_view(),
+        name='sample-reports-auto-generate',
+    ),
+    path(
+        'sample-reports/generate/',
+        clinical_views.SampleReportGeneratorView.as_view(),
+        name='sample-reports-generate',
+    ),
     path('reports/<int:registration_id>/', clinical_views.ReportDetailView.as_view(), name='report-detail'),
     path('reports/<int:registration_id>/verify/', clinical_views.ReportVerifyView.as_view(), name='report-verify'),
     path('instrument/results/', instrument_views.InstrumentResultsIngestView.as_view(), name='instrument-results'),

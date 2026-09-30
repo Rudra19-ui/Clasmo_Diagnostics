@@ -1,12 +1,14 @@
 from .utils import get_lab_config
 from django.db import transaction
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .clinical_permissions import (
+    IsAdmin,
     IsPathologistOrAdmin,
     TestParameterPermission,
 )
@@ -17,7 +19,14 @@ from .clinical_serializers import (
 )
 from .clinical_utils import calculate_flag
 from .franchise_scope import scope_registrations_for_user
-from .models import Registration, Report, ReportValue, TestParameter, User
+from .models import Registration, Report, ReportValue, Test, TestParameter, User
+from .parameter_import import (
+    build_sample_report_payload,
+    build_template_csv,
+    generate_default_parameters,
+    import_parameters_from_csv_text,
+    sample_report_coverage,
+)
 from .wallet_service import WalletError, assert_can_release_report
 
 
@@ -337,3 +346,132 @@ class ReportVerifyView(APIView):
             report, context={'patient': registration.patient}
         )
         return Response(serializer.data)
+
+
+class TestParameterImportTemplateView(APIView):
+    """Download CSV template for bulk parameter import (optionally one row per catalog test)."""
+
+    permission_classes = [IsAdmin]
+
+    def get(self, request):
+        include_tests = str(request.query_params.get('include_tests', '')).lower() in {
+            '1', 'true', 'yes',
+        }
+        content = build_template_csv(include_tests=include_tests)
+        filename = (
+            'test_parameters_all_tests_template.csv'
+            if include_tests
+            else 'test_parameters_template.csv'
+        )
+        response = HttpResponse(content, content_type='text/csv; charset=utf-8')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return response
+
+
+class TestParameterImportView(APIView):
+    """Upload CSV to create/update TestParameter rows for many tests at once."""
+
+    permission_classes = [IsAdmin]
+
+    def post(self, request):
+        dry_run = str(request.data.get('dry_run', '')).lower() in {'1', 'true', 'yes'}
+        upload = request.FILES.get('file')
+        raw_text = request.data.get('csv_text', '')
+
+        if upload:
+            try:
+                text = upload.read().decode('utf-8-sig')
+            except UnicodeDecodeError:
+                return Response(
+                    {'detail': 'Upload a UTF-8 CSV file.'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        elif raw_text:
+            text = str(raw_text)
+        else:
+            return Response(
+                {'detail': 'Upload a CSV file or paste csv_text.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            result = import_parameters_from_csv_text(text, dry_run=dry_run)
+        except ValueError as exc:
+            return Response({'detail': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(result, status=status.HTTP_200_OK)
+
+
+class SampleReportCoverageView(APIView):
+    """How many catalog tests already have parameters for auto sample reports."""
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        return Response(sample_report_coverage())
+
+
+class SampleReportAutoGenerateView(APIView):
+    """Create one default parameter per test missing parameters (instant sample reports)."""
+
+    permission_classes = [IsAdmin]
+
+    def post(self, request):
+        only_missing = str(request.data.get('only_missing', 'true')).lower() not in {
+            '0', 'false', 'no',
+        }
+        limit_raw = request.data.get('limit')
+        limit = None
+        if limit_raw not in (None, ''):
+            try:
+                limit = max(1, int(limit_raw))
+            except (TypeError, ValueError):
+                return Response(
+                    {'detail': 'limit must be an integer.'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        result = generate_default_parameters(only_missing=only_missing, limit=limit)
+        result['coverage'] = sample_report_coverage()
+        return Response(result, status=status.HTTP_200_OK)
+
+
+class SampleReportGeneratorView(APIView):
+    """Auto sample-report JSON built from TestParameter rows (no per-test PDF needed)."""
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        test_id = request.query_params.get('test_id', '').strip()
+        test_ids = request.query_params.get('test_ids', '').strip()
+        search = request.query_params.get('search', '').strip()
+        missing_only = str(request.query_params.get('missing_only', '')).lower() in {
+            '1', 'true', 'yes',
+        }
+        limit_raw = request.query_params.get('limit', '50')
+        try:
+            limit = min(max(1, int(limit_raw)), 200)
+        except (TypeError, ValueError):
+            limit = 50
+
+        qs = Test.objects.all().order_by('name')
+        if test_id:
+            qs = qs.filter(pk=test_id)
+        elif test_ids:
+            ids = [int(x) for x in test_ids.split(',') if x.strip().isdigit()]
+            qs = qs.filter(pk__in=ids)
+        elif search:
+            qs = qs.filter(Q(name__icontains=search) | Q(test_code__icontains=search))
+
+        if missing_only:
+            from django.db.models import Count
+            qs = qs.annotate(
+                active_params=Count('parameters', filter=Q(parameters__is_active=True))
+            ).filter(active_params=0)
+
+        tests = list(qs[:limit])
+        reports = [build_sample_report_payload(test) for test in tests]
+        return Response({
+            'count': len(reports),
+            'coverage': sample_report_coverage(),
+            'reports': reports,
+        })

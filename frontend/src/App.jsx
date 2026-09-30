@@ -47,6 +47,7 @@ import TestResult from './pages/TestResult';
 import ReportPreview from './pages/clinical/ReportPreview';
 import ResultEntry from './pages/clinical/ResultEntry';
 import TestParameterMaster from './pages/clinical/TestParameterMaster';
+import ParameterImport from './pages/clinical/ParameterImport';
 import DeviceStub from './pages/device/DeviceStub';
 import TestResultBatch from './pages/device/TestResultBatch';
 import ResponsiveProvider from './components/ResponsiveProvider';
@@ -346,6 +347,7 @@ export default function App() {
           <Route path="/elab-pay" element={<ProtectedRoute><ElabPay /></ProtectedRoute>} />
           <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
           <Route path="/clinical/test-parameters" element={<ProtectedRoute allowedRoles={ADMIN_ROLES}><TestParameterMaster /></ProtectedRoute>} />
+          <Route path="/clinical/parameter-import" element={<ProtectedRoute allowedRoles={ADMIN_ROLES}><ParameterImport /></ProtectedRoute>} />
           <Route path="/clinical/result-entry" element={<ProtectedRoute allowedRoles={[ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.TECHNICIAN, ROLES.PATHOLOGIST]}><ResultEntry /></ProtectedRoute>} />
           <Route path="/clinical/report-preview" element={<ProtectedRoute><ReportPreview /></ProtectedRoute>} />
           <Route path="/device/pickup-request" element={<ProtectedRoute><PickupRequest /></ProtectedRoute>} />

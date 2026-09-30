@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Layout from '../../components/Layout';
 import { api } from '../../services/api';
@@ -107,7 +108,12 @@ export default function TestParameterMaster() {
     <Layout activePage="clinical">
       <main className="dash-main">
         <h2 className="page-heading">Test Parameter Master</h2>
-        <p className="page-sub">Manage reference ranges and critical limits per test parameter.</p>
+        <p className="page-sub">
+          Manage reference ranges and critical limits per test parameter.
+          For 100s of tests, use{' '}
+          <Link to="/clinical/parameter-import">Parameter Import</Link>
+          {' '}(CSV bulk load + auto sample-report generator).
+        </p>
 
         <section className="clinical-panel">
           <h3>{editingId ? 'Edit Parameter' : 'Add Parameter'}</h3>

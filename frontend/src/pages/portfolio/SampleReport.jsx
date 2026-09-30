@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Layout from '../../components/Layout';
@@ -7,6 +7,8 @@ import { api } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { isFranchiseRole } from '../../utils/franchiseNav';
 import { filterPorCatalogPdfs } from '../../utils/porCatalog';
+import { ADMIN_ROLES } from '../../utils/roles';
+import '../../styles/clinical.css';
 
 function splitSampleTypes(sampleType) {
   const raw = (sampleType || '').trim();
@@ -56,6 +58,7 @@ const PLACEHOLDER_DEMOGRAPHICS = {
 export default function SampleReport() {
   const { user } = useAuth();
   const franchise = isFranchiseRole(user?.role);
+  const isAdmin = ADMIN_ROLES.includes(user?.role);
   const [searchParams, setSearchParams] = useSearchParams();
   const [tests, setTests] = useState([]);
   const [formats, setFormats] = useState([]);
@@ -69,6 +72,15 @@ export default function SampleReport() {
   const [patientReport, setPatientReport] = useState(null);
   const [reportLoading, setReportLoading] = useState(false);
   const [reportError, setReportError] = useState('');
+  const [coverage, setCoverage] = useState(null);
+  const [autoBusy, setAutoBusy] = useState(false);
+
+  const refreshCoverage = useCallback(() => {
+    if (!isAdmin) return;
+    api.getSampleReportCoverage()
+      .then(setCoverage)
+      .catch(() => setCoverage(null));
+  }, [isAdmin]);
 
   useEffect(() => {
     Promise.all([
@@ -85,9 +97,30 @@ export default function SampleReport() {
       })
       .catch((err) => setError(err.message || 'Could not load tests.'))
       .finally(() => setLoading(false));
+    refreshCoverage();
     // Intentionally run once on mount; URL test/barcode handled separately.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleAutoGenerateMissing = async () => {
+    if (!window.confirm('Create default parameters for all tests missing a sample report?')) return;
+    setAutoBusy(true);
+    setError('');
+    try {
+      await api.autoGenerateSampleParameters({ only_missing: true });
+      refreshCoverage();
+      if (selectedId) {
+        const rows = await api.getTestParameters({ test_id: selectedId, active_only: 'true' });
+        const list = Array.isArray(rows) ? rows : [];
+        list.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0) || String(a.parameter_name).localeCompare(String(b.parameter_name)));
+        setParameters(list);
+      }
+    } catch (err) {
+      setError(err.message || 'Auto-generate failed.');
+    } finally {
+      setAutoBusy(false);
+    }
+  };
 
   useEffect(() => {
     if (!selectedId || patientReport) {
@@ -210,8 +243,33 @@ export default function SampleReport() {
 
         <h2 className="page-heading">Reports Format</h2>
         <p className="portfolio-intro">
-          Sample report formats by test. Patient and result fields are placeholders until booking and result entry.
+          Auto sample reports are built from test parameters — one shared layout for the whole catalog.
+          Upload a custom PDF only for special layouts. Patient and result fields stay blank until booking / entry.
         </p>
+        {isAdmin && coverage && (
+          <div className="sample-report-coverage-banner no-print">
+            <p>
+              Parameter coverage: <strong>{coverage.tests_with_parameters}</strong> / {coverage.total_tests}
+              {' '}({coverage.coverage_pct}%)
+              {coverage.tests_missing_parameters > 0
+                ? ` · ${coverage.tests_missing_parameters} tests still need parameters`
+                : ' · all tests ready'}
+            </p>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              {coverage.tests_missing_parameters > 0 && (
+                <button
+                  type="button"
+                  className="btn-blue"
+                  disabled={autoBusy}
+                  onClick={handleAutoGenerateMissing}
+                >
+                  {autoBusy ? 'Generating…' : 'Auto-generate missing'}
+                </button>
+              )}
+              <Link to="/clinical/parameter-import" className="btn-outline">CSV Import</Link>
+            </div>
+          </div>
+        )}
         {porPdfs.length > 0 && (
           <div className="all-tests-por-links">
             {porPdfs.map((pdf) => (
@@ -428,10 +486,12 @@ export default function SampleReport() {
                       )}
                       {!isLive && !paramsLoading && parameters.length === 0 && (
                         <tr>
-                          <td>{title}</td>
-                          <td><span className="report-result-placeholder">________</span></td>
-                          <td>—</td>
-                          <td>As per method / kit insert</td>
+                          <td colSpan={4}>
+                            No parameters for this test yet.
+                            {isAdmin
+                              ? ' Use Auto-generate missing or CSV Import to create sample report rows for all tests.'
+                              : ' Ask an admin to import parameters.'}
+                          </td>
                         </tr>
                       )}
                       {!isLive && !paramsLoading && parameters.map((param) => (
@@ -443,9 +503,13 @@ export default function SampleReport() {
                             ) : null}
                           </td>
                           <td>
-                            <span className="report-result-placeholder" title="Technician enters machine reading here">
-                              ________
-                            </span>
+                            {param.sample_value ? (
+                              <strong title="Example sample value">{param.sample_value}</strong>
+                            ) : (
+                              <span className="report-result-placeholder" title="Technician enters machine reading here">
+                                ________
+                              </span>
+                            )}
                           </td>
                           <td>{param.unit || '—'}</td>
                           <td>{referenceInterval(param)}</td>

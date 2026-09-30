@@ -77,6 +77,10 @@ python manage.py seed_clinical_data
 
 Pages:
 - **Test Parameter Master** — `/clinical/test-parameters` (Admin)
+- **Parameter Import / Auto Sample Reports** — `/clinical/parameter-import` (Admin)
+  - Download CSV template (or all-tests starter), dry-run preview, bulk import
+  - One-click **Auto-generate** creates a default parameter for every test missing one so sample reports work for the full catalog without designing 900 PDFs
+  - CLI: `python manage.py import_test_parameters path/to/file.csv`
 - **Result Entry** — `/clinical/result-entry` (Technician, Admin)
 - **Report Preview** — `/clinical/report-preview` (All roles)
 

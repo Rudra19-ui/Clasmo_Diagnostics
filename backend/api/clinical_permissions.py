@@ -234,11 +234,15 @@ class IsPathologistOrAdmin(permissions.BasePermission):
 
 
 class TestParameterPermission(permissions.BasePermission):
-    """Read: clinical staff. Write: admin / super admin only."""
+    """Read: clinical staff + franchise (sample reports). Write: admin / super admin only."""
 
     def has_permission(self, request, view):
         if not request.user.is_authenticated:
             return False
         if request.method in permissions.SAFE_METHODS:
-            return request.user.role in User.CLINICAL_ROLES | {User.ROLE_USER}
+            return request.user.role in (
+                User.CLINICAL_ROLES
+                | User.FRANCHISE_ROLES
+                | {User.ROLE_USER, User.ROLE_HR, User.ROLE_RECEPTIONIST}
+            )
         return request.user.role in User.ADMIN_ROLES

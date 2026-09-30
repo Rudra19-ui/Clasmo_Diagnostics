@@ -412,6 +412,45 @@ export const api = {
     request(`/test-parameters/${id}/`, { method: 'PUT', body: JSON.stringify(payload) }),
   deleteTestParameter: (id) =>
     request(`/test-parameters/${id}/`, { method: 'DELETE' }),
+  downloadParameterImportTemplate: async (includeTests = false) => {
+    const query = includeTests ? '?include_tests=1' : '';
+    const token = getToken();
+    const response = await fetch(`${API_BASE}/test-parameters/import/template/${query}`, {
+      headers: token ? { Authorization: `Token ${token}` } : {},
+    });
+    if (!response.ok) {
+      if (response.status === 401) handleUnauthorized();
+      const data = await response.json().catch(() => ({}));
+      throw new Error(errorMessageFromResponse(data, response.status));
+    }
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = includeTests
+      ? 'test_parameters_all_tests_template.csv'
+      : 'test_parameters_template.csv';
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(url);
+  },
+  importTestParameters: (file, { dryRun = false } = {}) => {
+    const form = new FormData();
+    form.append('file', file);
+    if (dryRun) form.append('dry_run', 'true');
+    return requestForm('/test-parameters/import/', form);
+  },
+  getSampleReportCoverage: () => request('/sample-reports/coverage/'),
+  autoGenerateSampleParameters: (payload = {}) =>
+    request('/sample-reports/auto-generate/', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+  generateSampleReports: (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return request(`/sample-reports/generate/${query ? `?${query}` : ''}`);
+  },
   getReport: (registrationId) => request(`/reports/${registrationId}/`),
   submitReport: (registrationId, payload) =>
     request(`/reports/${registrationId}/`, { method: 'POST', body: JSON.stringify(payload) }),

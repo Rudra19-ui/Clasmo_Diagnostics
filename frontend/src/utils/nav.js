@@ -161,6 +161,13 @@ export const STANDARD_NAV = [
         icon: 'layers',
         roles: ADMIN_ROLES,
       },
+      {
+        id: 'parameter-import',
+        label: 'Parameter Import',
+        href: '/clinical/parameter-import',
+        icon: 'layers',
+        roles: ADMIN_ROLES,
+      },
     ],
   },
   {

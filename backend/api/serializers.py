@@ -382,6 +382,7 @@ class TestSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'short_name', 'test_code', 'mrp', 'price', 'effective_price',
             'sample_type', 'tat', 'volume_ml', 'category', 'category_name',
+            'report_note', 'report_comments', 'clinical_significance', 'report_extra_sections',
         ]
 
     def get_effective_price(self, obj):

@@ -119,6 +119,7 @@ urlpatterns = [
     ),
     path('reports/<int:registration_id>/', clinical_views.ReportDetailView.as_view(), name='report-detail'),
     path('reports/<int:registration_id>/verify/', clinical_views.ReportVerifyView.as_view(), name='report-verify'),
+    path('reports/<int:registration_id>/print/', clinical_views.ReportPrintView.as_view(), name='report-print'),
     path('instrument/results/', instrument_views.InstrumentResultsIngestView.as_view(), name='instrument-results'),
     path('instrument/patient-report/', instrument_views.PatientReportByBarcodeView.as_view(), name='instrument-patient-report'),
     path('wallets/me/', wallet_views.MyWalletView.as_view(), name='wallet-me'),

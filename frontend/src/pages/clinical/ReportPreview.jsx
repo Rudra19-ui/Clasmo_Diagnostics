@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Layout from '../../components/Layout';
-import LandingBrandTitle from '../../components/landing/LandingBrandTitle';
+import ClasmoReportSheet, { printClasmoReport } from '../../components/reports/ClasmoReportSheet';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../services/api';
 import { FRANCHISE_ROLES, canVerifyReports, flagClass } from '../../utils/roles';
@@ -18,6 +18,19 @@ function groupValues(values) {
   return groups;
 }
 
+function narrativeForTest(report, testName, sampleItem) {
+  const ordered = (report?.ordered_tests || []).find(
+    (t) => (t.name || '').toLowerCase() === String(testName || '').toLowerCase(),
+  );
+  return {
+    sampleType: sampleItem?.sample_type || ordered?.sample_type || 'General',
+    reportNote: ordered?.report_note || sampleItem?.report_note || '',
+    reportComments: ordered?.report_comments || sampleItem?.report_comments || '',
+    clinicalSignificance: ordered?.clinical_significance || sampleItem?.clinical_significance || '',
+    reportExtraSections: ordered?.report_extra_sections || sampleItem?.report_extra_sections || null,
+  };
+}
+
 export default function ReportPreview() {
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -25,6 +38,7 @@ export default function ReportPreview() {
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [printing, setPrinting] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
 
@@ -79,10 +93,29 @@ export default function ReportPreview() {
   const isVerified = report?.status === 'verified';
   const isEntered = report?.status === 'entered';
   const franchiseBlocked = isFranchise && report && !isVerified;
+  const registrationId = report?.registration || Number(searchParams.get('id')) || null;
+
+  const demographics = useMemo(() => {
+    if (!report) return {};
+    const details = report.patient_details || {};
+    const age = details.age_display
+      || (report.patient_age != null
+        ? `${report.patient_age} Y / ${(report.patient_gender || '').slice(0, 1).toUpperCase() || '—'}`
+        : '');
+    return {
+      patient_name: details.full_name || details.patient_name || report.patient_name || '',
+      age_gender: age,
+      doctor_name: details.doctor_name || '',
+      lab_code: details.lab_code || report.lab_code || '',
+      barcode: details.barcode || report.lab_code || '',
+      registration_date: details.registration_date || '',
+      reported_on: isVerified ? (details.reported_on || report.updated_at || '') : '',
+      sample_collected_at: details.collection_center || '',
+    };
+  }, [report, isVerified]);
 
   const handleVerify = async () => {
-    if (!report?.registration && !searchParams.get('id')) return;
-    const registrationId = report.registration || Number(searchParams.get('id'));
+    if (!registrationId) return;
     setSaving(true);
     setError('');
     setMessage('');
@@ -97,10 +130,27 @@ export default function ReportPreview() {
     }
   };
 
+  const handlePrint = async ({ markPrinted = false } = {}) => {
+    setPrinting(true);
+    setError('');
+    try {
+      await printClasmoReport();
+      if (markPrinted && registrationId && isVerified) {
+        const data = await api.markReportPrinted(registrationId);
+        setReport(data);
+        setMessage('Report printed and marked as Printed / Released.');
+      }
+    } catch (err) {
+      setError(err.message || 'Print failed.');
+    } finally {
+      setPrinting(false);
+    }
+  };
+
   return (
     <Layout activePage="clinical">
       <main className="dash-main">
-        <h2 className="page-heading">Report Preview</h2>
+        <h2 className="page-heading no-print">Report Preview</h2>
 
         {!isFranchise && (
           <section className="clinical-panel no-print">
@@ -120,12 +170,12 @@ export default function ReportPreview() {
           </section>
         )}
 
-        {loading && <p>Loading report...</p>}
-        {error && <p className="login-error">{error}</p>}
-        {message && <p className="clinical-success-msg">{message}</p>}
+        {loading && <p className="no-print">Loading report...</p>}
+        {error && <p className="login-error no-print">{error}</p>}
+        {message && <p className="clinical-success-msg no-print">{message}</p>}
 
         {franchiseBlocked && (
-          <section className="clinical-panel">
+          <section className="clinical-panel no-print">
             <p className="empty-msg">
               This report is not yet released. Status: <strong>{report.status}</strong>.
               The final report becomes available after pathologist cross-verification.
@@ -138,67 +188,71 @@ export default function ReportPreview() {
 
         {report && !loading && !franchiseBlocked && (
           <section className="clinical-panel">
-            <div className="report-header">
-              <LandingBrandTitle showLogo compact />
-              <div>
-                <p style={{ margin: '4px 0', color: '#666' }}>
-                  {isVerified ? 'Final Laboratory Report' : 'Laboratory Report (Draft)'}
-                </p>
-                <div className="report-meta">
-                  <span><strong>Lab Code:</strong> {report.lab_code}</span>
-                  <span><strong>Patient:</strong> {report.patient_name}</span>
-                  <span><strong>Gender:</strong> {report.patient_gender}</span>
-                  <span><strong>Age:</strong> {report.patient_age} Y</span>
-                </div>
-                {report.entered_by_name && (
-                  <div className="report-meta">
-                    <span><strong>Entered by:</strong> {report.entered_by_name}</span>
-                    {report.verified_by_name && (
-                      <span><strong>Verified by:</strong> {report.verified_by_name}</span>
-                    )}
-                  </div>
-                )}
-              </div>
+            <div className="report-preview-status no-print" style={{ marginBottom: 12 }}>
               <span className={`status-pill status-${report.status}`}>{report.status}</span>
+              {report.registration_status && (
+                <span className="status-pill" style={{ marginLeft: 8 }}>
+                  Reg: {report.registration_status}
+                </span>
+              )}
+              {report.entered_by_name && (
+                <span style={{ marginLeft: 10, fontSize: 13, color: '#555' }}>
+                  Entered by: {report.entered_by_name}
+                  {report.verified_by_name ? ` · Verified by: ${report.verified_by_name}` : ''}
+                </span>
+              )}
             </div>
 
             {!report.values?.length ? (
-              <p className="empty-msg">
+              <p className="empty-msg no-print">
                 No results entered yet.
                 {canVerifyReports(user) ? ' Ask the technician to submit machine readings.' : ' Use Result Entry after scanning the barcode.'}
               </p>
             ) : (
-              Object.entries(valueGroups).map(([testName, items]) => (
-                <div key={testName} style={{ marginBottom: 20 }}>
-                  <h4 style={{ marginBottom: 8, color: 'var(--blue-deep)' }}>{testName}</h4>
-                  <div className="data-table-scroll">
-                    <table className="data-table data-table-responsive">
-                      <thead>
-                        <tr>
-                          <th>Parameter</th>
-                          <th>Result</th>
-                          <th>Unit</th>
-                          <th>Reference</th>
-                          <th>Flag</th>
-                        </tr>
-                      </thead>
-                      <tbody>
+              <div className="print-clasmo-reports-root">
+                {Object.entries(valueGroups).map(([testName, items]) => {
+                  const narrative = narrativeForTest(report, testName, items[0]);
+                  return (
+                    <div key={testName} style={{ marginBottom: 20 }}>
+                      <ClasmoReportSheet
+                        title={testName}
+                        sampleType={narrative.sampleType}
+                        demographics={demographics}
+                        rows={items.map((v) => ({
+                          id: v.id || v.parameter,
+                          parameter_name: v.parameter_name,
+                          result: v.value,
+                          unit: v.unit,
+                          reference_range: v.reference_range,
+                          method: v.method,
+                          flag: v.flag,
+                          source: v.source,
+                        }))}
+                        isLive
+                        isSample={false}
+                        showReferenceColumn={false}
+                        reportNote={narrative.reportNote}
+                        reportComments={narrative.reportComments}
+                        clinicalSignificance={narrative.clinicalSignificance}
+                        reportExtraSections={narrative.reportExtraSections}
+                        footerNote={
+                          isVerified
+                            ? 'Official Clasmo letterhead final report.'
+                            : 'Draft on official Clasmo letterhead — approve after pathologist review.'
+                        }
+                        actions={null}
+                      />
+                      <div className="no-print" style={{ marginTop: 8, fontSize: 12, color: '#667' }}>
                         {items.map((v) => (
-                          <tr key={v.id || v.parameter}>
-                            <td data-label="Parameter">{v.parameter_name}</td>
-                            <td data-label="Result"><strong>{v.value}</strong></td>
-                            <td data-label="Unit">{v.unit}</td>
-                            <td data-label="Reference">{v.reference_range || '—'}</td>
-                            <td data-label="Flag">
-                              <span className={`flag-badge ${flagClass(v.flag)}`}>{v.flag}</span>
-                            </td>
-                          </tr>
+                          <span key={v.id || v.parameter} style={{ marginRight: 10 }}>
+                            {v.parameter_name}: <span className={`flag-badge ${flagClass(v.flag)}`}>{v.flag}</span>
+                          </span>
                         ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              ))
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             )}
 
             <div className="report-preview-actions no-print">
@@ -208,18 +262,28 @@ export default function ReportPreview() {
                 </button>
               )}
               {isVerified && (
-                <button type="button" className="btn-blue" onClick={() => window.print()}>
-                  Print Final Report
+                <button
+                  type="button"
+                  className="btn-blue"
+                  disabled={printing}
+                  onClick={() => handlePrint({ markPrinted: true })}
+                >
+                  {printing ? 'Printing…' : 'Print Final Report'}
                 </button>
               )}
               {!isVerified && report.values?.length > 0 && (
-                <button type="button" className="btn-outline" onClick={() => window.print()}>
+                <button
+                  type="button"
+                  className="btn-outline"
+                  disabled={printing}
+                  onClick={() => handlePrint({ markPrinted: false })}
+                >
                   Print Draft
                 </button>
               )}
               {canVerify && (
                 <Link
-                  to={`/clinical/result-entry?registrationId=${report.registration || searchParams.get('id')}`}
+                  to={`/clinical/result-entry?registrationId=${registrationId}`}
                   className="btn-outline"
                 >
                   Open Entry Sheet

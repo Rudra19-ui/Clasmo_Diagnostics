@@ -456,6 +456,8 @@ export const api = {
     request(`/reports/${registrationId}/`, { method: 'POST', body: JSON.stringify(payload) }),
   verifyReport: (registrationId) =>
     request(`/reports/${registrationId}/verify/`, { method: 'PATCH', body: '{}' }),
+  markReportPrinted: (registrationId) =>
+    request(`/reports/${registrationId}/print/`, { method: 'POST', body: '{}' }),
   ingestInstrumentResults: (payload) =>
     request('/instrument/results/', { method: 'POST', body: JSON.stringify(payload) }),
   getPatientReportByBarcode: (barcode, params = {}) => {

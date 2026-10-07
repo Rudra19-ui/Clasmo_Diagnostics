@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Layout from '../../components/Layout';
-import LandingBrandTitle from '../../components/landing/LandingBrandTitle';
+import ClasmoReportSheet, { isOhProgesteroneTest, printClasmoReport } from '../../components/reports/ClasmoReportSheet';
 import { api } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { isFranchiseRole } from '../../utils/franchiseNav';
@@ -17,10 +17,6 @@ function splitSampleTypes(sampleType) {
   return parts.length ? parts : ['General'];
 }
 
-function isOhProgesteroneTest(name = '') {
-  return /17\s*-?\s*oh\s*progesterone/i.test(name);
-}
-
 function pickDefaultTestId(list, preferredName = '') {
   if (preferredName) {
     const preferred = list.find((test) => (test.name || '').toLowerCase() === preferredName.toLowerCase());
@@ -29,30 +25,18 @@ function pickDefaultTestId(list, preferredName = '') {
   const oh = list.find((test) => isOhProgesteroneTest(test.name));
   if (oh) return String(oh.id);
   const cbc = list.find((test) => /complete blood count|\bcbc\b/i.test(test.name || ''));
-  return String((cbc || list[0]).id);
-}
-
-function referenceInterval(param) {
-  const male = (param.reference_range_male || '').trim();
-  const female = (param.reference_range_female || '').trim();
-  const child = (param.reference_range_child || '').trim();
-  const parts = [];
-  if (male) parts.push(`M: ${male}`);
-  if (female) parts.push(`F: ${female}`);
-  if (child) parts.push(`Child: ${child}`);
-  if (parts.length) return parts.join(' · ');
-  return 'As per method / kit insert';
+  return String((cbc || list[0])?.id || '');
 }
 
 const PLACEHOLDER_DEMOGRAPHICS = {
-  patient_name: '____________________',
-  age_gender: '____ Y / ________',
-  lab_code: '____________________',
-  registration_date: '____/____/________',
-  doctor_name: '____________________',
-  barcode: '____________________',
-  sample_collected_at: '____/____/________',
-  reported_on: '____/____/________',
+  patient_name: '',
+  age_gender: '',
+  lab_code: '',
+  registration_date: '',
+  doctor_name: '',
+  barcode: '',
+  sample_collected_at: '',
+  reported_on: '',
 };
 
 export default function SampleReport() {
@@ -98,7 +82,6 @@ export default function SampleReport() {
       .catch((err) => setError(err.message || 'Could not load tests.'))
       .finally(() => setLoading(false));
     refreshCoverage();
-    // Intentionally run once on mount; URL test/barcode handled separately.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -169,9 +152,14 @@ export default function SampleReport() {
     return formats.filter((asset) => String(asset.test) === String(selectedId));
   }, [formats, selectedId]);
 
+  const masterFormats = useMemo(
+    () => formats.filter((asset) => !asset.test && /master|letterhead|clasmo/i.test(asset.title || '')),
+    [formats],
+  );
+
   const sampleTypes = patientReport?.sample_types?.length
     ? patientReport.sample_types
-    : (selectedTest ? splitSampleTypes(selectedTest.sample_type) : []);
+    : (selectedTest ? splitSampleTypes(selectedTest.sample_type) : ['General']);
 
   async function loadPatientReport(barcode) {
     const value = (barcode || '').trim();
@@ -223,12 +211,20 @@ export default function SampleReport() {
     ? (patientReport?.demographics || PLACEHOLDER_DEMOGRAPHICS)
     : PLACEHOLDER_DEMOGRAPHICS;
   const title = patientReport?.test_name || selectedTest?.name || '17 OH Progesterone';
-  const rows = patientReport?.rows;
+  const liveRows = (patientReport?.rows || []).map((row) => ({
+    ...row,
+    id: row.parameter_id,
+    result: row.result,
+  }));
+  const sampleRows = parameters.map((param) => ({
+    ...param,
+    result: param.sample_value || '',
+  }));
+  const sheetRows = isLive ? liveRows : sampleRows;
   const porPdfs = useMemo(
     () => filterPorCatalogPdfs(formats, { hidePriceCatalog: franchise }),
     [formats, franchise],
   );
-  const showOhLayout = isOhProgesteroneTest(title);
 
   return (
     <Layout activePage={franchise ? 'reports-format' : 'test-portfolio'}>
@@ -243,8 +239,8 @@ export default function SampleReport() {
 
         <h2 className="page-heading">Reports Format</h2>
         <p className="portfolio-intro">
-          Auto sample reports are built from test parameters — one shared layout for the whole catalog.
-          Upload a custom PDF only for special layouts. Patient and result fields stay blank until booking / entry.
+          One Clasmo letterhead format for the whole catalog. Choose any test — only the test name,
+          sample type, and parameters change. You can refine parameters later via CSV Import.
         </p>
         {isAdmin && coverage && (
           <div className="sample-report-coverage-banner no-print">
@@ -301,7 +297,7 @@ export default function SampleReport() {
                 >
                   <div className={`report-format-badge report-format-badge--${asset.file_type}`}>
                     {asset.file_type === 'pdf' ? 'PDF' : 'Image'}
-                    {asset.test_name ? ` · ${asset.test_name}` : (asset.is_demo ? ' · Demo' : '')}
+                    {asset.test_name ? ` · ${asset.test_name}` : (asset.is_demo ? ' · Demo' : ' · Master')}
                   </div>
                   <h3>{asset.title}</h3>
                   <p>{asset.description || 'Sample report format'}</p>
@@ -349,6 +345,13 @@ export default function SampleReport() {
                 Clear / format preview
               </button>
             )}
+            <button
+              type="button"
+              className="sample-report-btn sample-report-btn--secondary"
+              onClick={() => { printClasmoReport(); }}
+            >
+              Print / PDF
+            </button>
             <Link to="/device/test-result-batch" className="sample-report-btn sample-report-btn--secondary">
               Capture machine results
             </Link>
@@ -359,7 +362,7 @@ export default function SampleReport() {
           )}
 
           <div className="portfolio-sample-layout">
-            <aside className="portfolio-sample-picker">
+            <aside className="portfolio-sample-picker no-print">
               <label className="portfolio-search">
                 <span>Find test</span>
                 <input
@@ -395,172 +398,71 @@ export default function SampleReport() {
               )}
             </aside>
 
-            <div className="portfolio-sample-preview">
+            <div className="portfolio-sample-preview print-clasmo-reports-root">
               {!selectedTest && !isLive ? (
                 <p className="portfolio-empty">Select a test to view its sample report.</p>
               ) : (
-                <article className={`sample-report-sheet${showOhLayout ? ' sample-report-sheet--ohpg' : ''}`}>
-                  <header className="sample-report-header">
-                    <LandingBrandTitle showLogo compact />
-                    <div className="sample-report-meta">
-                      <strong>{isLive ? 'PATIENT REPORT' : 'SAMPLE REPORT'}</strong>
-                      <span>
-                        {isLive
-                          ? `Status: ${patientReport.report_status || 'pending'}`
-                          : 'Placeholders — filled after patient booking / result entry'}
-                      </span>
-                    </div>
-                  </header>
-
-                  {linkedFormats.length > 0 && (
-                    <div className="sample-report-linked-files">
-                      {linkedFormats.map((asset) => {
-                        const href = asset.file_url || asset.external_url;
-                        if (!href) return null;
-                        return (
-                          <a
-                            key={asset.id}
-                            href={href}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="sample-report-btn sample-report-btn--secondary"
-                          >
-                            Open {asset.title} PDF
-                          </a>
-                        );
-                      })}
-                    </div>
+                <ClasmoReportSheet
+                  title={title}
+                  sampleType={sampleTypes}
+                  demographics={demographics}
+                  rows={sheetRows}
+                  isLive={isLive}
+                  isSample={!isLive}
+                  loading={!isLive && paramsLoading}
+                  showReferenceColumn={false}
+                  reportNote={selectedTest?.report_note || ''}
+                  reportComments={selectedTest?.report_comments || ''}
+                  clinicalSignificance={selectedTest?.clinical_significance || ''}
+                  reportExtraSections={selectedTest?.report_extra_sections || null}
+                  emptyMessage={
+                    isAdmin
+                      ? 'No parameters for this test yet. Use Auto-generate missing or CSV Import.'
+                      : 'No parameters for this test yet. Ask an admin to import parameters.'
+                  }
+                  linkedFiles={(
+                    (linkedFormats.length > 0 || masterFormats.length > 0) ? (
+                      <div className="sample-report-linked-files no-print">
+                        {[...masterFormats, ...linkedFormats].map((asset) => {
+                          const href = asset.file_url || asset.external_url;
+                          if (!href) return null;
+                          return (
+                            <a
+                              key={asset.id}
+                              href={href}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="sample-report-btn sample-report-btn--secondary"
+                            >
+                              Open {asset.title} PDF
+                            </a>
+                          );
+                        })}
+                      </div>
+                    ) : null
                   )}
-
-                  <div className="sample-report-patient-grid">
-                    <div><span>PT Name</span><strong className={!isLive ? 'is-placeholder' : ''}>{demographics.patient_name}</strong></div>
-                    <div><span>Age / Sex</span><strong className={!isLive ? 'is-placeholder' : ''}>{demographics.age_gender || demographics.age_display}</strong></div>
-                    <div><span>Sample Collected At</span><strong className={!isLive ? 'is-placeholder' : ''}>{demographics.sample_collected_at || '—'}</strong></div>
-                    <div><span>Ref By</span><strong className={!isLive ? 'is-placeholder' : ''}>{demographics.doctor_name || '—'}</strong></div>
-                    <div><span>Registered On</span><strong className={!isLive ? 'is-placeholder' : ''}>{demographics.registration_date || '—'}</strong></div>
-                    <div><span>Barcode</span><strong className={!isLive ? 'is-placeholder' : ''}>{demographics.barcode || '—'}</strong></div>
-                    <div><span>Lab Code / INV</span><strong className={!isLive ? 'is-placeholder' : ''}>{demographics.lab_code || '—'}</strong></div>
-                    <div><span>Reported On</span><strong className={!isLive ? 'is-placeholder' : ''}>{demographics.reported_on || '—'}</strong></div>
-                  </div>
-
-                  <h3 className="sample-report-test-title">{title}</h3>
-                  <p className="sample-report-sample-type">
-                    <strong>INV:</strong> {title}
-                    {' · '}
-                    <strong>SAMPLE:</strong> {sampleTypes.join(', ')}
-                  </p>
-
-                  <table className="sample-report-table">
-                    <thead>
-                      <tr>
-                        <th>Test Description</th>
-                        <th>Result</th>
-                        <th>Units</th>
-                        <th>Biological Reference Range</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {isLive && rows?.map((row) => (
-                        <tr key={row.parameter_id}>
-                          <td>
-                            {row.parameter_name}
-                            {row.method ? (
-                              <div className="sample-report-method">Method: {row.method}</div>
-                            ) : null}
-                          </td>
-                          <td>
-                            {row.result || '—'}
-                            {row.flag && row.result ? (
-                              <div className="sample-report-method">{row.flag}{row.source === 'machine' ? ' · Machine' : ''}</div>
-                            ) : null}
-                          </td>
-                          <td>{row.unit || '—'}</td>
-                          <td>{row.reference_range || referenceInterval(row)}</td>
-                        </tr>
-                      ))}
-
-                      {!isLive && paramsLoading && (
-                        <tr>
-                          <td colSpan={4}>Loading parameters…</td>
-                        </tr>
-                      )}
-                      {!isLive && !paramsLoading && parameters.length === 0 && (
-                        <tr>
-                          <td colSpan={4}>
-                            No parameters for this test yet.
-                            {isAdmin
-                              ? ' Use Auto-generate missing or CSV Import to create sample report rows for all tests.'
-                              : ' Ask an admin to import parameters.'}
-                          </td>
-                        </tr>
-                      )}
-                      {!isLive && !paramsLoading && parameters.map((param) => (
-                        <tr key={param.id}>
-                          <td>
-                            {param.parameter_name}
-                            {param.method ? (
-                              <div className="sample-report-method">Method: {param.method}</div>
-                            ) : null}
-                          </td>
-                          <td>
-                            {param.sample_value ? (
-                              <strong title="Example sample value">{param.sample_value}</strong>
-                            ) : (
-                              <span className="report-result-placeholder" title="Technician enters machine reading here">
-                                ________
-                              </span>
-                            )}
-                          </td>
-                          <td>{param.unit || '—'}</td>
-                          <td>{referenceInterval(param)}</td>
-                        </tr>
-                      ))}
-                      {sampleTypes.map((sampleType) => (
-                        <tr key={sampleType}>
-                          <td colSpan={4} className="sample-report-sample-row">
-                            Sample required: <strong>{sampleType}</strong>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-
-                  {showOhLayout && !isLive && (
-                    <div className="sample-report-notes">
-                      <h4>Reference Range</h4>
-                      <ul>
-                        <li>&lt;1 yr: &lt;3.00 ng/mL</li>
-                        <li>&gt;1 yr: &lt;2.00 ng/mL</li>
-                        <li>Adult Males: 0.63 – 2.15 ng/mL</li>
-                        <li>Premenopausal females — Follicular: 0.32–1.47; Luteal: 0.25–2.91; Contraception: 0.20–1.90</li>
-                        <li>Postmenopausal Females: 0.19–0.71 ng/mL</li>
-                      </ul>
-                      <p>
-                        Clinical significance: The adrenal glands, ovaries, testes, and placenta produce 17-OHPG.
-                        Please correlate with clinical conditions. ~~End of report~~
-                      </p>
-                    </div>
-                  )}
-
-                  <footer className="sample-report-footer">
-                    <p>
-                      {isLive
-                        ? 'Patient demographics and results loaded via sample barcode. Machine values appear after analyzer ingest or result entry.'
-                        : 'Blank fields are placeholders. Patient details come from booking; result is entered by the technician and verified by the pathologist.'}
-                    </p>
-                    <div className="sample-report-actions">
+                  footerNote={
+                    isLive
+                      ? 'Patient demographics and results loaded via sample barcode. Machine values appear after analyzer ingest or result entry.'
+                      : 'This is the shared Clasmo letterhead. Change the selected test to swap parameters; refine units/ranges later anytime.'
+                  }
+                  actions={(
+                    <>
                       <Link to="/clinical/result-entry" className="sample-report-btn">
                         Open Result Entry
                       </Link>
                       <Link to="/clinical/report-preview" className="sample-report-btn sample-report-btn--secondary">
                         Open Live Report Preview
                       </Link>
+                      <Link to="/clinical/parameter-import" className="sample-report-btn sample-report-btn--secondary">
+                        Edit Parameters Later
+                      </Link>
                       <Link to="/portfolio/test-list" className="sample-report-btn sample-report-btn--secondary">
                         Back to Test List
                       </Link>
-                    </div>
-                  </footer>
-                </article>
+                    </>
+                  )}
+                />
               )}
             </div>
           </div>

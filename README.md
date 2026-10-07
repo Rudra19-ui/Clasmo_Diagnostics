@@ -81,6 +81,9 @@ Pages:
   - Download CSV template (or all-tests starter), dry-run preview, bulk import
   - One-click **Auto-generate** creates a default parameter for every test missing one so sample reports work for the full catalog without designing 900 PDFs
   - CLI: `python manage.py import_test_parameters path/to/file.csv`
+  - Import sample-report details (parameters + NOTE/Comments/Clinical significance) by test name:
+    `python manage.py import_sample_report_details`
+    (uses `backend/api/data/report_formats/sample_reports_batch_import.json`)
 - **Result Entry** — `/clinical/result-entry` (Technician, Admin)
 - **Report Preview** — `/clinical/report-preview` (All roles)
 

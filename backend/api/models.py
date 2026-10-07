@@ -163,6 +163,23 @@ class Test(models.Model):
         max_digits=8, decimal_places=2, default=0,
         help_text='Sample volume in ml.',
     )
+    report_note = models.TextField(
+        blank=True,
+        help_text='NOTE block shown on sample / final report for this test.',
+    )
+    report_comments = models.TextField(
+        blank=True,
+        help_text='Comments block shown on sample / final report for this test.',
+    )
+    clinical_significance = models.TextField(
+        blank=True,
+        help_text='Clinical significance text for this test report.',
+    )
+    report_extra_sections = models.JSONField(
+        default=dict,
+        blank=True,
+        help_text='Extra titled report sections, e.g. Interpretation, USES, Abnormal findings.',
+    )
     category = models.ForeignKey(
         TestCategory, on_delete=models.SET_NULL, null=True, blank=True, related_name='tests'
     )

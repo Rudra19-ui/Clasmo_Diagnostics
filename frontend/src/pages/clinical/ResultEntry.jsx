@@ -1,11 +1,11 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Layout from '../../components/Layout';
-import LandingBrandTitle from '../../components/landing/LandingBrandTitle';
+import ClasmoReportSheet from '../../components/reports/ClasmoReportSheet';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../services/api';
-import { canEnterResults, canVerifyReports, flagClass } from '../../utils/roles';
+import { canEnterResults, canVerifyReports } from '../../utils/roles';
 import '../../styles/clinical.css';
 
 function groupParameters(parameters) {
@@ -16,15 +16,6 @@ function groupParameters(parameters) {
     groups[key].push(p);
   });
   return groups;
-}
-
-function referenceFor(param, report) {
-  const isChild = report?.patient_age > 0 && report.patient_age < 18;
-  if (isChild) return param.reference_range_child || param.reference_range_male || '—';
-  if (report?.patient_gender === 'female') {
-    return param.reference_range_female || param.reference_range_male || '—';
-  }
-  return param.reference_range_male || '—';
 }
 
 export default function ResultEntry() {
@@ -216,7 +207,11 @@ export default function ResultEntry() {
                       <td data-label="Patient">{r.patient_name}</td>
                       <td data-label="Test">{r.test}</td>
                       <td data-label="Date">{r.date}</td>
-                      <td data-label="Status"><span className="badge-status">{r.status}</span></td>
+                      <td data-label="Status">
+                        <span className="badge-status">
+                          {r.report_status ? `${r.report_status} · ${r.status}` : r.status}
+                        </span>
+                      </td>
                       <td data-label="Action">
                         <button type="button" className="btn-link" onClick={() => loadReport(r.id)}>
                           Open Report Format
@@ -236,153 +231,108 @@ export default function ResultEntry() {
 
         {report && !loading && (
           <section className="clinical-panel machine-report-panel">
-            <article className="sample-report-sheet machine-report-sheet">
-              <header className="sample-report-header">
-                <LandingBrandTitle showLogo compact />
-                <div className="sample-report-meta">
-                  <strong>
-                    {isVerified ? 'FINAL REPORT' : isEntered ? 'AWAITING PATHOLOGIST' : 'MACHINE ENTRY'}
-                  </strong>
-                  <span className={`status-pill status-${report.status}`}>{report.status}</span>
-                </div>
-              </header>
+            <p className="page-sub no-print" style={{ marginBottom: 12 }}>
+              Status: <span className={`status-pill status-${report.status}`}>{report.status}</span>
+              {' · '}
+              {isVerified ? 'FINAL REPORT' : isEntered ? 'AWAITING PATHOLOGIST' : 'MACHINE ENTRY'}
+              {report.entered_by_name ? ` · Entered by ${report.entered_by_name}` : ''}
+              {report.verified_by_name ? ` · Verified by ${report.verified_by_name}` : ''}
+            </p>
 
-              <div className="sample-report-patient-grid">
-                <div><span>PT Name</span><strong>{details.full_name || report.patient_name || '—'}</strong></div>
-                <div>
-                  <span>Age / Sex</span>
-                  <strong>
-                    {details.age_display || `${report.patient_age || '—'} Y`}
-                    {' / '}
-                    {report.patient_gender || '—'}
-                  </strong>
-                </div>
-                <div><span>Lab Code</span><strong>{report.lab_code || '—'}</strong></div>
-                <div><span>Ref By</span><strong>{details.doctor_name || '—'}</strong></div>
-                <div><span>Registered On</span><strong>{details.registration_date || '—'}</strong></div>
-                <div><span>Barcode</span><strong>{details.barcode || '—'}</strong></div>
-                <div><span>Center</span><strong>{details.collection_center || '—'}</strong></div>
-                <div>
-                  <span>Entered / Verified</span>
-                  <strong>
-                    {report.entered_by_name || '—'}
-                    {report.verified_by_name ? ` → ${report.verified_by_name}` : ''}
-                  </strong>
-                </div>
+            {!report.parameters?.length ? (
+              <p className="empty-msg">
+                No parameters configured for the ordered tests. Add them in Test Parameter Master / Parameter Import.
+              </p>
+            ) : (
+              <div className="print-clasmo-reports-root">
+                {Object.entries(parameterGroups).map(([testName, params], index) => {
+                  const sheetRows = params.map((p) => {
+                    const existing = report.values?.find((v) => v.parameter === p.id);
+                    return {
+                      ...p,
+                      result: values[p.id] || existing?.value || '',
+                      flag: existing?.flag || '',
+                      reference_range_male: p.reference_range_male,
+                      reference_range_female: p.reference_range_female,
+                      reference_range_child: p.reference_range_child,
+                    };
+                  });
+                  const meta = params[0] || {};
+                  const ordered = (report.ordered_tests || []).find(
+                    (t) => (t.name || '').toLowerCase() === String(testName || '').toLowerCase(),
+                  );
+                  const sampleType = meta.sample_type || ordered?.sample_type || details.sample_type || 'General';
+                  const editable = (canEnter || canVerify) && !isVerified;
+                  return (
+                    <div key={testName} style={{ marginBottom: 16 }}>
+                      <ClasmoReportSheet
+                        title={testName}
+                        sampleType={sampleType}
+                        demographics={{
+                          patient_name: details.full_name || report.patient_name || '',
+                          age_gender: details.age_display || `${report.patient_age || ''} Y / ${report.patient_gender || ''}`,
+                          doctor_name: details.doctor_name || '',
+                          lab_code: report.lab_code || '',
+                          barcode: details.barcode || '',
+                          registration_date: details.registration_date || '',
+                          reported_on: isVerified ? (details.reported_on || '') : '',
+                          sample_collected_at: details.collection_center || '',
+                        }}
+                        rows={sheetRows}
+                        isLive
+                        isSample={false}
+                        editable={editable}
+                        values={values}
+                        onValueChange={(paramId, value) => setValues((prev) => ({ ...prev, [paramId]: value }))}
+                        reportNote={ordered?.report_note || meta.report_note || ''}
+                        reportComments={ordered?.report_comments || meta.report_comments || ''}
+                        clinicalSignificance={ordered?.clinical_significance || meta.clinical_significance || ''}
+                        reportExtraSections={ordered?.report_extra_sections || meta.report_extra_sections || null}
+                        footerNote={
+                          index === Object.keys(parameterGroups).length - 1
+                            ? (isVerified
+                              ? 'This final report is approved and available to the franchisee account.'
+                              : isEntered
+                                ? 'Machine readings submitted. Pathologist must cross-verify and approve before franchisee access.'
+                                : 'Same Clasmo letterhead as Sample Report. Enter machine readings in the result placeholders.')
+                            : ''
+                        }
+                        actions={index === Object.keys(parameterGroups).length - 1 ? (
+                          <>
+                            {canEnter && !isVerified && (
+                              <button type="button" className="sample-report-btn" disabled={saving} onClick={handleSave}>
+                                {saving ? 'Saving…' : 'Submit for Pathologist Review'}
+                              </button>
+                            )}
+                            {!canEnter && canVerify && !isVerified && (
+                              <button type="button" className="sample-report-btn" disabled={saving} onClick={handleSave}>
+                                {saving ? 'Saving…' : 'Save Corrections'}
+                              </button>
+                            )}
+                            {canVerify && !isVerified && (
+                              <button type="button" className="sample-report-btn" disabled={saving} onClick={handleVerify}>
+                                {saving ? 'Approving…' : 'Cross-verify & Approve Final Report'}
+                              </button>
+                            )}
+                            {selectedId && (
+                              <Link
+                                to={`/clinical/report-preview?id=${selectedId}`}
+                                className="sample-report-btn sample-report-btn--secondary"
+                              >
+                                Open Final Preview
+                              </Link>
+                            )}
+                            <Link to="/sample-scan" className="sample-report-btn sample-report-btn--secondary">
+                              Scan Another
+                            </Link>
+                          </>
+                        ) : null}
+                      />
+                    </div>
+                  );
+                })}
               </div>
-
-              {!report.parameters?.length ? (
-                <p className="empty-msg">
-                  No parameters configured for the ordered tests. Add them in Test Parameter Master.
-                </p>
-              ) : (
-                Object.entries(parameterGroups).map(([testName, params]) => (
-                  <Fragment key={testName}>
-                    <h3 className="sample-report-test-title">{testName}</h3>
-                    <p className="sample-report-sample-type">
-                      <strong>INV:</strong> {testName}
-                      {params[0]?.sample_type ? (
-                        <>
-                          {' · '}
-                          <strong>SAMPLE:</strong> {params[0].sample_type}
-                        </>
-                      ) : null}
-                    </p>
-                    <table className="sample-report-table machine-report-table">
-                      <thead>
-                        <tr>
-                          <th>Test Description</th>
-                          <th>Result</th>
-                          <th>Units</th>
-                          <th>Biological Reference Range</th>
-                          <th>Flag</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {params.map((p) => {
-                          const existing = report.values?.find((v) => v.parameter === p.id);
-                          const editable = (canEnter || canVerify) && !isVerified;
-                          return (
-                            <tr key={p.id}>
-                              <td>
-                                {p.parameter_name}
-                                {p.method ? (
-                                  <div className="sample-report-method">Method: {p.method}</div>
-                                ) : null}
-                              </td>
-                              <td>
-                                {editable ? (
-                                  <input
-                                    type="text"
-                                    className="machine-result-input"
-                                    placeholder="________"
-                                    value={values[p.id] ?? ''}
-                                    onChange={(e) => setValues({ ...values, [p.id]: e.target.value })}
-                                    aria-label={`Machine reading for ${p.parameter_name}`}
-                                  />
-                                ) : (
-                                  <strong>{values[p.id] || existing?.value || '—'}</strong>
-                                )}
-                              </td>
-                              <td>{p.unit || '—'}</td>
-                              <td>{referenceFor(p, report)}</td>
-                              <td>
-                                {existing?.flag ? (
-                                  <span className={`flag-badge ${flagClass(existing.flag)}`}>{existing.flag}</span>
-                                ) : '—'}
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </Fragment>
-                ))
-              )}
-
-              <footer className="sample-report-footer">
-                <p>
-                  {isVerified
-                    ? 'This final report is approved and available to the franchisee account.'
-                    : isEntered
-                      ? 'Machine readings submitted. Pathologist must cross-verify and approve before franchisee access.'
-                      : 'Blank result fields are placeholders for machine readings. Patient header is filled from the booking.'}
-                </p>
-                <div className="sample-report-actions no-print">
-                  {canEnter && !isVerified && (
-                    <button type="button" className="sample-report-btn" disabled={saving} onClick={handleSave}>
-                      {saving ? 'Saving…' : 'Submit for Pathologist Review'}
-                    </button>
-                  )}
-                  {!canEnter && canVerify && !isVerified && (
-                    <button type="button" className="sample-report-btn" disabled={saving} onClick={handleSave}>
-                      {saving ? 'Saving…' : 'Save Corrections'}
-                    </button>
-                  )}
-                  {canVerify && !isVerified && (
-                    <button
-                      type="button"
-                      className="sample-report-btn"
-                      disabled={saving}
-                      onClick={handleVerify}
-                    >
-                      {saving ? 'Approving…' : 'Cross-verify & Approve Final Report'}
-                    </button>
-                  )}
-                  {selectedId && (
-                    <Link
-                      to={`/clinical/report-preview?id=${selectedId}`}
-                      className="sample-report-btn sample-report-btn--secondary"
-                    >
-                      Open Final Preview
-                    </Link>
-                  )}
-                  <Link to="/sample-scan" className="sample-report-btn sample-report-btn--secondary">
-                    Scan Another
-                  </Link>
-                </div>
-              </footer>
-            </article>
+            )}
           </section>
         )}
       </main>

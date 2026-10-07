@@ -135,8 +135,17 @@ class ReportDetailView(APIView):
                 'patient_age': registration.patient.age_years,
                 'patient_details': _patient_details_payload(registration),
                 'status': Report.STATUS_PENDING,
+                'registration_status': registration.status,
                 'ordered_tests': [
-                    {'id': rt.test_id, 'name': rt.test.name}
+                    {
+                        'id': rt.test_id,
+                        'name': rt.test.name,
+                        'sample_type': rt.test.sample_type or '',
+                        'report_note': rt.test.report_note or '',
+                        'report_comments': rt.test.report_comments or '',
+                        'clinical_significance': rt.test.clinical_significance or '',
+                        'report_extra_sections': rt.test.report_extra_sections or {},
+                    }
                     for rt in registration.tests.select_related('test').all()
                 ],
                 'values': [],
@@ -240,7 +249,13 @@ class ReportDetailView(APIView):
 
         report.refresh_from_db()
         serializer = ReportSerializer(report, context={'patient': patient})
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        data = serializer.data
+        data['patient_details'] = _patient_details_payload(registration)
+        data['parameters'] = TestParameterSerializer(
+            self._parameters_for_registration(registration),
+            many=True,
+        ).data
+        return Response(data, status=status.HTTP_200_OK)
 
     def _parameters_for_registration(self, registration):
         test_ids = registration.tests.values_list('test_id', flat=True)
@@ -345,7 +360,37 @@ class ReportVerifyView(APIView):
         serializer = ReportSerializer(
             report, context={'patient': registration.patient}
         )
-        return Response(serializer.data)
+        data = serializer.data
+        data['patient_details'] = _patient_details_payload(registration)
+        return Response(data)
+
+
+class ReportPrintView(APIView):
+    """Mark registration as Printed after a verified report is printed/released."""
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    @transaction.atomic
+    def post(self, request, registration_id):
+        registration = _scoped_registration(request.user, registration_id)
+        report = Report.objects.filter(registration=registration).first()
+        if not report or report.status != Report.STATUS_VERIFIED:
+            return Response(
+                {'detail': 'Only verified reports can be marked as printed.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Franchise may print only after verification (already enforced above).
+        registration.status = Registration.STATUS_PRINTED
+        registration.save(update_fields=['status'])
+
+        serializer = ReportSerializer(
+            report, context={'patient': registration.patient}
+        )
+        data = serializer.data
+        data['patient_details'] = _patient_details_payload(registration)
+        data['registration_status'] = registration.status
+        return Response(data)
 
 
 class TestParameterImportTemplateView(APIView):

@@ -1,0 +1,2549 @@
+[
+  {
+    "test_name": "ABO Group & RH Type (Blood Group)",
+    "match_names": [
+      "ABO Group & RH Type (Blood Group)",
+      "ABO Group & Rh Type",
+      "Blood Group",
+      "ABO GROUP & RH TYPE"
+    ],
+    "sample_type": "EDTA Blood",
+    "clinical_significance": "This ABO and Rh blood typing test identifies the presence of specific red cell antigens and antibodies to determine the ABO/Rh type. Please correlate with clinical conditions.",
+    "parameters": [
+      {
+        "parameter_name": "ABO Group",
+        "unit": "",
+        "method": "Erythrocyte Magnetized Technology",
+        "reference_range_male": "",
+        "sample_value": "B",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "Rh Factor",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "POSITIVE",
+        "sort_order": 2
+      }
+    ]
+  },
+  {
+    "test_name": "Absolute Eosinophil Count (AEC)",
+    "match_names": [
+      "Absolute Eosinophil Count (AEC)",
+      "Absolute Eosinophil Count",
+      "AEC"
+    ],
+    "sample_type": "EDTA Blood",
+    "report_extra_sections": {
+      "Reference Range": "Peripheral Blood / Eosinophilia Counts per μL of Blood\nNormal level of eosinophils: 50-550\nEosinophilia: >500-1,500\nHypereosinophilia: >1,500 recorded on ≥2 determinations with minimum interval of 4 weeks (unless immediate designation is required to initiate therapy because of eosinophil-related organ dysfunction)",
+      "USES": "Absolute eosinophil count is increased in allergic or atopic disease, infectious disorders (including parasites), medications, immunologic reactions, skin disorders, pulmonary syndromes, rheumatologic diseases, myeloproliferative neoplasms and secondary to other malignancies."
+    },
+    "parameters": [
+      {
+        "parameter_name": "AEC",
+        "unit": "/cmm",
+        "method": "Electrical Impedance",
+        "reference_range_male": "50 - 550",
+        "sample_value": "560",
+        "sort_order": 1
+      }
+    ]
+  },
+  {
+    "test_name": "Activated Partial Thromboplastin Time (APTT/PTTK)",
+    "match_names": [
+      "Activated Partial Thromboplastin Time (APTT/PTTK)",
+      "Activated Partial Thromboplastin Time",
+      "APTT/PTTK",
+      "APTT",
+      "PTTK"
+    ],
+    "sample_type": "Citrated Plasma",
+    "report_note": "1. Degree of prolongation of PTT / APTT is neither predictive of bleeding risk nor underlying diagnosis. 2. Results should be clinically correlated. 3. Test conducted on Citrated plasma.",
+    "report_comments": "Partial Thromboplastin time (PTT / APTT) measures the proteins of the intrinsic coagulation pathway which consists of Factor XII, Prekallikrein, High molecular weight kininogen, Factors VIII, IX & XI. It also measures proteins of the common pathway namely factors II, V, X & Fibrinogen. PTT is prolonged when Factor VIII level is < 35-40% of normal and Factor XII & High molecular weight kininogen is < 10-15% of normal.",
+    "report_extra_sections": {
+      "Abnormal Partial Thromboplastin Time": "Associated with bleeding: Defects of factors VIII, IX & XI. Not associated with bleeding: Defects of factor XII, Prekallikrein, High molecular weight kininogen & Lupus anticoagulants. Please correlate with clinical conditions."
+    },
+    "parameters": [
+      {
+        "parameter_name": "Patient Value",
+        "unit": "sec",
+        "method": "Photo Optical Clot Detection",
+        "reference_range_male": "22 - 34",
+        "sample_value": "30.2",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "Control Value",
+        "unit": "sec",
+        "method": "Photo Optical Clot Detection",
+        "reference_range_male": "28",
+        "sample_value": "28.0",
+        "sort_order": 2
+      }
+    ]
+  },
+  {
+    "test_name": "Adenosine Deaminase (ADA) For Fluids",
+    "match_names": [
+      "Adenosine Deaminase (ADA) For Fluids",
+      "Adenosine Deaminase (ADA) for Fluids",
+      "ADA For Fluids",
+      "ADA Fluid"
+    ],
+    "sample_type": "Body Fluid",
+    "clinical_significance": "Adenosine deaminase (ADA) is a protein that is produced by cells throughout the body and is associated with the activation of lymphocytes, a type of white blood cell that plays a role in the immune response to infections. Conditions that trigger the immune system, such as an infection by Mycobacterium tuberculosis, the bacteria that causes tuberculosis (TB), may cause increased amounts of ADA to be produced in the areas where the bacteria are present. This test measures the amount of adenosine deaminase present in fluid in order to help diagnose a tuberculosis infection of the fluid. Though the ADA test is not specific and does not replace the culture for diagnosing TB, it may be positive even when numbers of bacteria are very low and can be used as an adjunct test. Please correlate with clinical conditions.",
+    "parameters": [
+      {
+        "parameter_name": "ADA FLUID",
+        "unit": "IU/L",
+        "method": "ENZYMATIC",
+        "reference_range_male": "0.0 - 30.0",
+        "sample_value": "11.8",
+        "sort_order": 1
+      }
+    ]
+  },
+  {
+    "test_name": "Adenosine Deaminase (ADA) For Serum",
+    "match_names": [
+      "Adenosine Deaminase (ADA) For Serum",
+      "Adenosine Deaminase (ADA) for Serum",
+      "ADA For Serum",
+      "ADA Serum"
+    ],
+    "sample_type": "Serum",
+    "report_note": "Increased Serum Levels - Viral hepatitis, Infectious mononucleosis, Typhoid fever, Cirrhosis of liver and certain malignant tumors, Tuberculosis.",
+    "clinical_significance": "Adenosine deaminase (ADA) is a protein that is produced by cells throughout the body and is associated with the activation of lymphocytes, a type of white blood cell that plays a role in the immune response to infections. Conditions that trigger the immune system, such as an infection by Mycobacterium tuberculosis, may cause increased amounts of ADA to be produced. This test measures ADA to help diagnose tuberculosis infection. Though not specific and not a replacement for culture, it can be used as an adjunct test. Please correlate with clinical conditions.",
+    "parameters": [
+      {
+        "parameter_name": "ADA SERUM",
+        "unit": "IU/L",
+        "method": "ENZYMATIC",
+        "reference_range_male": "0.0 - 43.00",
+        "sample_value": "25.1",
+        "sort_order": 1
+      }
+    ]
+  },
+  {
+    "test_name": "Albumin, Serum",
+    "match_names": [
+      "Albumin, Serum",
+      "Albumin Serum",
+      "Serum Albumin",
+      "Albumin"
+    ],
+    "sample_type": "Serum",
+    "report_comments": "An albumin blood test measures the amount of albumin in your blood. Albumin is a protein made by your liver. Albumin helps keep fluid in your bloodstream so it doesn't leak into other tissues. It also carries various substances throughout your body, including hormones, vitamins, and enzymes. Low albumin levels can indicate a problem with your liver or kidneys.",
+    "clinical_significance": "Albumin is a carbohydrate-free protein, which constitutes 55% to 65% of total plasma protein. It maintains oncotic plasma pressure, is involved in the transport and storage of a wide variety of ligands, and is a source of endogenous amino acids. Hypoalbuminemia is caused by impaired synthesis (liver disease or diminished protein intake), increased catabolism from tissue damage and inflammation, malabsorption of amino acids, and increased renal excretion (e.g. nephrotic syndrome). Please correlate with clinical conditions.",
+    "parameters": [
+      {
+        "parameter_name": "Albumin, Serum",
+        "unit": "gm/dl",
+        "method": "PHOTOMETRY",
+        "reference_range_male": "3.2 - 5.2",
+        "sample_value": "4.22",
+        "sort_order": 1
+      }
+    ]
+  },
+  {
+    "test_name": "Alkaline Phosphatase (ALP)",
+    "match_names": [
+      "Alkaline Phosphatase (ALP)",
+      "Alkaline Phosphatase",
+      "ALP"
+    ],
+    "sample_type": "Serum",
+    "report_extra_sections": {
+      "Interpretation": "Alkaline phosphatase in serum consists of 4 structural genotypes: the liver-bone-kidney type, the intestinal type, the placental type, and the variant from the germ cells. It occurs in osteoblasts, hepatocytes, leukocytes, the kidneys, spleen, placenta, prostate, and the small intestine. The liver-bone-kidney type is particularly important. A rise in the alkaline phosphatase occurs with all forms of cholestasis, particularly with obstructive jaundice. It is also elevated in diseases of the skeletal system, such as Paget disease, hyperparathyroidism, rickets and osteomalacia, as well as with fractures and malignant tumors. A considerable rise in the alkaline phosphatase activity is sometimes seen in children and juveniles due to increased osteoblast activity following accelerated bone growth. Please correlate with clinical conditions."
+    },
+    "parameters": [
+      {
+        "parameter_name": "Alkaline Phosphatase",
+        "unit": "U/L",
+        "method": "FS IFCC",
+        "reference_range_male": "53.00 - 128.00",
+        "sample_value": "72",
+        "sort_order": 1
+      }
+    ]
+  },
+  {
+    "test_name": "Amylase (Serum)",
+    "match_names": [
+      "Amylase (Serum)",
+      "Amylase Serum",
+      "Serum Amylase",
+      "Amylase"
+    ],
+    "sample_type": "Serum",
+    "clinical_significance": "Lipemic sera (hypertriglyceridemia) may contain inhibitors which falsely depress results. About 20% of patients with acute pancreatitis have abnormal lipids. Normal serum amylase may occur in pancreatitis, especially relapsing and chronic pancreatitis. Moderate increases may be reported in normal pregnancy. Causes of high serum amylase include acute pancreatitis, pancreatic pseudocyst, pancreatic ascites, pancreatic abscess, neoplasm in or adjacent to pancreas, trauma to pancreas, and common duct stones. Nonpancreatic causes include inflammatory salivary lesions (e.g. mumps), perforated peptic ulcer, intestinal obstruction, biliary tract disease, peritonitis, acute appendicitis, diabetic ketoacidosis, and extrapancreatic carcinomas. Amylase levels more than 25-fold the upper limit of normal are often found when metastatic tumors produce ectopic amylase. Please correlate with clinical conditions.",
+    "parameters": [
+      {
+        "parameter_name": "AMYLASE",
+        "unit": "U/L",
+        "method": "PHOTOMETRY",
+        "reference_range_male": "28 - 100",
+        "sample_value": "59.25",
+        "sort_order": 1
+      }
+    ]
+  },
+  {
+    "test_name": "HIV 1 & 2 Antibody -Rapid",
+    "match_names": [
+      "HIV 1 & 2 Antibody -Rapid",
+      "HIV 1 & 2 ANTIBODY -RAPID"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "HIV -1 , Rapid",
+        "unit": ".",
+        "method": "rapid",
+        "reference_range_male": ". - .",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "NON REACTIVE",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "HIV -2 , Rapid",
+        "unit": "-",
+        "method": "rapid",
+        "reference_range_male": "- - -",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "NON REACTIVE",
+        "sort_order": 2
+      }
+    ],
+    "report_extra_sections": {
+      "INTERPRETATION": "Two type of human deficiency viruses, called HIV-1 and HIV-2, have been identified to date.Various subtypes of the known HI-Viruses have been described, each of which has a different geographical distribution.HIV-1 can be divided into 3 distantly related groups :group M(for main),group N (for non- M, non-O) and group O (for outlier).Based on their gentic relationship,at least 9 different subtypes (A to D, F to H,J,K) have been identifiedwithin HIV-1 group M.Antibodied to HIV protiens, indicating the presence of an HIV infection, can be found in the serum usually 6-12 weeks after infection.Due to differences in the sequence of immunodominant epitopes, especiallt in the envelope protiens HIV-1 group M HIV-1 group O and HIV-2,specific antigens are necessary to aviod failure in the detection of an HIV infection by immunoassays. Repeatedly reactive samples must be confirmed according to recommended confirm-atory algorithms. Confirmatory tests include Western Blot HIV RNA tests."
+    }
+  },
+  {
+    "test_name": "HIV 1 & 2 Antibody ELISA",
+    "match_names": [
+      "HIV 1 & 2 Antibody ELISA",
+      "Triple H - (HIV,HBsAg,HCV Antibody) ELISA",
+      "HIV 1 & 2 ANTIBODY ELISA"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "HIV -1-2",
+        "unit": "ODRatio",
+        "method": "ELISA",
+        "reference_range_male": "0.0 - 0.90",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.12",
+        "sort_order": 1
+      }
+    ],
+    "report_extra_sections": {
+      "Reference Range": "Negative : < = 0.90 Equivocal : 0.91-1.10 Positive : > = 1.11 Please correlate with clinical conditions."
+    }
+  },
+  {
+    "test_name": "Hepatitis C Virus (HCV Rapid)",
+    "match_names": [
+      "Hepatitis C Virus (HCV Rapid)",
+      "HEPATITIS C VIRUS (HCV RAPID)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "HEPATITIS C VIRUS (HCV RAPID)",
+        "unit": ".",
+        "method": ".",
+        "reference_range_male": ". - .",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "NON REACTIVE",
+        "sort_order": 1
+      }
+    ],
+    "report_extra_sections": {
+      "INTERPRETATION": "Hepatitis C is a viral disease triggered by an infection of the hepatitis C virus (HCV). If not recognized or treated, it can escalate into a chronic condition causing inflammation and possible liver damage. There are often no symptoms, so hepatitis C testing is critical. Screening will help determine HCV from other hepatitis causes, including hepatitis A and hepatitis B. An HCV antibody test can detect if you have been infected. It looks for antibodies to HCV in the blood. If you are 18 or older, it is a good idea to get screened at least once for Hepatitis C. Testing is also recommended during pregnancy or if you have risk factors for HCV infection. Because acute hepatitis C often has no symptoms, screening is an important way to diagnose hepatitis C before it causes liver damage."
+    }
+  },
+  {
+    "test_name": "Hepatitis C Virus (HCV) ELISA",
+    "match_names": [
+      "Hepatitis C Virus (HCV) ELISA",
+      "Triple H - (HIV,HBsAg,HCV Antibody) ELISA",
+      "HEPATITIS C VIRUS (HCV) ELISA"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "HEPATITIS C ANTIBODY",
+        "unit": "Index",
+        "method": "ELISA",
+        "reference_range_male": "0 - 1.00",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.155",
+        "sort_order": 1
+      }
+    ],
+    "report_note": "1-False positive results are seen in Autoimmune diseases, Rheumatoid factor, Hypergammaglobulinemia, Paraproteinemia, passive antibody transfer, Anti- idiotypes & Anti superoxide dismutase 2. False negative results are seen in early Acute infection, Immunosuppression & Immuno-incompetence 3. HCV RNA PCR recommended in all Reactive results to differentiate between past and present infection"
+  },
+  {
+    "test_name": "Hepatitis B Surface Antigen (HBs Ag) (Rapid)",
+    "match_names": [
+      "Hepatitis B Surface Antigen (HBs Ag) (Rapid)",
+      "HEPATITIS B SURFACE ANTIGEN (HBS AG) (RAPID)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Hepatitis B Surface Antigen (HBs Ag) ,Rapid",
+        "unit": ".",
+        "method": "Immuno Chromatography",
+        "reference_range_male": ". - .",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "NEGATIVE",
+        "sort_order": 1
+      }
+    ],
+    "report_extra_sections": {
+      "INTERPRETATION": "HBsAg (Hepatitis B surface antigen) - A \"positive\" or \"reactive\" HBsAg test result means that the person is infected with hepatitis B. This test can detect the actual presence of the hepatitis B virus (called the “surface antigen”) in your blood. If a person tests “positive,” then further testing is needed to determine if this is a new “acute” infection or a “chronic” hepatitis B infection. A positive HBsAg test result means that you are infected and can spread the hepatitis B virus to others through your blood."
+    }
+  },
+  {
+    "test_name": "Hepatitis B Surface Antigen (HBsAg)-ELISA",
+    "match_names": [
+      "Hepatitis B Surface Antigen (HBsAg)-ELISA",
+      "Triple H - (HIV,HBsAg,HCV Antibody) ELISA",
+      "HEPATITIS B SURFACE ANTIGEN (HBSAG)-ELISA"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Hepatitis B Surface Antigen (HBsAg)",
+        "unit": "Ratio",
+        "method": "ELISA",
+        "reference_range_male": "0 - 0.90",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.16",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "Classification of a hepatitis B infection requires the identification of several serological markers of the infection. The first marker to appear during the incubation phase is HBsAg, and indicates infection with HBV. Antibodies to HBsAg generally appears after HBsAg has been cleared from the blood stream, usually 6 months after infection, and its presence represents recovery and immunity. The presence of HBsAg antibodies should not be used as the sole marker in determining a prior hepatitis b infection. For diagnostic purpose, results should always be assessed in conjunction with the patients medical history, vaccination history, clinical examination and other findings. Please correlate with clinical conditions.",
+    "report_extra_sections": {
+      "Reference Range": "Negative : < 0.90 Borderline : 0.9 - 1.1 Positive : > 1.1"
+    }
+  },
+  {
+    "test_name": "Hepatitis A Virus Total Antibodies (HAV-Total)",
+    "match_names": [
+      "Hepatitis A Virus Total Antibodies (HAV-Total)",
+      "HEPATITIS A VIRUS TOTAL ANTIBODIES (HAV-TOTAL)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "HAV TOTAL",
+        "unit": "Index",
+        "method": "ELISA",
+        "reference_range_male": "0 - 0.90",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.45",
+        "sort_order": 1
+      }
+    ],
+    "report_extra_sections": {
+      "Reference Range": "Negative : < 0.90 Borderline : 0.9 - 1.1 Positive : >= 1.1"
+    }
+  },
+  {
+    "test_name": "Hepatitis A Virus IgM Antibodies",
+    "match_names": [
+      "Hepatitis A Virus IgM Antibodies",
+      "HEPATITIS A VIRUS IGM ANTIBODIES"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "HAV -IgM",
+        "unit": "Index",
+        "method": "ELISA",
+        "reference_range_male": "0 - 0.90",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.16",
+        "sort_order": 1
+      }
+    ],
+    "report_extra_sections": {
+      "Reference Range": "Negative : < 0.90 Borderline : 0.9 - 1.1 Positive : >= 1.1"
+    }
+  },
+  {
+    "test_name": "Hepatitis A Virus IgG Antibodies (HAV IgG)",
+    "match_names": [
+      "Hepatitis A Virus IgG Antibodies (HAV IgG)",
+      "HEPATITIS A VIRUS IGG ANTIBODIES (HAV IGG)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "HEPATITIS A VIRUS IGG",
+        "unit": "OD Ratio",
+        "method": "ELISA",
+        "reference_range_male": "0 - 0.90",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.32",
+        "sort_order": 1
+      }
+    ],
+    "report_extra_sections": {
+      "Reference Range": "Negative : < 0.90 Borderline : 0.9 - 1.1 Positive : >= 1.1"
+    }
+  },
+  {
+    "test_name": "Hemoglobin",
+    "match_names": [
+      "Hemoglobin",
+      "HEMOGLOBIN"
+    ],
+    "sample_type": "EDTA Blood",
+    "parameters": [
+      {
+        "parameter_name": "Hemoglobin",
+        "unit": "g/dL",
+        "method": "",
+        "reference_range_male": "11 - 16",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "13.9",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "Interpreting test results The numbers associated with your result are in grams per deciliter or g/dL. Hemoglobin reference ranges may vary depending on age and sex. The high and low values of a normal test result, called the reference range, may differ depending on the laboratory and the methods used to conduct the test. For this reason, it is essential to look at the reference range listed on your test report. An example of potential reference range, provided by the American Board of Internal Medicine, is listed in the following tables:",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "",
+        "sort_order": 2
+      }
+    ]
+  },
+  {
+    "test_name": "Glycated Haemoglobin (HbA1c)",
+    "match_names": [
+      "Glycated Haemoglobin (HbA1c)",
+      "GLYCATED HAEMOGLOBIN (HBA1C)"
+    ],
+    "sample_type": "EDTA Blood",
+    "parameters": [
+      {
+        "parameter_name": "HBA1C",
+        "unit": "%",
+        "method": "Fully Automated H.P.L.C.",
+        "reference_range_male": "0 - 6.5",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "5.4",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "Hemoglobin A1c (HbA1c) is a result of the nonenzymatic attachment of a hexose molecule to the N-terminal amino acid of the hemoglobin molecule. The attachment of the hexose molecule occurs continually over the entire life span of the erythrocyte and is dependent on blood glucose concentration and the duration of exposure of the erythrocyte to blood glucose. Therefore, the HbA1c level reflects the mean glucose concentration over the previous period (approximately 8-12 weeks, depending on the individual) and provides a much better indication of long-term glycemic control than blood and urinary glucose determinations. Diabetic patients with very high blood concentrations of glucose have from 2 to 3 times more HbA1c than normal individuals. Please correlate with clinical conditions",
+    "report_extra_sections": {
+      "Reference Range": "As per ADA Guidelines 90 - 120 mg/dl : Good Control 121 - 150 mg/dl : Fair Control 151 - 180 mg/dl : Unsatisfactory Control > 180 mg/dl : Poor Control",
+      "Guidance For Known Diabetics": "Below 5.7% : Normal 5.7% - 6.4% : Prediabetic >=6.5% : Diabetic Below 6.5% : Good Control 6.5% - 7% : Fair Control 7.0% - 8% : Unsatisfactory Control >8% : Poor Control Estimated Average Glucose : Method: CALCULATED 108.28 mg/dl . - ."
+    }
+  },
+  {
+    "test_name": "Glucose F (Blood Sugar Fasting)",
+    "match_names": [
+      "Glucose F (Blood Sugar Fasting)",
+      "HY FITNESS SMART 3",
+      "GLUCOSE F (BLOOD SUGAR FASTING)"
+    ],
+    "sample_type": "Fluoride Plasma-01",
+    "parameters": [
+      {
+        "parameter_name": "GLUCOSE, FASTING (F)",
+        "unit": "mg/dl",
+        "method": "GOD-POD",
+        "reference_range_male": "74.0 - 110.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "76.0",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "Please correlate with clinical conditions.",
+    "report_extra_sections": {
+      "INTERPRETATION": "Depending on your treatment plan, you may check and record your blood sugar as many as four times a day or more often if you're taking insulin. Careful monitoring is the only way to make sure that your blood sugar level remains within your target range. People with type 2 diabetes who aren't taking insulin generally check their blood sugar much less frequently. People who receive insulin therapy also may choose to monitor their blood sugar levels with a continuous glucose monitor. Although this technology hasn't yet completely replaced the glucose meter, it can significantly reduce the number of fingersticks necessary to check blood sugar and provide important information about trends in blood sugar levels. Even with careful management, blood sugar levels can sometimes change unpredictably. With help from your diabetes treatment team, you'll learn how your blood sugar level changes in response to food, physical activity, medications, illness, alcohol, stress — and for women, fluctuations in hormone levels."
+    }
+  },
+  {
+    "test_name": "Globulin",
+    "match_names": [
+      "Globulin",
+      "GLOBULIN"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "GLOBULIN",
+        "unit": "gm/dL",
+        "method": "CALCULATED",
+        "reference_range_male": "2.5 - 3.4",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "4.02",
+        "sort_order": 1
+      }
+    ]
+  },
+  {
+    "test_name": "GGT (Gamma Glutamyl Transferase)",
+    "match_names": [
+      "GGT (Gamma Glutamyl Transferase)",
+      "GGT (GAMMA GLUTAMYL TRANSFERASE)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Gamma GT",
+        "unit": "U/L",
+        "method": "G glutamyl carboxy nitroanilide",
+        "reference_range_male": "5 - 55",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "95.2",
+        "sort_order": 1
+      }
+    ],
+    "report_comments": "The liver contains the highest levels of GGT, while the blood and some other organs contain minimal quantities. High levels of GGT in the blood could indicate that the enzyme is leaking out of the liver cells and into the blood, suggesting damage to the liver or bile ducts. A typical range for GGT levels in adults and children is between 0 and 30 international units per liter (IU/L). Newborn infants will have significantly higher levels right after birth. A person with a normal GGT test probably does not have liver disease. When someone who is in treatment for alcohol use disorder has a normal reading, this likely means that they have not had an alcoholic drink recently. GGT levels will rise according to the amount of liver damage a person has."
+  },
+  {
+    "test_name": "FT4 (Thyroxine- Free)",
+    "match_names": [
+      "FT4 (Thyroxine- Free)",
+      "FT4 (THYROXINE- FREE)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Thyroxine - Free (FT4)",
+        "unit": "ng/dL",
+        "method": "CLIA",
+        "reference_range_male": "0.89 - 1.76",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "1.15",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "Adults (21 - 87 Yrs) Pregnancy",
+        "unit": "0.5 - 1.6 : 2nd and 3rd Tri",
+        "method": "",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.7 - 2.0 : First Trimester",
+        "sort_order": 2
+      }
+    ]
+  },
+  {
+    "test_name": "FT3 (Trilodothyronine- Free)",
+    "match_names": [
+      "FT3 (Trilodothyronine- Free)",
+      "FT3 (TRILODOTHYRONINE- FREE)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "TriIodothyronine Free (FT3)",
+        "unit": "pg/mL",
+        "method": "CLIA",
+        "reference_range_male": "2.3 - 4.2",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "3.25",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "Pregnancy 2.0 - 3.8",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "",
+        "sort_order": 2
+      }
+    ]
+  },
+  {
+    "test_name": "Erythrocyte Sedimentation Rate (ESR)",
+    "match_names": [
+      "Erythrocyte Sedimentation Rate (ESR)",
+      "ERYTHROCYTE SEDIMENTATION RATE (ESR)"
+    ],
+    "sample_type": "EDTA Blood",
+    "parameters": [
+      {
+        "parameter_name": "Erythrocyte sedimentation rate (ESR)",
+        "unit": "mm/Hour",
+        "method": "Wintrobe's",
+        "reference_range_male": "0 - 20",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "15",
+        "sort_order": 1
+      }
+    ],
+    "report_note": "There are multiple causes of a high ESR test result. Some common conditions associated with a higher rate include: advanced age pregnancy anemia kidney disease obesity thyroid disease certain types of cancer, including some types of lymphoma and multiple myeloma"
+  },
+  {
+    "test_name": "Complete Blood Count (CBC)+ESR",
+    "match_names": [
+      "Complete Blood Count (CBC)+ESR",
+      "Basic Fever Panel",
+      "COMPLETE BLOOD COUNT (CBC)+ESR"
+    ],
+    "sample_type": "EDTA Blood",
+    "parameters": [
+      {
+        "parameter_name": "Hemoglobin",
+        "unit": "g/dL",
+        "method": "SLS-Hemoglobin",
+        "reference_range_male": "12.5 - 14.5",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "11.0",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "Total Red Blood Cell Count",
+        "unit": "10^6/uL",
+        "method": "Electrical Impedance",
+        "reference_range_male": "3.82 - 4.8",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "4.18",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "Hematocrit (HCT)",
+        "unit": "%",
+        "method": "Calculated",
+        "reference_range_male": "36 - 46",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "31.9",
+        "sort_order": 3
+      },
+      {
+        "parameter_name": "Total Leucocytes Count",
+        "unit": "10^3/uL",
+        "method": "Electrical Impedance",
+        "reference_range_male": "4 - 10",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "5.62",
+        "sort_order": 4
+      },
+      {
+        "parameter_name": "Neutrophils Percentage",
+        "unit": "%",
+        "method": "Flow Cytometry/LM",
+        "reference_range_male": "40 - 80",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "63.3",
+        "sort_order": 5
+      },
+      {
+        "parameter_name": "Lymphocyte Percentage",
+        "unit": "%",
+        "method": "Flow Cytometry/LM",
+        "reference_range_male": "20 - 40",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "34.2",
+        "sort_order": 6
+      },
+      {
+        "parameter_name": "Eosinophils Percentage",
+        "unit": "%",
+        "method": "Flow Cytometry/LM",
+        "reference_range_male": "1 - 6",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "2.2",
+        "sort_order": 7
+      },
+      {
+        "parameter_name": "Monocytes Percentage",
+        "unit": "%",
+        "method": "Flow Cytometry/LM",
+        "reference_range_male": "2 - 10",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.1",
+        "sort_order": 8
+      },
+      {
+        "parameter_name": "Basophils Percentage",
+        "unit": "%",
+        "method": "Flow Cytometry/LM",
+        "reference_range_male": "0.0 - 1.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.2",
+        "sort_order": 9
+      },
+      {
+        "parameter_name": "Neutrophils-Absolute Count",
+        "unit": "10^3/uL",
+        "method": "Calculated",
+        "reference_range_male": "1.8 - 7.8",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "3.56",
+        "sort_order": 10
+      },
+      {
+        "parameter_name": "Lymphocytes-Absolute Count",
+        "unit": "10^3/uL",
+        "method": "Calculated",
+        "reference_range_male": "0.8 - 4.8",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "1.92",
+        "sort_order": 11
+      },
+      {
+        "parameter_name": "Eosinophil-Absolute Count",
+        "unit": "10^3/uL",
+        "method": "Calculated",
+        "reference_range_male": "0.0 - 0.50",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.12",
+        "sort_order": 12
+      },
+      {
+        "parameter_name": "Monocyte- Absolute Count",
+        "unit": "10^3/uL",
+        "method": "Calculated",
+        "reference_range_male": "0.50 - 1.00",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.01",
+        "sort_order": 13
+      },
+      {
+        "parameter_name": "Basophils-Absolute Count",
+        "unit": "10^3/uL",
+        "method": "Calculated",
+        "reference_range_male": "0.0 - 0.20",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.01",
+        "sort_order": 14
+      },
+      {
+        "parameter_name": "Mean Corpuscular Volume (MCV)",
+        "unit": "fL",
+        "method": "RBC HISTOGRAM",
+        "reference_range_male": "80 - 96",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "76.32",
+        "sort_order": 15
+      },
+      {
+        "parameter_name": "Mean Corpuscular Hemoglobin (MCH)",
+        "unit": "pg",
+        "method": "Calculated",
+        "reference_range_male": "27 - 32",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "26.32",
+        "sort_order": 16
+      },
+      {
+        "parameter_name": "Mean Corpuscular Hemoglobin Concentration (MCHC)",
+        "unit": "g/dL",
+        "method": "Calculated",
+        "reference_range_male": "31.52 - 35.5",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "34.48",
+        "sort_order": 17
+      },
+      {
+        "parameter_name": "Red Cell Distribution Width (RDW-CV)",
+        "unit": "%",
+        "method": "Calculated",
+        "reference_range_male": "12 - 15",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "15.0",
+        "sort_order": 18
+      },
+      {
+        "parameter_name": "Platelet Count",
+        "unit": "10^3/uL",
+        "method": "Electrical Impedance",
+        "reference_range_male": "150 - 410",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "232",
+        "sort_order": 19
+      },
+      {
+        "parameter_name": "Mean Platelet Volume (MPV)",
+        "unit": "fL",
+        "method": "Calculated",
+        "reference_range_male": "6 - 11",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "11.6",
+        "sort_order": 20
+      },
+      {
+        "parameter_name": "Platelet haematocrit (PCT)",
+        "unit": "%",
+        "method": "Calculated",
+        "reference_range_male": "0.1 - 0.28",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.269",
+        "sort_order": 21
+      },
+      {
+        "parameter_name": "Platelet Distribution Width (PDW)",
+        "unit": "fL",
+        "method": "Calculated",
+        "reference_range_male": "15 - 18",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "15.6",
+        "sort_order": 22
+      },
+      {
+        "parameter_name": "Erythrocyte Sedimentation Rate (ESR)",
+        "unit": "mm at end of Ist",
+        "method": "00 - 20",
+        "reference_range_male": "hr",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "18",
+        "sort_order": 23
+      },
+      {
+        "parameter_name": "Westergren",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "",
+        "sort_order": 24
+      }
+    ]
+  },
+  {
+    "test_name": "Complete Blood Count (CBC)",
+    "match_names": [
+      "Complete Blood Count (CBC)",
+      "HY FITNESS SMART 3",
+      "COMPLETE BLOOD COUNT (CBC)"
+    ],
+    "sample_type": "EDTA Blood",
+    "parameters": [
+      {
+        "parameter_name": "Hemoglobin",
+        "unit": "g/dL",
+        "method": "SLS-Hemoglobin",
+        "reference_range_male": "13 - 18",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "13.5",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "Total Red Blood Cell Count",
+        "unit": "10^6/uL",
+        "method": "Electrical Impedance",
+        "reference_range_male": "4.0 - 5.5",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "4.65",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "Hematocrit (HCT)",
+        "unit": "%",
+        "method": "Calculated",
+        "reference_range_male": "33 - 57",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "44.0",
+        "sort_order": 3
+      },
+      {
+        "parameter_name": "Total Leucocytes Count",
+        "unit": "10^3/uL",
+        "method": "Electrical Impedance",
+        "reference_range_male": "4 - 10",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "6.32",
+        "sort_order": 4
+      },
+      {
+        "parameter_name": "Neutrophils Percentage",
+        "unit": "%",
+        "method": "Flow Cytometry/LM",
+        "reference_range_male": "40 - 80",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "68.3",
+        "sort_order": 5
+      },
+      {
+        "parameter_name": "Lymphocyte Percentage",
+        "unit": "%",
+        "method": "Flow Cytometry/LM",
+        "reference_range_male": "20 - 40",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "22.3",
+        "sort_order": 6
+      },
+      {
+        "parameter_name": "Eosinophils Percentage",
+        "unit": "%",
+        "method": "Flow Cytometry/LM",
+        "reference_range_male": "1 - 6",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "3.9",
+        "sort_order": 7
+      },
+      {
+        "parameter_name": "Monocytes Percentage",
+        "unit": "%",
+        "method": "Flow Cytometry/LM",
+        "reference_range_male": "2 - 10",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "5.2",
+        "sort_order": 8
+      },
+      {
+        "parameter_name": "Basophils Percentage",
+        "unit": "%",
+        "method": "Flow Cytometry/LM",
+        "reference_range_male": "0.0 - 1.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.3",
+        "sort_order": 9
+      },
+      {
+        "parameter_name": "Neutrophils-Absolute Count",
+        "unit": "10^3/uL",
+        "method": "Calculated",
+        "reference_range_male": "1.8 - 7.8",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "4.31",
+        "sort_order": 10
+      },
+      {
+        "parameter_name": "Lymphocytes-Absolute Count",
+        "unit": "10^3/uL",
+        "method": "Calculated",
+        "reference_range_male": "0.8 - 4.8",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "1.41",
+        "sort_order": 11
+      },
+      {
+        "parameter_name": "Eosinophils-Absolute Count",
+        "unit": "10^3/uL",
+        "method": "Calculated",
+        "reference_range_male": "0.0 - 0.50",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.25",
+        "sort_order": 12
+      },
+      {
+        "parameter_name": "Monocyte-Absolute Count",
+        "unit": "10^3/uL",
+        "method": "Calculated",
+        "reference_range_male": "0.50 - 1.00",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.33",
+        "sort_order": 13
+      },
+      {
+        "parameter_name": "Basophils-Absolute Count",
+        "unit": "10^3/uL",
+        "method": "Calculated",
+        "reference_range_male": "0.0 - 0.20",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.02",
+        "sort_order": 14
+      },
+      {
+        "parameter_name": "Mean Corpuscular Volume (MCV)",
+        "unit": "fL",
+        "method": "Calculated",
+        "reference_range_male": "80 - 96",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "94.62",
+        "sort_order": 15
+      },
+      {
+        "parameter_name": "Mean Corpuscular Hemoglobin (MCH)",
+        "unit": "pg",
+        "method": "Calculated",
+        "reference_range_male": "27.5 - 32.2",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "29.03",
+        "sort_order": 16
+      },
+      {
+        "parameter_name": "Mean Corpuscular Hemoglobin Concentration (MCHC)",
+        "unit": "g/dL",
+        "method": "Calculated",
+        "reference_range_male": "29.4 - 34.5",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "30.68",
+        "sort_order": 17
+      },
+      {
+        "parameter_name": "Red Cell Distribution Width (RDW-CV)",
+        "unit": "%",
+        "method": "Calculated",
+        "reference_range_male": "12 - 15",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "13.4",
+        "sort_order": 18
+      },
+      {
+        "parameter_name": "Platelet Count",
+        "unit": "10^3/uL",
+        "method": "Electrical Impedance",
+        "reference_range_male": "150 - 410",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "295",
+        "sort_order": 19
+      },
+      {
+        "parameter_name": "Mean Platelet Volume (MPV)",
+        "unit": "fL",
+        "method": "Calculated",
+        "reference_range_male": "6 - 11",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "9.7",
+        "sort_order": 20
+      },
+      {
+        "parameter_name": "Platelet haematocrit (PCT)",
+        "unit": "%",
+        "method": "Calculated",
+        "reference_range_male": "0.1 - 0.28",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.286",
+        "sort_order": 21
+      },
+      {
+        "parameter_name": "Platelet Distribution Width (PDW)",
+        "unit": "fL",
+        "method": "Calculated",
+        "reference_range_male": "15 - 18",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "11.2",
+        "sort_order": 22
+      },
+      {
+        "parameter_name": "Platelet larger cell Count (PLCC)",
+        "unit": "10^3/uL",
+        "method": "Westergren",
+        "reference_range_male": "13 - 126",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "66",
+        "sort_order": 23
+      },
+      {
+        "parameter_name": "Platelet larger cell ratio (PLCR)",
+        "unit": "%",
+        "method": "",
+        "reference_range_male": "13 - 43",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "22.5",
+        "sort_order": 24
+      }
+    ]
+  },
+  {
+    "test_name": "Cholesterol LDL",
+    "match_names": [
+      "Cholesterol LDL",
+      "CHOLESTEROL LDL"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "LDL- Cholesterol",
+        "unit": "mg/dl",
+        "method": "(PHOTOMETRY)",
+        "reference_range_male": "50 - 100",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "113.6",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "Desirable",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "100-129",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "Borderline High",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "130-159",
+        "sort_order": 3
+      },
+      {
+        "parameter_name": "High",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": ">160",
+        "sort_order": 4
+      }
+    ]
+  },
+  {
+    "test_name": "Anti Cyclic Citrullinated Peptide Antibody (Anti-CCP)",
+    "match_names": [
+      "Anti Cyclic Citrullinated Peptide Antibody (Anti-CCP)",
+      "ANTI CYCLIC CITRULLINATED PEPTIDE ANTIBODY (ANTI-CCP)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Anti CCP",
+        "unit": "U/ml",
+        "method": "CLIA",
+        "reference_range_male": "0 - 20",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "13.6",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "Rheumatoid arthritis (RA) is a systemic autoimmune disease characterized by chronic joint inflammation that ultimately leads to joint destruction. RA affects approximately 1% of the world's population. The diagnosis of RA is established primarily on clinical criteria and serologic findings. Historically, rheumatoid factor (RF), which is an antibody specific for the Fc portion of human IgG, has been considered a marker for RA. RF is, in fact, one of the diagnostic criteria for RA that was established by the American College of Rheumatology.(1) Although 50% to 90% of patients with RA are RF-positive, the specificity of the RF test is known to be relatively poor. RF is found in many patients with other autoimmune diseases, infectious diseases and some healthy individuals. Consequently, a search for better diagnostic markers, with improved specificity for RA, ensued. Antiperinuclear factor (APF) and antikeratin antibodies (AKA), identified by immunofluorescence, were found to have a specificity of close to 90% for RA, but testing for these autoantibodies has never become popular. It was subsequently determined that APF and AKA react with the same antigen, specifically a citrullinated form of filaggrin (citrulline is an unusual amino acid formed by posttranslational modification of arginine residues by the enzyme peptidyl arginine deaminase).(2) Recombinant filaggrin fragments, after enzymatic deamination in vitro, react with autoantibodies in RA sera. Synthetic cyclic citrullinated peptide (CCP) variants also react with anti-filaggrin autoantibodies and serve as the substrate for detecting anti-CCP antibodies serologically. Most studies of anti-CCP antibodies demonstrated that these autoantibodies have much improved specificity for RA compared to RF.(3) Please correlate with clinical conditions",
+    "report_extra_sections": {
+      "Reference Range": "20 Units or less: Negative 21-39 Units: Weak positive 40-59 Units: Moderate positive 60 Units or Greater: Strong positive"
+    }
+  },
+  {
+    "test_name": "C Reactive Protein (CRP) Quantitative",
+    "match_names": [
+      "C Reactive Protein (CRP) Quantitative",
+      "HY FITNESS SMART 3",
+      "C REACTIVE PROTEIN (CRP) QUANTITATIVE"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "CRP",
+        "unit": "mg/dL",
+        "method": "(Immunoturbidimetry)",
+        "reference_range_male": "0 - 6.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "10.3",
+        "sort_order": 1
+      }
+    ],
+    "report_comments": "CRP elevations are nonspecific and may be useful for the detection of systemic inflammatory processes; to assess treatment of bacterial infections with antibiotics; to detect intrauterine infections with concomitant premature amniorrhexis; to differentiate between active and inactive forms of disease with concurrent infection, eg, in patients suffering from systemic lupus erythematosus or colitis ulcerosa; to therapeutically monitor rheumatic disease and assess anti-inflammatory therapy; to determine the presence of postoperative complications at an early stage, such as infected wounds, thrombosis, and pneumonia; and to distinguish between infection and bone marrow rejection. Postoperative monitoring of CRP levels of patients can aid in the recognition of unexpected complications (persisting high or increasing levels). Measuring changes in the concentration of CRP provides useful diagnostic information about the level of acuity and severity of a disease. It also allows judgments about the disease genesis. Persistence of a high serum CRP concentration is usually a grave prognostic sign that generally indicates the presence of an uncontrolled infection., Please correlate with clinical conditions."
+  },
+  {
+    "test_name": "BUN (Blood Urea Nitrogen)",
+    "match_names": [
+      "BUN (Blood Urea Nitrogen)",
+      "BUN (BLOOD UREA NITROGEN)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "BUN (Blood Urea Nitrogen)",
+        "unit": "mg/dl",
+        "method": "CALCULATED",
+        "reference_range_male": "7 - 25",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "8.71",
+        "sort_order": 1
+      }
+    ]
+  },
+  {
+    "test_name": "Bilirubin (Total + Direct + Indirect)",
+    "match_names": [
+      "Bilirubin (Total + Direct + Indirect)",
+      "BILIRUBIN (TOTAL + DIRECT + INDIRECT)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "BILIRUBIN - TOTAL",
+        "unit": "mg/dl",
+        "method": "DIAZO",
+        "reference_range_male": "0 - 1.2",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.37",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "BILIRUBIN -DIRECT",
+        "unit": "mg/dl",
+        "method": "DIAZO",
+        "reference_range_male": "0 - 0.4",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.15",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "BILIRUBIN (INDIRECT)",
+        "unit": "mg/dl",
+        "method": "CALCULATED",
+        "reference_range_male": "0 - 0.9",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.22",
+        "sort_order": 3
+      }
+    ],
+    "clinical_significance": "Bilirubin is one of the most commonly used tests to assess liver function. Approximately 85% of the total bilirubin produced is derived from the heme moiety of hemoglobin, while the remaining 15% is produced from the red blood cell precursors destroyed in the bone marrow and from the catabolism of other heme- containing proteins. After production in peripheral tissues, bilirubin is rapidly taken up by hepatocytes where it is conjugated with glucuronic acid to produce mono- and diglucuronide, which are excreted in the bile. A number of inherited and acquired diseases affect 1 or more of the steps involved in the production, uptake, storage, metabolism, and excretion of bilirubin. Bilirubinemia is a frequent and direct result of these disturbances. Jaundice can occur as a result of problems at each step in the metabolic pathway. Disorders may be classified as those due to: increased bilirubin production (eg, hemolysis and ineffective erythropoiesis), decreased bilirubin excretion (eg, obstruction and hepatitis), and abnormal bilirubin metabolism (eg, hereditary and neonatal jaundice). The most commonly occurring form of unconjugated hyperbilirubinemia is that seen in newborns and referred to as physiological jaundice. Elevated unconjugated bilirubin in the neonatal period may result in brain damage (kernicterus). Treatment options are phototherapy and, if severe, exchange transfusion. The rare genetic disorders, Crigler-Najjar syndromes type I and type II, are caused by a low or absent activity of bilirubin UDP-glucuronyl-transferase. In type I, the enzyme activity is totally absent, the excretion rate of bilirubin is greatly reduced and the serum concentration of unconjugated bilirubin is greatly increased. Patients with this disease may die in infancy owing to the development of kernicterus. The increased production of bilirubin, that accompanies the premature breakdown of erythrocytes and ineffective erythropoiesis, results in hyperbilirubinemia in the absence of any liver abnormality. Please correlate with clinical conditions."
+  },
+  {
+    "test_name": "25 OH Vitamin D 3 Total",
+    "match_names": [
+      "25 OH Vitamin D 3 Total",
+      "HY FITNESS SMART 3",
+      "25 OH VITAMIN D 3 TOTAL"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "25-OH VITAMIN D 3 (TOTAL)",
+        "unit": "ng/mL",
+        "method": "CLIA",
+        "reference_range_male": "30 - 100",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "28.0",
+        "sort_order": 1
+      }
+    ],
+    "report_extra_sections": {
+      "Reference Range": "Deficiency < 20 ng/mL Insufficiency 20– 30 ng/mL Sufficiency 30–100 ng/mL Toxicity :>100 ng/mL Vitamin D Total test is analyzed on Siemens ADVIA Centaur, standardized against ID-LC/MS/MS, as per Vitamin D Standardization Program (VDSP). Specifications: Intra assay (%CV):5.3%, Inter assay (%CV):11.9% ; Sensitivity:3.2 ng/ml Please correlate with clinical conditions. Method : Fully Automated Chemi Luminescent Immuno Assay"
+    }
+  },
+  {
+    "test_name": "Body Fluid For Gram Stain",
+    "match_names": [
+      "Body Fluid For Gram Stain",
+      "BODY FLUID FOR GRAM STAIN"
+    ],
+    "sample_type": "Body Fluid",
+    "parameters": [
+      {
+        "parameter_name": "TYPE OF SPECIMEN FLUID . . - . ORGANISM",
+        "unit": ".",
+        "method": "MICROSCOPY",
+        "reference_range_male": ". - .",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "NO MICRO-ORGANISM SEEN",
+        "sort_order": 1
+      }
+    ]
+  },
+  {
+    "test_name": "FNAC (Fine Needle Aspiration Cytology)",
+    "match_names": [
+      "FNAC (Fine Needle Aspiration Cytology)",
+      "FNAC (FINE NEEDLE ASPIRATION CYTOLOGY)"
+    ],
+    "sample_type": "SLIDE",
+    "parameters": [
+      {
+        "parameter_name": "FNAC (Fine Needle Aspiration Cytology)",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "FNAC SITE:",
+        "sort_order": 1
+      }
+    ],
+    "report_extra_sections": {
+      "IMPRESSION": "Features are consistent with an acute suppurative inflammatory lesion (lymph node) Advise: Clinicoradiological correlation and microbiological culture are advised."
+    }
+  },
+  {
+    "test_name": "IMMUNOGLOBULIN-IgE(Total IgE)",
+    "match_names": [
+      "IMMUNOGLOBULIN-IgE(Total IgE)",
+      "IMMUNOGLOBULIN-IGE(TOTAL IGE)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "TOTAL IgE",
+        "unit": "IU/mL",
+        "method": "CLIA",
+        "reference_range_male": "00 - 200",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "3000",
+        "sort_order": 1
+      }
+    ],
+    "report_note": "Normal levels of IgE do not rule out possibility of IgE dependent allergies as the diagnostic sensitivity of the test depends upon elapsed time between exposure to an allergen and testing, patient age and affected target organs. No close correlation has been demonstrated between severity of allergic reaction and IgE levels.",
+    "report_comments": "Immunoglobulin E (IgE) is the most important trigger molecule for allergic information. The level of IgE is low during the first year of life, gradually increases with age and reaches adult levels after 10 years. As IgE is a mediator of allergic response, quantitative measurement can provide useful information for differential diagnosis of atopic and non-atopic disease. Patients with atopic diseases like Allergic asthma, Allergic rhinitis & Atopic dermatitis have moderately elevated IgE levels. Increased Levels - Atopic/Non-atopic allergy, Hyper IgE syndrome, Parasitic infections, IgE Myeloma, Pulmonary Aspergillosis, Immunodeficiency states & Autoimmune diseases Please correlate with clinical conditions.",
+    "report_extra_sections": {
+      "Reference Range": "Age Value 0 - 1 Year 1.40 - 52.3 1 - 4 Years 0.40 - 351.6 5 - 10 Years 0.50 - 393 11 - 15 Years 1.90 - 170 Adults < 200"
+    }
+  },
+  {
+    "test_name": "Insulin Fasting",
+    "match_names": [
+      "Insulin Fasting",
+      "INSULIN FASTING"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "INSULIN FASTING",
+        "unit": "u/ml",
+        "method": "CLIA",
+        "reference_range_male": "3.0 - 25.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "5.72",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "1. A single random blood sample for insulin may provide insufficient information due to wide variation in the time responses of insulin levels and blood glucose. 2. Stimulation of insulin secretion may be caused by many factors like hyperglycemia, glucagon, amino acids, growth hormone and catecholamines 3. Interference in insulin assay is seen due to insulin antibodies which develop in patients treated with bovine or porcine insulin.",
+    "report_extra_sections": {
+      "Clinical Utility": "• Evaluation of fasting hypoglycemia • Evaluation of Polycystic Ovary syndrome • Classification of Diabetes mellitus • Predict Diabetes mellitus • Assessment of Beta cell activity • Select optimal therapy for Diabetes • Investigation of insulin resistance • Predict the development of Coronary Artery Disease Increased Levels – Insulinoma, Some Type II diabetic patients, Infantile hypoglycemia, Hyperinsulinism, Obesity, Cushing’s syndrome, Oral contraceptives, Acromegaly, Hyperthyroidism Decreased Levels - Untreated Type I Diabetes mellitus"
+    }
+  },
+  {
+    "test_name": "Insulin - Post Prandial",
+    "match_names": [
+      "Insulin - Post Prandial",
+      "INSULIN - POST PRANDIAL"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "INSULIN POSTPRANDIAL (PP)",
+        "unit": "U/ML",
+        "method": "CLIA",
+        "reference_range_male": ". - .",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "15.90",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "Insulin 30 min",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "20 – 112",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "Insulin 60 min",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "29 – 88",
+        "sort_order": 3
+      },
+      {
+        "parameter_name": "Insulin 90 min",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "26 – 84",
+        "sort_order": 4
+      },
+      {
+        "parameter_name": "Insulin 120 min",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "22 – 79",
+        "sort_order": 5
+      }
+    ]
+  },
+  {
+    "test_name": "Ionized Calcium",
+    "match_names": [
+      "Ionized Calcium",
+      "IONIZED CALCIUM"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Calcium Ionized",
+        "unit": "mmol/L",
+        "method": "",
+        "reference_range_male": "1.15 - 1.33",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "1.20",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "Ionized calcium amounts for 50-55% of total calcium and is physiologically active form of calcium. Total calcium is often difficult to interpret as it is dependent on albumin & other proteins. Alterations in serum albumin during an acute illness may change the total serum calcium by as much as 30%. 1. Ionized calcium has inverse relationship with blood pH, values can change upto 5% for each 0.1pH unit change. 1. Decreased serum ionized calcium values are seen in primary hypoparathyroidism, vitamin D deficiency, systemic illnesses leading to respiratory acidosis or metabolic alkalosis, critically ill patients, renal disorders and patients with recent blood transfusions. Decreased ionized calcium levels between 0.75 and 1 mmol/L are usually well tolerated, but the risk of reduced cardiac output & arrest increases when ionized calcium levels approach 0.62 mmol/L. Increased serum ionized calcium values are seen in primary hyperparathyroidism, vitamin D therapy, various malignancies producing parathyroid hormone"
+  },
+  {
+    "test_name": "Iron Profile",
+    "match_names": [
+      "Iron Profile",
+      "HY FITNESS SMART 3",
+      "IRON PROFILE"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "IRON",
+        "unit": "ug/dl",
+        "method": "FERROZINE METHOD WITHOUT DEPROTEINIZATION",
+        "reference_range_male": "65 - 175",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "96.5",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "TOTAL IRON BINDING CAPACITY (TIBC)",
+        "unit": "ug/dl",
+        "method": "SPECTROPHOTOMETRIC ASSAY",
+        "reference_range_male": "225 - 535",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "443.5",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "TRANSFERRIN SATURATION %",
+        "unit": "%",
+        "method": "CALCULATED",
+        "reference_range_male": "13 - 45",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "21.76",
+        "sort_order": 3
+      }
+    ],
+    "clinical_significance": "Iron is an essential trace mineral element which forms an important component of hemoglobin, metallocompounds and Vitamin A. Deficiency of iron, leads to microcytic hypochromic anemia. The toxic effects of iron are deposition of iron in various organs of the body and hemochromatosis. Total Iron Binding capacity (TIBC) is a direct measure of the protein Transferrin which transports iron from the gut to storage sites in the bone marrow. In iron deficiency anemia, serum iron is reduced and TIBC increases. Transferrin Saturation occurs in Idiopathic hemochromatosis and Transfusional hemosiderosis where no unsaturated iron binding capacity is available for iron mobilization. Similar condition is seen in congenital deficiency of Transferrin. Please correlate with clinical conditions"
+  },
+  {
+    "test_name": "Lipase",
+    "match_names": [
+      "Lipase",
+      "LIPASE"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "LIPASE",
+        "unit": "U/L",
+        "method": "Hydrolyze glycrol",
+        "reference_range_male": "0 - 60",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "40.0",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "High serum Lipase is a specific marker for pancreatitis; after acute pancreatitis the Lipase activity increases within 4-8 hours, reaches a peak after 24 hours and decreases after 8 to 14 days. However, there is no correlation between the Lipase activity determined in serum and the extent of damage to the pancreas. Please correlate with clinical conditions.",
+    "report_extra_sections": {
+      "INTERPRETATION": "For diagnostic purposes, the results should always be assessed in conjunction with the patient’s medical history, clinical examination and other findings like serum amylase. Serum Lipase is usually normal in patients with elevated serum amylase, having peptic ulcer, salivary adenitis, inflammatory bowel disease, intestinal obstruction, and macroamylasemia. Lipemic sera may interfere with results."
+    }
+  },
+  {
+    "test_name": "Luteinising Hormone (LH)",
+    "match_names": [
+      "Luteinising Hormone (LH)",
+      "LUTEINISING HORMONE (LH)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "LUTEINISING HORMONE (LH)",
+        "unit": "mIU/ml",
+        "method": "CLIA",
+        "reference_range_male": ". - .",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "13.29",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "Normally menstruating follicular phase",
+        "unit": "midcycle peak",
+        "method": "",
+        "reference_range_male": "8.7–76.3",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "1.9–12.5",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "luteal phase",
+        "unit": "Pregnant",
+        "method": "",
+        "reference_range_male": "< 0.1–1.5",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.5–16.9",
+        "sort_order": 3
+      },
+      {
+        "parameter_name": "Postmenopausal",
+        "unit": "Contraceptives",
+        "method": "",
+        "reference_range_male": "0.7–5.6",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "15.9–54.0",
+        "sort_order": 4
+      }
+    ],
+    "clinical_significance": "Luteinizing hormone (LH) is a glycoprotein hormone having two subunits. The alpha subunit is similar to those of follicle-stimulating hormone (FSH), human chorionic gonadotropin (hCG), and thyroid-stimulating hormone (TSH). The beta subunit is different from those of the other glycoprotein hormones and confers its biochemical specificity.1,2 LH is secreted by the anterior pituitary in response to gonadotropin-releasing hormone (GnRH) secreted by the hypothalamus.3,4 In males, LH is also called interstitial cell-stimulating hormone (ICSH).1,2 In both males and females, LH secretion is regulated by a balance of positive and negative feedback mechanisms involving the hypothalamic-pituitary axis, the reproductive organs, and the pituitary and sex steroid hormones.5-7 LH and the other pituitary gonadotropin, FSH, play a critical role in maintaining the normal function of the male and female reproductive systems. Abnormal LH levels with corresponding increased or decreased levels of FSH, estrogens, progesterone, and testosterone are associated with a number of pathological conditions.3 Increased LH levels are associated with menopause, primary ovarian hypofunction, and polycystic ovary disease in females and primary hypogonadism in males. Decreased LH levels are associated with primary ovarian hyperfunction in females and primary hypergonadism in males."
+  },
+  {
+    "test_name": "Malarial Falciparum And Vivax Antigen (Parasite V & F)",
+    "match_names": [
+      "Malarial Falciparum And Vivax Antigen (Parasite V & F)",
+      "MALARIAL FALCIPARUM AND VIVAX ANTIGEN (PARASITE V & F)"
+    ],
+    "sample_type": "EDTA Blood",
+    "parameters": [
+      {
+        "parameter_name": "P.Vivax",
+        "unit": ".",
+        "method": "Immunochromatography",
+        "reference_range_male": "- - NEGATIVE",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "POSITIVE",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "P.Falciparum",
+        "unit": ".",
+        "method": "Immunochromatography",
+        "reference_range_male": ". - NEGATIVE",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "NEGATIVE",
+        "sort_order": 2
+      }
+    ],
+    "report_note": ": Malaria is a disease caused by a parasite. The parasite is transmitted to humans through the bites of infected mosquitoes. People who have malaria usually feel very sick, with a high fever and shaking chills. Each year, approximately 210 million people are infected with malaria, and about 440,000 people die from the disease. Most of the people who die from the disease are young children in Africa. While the disease is uncommon in temperate climates, malaria is still common in tropical and subtropical countries. World health officials are trying to reduce the incidence of malaria by distributing bed nets to help protect people from mosquito bites as they sleep."
+  },
+  {
+    "test_name": "Microalbumin 24 Hrs URINE",
+    "match_names": [
+      "Microalbumin 24 Hrs URINE",
+      "MICROALBUMIN 24 HRS URINE"
+    ],
+    "sample_type": "Urine",
+    "parameters": [
+      {
+        "parameter_name": "TOTAL VALUE",
+        "unit": "Ml/day",
+        "method": "",
+        "reference_range_male": "250 - 2400",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "2000",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "MICRO ALBUMIN",
+        "unit": "mg/dl",
+        "method": "PHOTOMETRIC",
+        "reference_range_male": "0 - 30",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "53.89",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "Microalbumin 24 Hours (URINE)",
+        "unit": "mg/dL 24 Hrs",
+        "method": "Spectrophotometry",
+        "reference_range_male": ". - .",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "1077.8",
+        "sort_order": 3
+      }
+    ],
+    "report_extra_sections": {
+      "INTERPRETATION": "Thirty to 300 mg of protein is known as microalbuminuria, and it may indicate early kidney disease. More than 300 mg of protein is known as macroalbuminuria, and it indicates more advanced kidney disease. Several temporary factors can cause higher-than-normal urinary microalbumin results, such as: blood in your urine, or hematuria a fever recent vigorous exercise dehydration a urinary tract infection"
+    }
+  },
+  {
+    "test_name": "Microalbumin & Creatinine Ratio (Urine )",
+    "match_names": [
+      "Microalbumin & Creatinine Ratio (Urine )",
+      "health Check Extended Male",
+      "MICROALBUMIN & CREATININE RATIO (URINE )"
+    ],
+    "sample_type": "Urine",
+    "parameters": [
+      {
+        "parameter_name": "URINARY MICROALBUMIN",
+        "unit": "mg/dL",
+        "method": "Turbidometry",
+        "reference_range_male": "0.0 - 30.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "15.19",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "CREATININE - URINE Compensated",
+        "unit": "mg/dL",
+        "method": "Creatinine Jaffe Method, Rate-Blanked and",
+        "reference_range_male": "39.0 - 259.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "139.58",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "Microalbumin/ Creatinine Ratio ( ACR)",
+        "unit": "mg/g",
+        "method": "CALCULATED",
+        "reference_range_male": "0 - 30",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "10.88",
+        "sort_order": 3
+      }
+    ],
+    "report_comments": "Please correlate with clinical conditions.",
+    "report_extra_sections": {
+      "Clinical Information": ". Urine albumin to creatinine ratio (ACR), also known as urine microalbumin, helps identify kidney disease that can occur as a complication of diabetes. If kidney disease is diagnosed early in people with diabetes, appropriate treatment can be given and its effects can be closely monitored. This means a person's ACR level should be checked as soon as diabetes is diagnosed. It should also be measured each year, or more frequently, if your ACR level is significantly raised. If you have a slightly raised ACR level, you may have early-stage kidney disease. A very high ACR level indicates more severe kidney disease. A very low ACR value probably means your kidneys are functioning normally. If diabetes is well managed, it's easier to control or prevent complications developing, such as high blood pressure, which can sometimes lead to kidney disease."
+    }
+  },
+  {
+    "test_name": "PAP Smear",
+    "match_names": [
+      "PAP Smear",
+      "PAP SMEAR"
+    ],
+    "sample_type": "SLIDE",
+    "parameters": [
+      {
+        "parameter_name": "SPECIMEN TYPE",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "CONVENTIONAL PAP'S SMEARS",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "SPECIMEN ADEQUACY",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "Satisfactory for evaluation.",
+        "sort_order": 2
+      }
+    ],
+    "report_comments": "The smear shows clusters of intermediate and superficial cells. Doderlein bacilli seen.",
+    "report_extra_sections": {
+      "IMPRESSION": "NFIL/M"
+    }
+  },
+  {
+    "test_name": "Peripheral Blood Smear (PBS O R PBF)",
+    "match_names": [
+      "Peripheral Blood Smear (PBS O R PBF)",
+      "Complete Blood Count (CBC) +PS+ESR",
+      "PERIPHERAL BLOOD SMEAR (PBS O R PBF)"
+    ],
+    "sample_type": "EDTA Blood",
+    "parameters": [
+      {
+        "parameter_name": "RBC- Predominantly normocytic normochromic WBC- Within normal limits Platelets- Adequate on smear",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "",
+        "sort_order": 1
+      }
+    ]
+  },
+  {
+    "test_name": "Potassium",
+    "match_names": [
+      "Potassium",
+      "POTASSIUM"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "POTASSIUM , SERUM",
+        "unit": "mEq/L",
+        "method": "(Electrode)",
+        "reference_range_male": "3.8 - 5.4",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "3.66",
+        "sort_order": 1
+      }
+    ]
+  },
+  {
+    "test_name": "Pregnancy Test Urine",
+    "match_names": [
+      "Pregnancy Test Urine",
+      "PREGNANCY TEST URINE"
+    ],
+    "sample_type": "Urine",
+    "parameters": [
+      {
+        "parameter_name": "PREGNANCY TEST, URINE",
+        "unit": ".",
+        "method": "ICT",
+        "reference_range_male": ". - .",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "POSITIVE",
+        "sort_order": 1
+      }
+    ],
+    "report_note": ": 1.Positive results in urine are seen in pregnancy in or after 1st week of missed period. 2. Negative results in urine are seen in woman who are unlikely to be pregnant. A repeat sample to be collected a week apart to confirm the diagnosis of pregnancy. 3. False positive results may be observed in conditions like Trophoblastic disease, Non-trophoblastic neoplasms, intake of fertility drugs or other medications that contain HCG, immediately after an abortion, ectopic pregnancy, menopause or ovarian problems. 4. False negative reaction may be seen if the HCG level in urine is below the detection level of the test, sample obtained is diluted, sample collected immediately after the missed period and intake of medications like diuretics, promethazine etc. 5. Test conducted on urine.",
+    "report_extra_sections": {
+      "INTERPRETATION": "RESULT (INDEX) REMARKS Positive Indicates presence of HCG in urine. Negative Indicates absence of HCG in urine.",
+      "USES": "· To establish presumptive diagnosis of pregnancy"
+    }
+  },
+  {
+    "test_name": "Prolactin (PRL)",
+    "match_names": [
+      "Prolactin (PRL)",
+      "PROLACTIN (PRL)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "PROLACTIN (PRL)",
+        "unit": "ng/ml",
+        "method": "CLIA",
+        "reference_range_male": "2.1 - 17.7",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "13.0",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "Prolactin is a single-chain polypeptide hormone secreted by the anterior pituitary1 under the control of prolactin-inhibiting factors and prolactin-releasing factors. These inhibiting and releasing factors are secreted by the hypothalamus.2 Prolactin is also synthesized by the placenta and is present in amniotic fluid. Prolactin initiates and maintains lactation in females.3 It also plays a role in regulating gonadal function in both males and females. In adults, basal circulating prolactin is present in concentrations up to 30 ng/mL (636 μIU/mL). During pregnancy and postpartum lactation, serum prolactin can increase 10- to 20-fold. Exercise, stress, and sleep also cause transient increases in prolactin levels. Consistently elevated serum prolactin levels greater than 30 ng/mL (636 μIU/mL) in the absence of pregnancy and postpartum lactation are indicative of hyperprolactinemia, which is the most common hypothalamic-pituitary dysfunction encountered in clinical endocrinology. Hyperprolactinemia often results in galactorrhea, amenorrhea, and infertility in females, and in impotence and hypogonadism in males.4 Renal failure, hypothyroidism, and prolactin-secreting pituitary adenomas are also common causes of abnormally elevated prolactin levels.",
+    "report_extra_sections": {
+      "REFERENCE": "Nonpregnant 2.8–29.2 Pregnant 9.7–208.5 Postmenopausal 1.8–20.3"
+    }
+  },
+  {
+    "test_name": "Protein - Total",
+    "match_names": [
+      "Protein - Total",
+      "PROTEIN - TOTAL"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "PROTEIN TOTAL",
+        "unit": "g/dL",
+        "method": "Biruet",
+        "reference_range_male": "6.0 - 8.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "7.15",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "Please correlate with clinical conditions."
+  },
+  {
+    "test_name": "Protein Total With Albumin & PA Ratio",
+    "match_names": [
+      "Protein Total With Albumin & PA Ratio",
+      "PROTEIN TOTAL WITH ALBUMIN & PA RATIO"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "TOTAL PROTEIN",
+        "unit": "g/dL",
+        "method": "End point",
+        "reference_range_male": "6.0 - 8.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "7.32",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "ALBUMIN - SERUM",
+        "unit": "gm/dl",
+        "method": "PHOTOMETRY",
+        "reference_range_male": "3.2 - 5.2",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "3.87",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "PROTEIN/ALBUMIN RATIO",
+        "unit": "Ratio",
+        "method": ".",
+        "reference_range_male": ". - .",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "1.89",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "test_name": "Prothrombin Time (PT) With INR",
+    "match_names": [
+      "Prothrombin Time (PT) With INR",
+      "PROTHROMBIN TIME (PT) WITH INR"
+    ],
+    "sample_type": "Citrated Plasma",
+    "parameters": [
+      {
+        "parameter_name": "Prothrombin Time Patient Value",
+        "unit": "sec",
+        "method": "Clotting",
+        "reference_range_male": "11 - 16",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "15.8",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "Prothrombin Time Control Value",
+        "unit": "sec",
+        "method": "Clotting",
+        "reference_range_male": ". - .",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "13.5",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "Prothrombin Time INR",
+        "unit": ".",
+        "method": "CALCULATED",
+        "reference_range_male": "0.90 - 1.10",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "1.17",
+        "sort_order": 3
+      },
+      {
+        "parameter_name": "index",
+        "unit": "%",
+        "method": "cu",
+        "reference_range_male": "- - -",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "85.44",
+        "sort_order": 4
+      }
+    ],
+    "clinical_significance": "Prothrombin time (PT) is a blood test that measures how long it takes blood to clot. A prothrombin time test can be used to check for bleeding problems. PT is also used to check whether medicine to prevent blood clots is working. A PT test may also be called an INR test. INR (international normalized ratio) stands for a way of standardizing the results of prothrombin time tests, no matter the testing method. It lets your doctor understand results in the same way even when they come from different labs and different test methods. In some labs, only the INR is reported and the PT is not reported. Other blood clotting tests, such as partial thromboplastin time (PTT) and activated clotting time (aPTT), might be used if you take another type of blood-thinning medicine called heparin. These tests measure other clotting factors, or they may be used to see if you are getting the right dose of heparin. Partial thromboplastin time and prothrombin time are often done at the same time to check for bleeding problems or the chance for too much bleeding in surgery. Blood clotting factors are needed for blood to clot (coagulation). Prothrombin, or factor II, is one of the clotting factors made by the liver. Vitamin K is needed to make prothrombin and other clotting factors. Prothrombin time is an important test because it checks to see if five different blood clotting factors (factors I, II, V, VII, and X) are present. The prothrombin time is made longer by Blood-thinning medicine, such as warfarin. Low levels of blood clotting factors. A change in the activity of any of the clotting factors. The absence of any of the clotting factors. Other substances, called inhibitors, that affect the clotting factors. An increase in the use of the clotting factors. An abnormal prothrombin time is often caused by liver disease or injury or by treatment with blood thinners. Please correlate with clinical conditions."
+  },
+  {
+    "test_name": "Allergy veg panal",
+    "match_names": [
+      "Allergy veg panal",
+      "Allergy veg panel",
+      "ALLERGY VEG PANEL",
+      "Allergy Vegetarian Panel"
+    ],
+    "sample_type": "Serum",
+    "report_note": "1. This is a vegetarian food allergen specific IgE panel (non-veg allergens not included).\n2. Interpret results only with clinical history of allergy.\n3. Sample: Serum.",
+    "clinical_significance": "Specific IgE (sIgE) to individual food allergens is used to evaluate IgE-mediated food allergy. Results are interpreted with clinical history; a positive sIgE indicates sensitization and does not alone confirm clinical allergy. Values < 0.35 kUA/L are generally considered negative / class 0. Higher classes indicate increasing likelihood of sensitization. Correlate with symptoms and, when needed, supervised oral food challenge. Please correlate with clinical conditions.",
+    "report_extra_sections": {
+      "Interpretation (Class)": "Class 0: < 0.35 kUA/L (Negative / Undetectable)\nClass 1: 0.35 - 0.69 (Low)\nClass 2: 0.70 - 3.49 (Moderate)\nClass 3: 3.50 - 17.49 (High)\nClass 4: 17.50 - 49.99 (Very High)\nClass 5: 50.00 - 99.99\nClass 6: >= 100"
+    },
+    "parameters": [
+      {
+        "parameter_name": "Cow Milk",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "Wheat (Gluten)",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "Soybean",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 3
+      },
+      {
+        "parameter_name": "Peanut",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 4
+      },
+      {
+        "parameter_name": "Almond",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 5
+      },
+      {
+        "parameter_name": "Cashew Nut",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 6
+      },
+      {
+        "parameter_name": "Walnut",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 7
+      },
+      {
+        "parameter_name": "Pistachio",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 8
+      },
+      {
+        "parameter_name": "Rice",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 9
+      },
+      {
+        "parameter_name": "Corn / Maize",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 10
+      },
+      {
+        "parameter_name": "Chickpea (Chana)",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 11
+      },
+      {
+        "parameter_name": "Lentil (Dal)",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 12
+      },
+      {
+        "parameter_name": "Mustard",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 13
+      },
+      {
+        "parameter_name": "Sesame (Til)",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 14
+      },
+      {
+        "parameter_name": "Tomato",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 15
+      },
+      {
+        "parameter_name": "Potato",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 16
+      },
+      {
+        "parameter_name": "Onion",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 17
+      },
+      {
+        "parameter_name": "Garlic",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 18
+      },
+      {
+        "parameter_name": "Banana",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 19
+      },
+      {
+        "parameter_name": "Apple",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 20
+      },
+      {
+        "parameter_name": "Orange / Citrus",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 21
+      },
+      {
+        "parameter_name": "Mango",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 22
+      },
+      {
+        "parameter_name": "Coconut",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 23
+      },
+      {
+        "parameter_name": "Cocoa / Chocolate",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 24
+      },
+      {
+        "parameter_name": "Baker's Yeast",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 25
+      },
+      {
+        "parameter_name": "Spinach",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 26
+      },
+      {
+        "parameter_name": "Brinjal (Eggplant)",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 27
+      },
+      {
+        "parameter_name": "Cucumber",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 28
+      },
+      {
+        "parameter_name": "Carrot",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 29
+      },
+      {
+        "parameter_name": "Green Pea",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 30
+      }
+    ]
+  },
+  {
+    "test_name": "Allergy profile without nonveg",
+    "match_names": [
+      "Allergy profile without nonveg",
+      "Allergy Profile Without Non Veg"
+    ],
+    "sample_type": "Serum",
+    "report_note": "1. This is a vegetarian food allergen specific IgE panel (non-veg allergens not included).\n2. Interpret results only with clinical history of allergy.\n3. Sample: Serum.",
+    "clinical_significance": "Specific IgE (sIgE) to individual food allergens is used to evaluate IgE-mediated food allergy. Results are interpreted with clinical history; a positive sIgE indicates sensitization and does not alone confirm clinical allergy. Values < 0.35 kUA/L are generally considered negative / class 0. Higher classes indicate increasing likelihood of sensitization. Correlate with symptoms and, when needed, supervised oral food challenge. Please correlate with clinical conditions.",
+    "report_extra_sections": {
+      "Interpretation (Class)": "Class 0: < 0.35 kUA/L (Negative / Undetectable)\nClass 1: 0.35 - 0.69 (Low)\nClass 2: 0.70 - 3.49 (Moderate)\nClass 3: 3.50 - 17.49 (High)\nClass 4: 17.50 - 49.99 (Very High)\nClass 5: 50.00 - 99.99\nClass 6: >= 100"
+    },
+    "parameters": [
+      {
+        "parameter_name": "Cow Milk",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "Wheat (Gluten)",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "Soybean",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 3
+      },
+      {
+        "parameter_name": "Peanut",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 4
+      },
+      {
+        "parameter_name": "Almond",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 5
+      },
+      {
+        "parameter_name": "Cashew Nut",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 6
+      },
+      {
+        "parameter_name": "Walnut",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 7
+      },
+      {
+        "parameter_name": "Pistachio",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 8
+      },
+      {
+        "parameter_name": "Rice",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 9
+      },
+      {
+        "parameter_name": "Corn / Maize",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 10
+      },
+      {
+        "parameter_name": "Chickpea (Chana)",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 11
+      },
+      {
+        "parameter_name": "Lentil (Dal)",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 12
+      },
+      {
+        "parameter_name": "Mustard",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 13
+      },
+      {
+        "parameter_name": "Sesame (Til)",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 14
+      },
+      {
+        "parameter_name": "Tomato",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 15
+      },
+      {
+        "parameter_name": "Potato",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 16
+      },
+      {
+        "parameter_name": "Onion",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 17
+      },
+      {
+        "parameter_name": "Garlic",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 18
+      },
+      {
+        "parameter_name": "Banana",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 19
+      },
+      {
+        "parameter_name": "Apple",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 20
+      },
+      {
+        "parameter_name": "Orange / Citrus",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 21
+      },
+      {
+        "parameter_name": "Mango",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 22
+      },
+      {
+        "parameter_name": "Coconut",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 23
+      },
+      {
+        "parameter_name": "Cocoa / Chocolate",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 24
+      },
+      {
+        "parameter_name": "Baker's Yeast",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 25
+      },
+      {
+        "parameter_name": "Spinach",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 26
+      },
+      {
+        "parameter_name": "Brinjal (Eggplant)",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 27
+      },
+      {
+        "parameter_name": "Cucumber",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 28
+      },
+      {
+        "parameter_name": "Carrot",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 29
+      },
+      {
+        "parameter_name": "Green Pea",
+        "unit": "kUA/L",
+        "method": "CLIA / ImmunoCAP",
+        "reference_range_male": "< 0.35",
+        "reference_range_female": "< 0.35",
+        "reference_range_child": "< 0.35",
+        "sample_value": "",
+        "sort_order": 30
+      }
+    ]
+  }
+]

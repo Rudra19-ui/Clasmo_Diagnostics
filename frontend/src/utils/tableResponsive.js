@@ -37,6 +37,9 @@ export function applyTableDataLabels(table) {
 export function applyResponsiveTables(root = document) {
   const scope = root.querySelector?.('#root') || root;
   scope.querySelectorAll('table').forEach((table) => {
+    // Official Clasmo letterhead tables must stay tabular for screen + Print/PDF.
+    if (table.closest('.clasmo-report-sheet, .print-clasmo-report')) return;
+
     const rowCount = table.querySelectorAll('tbody tr').length;
     if (table.dataset.responsiveRows !== String(rowCount)) {
       delete table.dataset.responsiveRows;

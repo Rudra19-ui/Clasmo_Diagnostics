@@ -68,6 +68,12 @@ PARAMETER_SEED = {
 
 DATA_DIR = Path(__file__).resolve().parents[2] / 'data' / 'report_formats'
 OH_PROGESTERONE_PDF = DATA_DIR / '17_oh_progesterone_sample_report.pdf'
+MASTER_LETTERHEAD_PDF = DATA_DIR / 'clasmo_master_letterhead_sample_report.pdf'
+MASTER_LETTERHEAD_TITLE = 'Clasmo Master Letterhead Sample Report'
+MASTER_LETTERHEAD_DESCRIPTION = (
+    'Shared Clasmo letterhead report format for the full test catalog. '
+    'Choose any test in Sample Report — only parameters change; layout stays the same.'
+)
 
 
 class Command(BaseCommand):
@@ -131,9 +137,26 @@ class Command(BaseCommand):
             oh_test = Test.objects.filter(name__icontains='17 OH').filter(name__icontains='Progesterone').first()
 
         if oh_test:
+            oh_fields = []
             if not (oh_test.sample_type or '').strip():
                 oh_test.sample_type = 'Serum'
-                oh_test.save(update_fields=['sample_type'])
+                oh_fields.append('sample_type')
+            oh_clinical = (
+                'The adrenal glands, ovaries, testes, and placenta produce OHPG. It is hydroxylated at the 11 and 21 '
+                'position to produce cortisol. Deficiency of either 11- or 21-hydroxylase results in decreased cortisol '
+                'synthesis, and feedback inhibition of adrenocorticotropic hormone (ACTH) secretion is lost. Consequent '
+                'increased pituitary release of ACTH increases production of OHPG. But, if 17-alpha-hydroxylase or '
+                '3-beta-hydroxysteroid dehydrogenase type 2 are deficient, OHPG levels are low with possible increase in '
+                'progesterone or pregnenolone respectively. OHPG is bound to both corticosteroid binding globulin and '
+                'albumin and total OHPG is measured in this assay. OHPG is converted to pregnanetriol, which is conjugated '
+                'and excreted in the urine. In all instances, more specific tests are available to diagnose disorders of '
+                'steroid metabolism than pregnanetriol measurement.'
+            )
+            if getattr(oh_test, 'clinical_significance', None) != oh_clinical:
+                oh_test.clinical_significance = oh_clinical
+                oh_fields.append('clinical_significance')
+            if oh_fields:
+                oh_test.save(update_fields=oh_fields)
 
             _, was_created = TestParameter.objects.update_or_create(
                 test=oh_test,
@@ -169,18 +192,13 @@ class Command(BaseCommand):
                 },
             )
             if OH_PROGESTERONE_PDF.exists():
-                needs_file = (
-                    not asset.file
-                    or not asset.file.name
-                    or '17_oh_progesterone_sample_report' not in asset.file.name
-                )
-                if needs_file:
-                    with OH_PROGESTERONE_PDF.open('rb') as handle:
-                        asset.file.save(
-                            '17_oh_progesterone_sample_report.pdf',
-                            File(handle),
-                            save=True,
-                        )
+                # Always refresh from the bundled letterhead PDF so format updates ship with seed.
+                with OH_PROGESTERONE_PDF.open('rb') as handle:
+                    asset.file.save(
+                        '17_oh_progesterone_sample_report.pdf',
+                        File(handle),
+                        save=True,
+                    )
                 self.stdout.write(self.style.SUCCESS(
                     f'{"Created" if asset_created else "Updated"} sample report PDF for: {oh_test.name}'
                 ))
@@ -224,6 +242,33 @@ class Command(BaseCommand):
                     created += 1
                 else:
                     updated += 1
+
+        master_pdf = MASTER_LETTERHEAD_PDF if MASTER_LETTERHEAD_PDF.exists() else OH_PROGESTERONE_PDF
+        master_asset, master_created = ReportFormatAsset.objects.update_or_create(
+            title=MASTER_LETTERHEAD_TITLE,
+            defaults={
+                'description': MASTER_LETTERHEAD_DESCRIPTION,
+                'file_type': ReportFormatAsset.TYPE_PDF,
+                'test': None,
+                'is_demo': False,
+                'is_active': True,
+                'sort_order': 1,
+            },
+        )
+        if master_pdf.exists():
+            with master_pdf.open('rb') as handle:
+                master_asset.file.save(
+                    'clasmo_master_letterhead_sample_report.pdf',
+                    File(handle),
+                    save=True,
+                )
+            self.stdout.write(self.style.SUCCESS(
+                f'{"Created" if master_created else "Updated"} master letterhead sample report PDF'
+            ))
+        else:
+            self.stdout.write(self.style.WARNING(
+                f'Master letterhead PDF not found at {MASTER_LETTERHEAD_PDF}'
+            ))
 
         self.stdout.write(
             self.style.SUCCESS(f'Clinical seed complete. {created} created, {updated} updated.')

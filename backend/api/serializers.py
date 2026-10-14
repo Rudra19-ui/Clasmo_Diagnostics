@@ -1061,7 +1061,8 @@ class RegistrationSearchSerializer(serializers.ModelSerializer):
     def get_report_progress(self, obj):
         from .models import Registration, Report
 
-        total = obj.tests.count()
+        tests = list(obj.tests.all())
+        total = len(tests)
         if total == 0:
             return '0/0'
         if obj.status in (Registration.STATUS_RESULT_READY, Registration.STATUS_PRINTED):
@@ -1071,11 +1072,13 @@ class RegistrationSearchSerializer(serializers.ModelSerializer):
         if report and report.status == Report.STATUS_VERIFIED:
             return f'{total}/{total}'
         if report and report.status == Report.STATUS_ENTERED:
-            test_ids_with_values = set(
-                report.values.values_list('parameter__test_id', flat=True).distinct()
-            )
+            test_ids_with_values = {
+                value.parameter.test_id
+                for value in report.values.all()
+                if getattr(value, 'parameter_id', None)
+            }
             completed = sum(
-                1 for reg_test in obj.tests.all() if reg_test.test_id in test_ids_with_values
+                1 for reg_test in tests if reg_test.test_id in test_ids_with_values
             )
             return f'{completed}/{total}'
         return f'0/{total}'

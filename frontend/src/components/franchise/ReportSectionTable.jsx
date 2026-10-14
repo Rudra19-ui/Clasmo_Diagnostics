@@ -30,6 +30,8 @@ export default function ReportSectionTable({
   from = 'all',
   showLegend = true,
   linkPatient = true,
+  onSelectPatient = null,
+  selectedPatientId = null,
 }) {
   const location = useLocation();
   const reportPaths = getReportSectionPaths(location.pathname);
@@ -124,7 +126,7 @@ export default function ReportSectionTable({
             return (
               <tr
                 key={row.id || row.lab_code}
-                className="report-section-row"
+                className={`report-section-row${selectedPatientId === row.id ? ' report-section-row--selected' : ''}`}
                 style={{
                   '--row-bg': row.workflowMeta.background,
                   '--row-border': row.workflowMeta.border,
@@ -140,7 +142,16 @@ export default function ReportSectionTable({
                 </td>
                 <td>{row.lab_code}</td>
                 <td>
-                  {linkPatient ? (
+                  {onSelectPatient ? (
+                    <button
+                      type="button"
+                      className="report-section-patient-link report-section-patient-select"
+                      aria-pressed={selectedPatientId === row.id}
+                      onClick={() => onSelectPatient(row)}
+                    >
+                      {patientLabel}
+                    </button>
+                  ) : linkPatient ? (
                     <Link
                       to={`${reportPaths.detail(row.lab_code)}?from=${from}`}
                       className="report-section-patient-link"

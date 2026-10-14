@@ -446,6 +446,12 @@ def registration_reception_scanned(registration):
         return False
     if registration.status != Registration.STATUS_REGISTERED:
         return True
+    cached = getattr(registration, '_prefetched_objects_cache', {}).get('linked_barcodes')
+    if cached is not None:
+        return any(
+            item.is_active and item.sample_scanned_at and item.barcode
+            for item in cached
+        )
     return registration.linked_barcodes.filter(
         is_active=True,
         sample_scanned_at__isnull=False,

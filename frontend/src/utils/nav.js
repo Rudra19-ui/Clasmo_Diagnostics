@@ -145,14 +145,14 @@ export const STANDARD_NAV = [
         label: 'Machine Result Entry',
         href: '/clinical/result-entry',
         icon: 'layers',
-        roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.TECHNICIAN, ROLES.PATHOLOGIST],
+        roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.PATHOLOGIST],
       },
       {
         id: 'report-preview-verify',
         label: 'Report Preview / Verify',
         href: '/clinical/report-preview',
         icon: 'layers',
-        roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.TECHNICIAN, ROLES.PATHOLOGIST],
+        roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.PATHOLOGIST],
       },
       {
         id: 'test-parameter-master',

@@ -6,7 +6,7 @@ from decimal import Decimal
 from django.shortcuts import get_object_or_404
 
 from django.db import connection, transaction
-from django.db.models import Count, Q, Sum
+from django.db.models import Count, Prefetch, Q, Sum
 from django.db.utils import OperationalError, ProgrammingError
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -23,6 +23,7 @@ from .clinical_permissions import (
     CanAccessHolds,
     CanAccessOutsource,
     CanAccessPatientEntry,
+    CanReadRegistrations,
     CanAccessPricingWallet,
     CanAccessRejections,
     CanAccessSampleAccession,
@@ -378,6 +379,8 @@ class TestListView(generics.ListAPIView):
             .only(
                 'id', 'name', 'short_name', 'test_code', 'mrp', 'price',
                 'sample_type', 'tat', 'volume_ml', 'category_id',
+                'report_note', 'report_comments', 'clinical_significance',
+                'report_extra_sections',
             )
         )
         for test in queryset:
@@ -402,6 +405,10 @@ class TestListView(generics.ListAPIView):
                 'volume_ml': str(Decimal(test.volume_ml or 0)),
                 'category': category.id if category else None,
                 'category_name': category.name if category else None,
+                'report_note': test.report_note or '',
+                'report_comments': test.report_comments or '',
+                'clinical_significance': test.clinical_significance or '',
+                'report_extra_sections': test.report_extra_sections or {},
             })
         return Response(rows)
 
@@ -447,9 +454,28 @@ class ReportFormatListView(generics.ListAPIView):
         return context
 
 
+def registration_list_queryset():
+    """Booking list with tests, barcodes, and report values loaded in a few queries."""
+    from .models import RegistrationTest, ReportValue
+
+    return Registration.objects.select_related(
+        'patient', 'created_by', 'clinical_report',
+    ).prefetch_related(
+        Prefetch(
+            'tests',
+            queryset=RegistrationTest.objects.select_related('test').prefetch_related('holds'),
+        ),
+        'linked_barcodes',
+        Prefetch(
+            'clinical_report__values',
+            queryset=ReportValue.objects.select_related('parameter'),
+        ),
+    )
+
+
 class RegistrationSearchView(generics.ListAPIView):
     serializer_class = RegistrationSearchSerializer
-    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
+    permission_classes = [permissions.IsAuthenticated, CanReadRegistrations]
 
     @staticmethod
     def _parse_ddmmyyyy(value):
@@ -461,12 +487,11 @@ class RegistrationSearchView(generics.ListAPIView):
             return None
 
     def get_queryset(self):
-        qs = Registration.objects.select_related(
-            'patient', 'created_by', 'clinical_report',
-        ).prefetch_related('tests__test', 'linked_barcodes').all()
+        qs = registration_list_queryset()
         params = self.request.query_params
 
         patient_name = params.get('patient_name', '').strip()
+        quick_query = params.get('q', '').strip()
         patient_id = params.get('patient_id', '').strip()
         from_date = params.get('from_date', '').strip()
         to_date = params.get('to_date', '').strip()
@@ -497,6 +522,20 @@ class RegistrationSearchView(generics.ListAPIView):
         user_id = params.get('user', '').strip()
         sample_collection_at = params.get('sample_collection_at', '').strip()
 
+        if quick_query:
+            from .barcode_service import barcode_lookup_candidates, normalize_barcode
+
+            barcode_match = Q()
+            normalized = normalize_barcode(quick_query)
+            if normalized:
+                barcode_match = (
+                    Q(linked_barcodes__barcode__in=barcode_lookup_candidates(normalized))
+                    | Q(linked_barcodes__barcode__icontains=normalized)
+                    | Q(lab_code__icontains=normalized)
+                )
+            qs = qs.filter(
+                Q(patient__patient_name__icontains=quick_query) | barcode_match
+            ).distinct()
         if patient_name:
             qs = qs.filter(patient__patient_name__icontains=patient_name)
         if patient_id:
@@ -606,9 +645,7 @@ class SampleAccessionListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated, CanAccessSampleAccession]
 
     def get_queryset(self):
-        qs = Registration.objects.select_related(
-            'patient', 'created_by', 'clinical_report',
-        ).prefetch_related('tests__test', 'linked_barcodes').all()
+        qs = registration_list_queryset()
         params = self.request.query_params
 
         from_date = params.get('from_date', '').strip()
@@ -1525,7 +1562,7 @@ class BillReceiptView(APIView):
 
 class RegistrationDetailView(generics.RetrieveAPIView):
     serializer_class = RegistrationSerializer
-    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
+    permission_classes = [permissions.IsAuthenticated, CanReadRegistrations]
     lookup_field = 'lab_code'
 
     def get_queryset(self):

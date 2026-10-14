@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Layout from '../../components/Layout';
 import ReportSectionTable from '../../components/franchise/ReportSectionTable';
+import { useAuth } from '../../context/AuthContext';
 import { api } from '../../services/api';
 import { getReportSectionPaths } from '../../utils/reportSection';
+import { ROLES } from '../../utils/roles';
 
 function toApiDate(value) {
   if (!value) return '';
@@ -13,16 +15,53 @@ function toApiDate(value) {
   return `${day}-${month}-${year}`;
 }
 
+function cellText(value) {
+  if (Array.isArray(value)) return value.map((item) => item?.name || item).join('; ');
+  if (value == null) return '';
+  return String(value);
+}
+
+function exportReportValues(rows) {
+  const headers = ['Lab Code', 'Patient', 'Tests', 'Status', 'Date', 'Amount'];
+  const lines = rows.map((row) => [
+    row.lab_code,
+    row.patient_name,
+    cellText(row.tests || row.test_names),
+    row.status || row.workflow_status,
+    row.registration_date || row.regn_date || row.created_at,
+    row.amount || row.total_amount || row.net_amount,
+  ].map((value) => `"${cellText(value).replace(/"/g, '""')}"`).join(','));
+  const csv = [headers.join(','), ...lines].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'report-values.csv';
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 export default function AllReports() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const isTechnician = user?.role === ROLES.TECHNICIAN;
+  const [searchParams] = useSearchParams();
   const reportPaths = getReportSectionPaths(location.pathname);
+  const exportView = searchParams.get('view') === 'export';
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
+  const [query, setQuery] = useState('');
+  const queryRef = useRef('');
+  const abortRef = useRef(null);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const load = useCallback(async () => {
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
     setLoading(true);
     setError('');
     try {
@@ -31,32 +70,23 @@ export default function AllReports() {
       const to = toApiDate(toDate);
       if (from) params.from_date = from;
       if (to) params.to_date = to;
-      const data = await api.searchRegistrations(params);
+      const term = queryRef.current.trim();
+      if (term) params.q = term;
+      const data = await api.searchRegistrations(params, { signal: controller.signal });
+      if (controller.signal.aborted) return;
       setRows(Array.isArray(data) ? data : []);
     } catch (err) {
+      if (err?.name === 'AbortError' || controller.signal.aborted) return;
       setError(err.message || 'Could not load reports.');
       setRows([]);
     } finally {
-      setLoading(false);
+      if (abortRef.current === controller) setLoading(false);
     }
   }, [fromDate, toDate]);
 
   useEffect(() => {
     load();
-  }, [load]);
-
-  useEffect(() => {
-    const refreshOnFocus = () => {
-      if (document.visibilityState === 'visible') {
-        load();
-      }
-    };
-    window.addEventListener('focus', refreshOnFocus);
-    document.addEventListener('visibilitychange', refreshOnFocus);
-    return () => {
-      window.removeEventListener('focus', refreshOnFocus);
-      document.removeEventListener('visibilitychange', refreshOnFocus);
-    };
+    return () => abortRef.current?.abort();
   }, [load]);
 
   return (
@@ -72,12 +102,31 @@ export default function AllReports() {
           </nav>
           <h2 className="page-heading">All Reports</h2>
           <p className="portfolio-intro">
-            Browse bookings and reports filtered by date. Click a patient name to open the full report view.
+            {isTechnician
+              ? 'Search by barcode or patient name. Click a patient name to open the result entry page.'
+              : 'Browse bookings and reports filtered by date. Click a patient name to open the full report view.'}
           </p>
         </header>
 
         <section className="franchise-module-panel">
           <div className="franchise-report-filters">
+            {isTechnician && (
+              <label>
+                <span>Barcode or patient name</span>
+                <input
+                  type="search"
+                  value={query}
+                  placeholder="Scan barcode or type a name"
+                  onChange={(e) => {
+                    setQuery(e.target.value);
+                    queryRef.current = e.target.value;
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') load();
+                  }}
+                />
+              </label>
+            )}
             <label>
               <span>From date</span>
               <input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
@@ -89,6 +138,16 @@ export default function AllReports() {
             <button type="button" className="btn-primary" onClick={load} disabled={loading}>
               {loading ? 'Loading…' : 'Apply'}
             </button>
+            {!isTechnician && (
+              <button
+                type="button"
+                className="btn-outline"
+                onClick={() => exportReportValues(rows)}
+                disabled={!rows.length}
+              >
+                {exportView ? 'Download report values' : 'Export report values'}
+              </button>
+            )}
           </div>
 
           {error && <p className="login-error" role="alert">{error}</p>}
@@ -97,7 +156,14 @@ export default function AllReports() {
             rows={rows}
             loading={loading}
             from="all"
-            emptyMessage="No reports found for the selected dates."
+            emptyMessage={query.trim()
+              ? 'No patients matched that barcode or name.'
+              : 'No reports found for the selected dates.'}
+            onSelectPatient={isTechnician ? (row) => {
+              navigate(`/reports-section/all/enter/${encodeURIComponent(row.lab_code)}`, {
+                state: { registration: row },
+              });
+            } : null}
           />
         </section>
       </main>

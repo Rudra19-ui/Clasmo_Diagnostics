@@ -80,6 +80,12 @@ export const PATIENT_ENTRY_ROLES = [
   ...FRANCHISE_ROLES,
 ];
 
+/** Report pages technicians can open from their sidebar. */
+export const TECHNICIAN_REPORT_ROLES = [
+  ...PATIENT_ENTRY_ROLES,
+  ROLES.TECHNICIAN,
+];
+
 /** Admin + franchise — pricing, wallets, commissions. */
 export const PRICING_WALLET_ROLES = PATIENT_ENTRY_ROLES;
 
@@ -202,7 +208,7 @@ export function canManageParameters(user) {
 }
 
 export function canEnterResults(user) {
-  return hasRole(user, [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.TECHNICIAN]);
+  return hasRole(user, [ROLES.SUPER_ADMIN, ROLES.ADMIN]);
 }
 
 export function canVerifyReports(user) {

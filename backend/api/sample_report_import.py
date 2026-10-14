@@ -176,6 +176,10 @@ def import_report_details(
                 'parameters': param_count,
             })
 
+    propagated = {'copied_tests': 0, 'copied_parameters': 0, 'deactivated_stubs': 0}
+    if not dry_run:
+        propagated = propagate_duplicate_report_details()
+
     return {
         'dry_run': dry_run,
         'created_tests': created_tests,
@@ -185,6 +189,98 @@ def import_report_details(
         'unmatched': unmatched,
         'imported': imported,
         'total_rows': len(rows),
+        'propagated': propagated,
+    }
+
+
+def _param_is_real(param: TestParameter) -> bool:
+    return bool(
+        (param.unit or '').strip()
+        or (param.method or '').strip()
+        or (param.reference_range_male or '').strip()
+        or (param.reference_range_female or '').strip()
+        or (param.reference_range_child or '').strip()
+    )
+
+
+def propagate_duplicate_report_details() -> dict:
+    """Copy letterhead details onto same-name catalog duplicates and drop empty stub rows."""
+    tests = list(Test.objects.all())
+    params_by_test: dict[int, list[TestParameter]] = {}
+    for param in TestParameter.objects.filter(is_active=True):
+        params_by_test.setdefault(param.test_id, []).append(param)
+
+    grouped: dict[str, list[Test]] = {}
+    for test in tests:
+        grouped.setdefault(_norm(test.name), []).append(test)
+
+    copied_tests = 0
+    copied_params = 0
+    deactivated = 0
+    stub_ids: list[int] = []
+
+    for group in grouped.values():
+        decorated = []
+        for test in group:
+            active = params_by_test.get(test.id, [])
+            real = [param for param in active if _param_is_real(param)]
+            decorated.append((len(real), test, real, active))
+        donor_real_count, donor, donor_real, _donor_active = max(decorated, key=lambda item: item[0])
+        if not donor_real_count:
+            continue
+
+        for real_count, test, _real, active in decorated:
+            if test.id == donor.id or real_count:
+                continue
+            dirty = []
+            for field in (
+                'sample_type',
+                'report_note',
+                'report_comments',
+                'clinical_significance',
+            ):
+                incoming = (getattr(donor, field) or '').strip()
+                if incoming and not (getattr(test, field) or '').strip():
+                    setattr(test, field, getattr(donor, field))
+                    dirty.append(field)
+            extra = donor.report_extra_sections or {}
+            if extra and not (test.report_extra_sections or {}):
+                test.report_extra_sections = extra
+                dirty.append('report_extra_sections')
+            if dirty:
+                test.save(update_fields=dirty)
+                copied_tests += 1
+            for param in donor_real:
+                saved, _created = TestParameter.objects.update_or_create(
+                    test=test,
+                    parameter_name=param.parameter_name,
+                    defaults={
+                        'unit': param.unit,
+                        'method': param.method,
+                        'reference_range_male': param.reference_range_male,
+                        'reference_range_female': param.reference_range_female,
+                        'reference_range_child': param.reference_range_child,
+                        'sample_value': param.sample_value,
+                        'sort_order': param.sort_order,
+                        'is_active': True,
+                    },
+                )
+                params_by_test.setdefault(test.id, []).append(saved)
+                copied_params += 1
+
+        for test in group:
+            active = params_by_test.get(test.id, [])
+            if not any(_param_is_real(param) for param in active):
+                continue
+            stub_ids.extend(param.id for param in active if not _param_is_real(param))
+
+    if stub_ids:
+        deactivated = TestParameter.objects.filter(id__in=stub_ids, is_active=True).update(is_active=False)
+
+    return {
+        'copied_tests': copied_tests,
+        'copied_parameters': copied_params,
+        'deactivated_stubs': deactivated,
     }
 
 

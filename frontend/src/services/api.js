@@ -96,9 +96,9 @@ export const api = {
     const query = new URLSearchParams(params).toString();
     return request(`/report-formats/${query ? `?${query}` : ''}`);
   },
-  searchRegistrations: (params = {}) => {
+  searchRegistrations: (params = {}, options = {}) => {
     const query = new URLSearchParams(params).toString();
-    return request(`/registrations/${query ? `?${query}` : ''}`);
+    return request(`/registrations/${query ? `?${query}` : ''}`, options);
   },
   listSampleAccession: (params = {}) => {
     const query = new URLSearchParams(params).toString();

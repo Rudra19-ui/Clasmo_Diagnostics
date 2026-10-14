@@ -5625,6 +5625,106 @@ input, select, textarea, button {
   align-items: center;
 }
 
+.report-section-patient-select {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.report-section-row--selected {
+  outline: 2px solid #1d6fbf;
+  outline-offset: -2px;
+}
+
+.manual-entry-panel {
+  margin: 0 0 18px;
+  padding: 16px;
+  border: 1px solid #c5d8ea;
+  border-radius: 12px;
+  background: #f7fbff;
+}
+
+.manual-entry-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.manual-entry-header h3,
+.manual-entry-form h4,
+.manual-entry-panel > h4 {
+  margin: 0 0 6px;
+}
+
+.manual-entry-header p,
+.manual-entry-success {
+  margin: 0;
+  color: #24507a;
+}
+
+.manual-entry-success {
+  margin-top: 10px;
+}
+
+.manual-entry-tests {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+}
+
+.manual-entry-tests button {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 180px;
+  padding: 10px 12px;
+  border: 1px solid #c5d8ea;
+  border-radius: 10px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+}
+
+.manual-entry-tests button span {
+  color: #4a6480;
+  font-size: 12px;
+}
+
+.manual-entry-tests button.is-active {
+  border-color: #1d6fbf;
+  background: #e8f3fc;
+}
+
+.manual-entry-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0 14px;
+  background: #fff;
+}
+
+.manual-entry-table th,
+.manual-entry-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #d7e5f2;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.manual-entry-table input {
+  width: 100%;
+  min-width: 90px;
+  padding: 8px 10px;
+  border: 1px solid #c5d8ea;
+  border-radius: 8px;
+}
+
 .form-success-msg {
   color: #2e7d32;
   font-size: 13px;
@@ -7535,14 +7635,18 @@ input, select, textarea, button {
   max-width: 820px;
 }
 
-/* Official A4 page proportions (matches uploaded Clasmo letterhead PDF) */
+/* Official A4 page. Height follows the sheet width so the page stays 210:297. */
 .clasmo-report-sheet--a4 {
-  width: min(100%, 794px);
-  max-width: 794px;
-  min-height: 1123px;
+  width: min(100%, 210mm);
+  max-width: 210mm;
+  min-height: calc(min(100cqw, 210mm) * 297 / 210);
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+}
+
+.clasmo-report-ref-blocks--single {
+  grid-template-columns: 1fr;
 }
 
 .clasmo-report-body {
@@ -7564,6 +7668,7 @@ input, select, textarea, button {
 
 .print-clasmo-reports-root {
   width: 100%;
+  container-type: inline-size;
 }
 
 /* Exact official PDF page as background (guarantees 1-page print) */
@@ -7944,7 +8049,8 @@ input, select, textarea, button {
 }
 
 .clasmo-report-screen-footer {
-  margin: 10px 18px 14px 22px;
+  margin: 12px 0 14px;
+  max-width: 210mm;
 }
 
 .clasmo-report-screen-footer > p {
@@ -7961,8 +8067,8 @@ input, select, textarea, button {
 
 @media (max-width: 900px) {
   .clasmo-report-sheet--a4 {
-    min-height: 0;
     width: 100%;
+    max-width: 100%;
   }
 
   /* Keep official PDF field layout (3 columns + dual refs) even on narrow screens */
@@ -8227,6 +8333,10 @@ input, select, textarea, button {
     grid-template-columns: 1fr 1fr !important;
     gap: 3mm !important;
     margin: 0 10mm 2.5mm 12mm !important;
+  }
+
+  body.printing-clasmo-report .clasmo-report-ref-blocks--single {
+    grid-template-columns: 1fr !important;
   }
 
   body.printing-clasmo-report .clasmo-report-sidetext {

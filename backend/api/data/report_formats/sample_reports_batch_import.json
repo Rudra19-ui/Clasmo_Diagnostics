@@ -2545,5 +2545,115 @@
         "sort_order": 30
       }
     ]
+  },
+  {
+    "test_name": "Reticulocyte Count",
+    "match_names": [
+      "Reticulocyte Count",
+      "RETICULOCYTE COUNT"
+    ],
+    "sample_type": "EDTA Blood",
+    "parameters": [
+      {
+        "parameter_name": "RETICULOCYTE COUNT",
+        "unit": "%",
+        "method": "microscopy",
+        "reference_range_male": "0.5 - 2.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.7",
+        "sort_order": 1
+      }
+    ],
+    "report_extra_sections": {
+      "INTERPRETATION": "Results must be interpreted carefully and along with results of other tests, such as an RBC count, hemoglobin (Hb), hematocrit (Hct), or a full CBC. In general, the reticulocyte count (absolute number or percentage) reflects recent bone marrow activity. The results may indicate whether a disease or condition is present that is generating an increased demand for new RBCs and whether the bone marrow can respond to the extra requirement. Occasionally, results may indicate the overproduction of RBCs."
+    }
+  },
+  {
+    "test_name": "Rheumatoid Factor, RA test",
+    "match_names": [
+      "Rheumatoid Factor, RA test",
+      "Rheumatoid Factor, Ra Test",
+      "RHEUMATOID FACTOR, RA TEST"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "RHEUMATOID FACTOR, RA",
+        "unit": "IU/mL",
+        "method": "Immunoturbidimetry",
+        "reference_range_male": "1.0 - 20.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "10.2",
+        "sort_order": 1
+      }
+    ],
+    "report_extra_sections": {
+      "What is rheumatoid factor": "Rheumatoid factor is an antibody that is measurable in the blood with a routine blood test. Rheumatoid factor is actually an antibody that can bind to other antibodies. Antibodies are normal proteins in our blood that are important parts of our immune system. Rheumatoid factor is an antibody that is not usually present in the normal individual. Because rheumatoid factor antibody binds to normal antibodies, it can be generally referred to as an autoantibody. Health care professionals use the rheumatoid factor test to assist in the diagnosis of rheumatoid arthritis. Arthritis refers to more than 100 conditions that affect the musculoskeletal system. The joints are the parts of the body where bones meet each other. When arthritis is present, the joints may become inflamed, stiff, red, and painful. Damage from RA may occur in tissues surrounding the joints including the tendons, ligaments, and muscles. RA is one type of arthritis classified as 'systemic,' meaning it can areas throughout the body. In some patients, symptoms may extend to the skin and eyes, and internal organs, including the liver, kidneys, heart, and lungs. Please correlate with clinical conditions."
+    },
+    "clinical_significance": "Please correlate with clinical conditions."
+  },
+  {
+    "test_name": "SGOT ; Aspartate Aminotransferase (AST)",
+    "match_names": [
+      "SGOT ; Aspartate Aminotransferase (AST)",
+      "SGOT ; ASPARTATE AMINOTRANSFERASE (AST)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Aspartate Transaminase (AST/SGOT)",
+        "unit": "U/L",
+        "method": "PHOTOMETRY",
+        "reference_range_male": "0 - 35",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "64.98",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "Please correlate with clinical conditions."
+  },
+  {
+    "test_name": "SGPT ; ALANINE AMINOTRANSFERASE (ALT)",
+    "match_names": [
+      "Sgpt ; Alanine Aminotransferase (Alt)",
+      "SGPT ; ALANINE AMINOTRANSFERASE (ALT)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "SGPT",
+        "unit": "U/L",
+        "method": "PHOTOMETRY",
+        "reference_range_male": "0 - 34",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "11.89",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "Alanine aminotransferase (ALT) is present primarily in liver cells. In viral hepatitis and other forms of liver disease associated with hepatic necrosis, serum ALT is elevated even before the clinical signs and symptoms of the disease appear. Although serum levels of both aspartate aminotransferase (AST) and ALT become elevated whenever disease processes affect liver cell integrity, ALT is a more liver-specific enzyme. Serum elevations of ALT are rarely observed in conditions other than parenchymal liver disease. Moreover, the elevation of ALT activity persists longer than does AST activity Please correlate with clinical conditions."
+  },
+  {
+    "test_name": "Sodium",
+    "match_names": [
+      "Sodium",
+      "SODIUM"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "SODIUM , SERUM",
+        "unit": "mEq/L",
+        "method": "Electrode",
+        "reference_range_male": "133 - 146",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "130.30",
+        "sort_order": 1
+      }
+    ]
   }
 ]

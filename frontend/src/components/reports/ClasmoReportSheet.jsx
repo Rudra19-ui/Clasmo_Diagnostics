@@ -27,7 +27,22 @@ export function referenceInterval(param) {
   if (female) parts.push(`F: ${female}`);
   if (child) parts.push(`Child: ${child}`);
   if (parts.length) return parts.join(' · ');
-  return 'As per method / kit insert';
+  return '';
+}
+
+function referenceRowsForParameter(row) {
+  const name = (row.parameter_name || '').trim();
+  const male = (row.reference_range_male || row.reference_range || '').trim();
+  const female = (row.reference_range_female || '').trim();
+  const child = (row.reference_range_child || '').trim();
+  const rows = [];
+  if (male && !female && !child) rows.push({ category: name, range: male });
+  else {
+    if (male) rows.push({ category: name ? `${name} — Male` : 'Male', range: male });
+    if (female) rows.push({ category: name ? `${name} — Female` : 'Female', range: female });
+    if (child) rows.push({ category: name ? `${name} — Child` : 'Child', range: child });
+  }
+  return rows.filter((item) => item.range);
 }
 
 const OH_CATEGORY_RANGES = [
@@ -90,6 +105,35 @@ function resultDisplay(row, editable, values, onValueChange) {
     return <strong title="Example sample value">{row.sample_value}</strong>;
   }
   return <span className="report-result-placeholder">&nbsp;</span>;
+}
+
+function ReferenceRangeTables({ rows, rangeHeading = 'RANGE' }) {
+  const items = rows.flatMap(referenceRowsForParameter);
+  if (!items.length) return null;
+  const midpoint = Math.ceil(items.length / 2);
+  const columns = items.length === 1 ? [items] : [items.slice(0, midpoint), items.slice(midpoint)];
+  return (
+    <div className={`clasmo-report-ref-blocks${columns.length === 1 ? ' clasmo-report-ref-blocks--single' : ''}`}>
+      {columns.map((column, index) => (
+        <table key={column[0]?.category || index} className="clasmo-report-dual-ref clasmo-report-dual-ref--half">
+          <thead>
+            <tr>
+              <th>CATEGORY</th>
+              <th>{rangeHeading}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {column.map((item) => (
+              <tr key={`${item.category}-${item.range}`}>
+                <td>{item.category}</td>
+                <td>{item.range}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ))}
+    </div>
+  );
 }
 
 function OhReferenceTables() {
@@ -171,7 +215,19 @@ export default function ClasmoReportSheet({
     ? clinicalCustom.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean)
     : (isOh ? OH_CLINICAL_PARAS : []);
 
-  const sheetRows = (!loading && !rows.length && isOh)
+  const preparedRows = rows.filter((row) => {
+    const hasDetail = Boolean(
+      (row.unit || '').trim()
+      || (row.method || '').trim()
+      || (row.reference_range_male || row.reference_range || '').trim()
+      || (row.reference_range_female || '').trim()
+      || (row.reference_range_child || '').trim()
+    );
+    return hasDetail;
+  });
+  const sourceRows = preparedRows.length ? preparedRows : rows;
+
+  const sheetRows = (!loading && !sourceRows.length && isOh)
     ? [{
       id: 'ohpg-default',
       parameter_name: title || '17 OH Progesterone',
@@ -179,7 +235,7 @@ export default function ClasmoReportSheet({
       unit: 'ng/mL',
       result: '',
     }]
-    : rows.map((row) => (
+    : sourceRows.map((row) => (
       isOh
         ? {
           ...row,
@@ -198,15 +254,15 @@ export default function ClasmoReportSheet({
   const regDate = demoValue(demographics.registration_date);
   const repDate = demoValue(demographics.reported_on);
 
-  const genericRefRows = !isOh
-    ? sheetRows.map((row) => ({
-      category: row.parameter_name,
-      range: row.reference_range || referenceInterval(row),
-    }))
-    : [];
+  const sharedUnit = sheetRows.length
+    && sheetRows.every((row) => (row.unit || '') === (sheetRows[0].unit || ''))
+    ? (sheetRows[0].unit || '')
+    : '';
+  const rangeHeading = sharedUnit ? `RANGE (${sharedUnit})` : 'RANGE';
 
   return (
-    <article className={`clasmo-report-sheet clasmo-report-sheet--a4 print-clasmo-report${isOh ? ' clasmo-report-sheet--ohpg' : ''}`}>
+    <>
+    <article className="clasmo-report-sheet clasmo-report-sheet--a4 clasmo-report-sheet--ohpg print-clasmo-report">
       <div className="clasmo-report-sidetext" aria-hidden="true">CLASMO DIAGNOSTICS</div>
 
       <header className="clasmo-report-letterhead">
@@ -274,7 +330,7 @@ export default function ClasmoReportSheet({
                     <td className="clasmo-report-result-cell">
                       {resultDisplay(row, editable, values, onValueChange)}
                     </td>
-                    <td>{row.unit || '—'}</td>
+                    <td>{row.unit || ''}</td>
                     {showReferenceColumn && <td>{row.reference_range || referenceInterval(row)}</td>}
                   </tr>
                 );
@@ -283,25 +339,10 @@ export default function ClasmoReportSheet({
           </table>
         )}
 
-        {isOh && <OhReferenceTables />}
-
-        {!isOh && genericRefRows.length > 0 && !showReferenceColumn && (
-          <table className="clasmo-report-dual-ref clasmo-report-dual-ref--single">
-            <thead>
-              <tr>
-                <th>PARAMETER</th>
-                <th>BIOLOGICAL REFERENCE RANGE</th>
-              </tr>
-            </thead>
-            <tbody>
-              {genericRefRows.map((item) => (
-                <tr key={item.category}>
-                  <td>{item.category}</td>
-                  <td>{item.range}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        {isOh ? <OhReferenceTables /> : (
+          !showReferenceColumn && (
+            <ReferenceRangeTables rows={sheetRows} rangeHeading={rangeHeading} />
+          )
         )}
 
         {reportNote ? (
@@ -342,12 +383,15 @@ export default function ClasmoReportSheet({
           className="clasmo-report-footer-banner"
         />
       </footer>
+    </article>
 
+    {(footerNote || actions) ? (
       <div className="clasmo-report-screen-footer no-print">
         {footerNote ? <p>{footerNote}</p> : null}
         {actions ? <div className="clasmo-report-actions">{actions}</div> : null}
       </div>
-    </article>
+    ) : null}
+    </>
   );
 }
 
@@ -518,6 +562,9 @@ export async function printClasmoReport() {
       grid-template-columns: 1fr 1fr !important;
       gap: 3mm !important;
       margin: 0 10mm 2.5mm 12mm !important;
+    }
+    .clasmo-report-ref-blocks--single {
+      grid-template-columns: 1fr !important;
     }
     .clasmo-report-dual-ref {
       width: 100% !important;

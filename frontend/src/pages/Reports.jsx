@@ -25,6 +25,10 @@ export default function Reports() {
 
   useEffect(() => {
     const hashType = window.location.hash.replace('#', '');
+    if (hashType === 'tat' || hashType === 'tat-analysis' || hashType === 'test-tat') {
+      generate('tat');
+      return;
+    }
     if (hashType && REPORTS.some((item) => item.id === hashType)) {
       generate(hashType);
     }

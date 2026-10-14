@@ -68,6 +68,23 @@ class CanAccessPatientEntry(permissions.BasePermission):
         )
 
 
+# Technicians browse zone reports. They do not create or edit patient entries.
+REPORT_READ_ROLES = frozenset({
+    *PATIENT_ENTRY_ROLES,
+    User.ROLE_TECHNICIAN,
+})
+
+
+class CanReadRegistrations(permissions.BasePermission):
+    message = 'You do not have permission to access patient entry data.'
+
+    def has_permission(self, request, view):
+        return (
+            request.user.is_authenticated
+            and request.user.role in REPORT_READ_ROLES
+        )
+
+
 class CanAccessPricingWallet(permissions.BasePermission):
     message = 'You do not have permission to access pricing and wallet data.'
 

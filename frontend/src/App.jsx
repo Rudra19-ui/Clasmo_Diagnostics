@@ -52,7 +52,7 @@ import DeviceStub from './pages/device/DeviceStub';
 import TestResultBatch from './pages/device/TestResultBatch';
 import ResponsiveProvider from './components/ResponsiveProvider';
 import { NavProvider } from './context/NavContext';
-import { ROLES, ALL_ROLES, SAMPLE_SCAN_ROLES, USER_CREATOR_ROLES, FRANCHISE_ROLES, PATIENT_ENTRY_ROLES, PRICING_WALLET_ROLES, ADMIN_ROLES, ADMINISTRATION_ROLES, TEST_PORTFOLIO_ROLES, HOLD_STAFF_ROLES, REJECTION_STAFF_ROLES, EXTRA_SAMPLE_ROLES } from './utils/roles';
+import { ROLES, ALL_ROLES, SAMPLE_SCAN_ROLES, USER_CREATOR_ROLES, FRANCHISE_ROLES, PATIENT_ENTRY_ROLES, TECHNICIAN_REPORT_ROLES, PRICING_WALLET_ROLES, ADMIN_ROLES, ADMINISTRATION_ROLES, TEST_PORTFOLIO_ROLES, HOLD_STAFF_ROLES, REJECTION_STAFF_ROLES, EXTRA_SAMPLE_ROLES } from './utils/roles';
 import MessageToLab from './pages/device/MessageToLab';
 import PickupRequest from './pages/device/PickupRequest';
 import TestList from './pages/portfolio/TestList';
@@ -62,6 +62,7 @@ import FranchiseStub from './pages/franchise/FranchiseStub';
 import TestAddition from './pages/franchise/TestAddition';
 import EditEntry from './pages/franchise/EditEntry';
 import AllReports from './pages/franchise/AllReports';
+import TechnicianManualEntry from './pages/franchise/TechnicianManualEntry';
 import SearchReports from './pages/franchise/SearchReports';
 import ReportDetail from './pages/franchise/ReportDetail';
 import FindBarcode from './pages/franchise/FindBarcode';
@@ -136,7 +137,7 @@ export default function App() {
           <Route
             path="/notifications/clinical-history"
             element={(
-              <ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}>
+              <ProtectedRoute allowedRoles={TECHNICIAN_REPORT_ROLES}>
                 <ClinicalHistory />
               </ProtectedRoute>
             )}
@@ -144,7 +145,7 @@ export default function App() {
           <Route
             path="/notifications/test-cancellation"
             element={(
-              <ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}>
+              <ProtectedRoute allowedRoles={TECHNICIAN_REPORT_ROLES}>
                 <TestCancellation />
               </ProtectedRoute>
             )}
@@ -271,7 +272,7 @@ export default function App() {
           <Route
             path="/reports-section"
             element={(
-              <ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}>
+              <ProtectedRoute allowedRoles={TECHNICIAN_REPORT_ROLES}>
                 <Navigate to="/reports-section/all" replace />
               </ProtectedRoute>
             )}
@@ -279,15 +280,23 @@ export default function App() {
           <Route
             path="/reports-section/all"
             element={(
-              <ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}>
+              <ProtectedRoute allowedRoles={TECHNICIAN_REPORT_ROLES}>
                 <AllReports />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/reports-section/all/enter/:labCode"
+            element={(
+              <ProtectedRoute allowedRoles={[ROLES.TECHNICIAN]}>
+                <TechnicianManualEntry />
               </ProtectedRoute>
             )}
           />
           <Route
             path="/reports-section/search"
             element={(
-              <ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}>
+              <ProtectedRoute allowedRoles={TECHNICIAN_REPORT_ROLES}>
                 <SearchReports />
               </ProtectedRoute>
             )}
@@ -295,12 +304,12 @@ export default function App() {
           <Route
             path="/reports-section/detail/:labCode"
             element={(
-              <ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}>
+              <ProtectedRoute allowedRoles={TECHNICIAN_REPORT_ROLES}>
                 <ReportDetail />
               </ProtectedRoute>
             )}
           />
-          <Route path="/test-result" element={<ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}><TestResult /></ProtectedRoute>} />
+          <Route path="/test-result" element={<ProtectedRoute allowedRoles={TECHNICIAN_REPORT_ROLES}><TestResult /></ProtectedRoute>} />
           <Route path="/portfolio/test-list" element={<ProtectedRoute allowedRoles={TEST_PORTFOLIO_ROLES}><TestList /></ProtectedRoute>} />
           <Route path="/portfolio/test-profile" element={<ProtectedRoute allowedRoles={TEST_PORTFOLIO_ROLES}><TestProfile /></ProtectedRoute>} />
           <Route path="/portfolio/sample-report" element={<ProtectedRoute allowedRoles={TEST_PORTFOLIO_ROLES}><SampleReport /></ProtectedRoute>} />
@@ -343,12 +352,12 @@ export default function App() {
               )}
             />
           ))}
-          <Route path="/reports" element={<ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}><Reports /></ProtectedRoute>} />
+          <Route path="/reports" element={<ProtectedRoute allowedRoles={TECHNICIAN_REPORT_ROLES}><Reports /></ProtectedRoute>} />
           <Route path="/elab-pay" element={<ProtectedRoute><ElabPay /></ProtectedRoute>} />
           <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
           <Route path="/clinical/test-parameters" element={<ProtectedRoute allowedRoles={ADMIN_ROLES}><TestParameterMaster /></ProtectedRoute>} />
           <Route path="/clinical/parameter-import" element={<ProtectedRoute allowedRoles={ADMIN_ROLES}><ParameterImport /></ProtectedRoute>} />
-          <Route path="/clinical/result-entry" element={<ProtectedRoute allowedRoles={[ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.TECHNICIAN, ROLES.PATHOLOGIST]}><ResultEntry /></ProtectedRoute>} />
+          <Route path="/clinical/result-entry" element={<ProtectedRoute allowedRoles={[ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.PATHOLOGIST]}><ResultEntry /></ProtectedRoute>} />
           <Route path="/clinical/report-preview" element={<ProtectedRoute><ReportPreview /></ProtectedRoute>} />
           <Route path="/device/pickup-request" element={<ProtectedRoute><PickupRequest /></ProtectedRoute>} />
           <Route path="/device/patient-appointment" element={<ProtectedRoute><DeviceStub title="Patient Appointment" description="Schedule home visits and appointments." /></ProtectedRoute>} />

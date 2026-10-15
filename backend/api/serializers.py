@@ -441,13 +441,14 @@ class ReportFormatAssetSerializer(serializers.ModelSerializer):
 class RegistrationTestSerializer(serializers.ModelSerializer):
     test_name = serializers.CharField(source='test.name', read_only=True)
     sample_type = serializers.CharField(source='test.sample_type', read_only=True)
+    tat = serializers.CharField(source='test.tat', read_only=True)
     mrp = serializers.DecimalField(source='test.mrp', max_digits=10, decimal_places=2, read_only=True)
     is_on_hold = serializers.SerializerMethodField()
 
     class Meta:
         model = RegistrationTest
         fields = [
-            'id', 'test', 'test_name', 'sample_type', 'mrp', 'price', 'discount', 'refund', 'is_on_hold',
+            'id', 'test', 'test_name', 'sample_type', 'tat', 'mrp', 'price', 'discount', 'refund', 'is_on_hold',
         ]
 
     def get_is_on_hold(self, obj):
@@ -1020,6 +1021,7 @@ class RegistrationSearchSerializer(serializers.ModelSerializer):
     hours_left = serializers.SerializerMethodField()
     clinical_pdf_url = serializers.SerializerMethodField()
     clinical_pdf_name = serializers.SerializerMethodField()
+    report_status = serializers.SerializerMethodField()
 
     class Meta:
         model = Registration
@@ -1030,7 +1032,7 @@ class RegistrationSearchSerializer(serializers.ModelSerializer):
             'discount_test', 'discount_regn', 'refund_amount', 'payment_method', 'bill_receipt_no',
             'registration_date', 'collection_date', 'created_at', 'created_by_name', 'created_by_username',
             'can_edit', 'edit_expires_at', 'hours_left', 'comment',
-            'clinical_pdf_url', 'clinical_pdf_name',
+            'clinical_pdf_url', 'clinical_pdf_name', 'report_status',
         ]
 
     def get_patient_display(self, obj):
@@ -1114,6 +1116,12 @@ class RegistrationSearchSerializer(serializers.ModelSerializer):
         if request:
             return request.build_absolute_uri(url)
         return url
+
+    def get_report_status(self, obj):
+        report = getattr(obj, 'clinical_report', None)
+        if not report:
+            return 'pending'
+        return report.status or 'pending'
 
     def get_clinical_pdf_name(self, obj):
         if not obj.clinical_pdf:

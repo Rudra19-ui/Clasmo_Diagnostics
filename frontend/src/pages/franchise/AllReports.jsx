@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Layout from '../../components/Layout';
@@ -6,6 +6,7 @@ import ReportSectionTable from '../../components/franchise/ReportSectionTable';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../services/api';
 import { getReportSectionPaths } from '../../utils/reportSection';
+import { matchesWorklist, summarizeWorklist, WORKLIST_FILTERS } from '../../utils/reportWorklist';
 import { ROLES } from '../../utils/roles';
 
 function toApiDate(value) {
@@ -55,8 +56,14 @@ export default function AllReports() {
   const queryRef = useRef('');
   const abortRef = useRef(null);
   const [rows, setRows] = useState([]);
+  const [worklist, setWorklist] = useState('lis');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const worklistCounts = useMemo(() => summarizeWorklist(rows), [rows]);
+  const visibleRows = useMemo(
+    () => rows.filter((row) => matchesWorklist(row, worklist)),
+    [rows, worklist],
+  );
 
   const load = useCallback(async () => {
     abortRef.current?.abort();
@@ -109,6 +116,30 @@ export default function AllReports() {
         </header>
 
         <section className="franchise-module-panel">
+          <div className="report-worklist" role="toolbar" aria-label="Report status">
+            {WORKLIST_FILTERS.map((item) => {
+              const selected = worklist === item.id;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  className={`report-worklist-chip report-worklist-chip--${item.tone}${selected ? ' is-selected' : ''}`}
+                  aria-pressed={selected}
+                  onClick={() => setWorklist(item.id)}
+                >
+                  <span className="report-worklist-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="16" height="16">
+                      <circle cx="12" cy="8" r="3.2" fill="currentColor" />
+                      <path d="M5.5 19.2c.8-3.2 3.3-5 6.5-5s5.7 1.8 6.5 5" fill="currentColor" />
+                    </svg>
+                  </span>
+                  <span>{item.label}</span>
+                  <span className="report-worklist-count">{worklistCounts[item.id] || 0}</span>
+                </button>
+              );
+            })}
+          </div>
+
           <div className="franchise-report-filters">
             {isTechnician && (
               <label>
@@ -142,8 +173,8 @@ export default function AllReports() {
               <button
                 type="button"
                 className="btn-outline"
-                onClick={() => exportReportValues(rows)}
-                disabled={!rows.length}
+                onClick={() => exportReportValues(visibleRows)}
+                disabled={!visibleRows.length}
               >
                 {exportView ? 'Download report values' : 'Export report values'}
               </button>
@@ -153,12 +184,14 @@ export default function AllReports() {
           {error && <p className="login-error" role="alert">{error}</p>}
 
           <ReportSectionTable
-            rows={rows}
+            rows={visibleRows}
             loading={loading}
             from="all"
             emptyMessage={query.trim()
               ? 'No patients matched that barcode or name.'
-              : 'No reports found for the selected dates.'}
+              : worklist
+                ? 'No bookings in this status.'
+                : 'No reports found for the selected dates.'}
             onSelectPatient={isTechnician ? (row) => {
               navigate(`/reports-section/all/enter/${encodeURIComponent(row.lab_code)}`, {
                 state: { registration: row },

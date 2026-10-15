@@ -2655,5 +2655,2305 @@
         "sort_order": 1
       }
     ]
+  },
+  {
+    "test_name": "24 hours urine Protein/Creatinine Ratio",
+    "match_names": [
+      "24 hours urine Protein/Creatinine Ratio",
+      "24 HOURS URINE PROTEIN/CREATININE RATIO"
+    ],
+    "sample_type": "Urine",
+    "parameters": [
+      {
+        "parameter_name": "Total volume",
+        "unit": "ML/day",
+        "method": "",
+        "reference_range_male": "250 - 2400",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "1000",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "Urine Creatinine",
+        "unit": "mg/dL",
+        "method": "",
+        "reference_range_male": "28 - 217",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "23.52",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "Urinary Protein",
+        "unit": "mg/dL",
+        "method": "",
+        "reference_range_male": "0.0 - 15.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "4.3",
+        "sort_order": 3
+      },
+      {
+        "parameter_name": "Urinary Protein 24 Hours Urine",
+        "unit": "mg/dL 24 Hrs",
+        "method": "Spectrophotometry",
+        "reference_range_male": "0.0 - 150.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "43",
+        "sort_order": 4
+      },
+      {
+        "parameter_name": "Creatinine, 24 Hours Urine",
+        "unit": "mg/dL 24 Hrs",
+        "method": "CALCULATED",
+        "reference_range_male": "600.0 - 2400.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "235.2",
+        "sort_order": 5
+      },
+      {
+        "parameter_name": "Protein/Creatinine Ratio",
+        "unit": "Ratio",
+        "method": "CALCULATED",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.18",
+        "sort_order": 6
+      }
+    ]
+  },
+  {
+    "test_name": "FT3, FT4, TSH",
+    "match_names": [
+      "FT3, FT4, TSH"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "TriIodothyronine Free (FT3)",
+        "unit": "pg/mL",
+        "method": "CLIA",
+        "reference_range_male": "2.3 - 4.2",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "3.25",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "Thyroxine - Free (FT4)",
+        "unit": "ng/dL",
+        "method": "CLIA",
+        "reference_range_male": "0.89 - 1.76",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "1.15",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "TSH",
+        "unit": "mIU/ml",
+        "method": "CLIA",
+        "reference_range_male": "0.35 - 5.50",
+        "reference_range_female": "0.4-4.0",
+        "reference_range_child": "0.7-6.4",
+        "sample_value": "",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "test_name": "Triple H - (HIV,HBsAg,HCV antibody) ELISA",
+    "match_names": [
+      "Triple H - (HIV,HBsAg,HCV antibody) ELISA"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "HIV -1-2",
+        "unit": "ODRatio",
+        "method": "ELISA",
+        "reference_range_male": "0.0 - 0.90",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.12",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "Hepatitis B Surface Antigen (HBsAg)",
+        "unit": "Ratio",
+        "method": "ELISA",
+        "reference_range_male": "0 - 0.90",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.16",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "HEPATITIS C ANTIBODY",
+        "unit": "Index",
+        "method": "ELISA",
+        "reference_range_male": "0 - 1.00",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.155",
+        "sort_order": 3
+      }
+    ]
+  },
+  {
+    "test_name": "1.3 Fitness Advance",
+    "match_names": [
+      "1.3 Fitness Advance"
+    ],
+    "sample_type": "EDTA Blood, Serum",
+    "parameters": [
+      {
+        "parameter_name": "Hemoglobin",
+        "unit": "g/dL",
+        "method": "SLS-Hemoglobin",
+        "reference_range_male": "13 - 18",
+        "reference_range_female": "12 - 15",
+        "reference_range_child": "11 - 16",
+        "sample_value": "",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "Total Red Blood Cell Count",
+        "unit": "10^6/uL",
+        "method": "Electrical Impedance",
+        "reference_range_male": "4.0 - 5.5",
+        "reference_range_female": "3.8 - 4.8",
+        "reference_range_child": "4.0 - 5.2",
+        "sample_value": "",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "Hematocrit (HCT)",
+        "unit": "%",
+        "method": "Calculated",
+        "reference_range_male": "33 - 57",
+        "reference_range_female": "36 - 46",
+        "reference_range_child": "32 - 44",
+        "sample_value": "",
+        "sort_order": 3
+      },
+      {
+        "parameter_name": "Total Leucocytes Count",
+        "unit": "10^3/uL",
+        "method": "Electrical Impedance",
+        "reference_range_male": "4 - 10",
+        "reference_range_female": "4 - 10",
+        "reference_range_child": "5 - 15",
+        "sample_value": "",
+        "sort_order": 4
+      },
+      {
+        "parameter_name": "Neutrophils Percentage",
+        "unit": "%",
+        "method": "Flow Cytometry/LM",
+        "reference_range_male": "40 - 80",
+        "reference_range_female": "40 - 80",
+        "reference_range_child": "30 - 60",
+        "sample_value": "",
+        "sort_order": 5
+      },
+      {
+        "parameter_name": "Lymphocyte Percentage",
+        "unit": "%",
+        "method": "Flow Cytometry/LM",
+        "reference_range_male": "20 - 40",
+        "reference_range_female": "20 - 40",
+        "reference_range_child": "25 - 50",
+        "sample_value": "",
+        "sort_order": 6
+      },
+      {
+        "parameter_name": "Eosinophils Percentage",
+        "unit": "%",
+        "method": "Flow Cytometry/LM",
+        "reference_range_male": "1 - 6",
+        "reference_range_female": "1 - 6",
+        "reference_range_child": "1 - 6",
+        "sample_value": "",
+        "sort_order": 7
+      },
+      {
+        "parameter_name": "Monocytes Percentage",
+        "unit": "%",
+        "method": "Flow Cytometry/LM",
+        "reference_range_male": "2 - 10",
+        "reference_range_female": "2 - 10",
+        "reference_range_child": "2 - 10",
+        "sample_value": "",
+        "sort_order": 8
+      },
+      {
+        "parameter_name": "Basophils Percentage",
+        "unit": "%",
+        "method": "Flow Cytometry/LM",
+        "reference_range_male": "0.0 - 1.0",
+        "reference_range_female": "0.0 - 1.0",
+        "reference_range_child": "0.0 - 1.0",
+        "sample_value": "",
+        "sort_order": 9
+      },
+      {
+        "parameter_name": "Neutrophils-Absolute Count",
+        "unit": "10^3/uL",
+        "method": "Calculated",
+        "reference_range_male": "1.8 - 7.8",
+        "reference_range_female": "1.8 - 7.8",
+        "reference_range_child": "1.5 - 8.0",
+        "sample_value": "",
+        "sort_order": 10
+      },
+      {
+        "parameter_name": "Lymphocytes-Absolute Count",
+        "unit": "10^3/uL",
+        "method": "Calculated",
+        "reference_range_male": "0.8 - 4.8",
+        "reference_range_female": "0.8 - 4.8",
+        "reference_range_child": "1.0 - 5.0",
+        "sample_value": "",
+        "sort_order": 11
+      },
+      {
+        "parameter_name": "Eosinophils-Absolute Count",
+        "unit": "10^3/uL",
+        "method": "Calculated",
+        "reference_range_male": "0.0 - 0.50",
+        "reference_range_female": "0.0 - 0.50",
+        "reference_range_child": "0.0 - 0.50",
+        "sample_value": "",
+        "sort_order": 12
+      },
+      {
+        "parameter_name": "Monocyte-Absolute Count",
+        "unit": "10^3/uL",
+        "method": "Calculated",
+        "reference_range_male": "0.50 - 1.00",
+        "reference_range_female": "0.50 - 1.00",
+        "reference_range_child": "0.20 - 1.00",
+        "sample_value": "",
+        "sort_order": 13
+      },
+      {
+        "parameter_name": "Basophils-Absolute Count",
+        "unit": "10^3/uL",
+        "method": "Calculated",
+        "reference_range_male": "0.0 - 0.20",
+        "reference_range_female": "0.0 - 0.20",
+        "reference_range_child": "0.0 - 0.20",
+        "sample_value": "",
+        "sort_order": 14
+      },
+      {
+        "parameter_name": "Mean Corpuscular Volume (MCV)",
+        "unit": "fL",
+        "method": "Calculated",
+        "reference_range_male": "80 - 96",
+        "reference_range_female": "80 - 96",
+        "reference_range_child": "70 - 86",
+        "sample_value": "",
+        "sort_order": 15
+      },
+      {
+        "parameter_name": "Mean Corpuscular Hemoglobin (MCH)",
+        "unit": "pg",
+        "method": "Calculated",
+        "reference_range_male": "27.5 - 32.2",
+        "reference_range_female": "27.5 - 32.2",
+        "reference_range_child": "24 - 30",
+        "sample_value": "",
+        "sort_order": 16
+      },
+      {
+        "parameter_name": "Mean Corpuscular Hemoglobin Concentration (MCHC)",
+        "unit": "g/dL",
+        "method": "Calculated",
+        "reference_range_male": "29.4 - 34.5",
+        "reference_range_female": "29.4 - 34.5",
+        "reference_range_child": "30 - 36",
+        "sample_value": "",
+        "sort_order": 17
+      },
+      {
+        "parameter_name": "Red Cell Distribution Width (RDW-CV)",
+        "unit": "%",
+        "method": "Calculated",
+        "reference_range_male": "12 - 15",
+        "reference_range_female": "12 - 15",
+        "reference_range_child": "12 - 15",
+        "sample_value": "",
+        "sort_order": 18
+      },
+      {
+        "parameter_name": "Platelet Count",
+        "unit": "10^3/uL",
+        "method": "Electrical Impedance",
+        "reference_range_male": "150 - 410",
+        "reference_range_female": "150 - 410",
+        "reference_range_child": "150 - 450",
+        "sample_value": "",
+        "sort_order": 19
+      },
+      {
+        "parameter_name": "Mean Platelet Volume (MPV)",
+        "unit": "fL",
+        "method": "Calculated",
+        "reference_range_male": "6 - 11",
+        "reference_range_female": "6 - 11",
+        "reference_range_child": "6 - 11",
+        "sample_value": "",
+        "sort_order": 20
+      },
+      {
+        "parameter_name": "Platelet haematocrit (PCT)",
+        "unit": "%",
+        "method": "Calculated",
+        "reference_range_male": "0.1 - 0.28",
+        "reference_range_female": "0.1 - 0.28",
+        "reference_range_child": "0.1 - 0.28",
+        "sample_value": "",
+        "sort_order": 21
+      },
+      {
+        "parameter_name": "Platelet Distribution Width (PDW)",
+        "unit": "fL",
+        "method": "Calculated",
+        "reference_range_male": "15 - 18",
+        "reference_range_female": "15 - 18",
+        "reference_range_child": "15 - 18",
+        "sample_value": "",
+        "sort_order": 22
+      },
+      {
+        "parameter_name": "Platelet larger cell Count (PLCC)",
+        "unit": "10^3/uL",
+        "method": "Westergren",
+        "reference_range_male": "13 - 126",
+        "reference_range_female": "13 - 126",
+        "reference_range_child": "13 - 126",
+        "sample_value": "",
+        "sort_order": 23
+      },
+      {
+        "parameter_name": "Platelet larger cell ratio (PLCR)",
+        "unit": "%",
+        "method": "",
+        "reference_range_male": "13 - 43",
+        "reference_range_female": "13 - 43",
+        "reference_range_child": "13 - 43",
+        "sample_value": "",
+        "sort_order": 24
+      },
+      {
+        "parameter_name": "GLUCOSE, FASTING (F)",
+        "unit": "mg/dl",
+        "method": "GOD-POD",
+        "reference_range_male": "74.0 - 110.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "76.0",
+        "sort_order": 25
+      },
+      {
+        "parameter_name": "CRP",
+        "unit": "mg/dL",
+        "method": "(Immunoturbidimetry)",
+        "reference_range_male": "0 - 6.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "10.3",
+        "sort_order": 26
+      },
+      {
+        "parameter_name": "IRON",
+        "unit": "ug/dl",
+        "method": "FERROZINE METHOD WITHOUT DEPROTEINIZATION",
+        "reference_range_male": "65 - 175",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "96.5",
+        "sort_order": 27
+      },
+      {
+        "parameter_name": "TOTAL IRON BINDING CAPACITY (TIBC)",
+        "unit": "ug/dl",
+        "method": "SPECTROPHOTOMETRIC ASSAY",
+        "reference_range_male": "225 - 535",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "443.5",
+        "sort_order": 28
+      },
+      {
+        "parameter_name": "TRANSFERRIN SATURATION %",
+        "unit": "%",
+        "method": "CALCULATED",
+        "reference_range_male": "13 - 45",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "21.76",
+        "sort_order": 29
+      },
+      {
+        "parameter_name": "25-OH VITAMIN D 3 (TOTAL)",
+        "unit": "ng/mL",
+        "method": "CLIA",
+        "reference_range_male": "30 - 100",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "28.0",
+        "sort_order": 30
+      }
+    ]
+  },
+  {
+    "test_name": "Electrolyte Panel- (N a, K, Cl)",
+    "match_names": [
+      "Electrolyte Panel- (N a, K, Cl)",
+      "Electrolyte Panel- (N A, K, Cl)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "SODIUM",
+        "unit": "mEq/L",
+        "method": "ISE-Electrode Direct",
+        "reference_range_male": "136 - 145",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "141.50",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "POTASSIUM",
+        "unit": "mEq/L",
+        "method": "ISE-Electrode Direct",
+        "reference_range_male": "3.6 - 5.1",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "4.39",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "CHLORIDE",
+        "unit": "mEq/L",
+        "method": "ISE-Electrode Direct",
+        "reference_range_male": "98 - 107",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "100.40",
+        "sort_order": 3
+      }
+    ],
+    "report_comments": "Electrolytes are minerals in our body that have an electric charge. They are in our blood, urine, tissues, and other body fluids. Electrolytes are important because they help: Balance the amount of water in our body. Balance our body's acid/base (pH) level. The major electrolytes: sodium, potassium, and chloride."
+  },
+  {
+    "test_name": "hs-CRP (hs-C Reactive Protein )",
+    "match_names": [
+      "hs-CRP (hs-C Reactive Protein )",
+      "Hs-CRP (Hs-C Reactive Protein )"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "HIGH SENSITIVITY C-REACTIVE PROTEIN (HS-CRP)",
+        "unit": "mg/L",
+        "method": "Immunoturbidimetry",
+        "reference_range_male": "0 - 3.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "1.6",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "hsCRP measurements may be used as an independent risk marker for the identification of individuals at risk for future cardiovascular disease. Elevated CRP values may be indicative of prognosis of individuals with acute coronary syndromes, and may be useful in the management of such individuals.",
+    "report_extra_sections": {
+      "INTERPRETATION": "High sensitivity C-reactive protein, when used in conjunction with other clinical laboratory evaluation of acute coronary syndromes, may be useful as an independent marker of prognosis for recurrent events, in patients with stable coronary disease or acute coronary syndromes. hsCRP levels should not be substituted for assessment of traditional cardiovascular risk factors. Patients with persistently unexplained, marked evaluation of hsCRP after repeated testing should be evaluated for non - cardiovascular etiologies"
+    }
+  },
+  {
+    "test_name": "LH,FSH,PRL",
+    "match_names": [
+      "LH,FSH,PRL",
+      "LH,Fsh,PRL"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "LUTEINISING HORMONE (LH)",
+        "unit": "mIU/ml",
+        "method": "CLIA",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "3.09",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "FOLLICLE STIMULATING HORMONE (FSH)",
+        "unit": "mIU/ml",
+        "method": "CLIA",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "6.11",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "PROLACTIN (PRL)",
+        "unit": "ng/ml",
+        "method": "CLIA",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "9.45",
+        "sort_order": 3
+      }
+    ],
+    "report_extra_sections": {
+      "Clinical Information": ". Clinical Use · Diagnosis of gonadal function disorders · Management and treatment of infertility in both genders Decreased levels · Pituitary deficiency: Pituitary necrosis / infarction · Bromocriptine administration · Pseudohypoparathyroidism",
+      "LH reference intervals": "Normally menstruating follicular phase 1.9-12.5; midcycle peak 8.7-76.3; luteal phase 0.5-16.9; Pregnant <0.1-1.5; Postmenopausal 15.9-54.0; Contraceptives 0.7-5.6 mIU/ml.",
+      "FSH reference intervals": "Follicular phase 2.5-10.2; midcycle peak 3.4-33.4; luteal phase 1.5-9.1; Pregnant <0.3; Postmenopausal 23.0-116.3 mIU/ml.",
+      "Prolactin reference intervals": "Nonpregnant 2.8-29.2; Pregnant 9.7-208.5; Postmenopausal 1.8-20.3 ng/ml."
+    }
+  },
+  {
+    "test_name": "Lipoprotein (A) [Lp(a)]",
+    "match_names": [
+      "Lipoprotein (A) [Lp(a)]",
+      "Lipoprotein (A) [Lp(A)]"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "LIPOPROTEIN (A) [LP(A)]",
+        "unit": "mg/dl",
+        "method": "IMMUNOTURBIDIMETRY",
+        "reference_range_male": "0 - 30.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "11.7",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "Determination of LPA may be useful to guide management of individuals with a family history of CHD or with existing disease. The levels of LPA in the blood depends on genetic factors; The range of variation in a population is relatively large and hence for diagnostic purpose, results should always be assessed in conjunction with the patient’s medical history, clinical examination and other findings"
+  },
+  {
+    "test_name": "Lithium (Li)",
+    "match_names": [
+      "Lithium (Li)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Lithium , Serum",
+        "unit": "mmol/L",
+        "method": "(Ion-selective electrode )",
+        "reference_range_male": "0.6 - 1.2",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.8",
+        "sort_order": 1
+      }
+    ],
+    "report_extra_sections": {
+      "USES": "Lithium as lithium carbonate is used as a psychoactive agent in the treatment of manic depressive disorders. Lithium therapy demands daily monitoring of serum lithium levels until the proper dose schedule is determined. Serum elimination half-life ranges from 20 to 60 hours. Insomnia in a low-range group is described. Tremor, gastrointestinal symptoms, urinary frequency, and weight gain were less frequent at lower levels.1 Intoxication never occurs suddenly. Several days to a week before full-blown symptoms develop, a patient will experience lethargy, drowsiness, tremor, muscle twitching, dysarthria, anorexia and vomiting or diarrhea. A fully developed case of intoxication shows coma to semicoma, rigidity, hyperactive reflexes and seizures at times. Lithium is completely absorbed six to eight hours after oral administration. Since the onset of action is slow (5 to 10 days), parenteral administration is of no advantage. The plasma half-life is 17 to 36 hours, and this drug is eliminated almost entirely by the kidneys."
+    }
+  },
+  {
+    "test_name": "Magnesium",
+    "match_names": [
+      "Magnesium"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Magnesium , serum",
+        "unit": "mg/dL",
+        "method": "XYLIDYL BLUE",
+        "reference_range_male": "1.6 - 2.6",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "2.10",
+        "sort_order": 1
+      }
+    ],
+    "report_extra_sections": {
+      "INTERPRETATION": "High levels of magnesium may result from taking too many supplements or from a problem with excreting extra magnesium. Specific conditions that can lead to high magnesium levels include kidney failure and oliguria, or low urine production."
+    }
+  },
+  {
+    "test_name": "Progesterone",
+    "match_names": [
+      "Progesterone"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "PROGESTERONE",
+        "unit": "ng/mL",
+        "method": "CLIA",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "4.36",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "Progesterone, in conjunction with estrogens, regulates reproductive tract functions during the menstrual cycle. Progesterone is critical in preparing the endometrium for blastocyst implantation and the maintenance of pregnancy. The major sources of progesterone are the corpus luteum and the placenta in women. Minor sources of progesterone are the adrenal cortex in men and women, and the testes in men. Progesterone levels are low during the follicular phase of the menstrual cycle. After ovulation, progesterone production by the corpus luteum increases rapidly, reaching a maximum concentration 4 to 7 days after ovulation. These levels are maintained for 4 to 6 days then fall to baseline levels, inducing menstruation.1,2 During pregnancy, progesterone levels rise steadily to their highest levels in the third trimester. Clinical evaluation of progesterone confirms ovulation and normal luteal function in nonpregnant women. Inadequate progesterone production by the corpus luteum may indicate luteal phase deficiency (LPD), which is associated with infertility and early miscarriage.3,4",
+    "report_extra_sections": {
+      "Reference Range": "Menstruation period 0.15-1.40 Follicular phase 3.34-25.56 Luteal phase 4.44-28.03 Mid Luteal phase <0.73 post menopause Pregnancy frist trimester-11.22-90.0 second trimester-25.55-89.40 third trimester-48.40-422.4"
+    }
+  },
+  {
+    "test_name": "PSA- Free (Prostrate Specific Antigen Free)",
+    "match_names": [
+      "PSA- Free (Prostrate Specific Antigen Free)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "PSA- FREE",
+        "unit": "ng/mL",
+        "method": "CLIA",
+        "reference_range_male": "0 - 0.5",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.14",
+        "sort_order": 1
+      }
+    ],
+    "report_note": "Free PSA values regardless of levels should not be interpreted as absolute evidence for the presence or absence of disease. All values should be correlated with clinical findings and results of other investigations 2. False negative / positive results are observed in patients receiving mouse monoclonal antibodies for diagnosis or therapy 3. Free PSA levels may appear consistently elevated / depressed due to the interference by heterophilic antibodies & nonspecific protein binding, 4. Immediate Free PSA testing following digital rectal examination, ejaculation, prostatic massage, ultrasonography and needle biopsy of prostate is not recommended as they falsely elevate levels 5. Hormone therapy affects Free PSA expression",
+    "report_extra_sections": {
+      "REFERENCE": "FREE PSA 0- 0.5 ng/mL FREE PSA >0.5- 2.5 ng/mL FREE PSA >2.5- 5.0 ng/mL FREE PSA >5.0-10 ng/m FREE PSA >10.0 ng/mL Healthy males 87.2 % 12.8% 0% 0% 0% BPH 51.9% 42.9% 4.2% 0.5% 0.5% Stage A Prostate Cancer 38.5% 42.3% 11.5% 3.8% 3.8% Stage B Prostate Cancer 23.9% 68.7% 7.5% 0% 0%"
+    }
+  },
+  {
+    "test_name": "Rubella Virus - IgG",
+    "match_names": [
+      "Rubella Virus - IgG"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "RUBELLA VIRUS",
+        "unit": "OD Ratio",
+        "method": "ELISA",
+        "reference_range_male": "0 - 0.90",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.53",
+        "sort_order": 1
+      }
+    ],
+    "report_extra_sections": {
+      "Reference Range": "< 0.90 IU/ml Negative 0.90 - 1.10 IU/ml Borderline > 1.10 IU/ml Positive"
+    }
+  },
+  {
+    "test_name": "Rubella Virus - IgM",
+    "match_names": [
+      "Rubella Virus - IgM"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "RUBELLA VIRUS",
+        "unit": "OD Ratio",
+        "method": "ELISA",
+        "reference_range_male": "0 - 0.90",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.03",
+        "sort_order": 1
+      }
+    ],
+    "report_extra_sections": {
+      "Reference Range": "< 0.90 IU/ml Negative 0.90 - 1.10 IU/ml Borderline > 1.10 IU/ml Positive"
+    }
+  },
+  {
+    "test_name": "Salmonella Typhi (TYPHI DOT IgG & IgM)",
+    "match_names": [
+      "Salmonella Typhi (TYPHI DOT IgG & IgM)",
+      "Salmonella Typhi (Typhi Dot IgG & IgM)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Typhi D -IgG",
+        "unit": "OD Ratio",
+        "method": "ELISA",
+        "reference_range_male": "0.00 - 0.90",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.62",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "Typhi D -IgM",
+        "unit": "OD Ratio",
+        "method": ".",
+        "reference_range_male": "0.0 - 0.90",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.79",
+        "sort_order": 2
+      }
+    ],
+    "clinical_significance": "The Typhidot is easy to perform, and requires no special equipment or training of staff for interpretation of results. It will be a useful complementary test to blood culture and the Widal test in the diagnosis of typhoid fever. Please correlate with clinical conditions."
+  },
+  {
+    "test_name": "Stool Examination",
+    "match_names": [
+      "Stool Examination"
+    ],
+    "sample_type": "STOOL",
+    "parameters": [
+      {
+        "parameter_name": "Colour",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "BROWNISH",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "Form & Consistency",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "SEMI SOLID",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "Mucus",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "Absent",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "ABSENT",
+        "sort_order": 3
+      },
+      {
+        "parameter_name": "Blood (Stool)",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "Absent",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "ABSENT",
+        "sort_order": 4
+      },
+      {
+        "parameter_name": "Parasites",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "Not seen",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "NOT SEEN",
+        "sort_order": 5
+      },
+      {
+        "parameter_name": "pH",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "5.80 - 7.50",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "6.5",
+        "sort_order": 6
+      },
+      {
+        "parameter_name": "Larvae",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "Absent",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "ABSENT",
+        "sort_order": 7
+      },
+      {
+        "parameter_name": "Red Blood Cells",
+        "unit": "/HPF",
+        "method": "",
+        "reference_range_male": "NIL",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "NIL",
+        "sort_order": 8
+      },
+      {
+        "parameter_name": "Pus Cell",
+        "unit": "/HPF",
+        "method": "",
+        "reference_range_male": "0 - 2",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "1-2",
+        "sort_order": 9
+      },
+      {
+        "parameter_name": "Cysts",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "Absent",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "ABSENT",
+        "sort_order": 10
+      },
+      {
+        "parameter_name": "Ova",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "Absent",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "ABSENT",
+        "sort_order": 11
+      },
+      {
+        "parameter_name": "Yeast Cells",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "Absent",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "ABSENT",
+        "sort_order": 12
+      },
+      {
+        "parameter_name": "Bacteria",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "Absent",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "PRESENT",
+        "sort_order": 13
+      }
+    ]
+  },
+  {
+    "test_name": "THYROID PROFILE -3 (T3 T4 TSH)",
+    "match_names": [
+      "THYROID PROFILE -3 (T3 T4 TSH)",
+      "Thyroid Profile -3 (T3 T4 Tsh)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "TOTAL TRIIODOTHYRONINE (T3)",
+        "unit": "ng/mL",
+        "method": "CLIA",
+        "reference_range_male": "0.60 - 1.81",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "1.05",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "TOTAL THYROXINE (T4)",
+        "unit": "µg/dl",
+        "method": "CLIA",
+        "reference_range_male": "4.5 - 10.9",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "5.3",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "THYROID STIMULATING HORMONE (TSH)",
+        "unit": "mIU/ml",
+        "method": "CLIA",
+        "reference_range_male": "0.35 - 5.50",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "4.49",
+        "sort_order": 3
+      }
+    ],
+    "report_extra_sections": {
+      "Reference Range": "Thyroid hormone status during pregnancy: Pregnancy T3 T4 TSH 1st Trimester 0.70-1.80 6-16.5 0.37 - 3.6 2nd & 3rd Trimester 0.80-2.00 6-18.5 0.38 - 4.04",
+      "REFERENCE": "0-5 days: 0.7-15.2 6 days-2 months: 0.7-11.0 3-11 months: 0.7-8.4 1-5 years: 0.7-6.0 6-10 years: 0.6-4.8",
+      "INTERPRETATION": "1. Patients having low T3 and T4 levels but high TSH levels suffer from primary hypothyroidism, cretinism, juvenile myxedema or autoimmune disorders. 2. Patients having high T3 and T4 levels but low TSH levels suffer from Grave's disease, toxic adenoma or sub-acute thyroiditis. 3. Patients having either low or normal T3 and T4 levels but low TSH values suffer from iodine deficiency or secondary hypothyroidism. 4. Patients having high T3 and T4 levels but normal TSH levels may suffer from toxic multinodular goiter. This condition is mostly a symptomatic and may cause transient hyperthyroidism but no persistent symptoms. 5. Patients with high or normal T3 and T4 levels and low or normal TSH levels suffer either from T3 toxicosis or T4 toxicosis respectively. 6. In patients with non thyroidal illness abnormal test results are not necessarily indicative of thyroidism but may be due to adaptation to thecatabolic state and may revert to normal when the patient recovers. 7. There are many drugs for eg. Glucocorticoids, Dopamine, Lithium, Iodides, Oral radiographic dyes, etc. which may affect the thyroid function tests. 8. Generally when total T3 and total T4 results are indecisive then Free T3 and Free T4 tests are recommended for further confirmation along with TSH levels. Please correlate with clinical conditions"
+    }
+  },
+  {
+    "test_name": "Troponin - I, Qualitative",
+    "match_names": [
+      "Troponin - I, Qualitative"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Troponin - I",
+        "unit": ".",
+        "method": ".",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "NEGATIVE",
+        "sort_order": 1
+      }
+    ],
+    "report_comments": "A troponin test measures the levels of troponin T or troponin I proteins in the blood. These proteins are released when the heart muscle has been damaged, such as occurs with a heart attack. The more damage there is to the heart, the greater the amount of troponin T and I there will be in the blood."
+  },
+  {
+    "test_name": "Vitamin D 3 (1, 25 D ihydroxyvitamin D 3)",
+    "match_names": [
+      "Vitamin D 3 (1, 25 D ihydroxyvitamin D 3)",
+      "Vitamin D 3 (1, 25 D Ihydroxyvitamin D 3)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "VITAMIN D, 1, 25 DIHYDROXY",
+        "unit": "pmol/L",
+        "method": "CLIA",
+        "reference_range_male": "76 - 190",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "45.6",
+        "sort_order": 1
+      }
+    ],
+    "report_note": "The assay measures both D2 (Ergocalciferol) and D3 (Cholecalciferol) metabolites of vitamin D 1,25-dihydroxy vitamin D concentrations are not a reliable indicator of vitamin D toxicity; normal (or even low) results may be seen in such cases. Comment 1,25dihydroxy Vitamin D is the major biologically active form of Vitamin D. Its concentration is only 1/1000 that of 25, hydroxy Vitamin D and has half life of 5 to 6 hrs. Circulating levels are regulated by PTH, phosphate & calcium.While 1,25-dihydroxy vitamin D is the most potent vitamin D metabolite, levels of the 25-OH forms of vitamin D more accurately reflect the body's vitamin D stores. However, in the presence of renal disease, 1,25-dihydroxy vitamin D levels may be needed to adequately assess vitamin D status Please correlate with clinical conditions."
+  },
+  {
+    "test_name": "Acetylcholine receptor (AChR) antibody",
+    "match_names": [
+      "Acetylcholine receptor (AChR) antibody",
+      "Acetylcholine Receptor (AChR) Antibody"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "ACETYLCHOLINE RECEPTOR",
+        "unit": "nmol/L",
+        "method": "CLIA",
+        "reference_range_male": "0.00 - 0.25",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.12",
+        "sort_order": 1
+      }
+    ],
+    "report_extra_sections": {
+      "INTERPRETATION": "Auto Antibody acetylcholine receptor Antibodies are heterogeneous regarding their biological effects. They can act as modulating or blocking antibodies. This test is Antibody binding assay and cannot ascertain biological effects of the Antibody. Autoantibodies to the acetylcholine receptor are responsible for failure of the neuromuscular junction in Myasthenia Gravis The frequency of ACHR antibody detection in MG patients with moderate to severe generalized MG, mild generalized MG, and ocular MG are found to be 93%, 88%, and 71% respectively. These antibodies can also be found in some other disorders like- primary biliary cirrhosis, tardive dyskinesia, autoimmune thyroiditis, systemic lupus erythematous, thymoma without myasthenia, and amyotrophic lateral sclerosis. The antibody titres can be negative or not detectable in the first 12 months after the onset of symptoms of MG or during immunosuppressant therapy. The magnitude of the antibody titres correlates poorly with severity of MG and hence is not useful for predicting disease activity. Please correlate with clinical conditions"
+    }
+  },
+  {
+    "test_name": "Adreno Corticotrophic Hormone (ACTH)",
+    "match_names": [
+      "Adreno Corticotrophic Hormone (ACTH)"
+    ],
+    "sample_type": "EDTA_PLASMA",
+    "parameters": [
+      {
+        "parameter_name": "ACTH",
+        "unit": "pg/mL",
+        "method": "CLIA",
+        "reference_range_male": "1 - 46",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "26.55",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "Increased levels · Stress · Addison’s disease · Pituitary Cushing’s disease · ACTH secreting tumor Adrenocorticotropic hormone (ACTH) is a hormone produced and secreted by corticotrophs in the adenohypophysis (anterior lobe) of the pituitary gland. Normal pituitary exhibits positive staining in a large population of cells (approximately 15% to 20%). Immunohistochemical detection of ACTH may be useful in the classification of pituitary adenomas Please correlate with clinical conditions",
+    "report_extra_sections": {
+      "REFERENCE": "Male and female - 1 week-9 years: 5-46 pg/mL Male and female - 10-18 years: 6-55 pg/mL Female - 19 years and older: 6-58 pg/mL Male - 19 years and older: 7-69 pg/m"
+    }
+  },
+  {
+    "test_name": "Aldosterone",
+    "match_names": [
+      "Aldosterone"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Aldosterone",
+        "unit": "ng/dL",
+        "method": "CLIA",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "16.5",
+        "sort_order": 1
+      }
+    ],
+    "report_extra_sections": {
+      "Reference Range": "Adults : 7–30 ng/dL Children : 5–80 ng/dL",
+      "USES": "Aldosterone stimulates sodium transport across cell membranes, particularly in the distal renal tubule where sodium is exchanged for hydrogen and potassium. Secondarily, aldosterone is important in the maintenance of blood pressure and blood volume. Aldosterone is the major mineralocorticoid and is produced by the adrenal cortex. The renin-angiotensin system is the primary regulator of the synthesis and secretion of aldosterone. Likewise, increased concentrations of potassium in the plasma may directly stimulate adrenal production of the hormone. Under physiologic conditions, pituitary adrenocorticotropic hormone is not a major factor in regulating aldosterone secretion. Please correlate with clinical conditions"
+    }
+  },
+  {
+    "test_name": "Androstenedione (A4)",
+    "match_names": [
+      "Androstenedione (A4)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "ANDROSTENEDIONE (A4)",
+        "unit": "ng/dL",
+        "method": "",
+        "reference_range_male": "30.0 - 200.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "126.3",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "Elevated androstenedione levels indicate increased adrenal or gonadal androgen production. Mild elevations in adults are usually idiopathic, or related to conditions such as polycystic ovarian syndrome (PCOS) in women, or use of androstenedione supplements in men and women. However, levels greater than or equal to 500 ng/dL can suggest the presence of an androgen-secreting adrenal, or less commonly, a gonadal, tumor. Androstenedione levels are elevated in more than 90% of patients with benign androgen-producing adrenal tumors, usually well above 500 ng/dL. Most androgen-secreting adrenal carcinomas also exhibit elevated androstenedione levels, but more typically show relatively larger elevations in 17-alpha-hydroxyprogesterone (OHPG) and dehydroepiandrosterone sulfate (DHEA-S) than in androstenedione, as they have often lost the ability to produce downstream androgens. Most androgen-secreting gonadal tumors also overproduce androstenedione, but often to lesser degrees than adrenal tumors. They also overproduce testosterone. In men and in women with high baseline androgen levels (eg, PCOS), the respective elevations of androstenedione and testosterone may not be high enough to allow unequivocal diagnosis of androgen-producing gonadal tumors. In these cases, an elevation of the usual ratio of testosterone to androstenedione of 1, to a ratio of >1.5, is a strong indicator of neoplastic androgen production. Diagnosis and differential diagnosis of congenital adrenal hyperplasia (CAH) always requires the measurement of several steroids. Patients with CAH due to 21- hydroxylase gene (CYP21A2) mutations the most common cause of CAH (>90% of cases), usually have very high levels of androstenedione, often 5- to 10-fold elevations. OHPG levels are usually even higher, while cortisol levels are low or undetectable. All 3 analytes should be tested. In the much less common CYP11A1 mutation, androstenedione levels are elevated to a similar extend as in CYP21A2 mutation, and cortisol is also low, but OHPG is only mildly, if at all, elevated. Also less common, 3 beta HSD-2 deficiency is characterized by low cortisol and substantial elevations in DHEA-S and 17- alpha-hydroxypregnenolone, while androstenedione is either low, normal, or, rarely, very mildly elevated (as a consequence of peripheral tissue androstenedione production by 3 beta HSD-1). In the very rare STAR (steroidogenic acute regulatory protein) deficiency, all steroid hormone levels are low and cholesterol is elevated. Please correlate with clinical conditions"
+  },
+  {
+    "test_name": "Angiotensin Converting Enzyme(ACE), SERUM",
+    "match_names": [
+      "Angiotensin Converting Enzyme(ACE), SERUM"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "ANGIOTENSIN CONVERTING ENZYME",
+        "unit": "U/L",
+        "method": "FAPGG SUBSTRATE",
+        "reference_range_male": "12 - 68",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "36.0",
+        "sort_order": 1
+      }
+    ],
+    "report_comments": "Angiotensin converting enzyme (ACE) modulates peripheral vascular resistance as well as renal and cardiovascular function. It is responsible for conversion of Angiotensin I to Angiotensin II as well as inactivation of bradykinin. Majority of ACE is tissue bound (> 90%) found predominantly in lungs & testes.",
+    "clinical_significance": "Angiotensin converting enzyme (ACE) is integral to the renin-angiotensin system (RAS), which maintains blood pressure by regulation of fluid volume and vascular tension. Its peptidase action on the decapeptide angiotensinogen I results in the hydrolysis of a terminal histidyl leucine dipeptide and the formation of the octapeptide angiotensin II, a potent vasoconstrictor that increases blood pressure. ACE activity is increased in sarcoidosis, a systemic granulomatous disease that commonly affects the lungs. In sarcoidosis, ACE is thought to be produced by epithelioid cells and macrophages of the granuloma. ACE activity reflects the severity of sarcoidosis: 68% positivity in those with stage I sarcoidosis, 86% in stage II sarcoidosis, and 91% in stage III sarcoidosis. Other conditions such as Gaucher disease, leprosy, untreated hyperthyroidism, psoriasis, premature infants with respiratory distress syndrome, adults with amyloidosis, and histoplasmosis have been associated with increased serum ACE activity. Please correlate with clinical conditions"
+  },
+  {
+    "test_name": "Anti Chlamydia Trachomatis IgG",
+    "match_names": [
+      "Anti Chlamydia Trachomatis IgG"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "ANTI CHLAMYDIA ANTIBODY IGG",
+        "unit": "OD Ratio",
+        "method": "ELISA",
+        "reference_range_male": "0.00 - 0.90",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.5",
+        "sort_order": 1
+      }
+    ],
+    "report_note": "1. Equivocal results do not rule out the possibility of Chlamydial infection. Retesting is recommended after 7 days. 2. Results must be correlated with clinical findings and other diagnostic investigations. Comments Chlamydia trachomatis is implicated in a wide variety of infections in humans. It is a common cause of Non- gonococcal urethritis and Cervicitis. In females it causes Pelvic Inflammatory disease, Salpingitis & Endometritis. In males it leads to Epididymitis & Reiter’s syndrome. Lymphogranuloma venereum (LGV) is a sexually transmitted infection caused by Chlamydia trachomatis. It can also cause ophthalmologic infections like Trachoma and Inclusion Conjuctivitis Please correlate with clinical conditions",
+    "report_extra_sections": {
+      "Reference Range": "Negative: < 0.9 equivocal: 0.9 - 1.1 positive: > 1.1"
+    }
+  },
+  {
+    "test_name": "Anti Chlamydia Trachomatis IgM",
+    "match_names": [
+      "Anti Chlamydia Trachomatis IgM"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "ANTI CHLAMYDIA ANTIBODY IGM",
+        "unit": "OD Ratio",
+        "method": "ELISA",
+        "reference_range_male": "0.00 - 0.90",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.3",
+        "sort_order": 1
+      }
+    ],
+    "report_note": "1. Equivocal results do not rule out the possibility of Chlamydial infection. Retesting is recommended after 7 days. 2. Results must be correlated with clinical findings and other diagnostic investigations. Comments Chlamydia trachomatis is implicated in a wide variety of infections in humans. It is a common cause of Non- gonococcal urethritis and Cervicitis. In females it causes Pelvic Inflammatory disease, Salpingitis & Endometritis. In males it leads to Epididymitis & Reiter’s syndrome. Lymphogranuloma venereum (LGV) is a sexually transmitted infection caused by Chlamydia trachomatis. It can also cause ophthalmologic infections like Trachoma and Inclusion Conjuctivitis Please correlate with clinical conditions",
+    "report_extra_sections": {
+      "Reference Range": "Negative: < 0.9 equivocal: 0.9 - 1.1 positive: > 1.1"
+    }
+  },
+  {
+    "test_name": "Anti Smooth Muscle Antibody (ASMA)",
+    "match_names": [
+      "Anti Smooth Muscle Antibody (ASMA)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Anti Sm - Antibody",
+        "unit": ".",
+        "method": "IFA",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "NEGATIVE",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "Titre",
+        "unit": ".",
+        "method": ".",
+        "reference_range_male": "- - >1:80",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "1:10",
+        "sort_order": 2
+      }
+    ],
+    "clinical_significance": "Autoantibodies directed against the contractile elements of striated muscle are found in 30% of adult patients with myasthenia gravis and in 80% of those with thymoma. These antibodies may also be detected in patients with: Lambert-Eaton myasthenic syndrome, small-cell lung carcinoma, breast carcinoma, patients treated with D-penicillamine, bone marrow transplant recipients having graft-versus-host disease, and autoimmune liver disorders. While this test is used as a serological aid in the diagnosis of thymoma, especially in patients with onset of myasthenia gravis (MG) younger than 45 years, it is more predictive of thymoma when accompanied by a muscle acetylcholine receptor (AChR) modulating antibody value of 90% or greater AChR loss and is most predictive of thymoma when accompanied by collapsin response-mediator protein-5-IgG (CRMP-5-IgG). Serial measurements are useful after treatment of thymoma. Measurements of muscle AChR binding, muscle AChR modulating antibody, and CRMP-5-IgG (if initially positive) are also recommended. Please correlate with clinical conditions"
+  },
+  {
+    "test_name": "APOLIPOPROTEIN B/A1",
+    "match_names": [
+      "APOLIPOPROTEIN B/A1",
+      "Apolipoprotein B/A1"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Apolipoprotein (Apo A1)",
+        "unit": "mg/dl",
+        "method": "Immunoturbidimetry",
+        "reference_range_male": "105 - 175",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "125.7",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "Apolipoprotein (Apo B)",
+        "unit": "mg/dl",
+        "method": "Immunoturbidimetry",
+        "reference_range_male": "60 - 140",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "83.3",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "Apo B / Apo A1 Ratio",
+        "unit": "Ratio",
+        "method": "CALCULATED",
+        "reference_range_male": "0.35 - 0.98",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.66",
+        "sort_order": 3
+      }
+    ],
+    "clinical_significance": "Apolipoprotein B (ApoB) is the primary protein component of low-density lipoprotein (LDL). Apolipoprotein A1 (ApoA1) is the primary protein component of high- density lipoprotein (HDL). Elevated ApoB and decreased ApoA1 are associated with increased risk of cardiovascular disease. Multiple studies have reported that ApoB and ApoA1 are more strongly associated with cardiovascular disease than the corresponding lipoprotein cholesterol fraction (see APOA1 / Apolipoprotein A1, Serum and APOLB / Apolipoprotein B, Serum). ApoB is present in all atherogenic lipoproteins including LDL, Lp(a), intermediate-density lipoprotein (IDL), and very low-density lipoprotein (VLDL) remnants. ApoA1 is the nucleating protein around which HDL forms during reverse cholesterol transport. The ApoB:ApoA1 ratio represents the balance between atherogenic and antiatherogenic lipoproteins. Several large prospective studies have shown that the ApoB:ApoA1 ratio performs as well, and often better, than traditional lipids as an indicator of risk.(1-3) Please correlate with clinical conditions"
+  },
+  {
+    "test_name": "Apolipoprotein B (APO-B)",
+    "match_names": [
+      "Apolipoprotein B (APO-B)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Apolipoprotein B (Apo B)",
+        "unit": "mg/dl",
+        "method": "Immunoturbidimetry",
+        "reference_range_male": "60 - 140",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "114.0",
+        "sort_order": 1
+      }
+    ],
+    "report_comments": "One Apolipoprotein B (Apo B) molecule is present on each LDL, IDL, VLDL and Lp(a) particle and therefore Apo B concentration reflects the total number of atherogenic particle in circulation. Apo B is particularly useful in identifying individuals who have an increased number of small, dense LDL ( eg, Diabetes, Metabolic Syndrome etc.) but normal LDL cholesterol concentration and are at increased risk of for Atherosclerotic Cardiovascular disease (ASCVD)."
+  },
+  {
+    "test_name": "Beta-2- Glycoprotein-1 IgG",
+    "match_names": [
+      "Beta-2- Glycoprotein-1 IgG"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "BETA 2 GLYCOPROTEIN IGG",
+        "unit": "U/ml",
+        "method": "ELISA",
+        "reference_range_male": "0.00 - 12.00",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "8.5",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "Beta-2 glycoprotein 1 (beta-2 GP1, also called apolipoprotein H) is a 326-amino acid polypeptide synthesized by hepatocytes, endothelial cells, and trophoblast cells. It contains 5 homologous domains of approximately 60 amino acids each.(1,2) Domain 5, located at the C terminus, contains a hydrophobic core surrounded by 14 positively charged amino acid residues that promote electrostatic interactions with plasma membranes via interactions with negatively charged phospholipids. Complexes of beta 2 GP1 and phospholipid in vivo reveal epitopes that react with natural autoantibodies.(3) Plasma from normal individuals contains low concentrations of IgG autoantibodies to beta-2 GP1 (beta-2 GP1 antibodies) that are of moderate affinity and react with an epitope on the first domain near the N terminus. Pathologic levels of beta 2 GP1 antibodies occur in patients with antiphospholipid syndrome (APS). APS is associated with a variety of clinical symptoms notably thrombosis, pregnancy complications, unexplained cutaneous circulatory disturbances (livido reticularis or pyoderma gangrenosum), thrombocytopenia or hemolytic anemia, and nonbacterial thrombotic endocarditis. Beta 2 GP1 antibodies are found with increased frequency in patients with systemic rheumatic diseases, especially systemic lupus erythematosus. Autoantibodies to beta-2 GP1 are detected in the clinical laboratory by different types of assays including immunoassays and functional coagulation assays. Immunoassays for beta-2 GP1 antibodies can be performed using either a composite substrate comprised of beta-2 GP1 plus anionic phospholipid (eg, cardiolipin or phosphatidylserine), or beta-2 GP1 alone. Antibodies detected by immunoassays that utilize composite substrates are commonly referred to as phospholipid or cardiolipin antibodies. Antibodies detected using beta-2 GP1 substrate without phospholipid (so-called direct assays) are referred to simply as \"beta-2 GP1 antibodies.\" Some beta-2 GP1 antibodies are capable of inhibiting clot formation in functional coagulation assays that contain low concentrations of phospholipid cofactors. Antibodies detected by functional coagulation assays are commonly referred to as lupus anticoagulants. Please correlate with clinical conditions",
+    "report_extra_sections": {
+      "Reference Range": "Negative: < 12.0 Equivocal:12.0-18.0 Positive: >18.0"
+    }
+  },
+  {
+    "test_name": "Beta-2- Glycoprotein-1 IgM",
+    "match_names": [
+      "Beta-2- Glycoprotein-1 IgM"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "BETA 2 GLYCOPROTEIN IGM",
+        "unit": "U/ml",
+        "method": "ELISA",
+        "reference_range_male": "0.00 - 12.00",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "5.3",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "Beta-2 glycoprotein 1 (beta-2 GP1, also called apolipoprotein H) is a 326-amino acid polypeptide synthesized by hepatocytes, endothelial cells, and trophoblast cells. It contains 5 homologous domains of approximately 60 amino acids each.(1,2) Domain 5, located at the C terminus, contains a hydrophobic core surrounded by 14 positively charged amino acid residues that promote electrostatic interactions with plasma membranes via interactions with negatively charged phospholipids. Complexes of beta 2 GP1 and phospholipid in vivo reveal epitopes that react with natural autoantibodies.(3) Plasma from normal individuals contains low concentrations of IgG autoantibodies to beta-2 GP1 (beta-2 GP1 antibodies) that are of moderate affinity and react with an epitope on the first domain near the N terminus. Pathologic levels of beta 2 GP1 antibodies occur in patients with antiphospholipid syndrome (APS). APS is associated with a variety of clinical symptoms, notably, thrombosis, pregnancy complications, unexplained cutaneous circulatory disturbances (livido reticularis or pyoderma gangrenosum), thrombocytopenia or hemolytic anemia, and nonbacterial thrombotic endocarditis. Beta 2 GP1 antibodies are found with increased frequency in patients with systemic rheumatic diseases, especially systemic lupus erythematosus. Autoantibodies to beta-2 GP1 antibodies are detected in the clinical laboratory by different types of assays including immunoassays and functional coagulation assays. Immunoassays for beta-2 GP1 antibodies can be performed using either a composite substrate comprised of beta-2 GP1 plus anionic phospholipid (eg, cardiolipin or phosphatidylserine), or beta-2 GP1 alone. Antibodies detected by immunoassays that utilize composite substrates are commonly referred to as phospholipid or cardiolipin antibodies. Antibodies detected using beta-2 GP1 substrate without phospholipid (so called direct assays) are referred to simply as \"beta- 2 GP1 antibodies.\" Some beta-2 GP1 antibodies are capable of inhibiting clot formation in functional coagulation assays that contain low concentrations of phospholipid cofactors. Antibodies detected by functional coagulation assays are commonly referred to as lupus anticoagulants. Please correlate with clinical conditions",
+    "report_extra_sections": {
+      "Reference Range": "Negative: < 12.0 Equivocal:12.0-18.0 Positive: >18.0"
+    }
+  },
+  {
+    "test_name": "Beta 2 Microglobulin, SERUM",
+    "match_names": [
+      "Beta 2 Microglobulin, SERUM"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "BETA 2 MICROGLOBULIN",
+        "unit": "ng/mL",
+        "method": "CLIA",
+        "reference_range_male": "609.00 - 2366.00",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "1877.6",
+        "sort_order": 1
+      }
+    ],
+    "report_note": "1-False negative / positive results are observed in patients receiving mouse monoclonal antibodies for diagnosis or therapy. 2. Beta 2 Microglobulin values regardless of levels should not be interpreted as absolute evidence of the presence or absence of disease. All values should be correlated with clinical findings and results of other investigations.",
+    "clinical_significance": "Beta-2-microglobulin (beta-2-M) is a small membrane protein (11,800 Dalton) associated with the heavy chains of class I major histocompatibility complex proteins and is, therefore, on the surface of all nucleated cells. The small size allows beta-2-M to pass through the glomerular membrane, but it is almost completely reabsorbed in the proximal tubules. Serum beta-2-M levels are elevated in diseases associated with increased cell turnover. Levels are also elevated in several benign conditions such as chronic inflammation, liver disease, renal dysfunction, some acute viral infections, and a number of malignancies, especially hematologic malignancies associated with the B- lymphocyte lineage. In multiple myeloma, beta-2-M is a powerful prognostic factor and values <4 mcg/mL are considered a good prognostic factor. Please correlate with clinical conditions"
+  },
+  {
+    "test_name": "Bicarbonate",
+    "match_names": [
+      "Bicarbonate"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "BICARBONATE",
+        "unit": "mEq/L",
+        "method": "Enzymatic Endpoint",
+        "reference_range_male": "22.00 - 29.00",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "35.20",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "Bicarbonate is the second largest fraction of the anions in plasma. Included in this fraction are the bicarbonate (HCO3[-]) and carbonate (CO3[-2]) ions, carbon dioxide in physical solution, as well as the carbamino compounds. At the physiological pH of blood, the concentration of carbonate is 1/1000 that of bicarbonate. The carbamino compounds are also present in such low quantities that they are generally not mentioned specifically. The bicarbonate content of serum or plasma is a significant indicator of electrolyte dispersion and anion deficit. Together with pH determination, bicarbonate measurements are used in the diagnosis and treatment of numerous potentially serious disorders associated with acid-base imbalance in the respiratory and metabolic systems. Some of these conditions are diarrhea, renal tubular acidosis, carbonic anhydrase inhibitors, hyperkalemic acidosis, renal Please correlate with clinical conditions",
+    "report_extra_sections": {
+      "Reference Range": "Bicarbonate is the second largest fraction of anions in the plasma. At the physiological pH of blood, the concentration of carbonate is 1/1000 that of bicarbonate. This test is a significant indicator of electrolyte dispersion and anion deficit. An abnormal bicarbonate means a metabolic rather than a respiratory problem. Increased Levels · Acute Metabollic alkalosis · Chronic Metabolic alkalosis Decreased Levels · Acute Metabolic acidosis · Compensated Metabolic acidosis"
+    }
+  },
+  {
+    "test_name": "Blood Toxic Element Profile 9 test",
+    "match_names": [
+      "Blood Toxic Element Profile 9 test",
+      "Blood Toxic Element Profile 9 Test"
+    ],
+    "sample_type": "EDTA Blood",
+    "parameters": [
+      {
+        "parameter_name": "BLOOD TOXIC",
+        "unit": "ug/l",
+        "method": "ICP-MS",
+        "reference_range_male": "0 - 5",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "2.01",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "CADMIUM",
+        "unit": "ug/l",
+        "method": "ICP-MS",
+        "reference_range_male": "0 - 1.5",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "1.27",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "MERCURY",
+        "unit": "ug/l",
+        "method": "ICP-MS",
+        "reference_range_male": "0 - 5",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "3.82",
+        "sort_order": 3
+      },
+      {
+        "parameter_name": "LEAD",
+        "unit": "ug/l",
+        "method": "ICP-MS",
+        "reference_range_male": "0 - 150",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "62.21",
+        "sort_order": 4
+      },
+      {
+        "parameter_name": "CHROMIUM",
+        "unit": "ug/l",
+        "method": "ICP-MS",
+        "reference_range_male": "0.10 - 3.99",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "1.22",
+        "sort_order": 5
+      },
+      {
+        "parameter_name": "BARIUM",
+        "unit": "ug/l",
+        "method": "ICP-MS",
+        "reference_range_male": "0 - 30",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "6.53",
+        "sort_order": 6
+      },
+      {
+        "parameter_name": "COBALT",
+        "unit": "ug/l",
+        "method": "ICP-MS",
+        "reference_range_male": "0.10 - 1.5",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.80",
+        "sort_order": 7
+      },
+      {
+        "parameter_name": "CAESIUM",
+        "unit": "ug/l",
+        "method": "ICP-MS",
+        "reference_range_male": "0.10 - 1.5",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.82",
+        "sort_order": 8
+      },
+      {
+        "parameter_name": "SELENIUM",
+        "unit": "ug/l",
+        "method": "ICP-MS",
+        "reference_range_male": "60 - 340",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "34.30",
+        "sort_order": 9
+      }
+    ]
+  },
+  {
+    "test_name": "Calcitonin",
+    "match_names": [
+      "Calcitonin"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Calcitonin",
+        "unit": "pg/mL",
+        "method": "",
+        "reference_range_male": "0.00 - 8.4",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "1.6",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "Clinical Use Diagnose and monitor patients with Medullary thyroid carcinoma (MTC) which· occurs as a sporadic disease or as a part of the syndromes of MEN-2A, MEN -2B & Familial MTC. Calcitonin is primarily used for diagnosing sporadic MTC / Index case in Familial MTC / monitoring MTC Routine screening of Nodular thyroid disease to detect unsuspected sporadic MTC· For provocative testing in MTC, Calcitonin stimulation test is recommended to· increase sensitivity of detection To monitor effectiveness of surgery by serial measurement of basal and stimulated· calcitonin concentrations Increased Levels Medullary carcinoma thyroid· C-cell hyperplasia· Non thyroidal cancers like Oat cell carcinoma / Small cell carcinoma, Intestinal /· Bronchial / Gastric Carcinoids, Melanoma, Pheochromocytoma, Pancreatic carcinoma & Breast carcinoma Hypergastrinemia· & other Gastrointestinal disorders Acute· & Chronic Renal failure Hypercalcemia· Pulmonary disease·"
+  },
+  {
+    "test_name": "Copper (24 hrs Urine)",
+    "match_names": [
+      "Copper (24 hrs Urine)",
+      "Copper (24 Hrs Urine)"
+    ],
+    "sample_type": "Urine",
+    "parameters": [
+      {
+        "parameter_name": "COPPER, 24 HOUR URINE",
+        "unit": "ug/Day",
+        "method": "(ICPMS)",
+        "reference_range_male": "3.0 - 50.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "26.5",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "Total Urine Volume",
+        "unit": "ml/Day",
+        "method": ".",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "1000",
+        "sort_order": 2
+      }
+    ]
+  },
+  {
+    "test_name": "Copper (Serum)",
+    "match_names": [
+      "Copper (Serum)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "COPPER",
+        "unit": "ug/dL",
+        "method": "(ICPMS)",
+        "reference_range_male": "70 - 140",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "47.50",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "Copper is the third most abundant trace element in the human body required for enzymatic reactions. Dietary sources of copper are liver, shell fish, chocolate, nuts and seeds. Copper pipes or vessels do not increase the copper content of water unless exposed to acids. Smoking, strenuous exercise, infections and injuries increase the body’s need for copper. Ceruloplasmin, a copper containing protein is a useful indicator of copper status.",
+    "report_extra_sections": {
+      "REFERENCE": "< 6 months 20-70 6 months – 18 years 90-190 Adults · Males 70-140 · Females 80-155"
+    }
+  },
+  {
+    "test_name": "Creatine phosphokinase (CPK TOTAL)",
+    "match_names": [
+      "Creatine phosphokinase (CPK TOTAL)",
+      "Creatine Phosphokinase (CPK TOTAL)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "CPK",
+        "unit": "U/L",
+        "method": "DGKC",
+        "reference_range_male": "24.0 - 145.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "37.7",
+        "sort_order": 1
+      }
+    ],
+    "report_comments": "A Creatine Phosphokinase or CPK test determines the levels of enzymes in the blood stream. The CPK test usually administered in the following cases; 1)To help diagnose a heart attack. 2)To ascertain the cause of chest pain. 3)To assess the extent of damage to heart or muscle tissue."
+  },
+  {
+    "test_name": "DEHYDROEPIANDROSTERONE (DHEA)",
+    "match_names": [
+      "DEHYDROEPIANDROSTERONE (DHEA)",
+      "Dehydroepiandrosterone (Dhea)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "DEHYDROEPIANDROSTERONE",
+        "unit": "µg/dL",
+        "method": "CLIA",
+        "reference_range_male": "25.9 - 460.2",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "124.3",
+        "sort_order": 1
+      }
+    ],
+    "report_extra_sections": {
+      "Clinical Information": ". Dehydroepiandrosterone (DHEA) is the principal human C-19 steroid. DHEA has very low androgenic potency but serves as the major direct or indirect precursor for most sex steroids. DHEA is secreted by the adrenal gland and production is at least partly controlled by adrenocorticotropic hormone (ACTH). The bulk of DHEA is secreted as a 3-sulfoconjugate dehydroepiandrosterone sulfate (DHEAS). Both hormones are albumin bound, but DHEAS binding is much tighter. As a result, circulating concentrations of DHEAS are much higher (>100-fold) compared to DHEA. In most clinical situations, DHEA and DHEAS results can be used interchangeably. In gonads and several other tissues, most notably skin, steroid sulfatases can convert DHEAS back to DHEA, which can then be metabolized to stronger androgens and to estrogens. During pregnancy, DHEA/DHEAS and their 16-hydroxylated metabolites are secreted by the fetal adrenal gland in large quantities. They serve as precursors for placental production of the dominant pregnancy estrogen, estriol. Within weeks after birth, DHEA/DHEAS levels fall by 80% or more and remain low until the onset of adrenarche at age 7 or 8 in girls and age 8 or 9 in boys. Adrenarche is a poorly understood phenomenon, peculiar to higher primates, that is characterized by a gradual rise in adrenal androgen production. It precedes puberty but is not casually linked to it. Early adrenarche is not associated with early puberty or with any reduction in final height or overt androgenization. However, girls with early adrenarche may be at increased risk of polycystic ovarian syndrome as adults and some boys may develop early penile enlargement."
+    }
+  },
+  {
+    "test_name": "Dehydroepiandrosterone Sulphate (DHEA-S)",
+    "match_names": [
+      "Dehydroepiandrosterone Sulphate (DHEA-S)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "DHEA-S",
+        "unit": "ug/dl",
+        "method": "CLIA",
+        "reference_range_male": "25.9 - 460.2",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "138.5",
+        "sort_order": 1
+      }
+    ],
+    "report_extra_sections": {
+      "INTERPRETATION": "DHEAS testing detects the presence of dehydroepiandrosterone sulphate (DHEAS) in your blood. DHEA sulphate, a steroid hormone found in both sexes, is produced by your adrenal glands. DHEAS levels typically peak around puberty and then decline naturally with age. Dehydroepiandrosterone sulphate This test may be required if you have symptoms of high or low DHEA sulphate levels (DHEAS). Men may not exhibit any symptoms of DHEAS excess. High DHEAS levels in women and girls can cause the following symptoms: Excessive hair growth Voice deepening Irregular menstruation Acne Muscularity Increase Hair thinning"
+    }
+  },
+  {
+    "test_name": "Anti SS-A (RO) Antibody",
+    "match_names": [
+      "Anti SS-A (RO) Antibody"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "SSA",
+        "unit": "AU/mL",
+        "method": ".",
+        "reference_range_male": "0.00 - 29.00",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "14.0",
+        "sort_order": 1
+      }
+    ],
+    "report_comments": "Anti-SSA/Ro autoantibodies are used in clinical settings as a diagnostic tool to identify patients with SLE and Sjögren's syndrome. In clinical tests for autoimmune disease, Anti-Ro antibodies are some of the most consistently and frequently detected among autoantibodies.",
+    "report_extra_sections": {
+      "Reference Range": "29 AU/mL or less: Negative; 30-40 AU/mL: Equivocal; 41 AU/mL or greater: Positive"
+    }
+  },
+  {
+    "test_name": "Anti SS-B (LA) Antibody",
+    "match_names": [
+      "Anti SS-B (LA) Antibody"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "SSB",
+        "unit": "AU/mL",
+        "method": ".",
+        "reference_range_male": "0.00 - 29.00",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "8.59",
+        "sort_order": 1
+      }
+    ],
+    "report_comments": "SS-B/La is an extractable nuclear antigen (ENA) composed of a 48-kD protein combined with RNA species. SS-B/La antibodies are found primarily in patients with Sjogren syndrome or lupus erythematosus (LE), where they occur with frequencies of approximately 60% and 15%, respectively.",
+    "report_extra_sections": {
+      "Reference Range": "29 AU/mL or less: Negative; 30-40 AU/mL: Equivocal; 41 AU/mL or greater: Positive"
+    }
+  },
+  {
+    "test_name": "Cardiolipin Antibodies IgA",
+    "match_names": [
+      "Cardiolipin Antibodies IgA"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Cardiolipin Antibodies IgA",
+        "unit": "APL/ml",
+        "method": "ELISA",
+        "reference_range_male": "0 - 12",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "6.53",
+        "sort_order": 1
+      }
+    ],
+    "report_comments": "Anticardiolipin antibodies(ACA) belong to the group of Antiphospholipid antibodies which are positive in 30-40% cases of Systemic lupus erythematosus and also in patients with other Rheumatic diseases. Presence of cardiolipin antibodies is considered to be of significant diagnostic relevance in cases of Venous/Arterial thrombosis, Thrombocytopenia, Livedo reticularis, Habitual abortions and Neurological manifestations. Elevated ACA levels are also seen in patients with Cardiovascular insufficiency and Myocardial infarction. Please correlate with clinical conditions",
+    "report_extra_sections": {
+      "Reference Range": "RESULT IN APL REMARKS <12 Negative 12-20 Equivocal 20-80 Low Positive >80 High Positive"
+    }
+  },
+  {
+    "test_name": "Cardiolipin Antibodies IgA,IgG,IgM",
+    "match_names": [
+      "Cardiolipin Antibodies IgA,IgG,IgM"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Cardiolipin Antibodies IgA",
+        "unit": "Index Value",
+        "method": "ELISA",
+        "reference_range_male": "0.0 - 0.8",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.41",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "Cardiolipin Antibodies IgG",
+        "unit": "Index Value",
+        "method": "ELISA",
+        "reference_range_male": "0.0 - 0.8",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.26",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "Cardiolipin Antibodies IgM",
+        "unit": "Index Value",
+        "method": "ELISA",
+        "reference_range_male": "0.0 - 0.8",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.17",
+        "sort_order": 3
+      }
+    ],
+    "clinical_significance": "Cardiolipin antibodies are autoantibodies produced by the immune system that mistakenly target the body's own cardiolipins, substances found in the outermost layer of cells (cell membranes) and platelets. These autoantibodies can affect the body's ability to regulate blood clotting in a way that is not well understood. This test detects the presence of cardiolipin antibodies in the blood. Cardiolipins, and other related phospholipids, are lipid molecules that play an important role in the blood clotting process. Cardiolipin antibodies target cardiolipins and are associated with an increased risk of developing recurrent inappropriate blood clots (thrombi) in veins and arteries, such as the deep veins of the legs (DVT) or the lungs (pulmonary embolism, PE). They may also be associated with a low platelet count (thrombocytopenia), recurrent miscarriages (especially in the second and third trimester), and with premature labor and pre-eclampsia. Cardiolipin antibodies are the most common antiphospholipid antibody, a group of autoantibodies associated with excessive clotting and autoimmune diseases, such as lupus. They are frequently detected with other antiphospholipid antibodies, such as lupus anticoagulant and anti-beta-2 glycoprotein 1. They may also be detected temporarily in people with acute infections, HIV/AIDS, some cancers, with drug treatments (such as phenytoin, penicillin, and procainamide), and in the elderly. Please correlate with clinical conditions",
+    "report_extra_sections": {
+      "Reference Range": "< 0.8 : Negative 0.8-1.2 : Equivocal > 1.2 : Positive"
+    }
+  },
+  {
+    "test_name": "Cardiolipin Antibodies IgG",
+    "match_names": [
+      "Cardiolipin Antibodies IgG"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Cardiolipin Antibodies IgG",
+        "unit": "GPL/ml",
+        "method": "ELISA",
+        "reference_range_male": "0 - 15",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "8.91",
+        "sort_order": 1
+      }
+    ],
+    "report_comments": "Anticardiolipin antibodies(ACA) belong to the group of Antiphospholipid antibodies which are positive in 30-40% cases of Systemic lupus erythematosus and also in patients with other Rheumatic diseases. Presence of cardiolipin antibodies is considered to be of significant diagnostic relevance in cases of Venous/Arterial thrombosis, Thrombocytopenia, Livedo reticularis, Habitual abortions and Neurological manifestations. Elevated ACA levels are also seen in patients with Cardiovascular insufficiency and Myocardial infarction. Results must be correlated with the history and clinical findings of the patient.. Please correlate with clinical conditions.",
+    "report_extra_sections": {
+      "Reference Range": "RESULT IN GPL REMARKS <15 Negative 15-20 Equivocal 20-80 Low Positive >80 High Positive"
+    }
+  },
+  {
+    "test_name": "Cardiolipin Antibodies IgM",
+    "match_names": [
+      "Cardiolipin Antibodies IgM"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Cardiolipin Antibodies IgM",
+        "unit": "MPL/ml",
+        "method": "ELISA",
+        "reference_range_male": "0 - 15",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "6.48",
+        "sort_order": 1
+      }
+    ],
+    "report_comments": "Anticardiolipin antibodies (ACA) belong to the group of Antiphospholipid antibodies which are positive in 30-40% cases of Systemic lupus erythematosus and also in patients with other Rheumatic diseases. Presence of cardiolipin antibodies is considered to be of significant diagnostic relevance in cases of Venous/Arterial thrombosis, Thrombocytopenia, Livedo reticularis, Habitual abortions and Neurological manifestations. Elevated ACA levels are also seen in patients with Cardiovascular insufficiency and Myocardial infarction. Please correlate with clinical conditions.",
+    "report_extra_sections": {
+      "Reference Range": "RESULT IN MPL REMARKS <15 Negative 15-20 Equivocal 20-80 Low Positive >80 High Positive"
+    }
+  },
+  {
+    "test_name": "Immunoglobulin M (IgM)",
+    "match_names": [
+      "Immunoglobulin M (IgM)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "IMMUNOGLOBULIN-IGM",
+        "unit": "mg/dl",
+        "method": "(Immunoturbidimetry)",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "154",
+        "sort_order": 1
+      }
+    ],
+    "report_comments": "IgM is the largest immunoglobulin molecule that makes 6% of the total immunoglobulins. It is the first specific antibody to appear in serum after infection which is capable of activating complement and killing bacteria. Post infection IgM returns rapidly to normal levels as compared to IgG. If IgM is prevalent, the infection is acute whereas if IgG predominates, the infection is chronic. Polyclonal IgM increase is seen in viral, bacterial and parasitic infections, Liver diseases, Rheumatoid arthritis, Scleroderma, Cystic fibrosis & heroin addiction. Monoclonal IgM increase is seen in Waldenstroms macroglobulinemia. Decreased synthesis of IgM is found in Congenital and Acquired Immunodeficiency diseases. Decreased IgM levels are seen in Protein losing enteropathies and skin burns. Please correlate with clinical conditions.",
+    "report_extra_sections": {
+      "Reference Range": "0-30 days: 0-24 mg/dL 1 month: 19-83 mg/dL 2 months: 16-100 mg/dL 3 months: 23-85 mg/dL 4 months: 26-96 mg/dL 5 months: 31-103 mg/dL 6 months: 33-97 mg/dL 7-8 months: 32-120 mg/dL 9-11 months: 39-142 mg/dL 1 year: 41-164 mg/dL 2 years: 46-160 mg/dL 3 years: 45-190 mg/dL 4 years: 41-186 mg/dL 5-7 years: 46-197 mg/dL 8-9 years: 49-230 mg/dL 10 years and older: 35-263 mg/dL"
+    }
+  },
+  {
+    "test_name": "Inhibin -B",
+    "match_names": [
+      "Inhibin -B"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Inhibin -B",
+        "unit": "pg/ml",
+        "method": "ELISA",
+        "reference_range_male": "0 - 17.45",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "1.89",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "Inhibins are protein hormones secreted by Granulosa cells of the ovary in females and Sertoli cells of the testes in males. Inhibin B is primarily produced by small developing follicles and fluctuates during the menstrual cycle. It increases early in the follicular phase to reach a peak corresponding with mid-follicular phase decline in FSH levels and decreases in late follicular phase. Inhibin B levels are elevated in 89-100% patients with Granulosa cell tumors and 55-60% patients with Epithelial ovarian tumors. Normal Inhibin B level does not rule out a Mucinous or Granulosa cell ovarian tumor."
+  },
+  {
+    "test_name": "Intact Parathyroid Hormone (iPTH)",
+    "match_names": [
+      "Intact Parathyroid Hormone (iPTH)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Parathyroid Hormone (PTH)",
+        "unit": "pg/ml",
+        "method": "CLIA",
+        "reference_range_male": "18.5 - 88",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "30.8",
+        "sort_order": 1
+      }
+    ],
+    "report_extra_sections": {
+      "INTERPRETATION": "This test may be performed when PTH abnormality is suspected as a cause of abnormal calcium or phosphorus levels. PTH, the most important regulator of body calcium and phosphorus, is a protein hormone secreted by the parathyroid gland. PTH: Increases calcium and phosphorus release from bone Decreases the loss of calcium and increases the loss of phosphorus in the urine Increases the activation of 25-hydroxy vitamin D to 1,25-dihydroxy vitamin D in the kidneys Secretion of PTH is regulated by the level of calcium in the blood. Low serum calcium causes increased PTH to be secreted, whereas increased serum calcium inhibits PTH release. Please correlate with clinical conditions."
+    }
+  },
+  {
+    "test_name": "Intrinsic Factor Antibody",
+    "match_names": [
+      "Intrinsic Factor Antibody"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Intrinsic Factor Antibody",
+        "unit": "S/CO",
+        "method": "Qualitative Enzyme-Linked Immunosorbent Assay",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.36",
+        "sort_order": 1
+      }
+    ],
+    "report_extra_sections": {
+      "Reference Range": "Negative : < 0.90 Borderline : 0.9 - 1.1 Positive : >= 1.1"
+    }
+  },
+  {
+    "test_name": "Ketone (Acetone,Hydroxybutyrate), serum",
+    "match_names": [
+      "Ketone (Acetone,Hydroxybutyrate), serum",
+      "Ketone (Acetone,Hydroxybutyrate), Serum"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "BLOOD KETONE (D3HB)",
+        "unit": "mg/dl",
+        "method": "(PHOTOMETRY)",
+        "reference_range_male": "0.21 - 2.81",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.83",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "Three types of ketones can be produced in body D-3- Hydroxybutyrate, Acetoacetate and Acetone. D-3-Hydroxybutyrate accounts for approximately 75% of the ketone bodies. During periods of ketosis, D-3-Hydroxybutyrate increases more than the other two. It has been shown to be a better index of ketoacidosis. In diabetics, D-3- Hydroxybutyrate is needed for the assessment of the severity of diabetic coma and to calculate insulin requirements."
+  },
+  {
+    "test_name": "Kidney Profile",
+    "match_names": [
+      "Kidney Profile"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Urea",
+        "unit": "mg/dL",
+        "method": "UREASE-GLDH",
+        "reference_range_male": "0 - 50",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "19.36",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "CREATININE",
+        "unit": "mg/dL",
+        "method": "Enzymatic",
+        "reference_range_male": "0.70 - 1.30",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.97",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "BUN/Creatinine ratio",
+        "unit": "Ratio",
+        "method": "CALCULATED",
+        "reference_range_male": "8:5 - 23:5",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "9.33",
+        "sort_order": 3
+      },
+      {
+        "parameter_name": "BUN (Blood Urea Nitrogen)",
+        "unit": "mg/dl",
+        "method": "CALCULATED",
+        "reference_range_male": "7 - 25",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "9.05",
+        "sort_order": 4
+      },
+      {
+        "parameter_name": "Uric Acid",
+        "unit": "mg/dL",
+        "method": "URICASE",
+        "reference_range_male": "3.5 - 7.2",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "5.84",
+        "sort_order": 5
+      },
+      {
+        "parameter_name": "Calcium",
+        "unit": "mg/dL",
+        "method": "ARSENAZO",
+        "reference_range_male": "8.6 - 10.2",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "10.0",
+        "sort_order": 6
+      },
+      {
+        "parameter_name": "SODIUM",
+        "unit": "mEq/L",
+        "method": "ISE-Electrode Direct",
+        "reference_range_male": "136 - 145",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "141.4",
+        "sort_order": 7
+      },
+      {
+        "parameter_name": "POTASSIUM",
+        "unit": "mEq/L",
+        "method": "ISE-Electrode Direct",
+        "reference_range_male": "3.6 - 5.1",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "4.2",
+        "sort_order": 8
+      },
+      {
+        "parameter_name": "CHLORIDE",
+        "unit": "mEq/L",
+        "method": "ISE-Electrode Direct",
+        "reference_range_male": "98 - 107",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "99.7",
+        "sort_order": 9
+      }
+    ],
+    "report_extra_sections": {
+      "INTERPRETATION": "Kidney function tests are urine or blood tests that evaluate how well your kidneys are working. Most of these tests measure glomerular filtration rate (GFR). GFR assesses how efficiently your kidneys clear waste from your system. They help your body filter waste materials and expel them as urine. Your kidneys are also vital for producing: Hormones that maintain blood pressure. Red blood cells, which carry oxygen throughout your body. Vitamin D, which maintains bone and muscle health. Please correlate with clinical conditions."
+    }
+  },
+  {
+    "test_name": "LACTATE DEHYDROGENASE(LDH)",
+    "match_names": [
+      "LACTATE DEHYDROGENASE(LDH)",
+      "Lactate Dehydrogenase(Ldh)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Lactate Dehyderogenase (LDH)",
+        "unit": "IU/L",
+        "method": "(Spectrophotometry)",
+        "reference_range_male": "235.0 - 450.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "293",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "Lactate dehydrogenase ( LDH) is a nonspecific enzyme found in most organs. Highest concentrations are found in liver, heart, kidney and blood cells. LDH measurements are used in the diagnosis and treatments of liver diseases like Acute viral hepatitis, Cirrhosis & Metastatic carcinoma; Cardiac diseases like Myocardial infarction; Tumors of lungs / kidneys & Hematologic disorders like Megaloblastic anemia & Hemolytic anemia."
+  },
+  {
+    "test_name": "Leptospira Antibody IgM",
+    "match_names": [
+      "Leptospira Antibody IgM"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "LEPTOSPIRA ANTIBODY, IgM,",
+        "unit": "Index",
+        "method": "EIA",
+        "reference_range_male": "0 - 0.9",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.51",
+        "sort_order": 1
+      }
+    ],
+    "report_comments": "Leptospirosis is the most widespread global zoonosis which is considered to be an important emerging disease. The organism is carried by many rodents of which rat is the most frequent reservoir and an important source of infection in man, typically producing influenza like illness. Few patients may develop jaundice ( Weil’s disease) which has 5-10% fatality rate. IgM antibodies to Leptospira can be detected two days after the onset of symptoms and usually remain detectable upto five months post infection.",
+    "report_extra_sections": {
+      "INTERPRETATION": "INDEX RESULT <0.9 Negative 0.9-1.1 Equivocal >1.1 Positive"
+    }
+  },
+  {
+    "test_name": "LIVER FUNCTION TESTS",
+    "match_names": [
+      "LIVER FUNCTION TESTS",
+      "Liver Function Tests"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "BILIRUBIN - TOTAL",
+        "unit": "mg/dl",
+        "method": "DIAZO",
+        "reference_range_male": "0 - 1.20",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "1.56",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "BILIRUBIN -DIRECT",
+        "unit": "mg/dl",
+        "method": "DIAZO",
+        "reference_range_male": "0 - 0.40",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.12",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "BILIRUBIN (INDIRECT)",
+        "unit": "mg/dl",
+        "method": "CALCULATED",
+        "reference_range_male": "0 - 0.80",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "1.44",
+        "sort_order": 3
+      },
+      {
+        "parameter_name": "ASPARTATE AMINOTRANSFERASE (SGOT )",
+        "unit": "U/L",
+        "method": "IFCC without P5P",
+        "reference_range_male": "0 - 35.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "27.46",
+        "sort_order": 4
+      },
+      {
+        "parameter_name": "ALANINE TRANSAMINASE (SGPT)",
+        "unit": "U/L",
+        "method": "IFCC without P5P",
+        "reference_range_male": "0 - 45.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "30.41",
+        "sort_order": 5
+      },
+      {
+        "parameter_name": "ALKALINE PHOSPHATASE",
+        "unit": "U/L",
+        "method": "PMP-AMP",
+        "reference_range_male": "53.0 - 128.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "54.20",
+        "sort_order": 6
+      },
+      {
+        "parameter_name": "TOTAL-PROTEIN",
+        "unit": "g/dL",
+        "method": "Biruet",
+        "reference_range_male": "6.0 - 8.30",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "6.90",
+        "sort_order": 7
+      },
+      {
+        "parameter_name": "ALBUMIN - SERUM",
+        "unit": "gm/dl",
+        "method": "BCG",
+        "reference_range_male": "3.5 - 5.2",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "4.5",
+        "sort_order": 8
+      },
+      {
+        "parameter_name": "GLOBULIN",
+        "unit": "gm/dL",
+        "method": "CALCULATED",
+        "reference_range_male": "2.5 - 3.4",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "2.4",
+        "sort_order": 9
+      },
+      {
+        "parameter_name": "ALB/GLOBULIN RATIO",
+        "unit": "Ratio",
+        "method": "CALCULATED",
+        "reference_range_male": "0.9 - 2.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "1.88",
+        "sort_order": 10
+      },
+      {
+        "parameter_name": "Gamma GT",
+        "unit": "U/L",
+        "method": "Glupa-c",
+        "reference_range_male": "0 - 55.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "42.37",
+        "sort_order": 11
+      }
+    ],
+    "report_extra_sections": {
+      "INTERPRETATION": "Liver function tests (also known as a liver panel) are blood tests that measure different enzymes, proteins, and other substances made by the liver. These tests check the overall health of your liver. Liver function tests are most often used to: Help diagnose liver diseases, such as hepatitis Monitor treatment of liver disease. These tests can show how well the treatment is working. Check how badly a liver has been damaged or scarred by disease, such as cirrhosis Monitor side effects of certain medicines Please correlate with clinical conditions."
+    }
+  },
+  {
+    "test_name": "Liver-Kidney Microsome (LKM) -1 Antibody",
+    "match_names": [
+      "Liver-Kidney Microsome (LKM) -1 Antibody"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "Liver-Kidney Microsome (LKM) - 1 Antibody",
+        "unit": "U/L",
+        "method": ".",
+        "reference_range_male": "0.00 - 15.00",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "11.2",
+        "sort_order": 1
+      }
+    ]
+  },
+  {
+    "test_name": "Lupus Anticoagulant (DRVVT)",
+    "match_names": [
+      "Lupus Anticoagulant (DRVVT)"
+    ],
+    "sample_type": "Citrated Plasma",
+    "parameters": [
+      {
+        "parameter_name": "LUPUS ANTICOAGULANT",
+        "unit": "sec",
+        "method": "(Photo Optical Clot Detection)",
+        "reference_range_male": "25.78 - 32.58",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "29.51",
+        "sort_order": 1
+      }
+    ],
+    "report_note": "1. Results should be clinically correlated 2. Test conducted on Citrated plasma Please correlate with clinical conditions.",
+    "report_comments": "Lupus Anticoagulants (LAs) are heterogenous IgG or IgM autoantibodies which interfere with phospholipid dependent coagulation tests, particularly PTT. These are associated with SLE, thrombocytopenia, recurrent spontaneous abortions & thromboembolic disease states. Abnormal PTT-LA tests have been reported in 2-15% of apparently asymptomatic general population with many of these antibodies being transitory . Persistent LAs are associated with an approximate 30% risk of developing symptoms characteristic of Antiphospholipid Syndrome. This test may be prolonged in congenital coagulation factor deficiencies, circulating anticoagulants, hepatic disorders, Vitamin K antagonist therapy, Heparin, treatment with thrombin inhibitors & Disseminated Intravascular Coagulation"
+  },
+  {
+    "test_name": "NT-Pro BNP",
+    "match_names": [
+      "NT-Pro BNP"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "NT-PRO BNP",
+        "unit": "pg/ml",
+        "method": "CLIA",
+        "reference_range_male": "0.00 - 100.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "13.25",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "B-type natriuretic peptide (brain natriuretic peptide: BNP) is a small, ringed peptide secreted by the heart to regulate blood pressure and fluid balance.(1) This peptide is stored in and secreted predominantly from membrane granules in the heart ventricles in a pro form (proBNP). Once released from the heart in response to ventricle volume expansion or pressure overload, the N-terminal (NT) piece of 76 amino acids (NT-proBNP) is rapidly cleaved by the enzymes corin and furin to release the active 32-amino acid peptide (BNP).(2) Both BNP and NT-proBNP are markers of atrial and ventricular distension due to increased intracardiac pressure. The New York Heart Association (NYHA) developed a 4-stage functional classification system for congestive heart failure (CHF) based on the severity of the symptoms. Studies have demonstrated that the measured concentrations of circulating BNP and NT-proBNP increase with the severity of CHF based on the NYHA classification"
+  },
+  {
+    "test_name": "Procalcitonin",
+    "match_names": [
+      "Procalcitonin"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "PROCALCITONIN",
+        "unit": "ng/ml",
+        "method": "ECLIA",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.74",
+        "sort_order": 1
+      }
+    ],
+    "report_extra_sections": {
+      "Reference Range": "<0.50 Negative 0.50-2.00 Borderline risk >2.00 High risk of severe sepsis / Septic shock"
+    }
+  },
+  {
+    "test_name": "Rheumatoid Factor (RA test) Quantitative",
+    "match_names": [
+      "Rheumatoid Factor (RA test) Quantitative",
+      "Rheumatoid Factor (Ra Test) Quantitative"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "RHEUMATOID FACTOR, RA",
+        "unit": "IU/mL",
+        "method": "(Immunoturbidimetry)",
+        "reference_range_male": "0.0 - 20.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "8.4",
+        "sort_order": 1
+      }
+    ]
+  },
+  {
+    "test_name": "Sex Hormone Binding Globulin (SHBG)",
+    "match_names": [
+      "Sex Hormone Binding Globulin (SHBG)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "SHBG",
+        "unit": "nmol/L",
+        "method": "CLIA",
+        "reference_range_male": "10 - 57",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "32.52",
+        "sort_order": 1
+      }
+    ],
+    "clinical_significance": "Clinical Use Assess abnormal serum gonadal hormone concentrations Increased Levels - Estrogen administration, Pregnancy, Alcoholism, Male hypogonadism, Hyperthyroidism, Testicular feminization, Decreased Levels – Hirsutism, Virilization, Massive obesity, Exogenous androgen therapy or abuse Please correlate with clinical conditions."
+  },
+  {
+    "test_name": "Sickling Test",
+    "match_names": [
+      "Sickling Test"
+    ],
+    "sample_type": "EDTA Blood",
+    "parameters": [
+      {
+        "parameter_name": "SICKLING",
+        "unit": ".",
+        "method": ".",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "NEGATIVE",
+        "sort_order": 1
+      }
+    ]
+  },
+  {
+    "test_name": "TB GOLD, INTERFERON GAMMA RELEASE ASSAY (IGRA)",
+    "match_names": [
+      "TB GOLD, INTERFERON GAMMA RELEASE ASSAY (IGRA)",
+      "Tb Gold, Interferon Gamma Release Assay (Igra)"
+    ],
+    "sample_type": "Heparin",
+    "parameters": [
+      {
+        "parameter_name": "Gamma Interferon, Antigen tube",
+        "unit": "IU/mL",
+        "method": "EIA",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.18",
+        "sort_order": 1
+      },
+      {
+        "parameter_name": "Gamma Interferon, Nil tube",
+        "unit": "IU/mL",
+        "method": "EIA",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.07",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "Final Result",
+        "unit": ".",
+        "method": "",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "NEGATIVE",
+        "sort_order": 3
+      },
+      {
+        "parameter_name": "IGRA Levels",
+        "unit": "IU/mL",
+        "method": "Calculated",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.11",
+        "sort_order": 4
+      }
+    ],
+    "report_extra_sections": {
+      "INTERPRETATION": "NIL TUBE in IU/Ml ANTIGEN TUBE MINUS NIL TUBE in IU/mL FINAL RESULT < = 8.00 <0.35 > = 0.35 & <25% of Nil tube > = 0.35 & > = 25% of Nil tube NEGATIVE NEGATIVE POSITIVE M. tuberculosis infection unlikely M. tuberculosis infection unlikely M. tuberculosis infection likely >8.00 Any result Indeterminate This may be due to excessive levels of circulating gamma interferon or presence of heterophile antibodies"
+    }
+  },
+  {
+    "test_name": "5-Dihydrotestosterone (DHT)",
+    "match_names": [
+      "5-Dihydrotestosterone (DHT)"
+    ],
+    "sample_type": "Serum",
+    "parameters": [
+      {
+        "parameter_name": "5-Dihydrotestosterone",
+        "unit": "pg/mL",
+        "method": "CLIA",
+        "reference_range_male": "20 - 150",
+        "sample_value": "42.6",
+        "sort_order": 1
+      }
+    ],
+    "report_extra_sections": {
+      "Reference Interval": "Males: Premature 100.0-530.0; Full term 50.0-600.0; 1 week-6 months 120.0-850.0; 7 months-9 years 0.0-49.9; 10-19 years 0.0-533.0; 20 years and older 106.0-719.0 pg/mL. Females: Premature 20.0-130.0; Full term 20.0-150.0; 1 week-9 years 0.0-49.9; 10-19 years 50.0-170.0; 20 years and older 24.0-208.0 pg/mL."
+    }
   }
 ]

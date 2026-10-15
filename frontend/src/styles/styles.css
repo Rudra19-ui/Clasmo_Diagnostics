@@ -8636,6 +8636,72 @@ input, select, textarea, button {
   --row-border: #e57373;
 }
 
+.report-worklist {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  margin: 0 0 14px;
+  padding: 8px 12px;
+  background: #eef3f8;
+  border-radius: 10px;
+}
+
+.report-worklist-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 999px;
+  padding: 6px 8px;
+  background: transparent;
+  color: #4b5563;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.report-worklist-chip--lis { --chip: #ec4899; }
+.report-worklist-chip--pending { --chip: #f5b400; }
+.report-worklist-chip--doctor { --chip: #3b82f6; }
+.report-worklist-chip--hold { --chip: #f97316; }
+.report-worklist-chip--complete { --chip: #22c55e; }
+.report-worklist-chip--expired { --chip: #ef4444; }
+.report-worklist-chip--history { --chip: #14b8a6; }
+
+.report-worklist-chip.is-selected {
+  background: var(--chip);
+  color: #fff;
+  padding-right: 6px;
+}
+
+.report-worklist-icon {
+  display: inline-flex;
+  color: #6b7280;
+}
+
+.report-worklist-chip.is-selected .report-worklist-icon {
+  color: #fff;
+}
+
+.report-worklist-count {
+  min-width: 22px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--chip);
+  color: #fff;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.report-worklist-chip.is-selected .report-worklist-count {
+  background: rgba(255, 255, 255, 0.28);
+  color: #fff;
+}
+
 .report-section-legend {
   display: flex;
   flex-wrap: wrap;

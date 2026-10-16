@@ -504,7 +504,7 @@ export async function printClasmoReport() {
       bottom: 35mm !important;
       writing-mode: vertical-rl !important;
       transform: rotate(180deg) !important;
-      color: rgba(0, 173, 239, 0.28) !important;
+      color: rgba(0, 0, 0, 0.45) !important;
       font-size: 9px !important;
       font-weight: 700 !important;
       letter-spacing: 0.22em !important;
@@ -527,7 +527,7 @@ export async function printClasmoReport() {
       font-size: 10px !important;
       line-height: 1.3 !important;
     }
-    .clasmo-report-field-label { color: #1a3a5c !important; font-weight: 700 !important; }
+    .clasmo-report-field-label { color: #000 !important; font-weight: 700 !important; }
     .clasmo-report-field strong.is-placeholder {
       border-bottom: none !important;
       min-height: 1em !important;
@@ -535,7 +535,7 @@ export async function printClasmoReport() {
     .clasmo-report-test-title {
       margin: 3.5mm 10mm 2mm 12mm !important;
       font-size: 18px !important;
-      color: #0072bc !important;
+      color: #000 !important;
       text-align: center !important;
       font-weight: 800 !important;
     }
@@ -546,8 +546,9 @@ export async function printClasmoReport() {
       font-weight: 800 !important;
       letter-spacing: 0.08em !important;
       text-align: center !important;
-      background: #004a8f !important;
-      color: #fff !important;
+      background: #fff !important;
+      color: #000 !important;
+      border: 1px solid #000 !important;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
@@ -584,7 +585,7 @@ export async function printClasmoReport() {
     }
     .clasmo-report-table th, .clasmo-report-dual-ref th {
       background: #d6eef7 !important;
-      color: #004a8f !important;
+      color: #000 !important;
       font-weight: 800 !important;
       text-align: left !important;
       -webkit-print-color-adjust: exact;
@@ -598,11 +599,11 @@ export async function printClasmoReport() {
       text-align: center !important;
     }
     .clasmo-report-dual-ref td:last-child { text-align: right !important; font-weight: 600 !important; }
-    .clasmo-report-param-name { color: #0072bc !important; font-weight: 700 !important; }
+    .clasmo-report-param-name { color: #000 !important; font-weight: 700 !important; }
     .clasmo-report-method {
       margin-top: 2px !important;
       font-size: 9px !important;
-      color: #222 !important;
+      color: #000 !important;
       text-transform: uppercase !important;
       font-weight: 600 !important;
     }
@@ -617,7 +618,7 @@ export async function printClasmoReport() {
     .clasmo-report-clinical h4 {
       margin: 0 0 3px !important;
       font-size: 10.5px !important;
-      color: #0072bc !important;
+      color: #000 !important;
       text-decoration: underline !important;
       text-underline-offset: 2px !important;
       font-weight: 800 !important;

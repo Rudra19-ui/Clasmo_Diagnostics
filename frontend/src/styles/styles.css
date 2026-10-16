@@ -7619,10 +7619,10 @@ input, select, textarea, button {
 /* ===== Clasmo official letterhead report (17 OH Progesterone PDF format) ===== */
 .clasmo-report-sheet {
   --clasmo-navy: #004a8f;
-  --clasmo-blue: #0072bc;
+  --clasmo-blue: #000000;
   --clasmo-cyan: #00adef;
   --clasmo-light: #d6eef7;
-  --clasmo-ink: #222222;
+  --clasmo-ink: #000000;
   position: relative;
   border: 1px solid #b8c9da;
   border-radius: 2px;
@@ -7748,7 +7748,7 @@ input, select, textarea, button {
   bottom: 90px;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
-  color: rgba(0, 173, 239, 0.28);
+  color: rgba(0, 0, 0, 0.45);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.22em;
@@ -7787,11 +7787,11 @@ input, select, textarea, button {
 }
 
 .clasmo-report-status-row strong {
-  color: var(--clasmo-navy);
+  color: #000;
 }
 
 .clasmo-report-status-row span {
-  color: #667788;
+  color: #000;
 }
 
 .clasmo-report-patient-block {
@@ -7819,7 +7819,7 @@ input, select, textarea, button {
 }
 
 .clasmo-report-field-label {
-  color: #1a3a5c;
+  color: #000;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -7854,8 +7854,9 @@ input, select, textarea, button {
 
 .clasmo-report-result-bar {
   margin: 0 18px 0 22px;
-  background: var(--clasmo-navy);
-  color: #fff;
+  background: #fff;
+  color: #000;
+  border: 1px solid #000;
   text-align: center;
   font-size: 13px;
   font-weight: 800;
@@ -7880,7 +7881,7 @@ input, select, textarea, button {
 
 .clasmo-report-table th {
   background: var(--clasmo-light);
-  color: var(--clasmo-navy);
+  color: #000;
   font-size: 11px;
   letter-spacing: 0.04em;
   font-weight: 800;
@@ -7907,7 +7908,7 @@ input, select, textarea, button {
 .clasmo-report-method {
   margin-top: 3px;
   font-size: 10px;
-  color: #222;
+  color: #000;
   text-transform: uppercase;
   font-weight: 600;
 }
@@ -7915,7 +7916,7 @@ input, select, textarea, button {
 .clasmo-report-loading {
   margin: 10px 18px 12px 22px;
   font-size: 13px;
-  color: #667788;
+  color: #000;
 }
 
 .clasmo-report-result-input {
@@ -7925,6 +7926,7 @@ input, select, textarea, button {
   border: none;
   border-bottom: 1.5px dashed #90a4ae;
   background: transparent;
+  color: #000;
   font: inherit;
   font-weight: 700;
   text-align: center;
@@ -7959,7 +7961,7 @@ input, select, textarea, button {
 
 .clasmo-report-dual-ref th {
   background: var(--clasmo-light);
-  color: var(--clasmo-navy);
+  color: #000;
   font-size: 10.5px;
   font-weight: 800;
   letter-spacing: 0.02em;
@@ -7987,7 +7989,7 @@ input, select, textarea, button {
 .clasmo-report-ref-table-wrap h4 {
   margin: 0 0 6px;
   font-size: 12px;
-  color: var(--clasmo-navy);
+  color: #000;
 }
 
 .clasmo-report-ref-table {
@@ -8237,15 +8239,16 @@ input, select, textarea, button {
   body.printing-clasmo-report .clasmo-report-test-title {
     margin: 3mm 4mm 1.5mm 5mm !important;
     font-size: 16px !important;
-    color: #0072bc !important;
+    color: #000 !important;
   }
 
   body.printing-clasmo-report .clasmo-report-result-bar {
     margin: 0 4mm 0 5mm !important;
     padding: 2.5px 6px !important;
     font-size: 11px !important;
-    background: #004a8f !important;
-    color: #fff !important;
+    background: #fff !important;
+    color: #000 !important;
+    border: 1px solid #000 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
@@ -8267,7 +8270,7 @@ input, select, textarea, button {
   body.printing-clasmo-report .clasmo-report-table th,
   body.printing-clasmo-report .clasmo-report-dual-ref th {
     background: #d6eef7 !important;
-    color: #004a8f !important;
+    color: #000 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
@@ -8281,7 +8284,7 @@ input, select, textarea, button {
 
   body.printing-clasmo-report .clasmo-report-clinical h4,
   body.printing-clasmo-report .clasmo-report-param-name {
-    color: #0072bc !important;
+    color: #000 !important;
   }
 
   body.printing-clasmo-report .clasmo-report-footer-band {

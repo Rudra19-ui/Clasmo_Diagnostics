@@ -403,13 +403,39 @@ class TestSerializer(serializers.ModelSerializer):
 class TestPackageSerializer(serializers.ModelSerializer):
     test_count = serializers.SerializerMethodField()
     test_names = serializers.SerializerMethodField()
+    test_ids = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Test.objects.all(),
+        source='tests',
+        write_only=True,
+    )
 
     class Meta:
         model = TestPackage
         fields = [
-            'id', 'name', 'description', 'is_active', 'test_count',
-            'test_names', 'sort_order', 'created_at',
+            'id', 'name', 'description', 'mrp', 'rate', 'is_active', 'test_count',
+            'test_names', 'test_ids', 'sort_order', 'created_at',
         ]
+
+    def validate_name(self, value):
+        name = (value or '').strip()
+        if not name:
+            raise serializers.ValidationError('Enter a profile heading.')
+        return name
+
+    def validate_test_ids(self, value):
+        if not value:
+            raise serializers.ValidationError('Add at least one test.')
+        return value
+
+    def validate(self, attrs):
+        for field in ('mrp', 'rate'):
+            amount = attrs.get(field)
+            if amount is None:
+                continue
+            if amount < 0:
+                raise serializers.ValidationError({field: 'Enter an amount of 0 or more.'})
+        return attrs
 
     def get_test_count(self, obj):
         return obj.tests.count()

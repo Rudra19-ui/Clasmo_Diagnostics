@@ -7393,6 +7393,118 @@ input, select, textarea, button {
   color: #1a4a7a;
 }
 
+.portfolio-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile-create {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 14px;
+  border: 1px solid #d5e4f2;
+  border-radius: 10px;
+  background: #f8fbfe;
+}
+
+.profile-create h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #0a3d6b;
+}
+
+.profile-create label {
+  display: grid;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.profile-create input {
+  padding: 8px 10px;
+  border: 1px solid #9ab8d0;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.profile-create-tests {
+  position: relative;
+}
+
+.profile-create-matches {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: #fff;
+  border: 1px solid #9ab8d0;
+  border-radius: 6px;
+  max-height: 220px;
+  overflow: auto;
+  box-shadow: 0 8px 20px rgba(10, 61, 107, 0.12);
+}
+
+.profile-create-matches button {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  padding: 7px 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.profile-create-matches button:hover {
+  background: #eef4fb;
+}
+
+.profile-create-selected {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.profile-create-selected li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid #9ab8d0;
+  font-size: 12px;
+}
+
+.profile-create-selected button {
+  border: none;
+  background: transparent;
+  color: #9b1c1c;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.profile-create-prices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.profile-create-actions {
+  display: flex;
+  gap: 8px;
+}
+
 .all-tests-por-links {
   display: flex;
   flex-wrap: wrap;
@@ -7618,9 +7730,9 @@ input, select, textarea, button {
 
 /* ===== Clasmo official letterhead report (17 OH Progesterone PDF format) ===== */
 .clasmo-report-sheet {
-  --clasmo-navy: #004a8f;
+  --clasmo-navy: #000000;
   --clasmo-blue: #000000;
-  --clasmo-cyan: #00adef;
+  --clasmo-cyan: #000000;
   --clasmo-light: #d6eef7;
   --clasmo-ink: #000000;
   position: relative;
@@ -7629,10 +7741,15 @@ input, select, textarea, button {
   padding: 0;
   background: #fff;
   box-shadow: 0 8px 24px rgba(10, 61, 107, 0.06);
-  color: var(--clasmo-ink);
+  color: #000;
   overflow: hidden;
   font-family: Arial, Helvetica, sans-serif;
   max-width: 820px;
+}
+
+.clasmo-report-sheet,
+.clasmo-report-sheet :is(h3, h4, th, td, p, span, strong, div, label, a, button, input) {
+  color: #000;
 }
 
 /* Official A4 page. Height follows the sheet width so the page stays 210:297. */
@@ -8593,9 +8710,9 @@ input, select, textarea, button {
 }
 
 .sample-report-btn--secondary {
-  background: #eef4fb;
-  color: #0a3d6b;
-  border: 1px solid #9ab8d0;
+  background: #fff;
+  color: #000;
+  border: 1px solid #111;
 }
 
 @media (max-width: 900px) {

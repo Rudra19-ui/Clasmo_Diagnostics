@@ -1,0 +1,2865 @@
+{
+  "source": "test_profile_list.pdf",
+  "profiles": [
+    {
+      "num": 1,
+      "name": "1.3 Fitness Advance",
+      "count": 14,
+      "tests": [
+        "hs-CRP (hs-C Reactive Protein )",
+        "Testosterone- Total",
+        "Vitamin B12",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Glycated Haemoglobin (HbA1c)",
+        "IRON PROFILE",
+        "Lipid Profile",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "LIVER FUNCTION TESTS",
+        "GFR (GLOMERULAR FILTRATION RATE)",
+        "Kidney Profile",
+        "Complete Blood Count (CBC)+ESR",
+        "IMMUNOGLOBULIN-IgE(Total IgE)",
+        "Rheumatoid Factor (RA test) Quantitative"
+      ]
+    },
+    {
+      "num": 2,
+      "name": "AAROGYA365 CORPORATE HEALTH PLAN-1",
+      "count": 7,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Glucose F (Blood Sugar Fasting)",
+        "Lipid Profile",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Phosphorous, serum",
+        "GFR (GLOMERULAR FILTRATION RATE)"
+      ]
+    },
+    {
+      "num": 3,
+      "name": "ABHI-32",
+      "count": 7,
+      "tests": [
+        "Complete Blood Count (CBC)",
+        "ABO Group & RH Type (Blood Group)",
+        "Glucose F (Blood Sugar Fasting)",
+        "Cholesterol Total",
+        "Creatinine",
+        "SGPT ; ALANINE AMINOTRANSFERASE (ALT)",
+        "Urine R/M (Urine Analysis)"
+      ]
+    },
+    {
+      "num": 4,
+      "name": "ABSLI-13",
+      "count": 8,
+      "tests": [
+        "Glucose F (Blood Sugar Fasting)",
+        "Lipid Profile",
+        "Creatinine",
+        "BUN (Blood Urea Nitrogen)",
+        "LIVER FUNCTION TESTS",
+        "Glycated Haemoglobin (HbA1c)",
+        "Urine R/M (Urine Analysis)",
+        "Complete Blood Count (CBC)"
+      ]
+    },
+    {
+      "num": 5,
+      "name": "ADVANCE full body check",
+      "count": 17,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "Testosterone- Total",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "GFR (GLOMERULAR FILTRATION RATE)",
+        "Lipid Profile",
+        "Phosphorous, serum",
+        "Magnesium",
+        "C Reactive Protein (CRP) Quantitative",
+        "THYROID PROFILE-5 (FT3 FT4 T3 T4 TSH )",
+        "IRON PROFILE",
+        "Glycated Haemoglobin (HbA1c)",
+        "Folic Acid",
+        "Urine R/M (Urine Analysis)",
+        "Glucose F (Blood Sugar Fasting)"
+      ]
+    },
+    {
+      "num": 6,
+      "name": "AIIMS panel 1",
+      "count": 3,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile"
+      ]
+    },
+    {
+      "num": 9,
+      "name": "Allergic Bronchopulmonary Aspergillosis (ABPA) Panel",
+      "count": 3,
+      "tests": [
+        "Aspergillus Fumigatus Specific IgE",
+        "Aspergillus Fumigatus Specific IgG",
+        "IMMUNOGLOBULIN-IgE(Total IgE)"
+      ]
+    },
+    {
+      "num": 10,
+      "name": "ALLERGY PANEL II",
+      "count": 4,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Absolute Eosinophil Count (AEC)",
+        "IMMUNOGLOBULIN-IgE(Total IgE)",
+        "Urine R/M (Urine Analysis)"
+      ]
+    },
+    {
+      "num": 12,
+      "name": "AMH GOLD",
+      "count": 6,
+      "tests": [
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "LH",
+        "FSH",
+        "PRL",
+        "ESTRADIOL (E2)",
+        "Progesterone",
+        "Testosterone- Total",
+        "Anti Mullerian Hormone (AMH)"
+      ]
+    },
+    {
+      "num": 14,
+      "name": "ANA PROFILE ELISA",
+      "count": 8,
+      "tests": [
+        "Anti SS-A (RO) Antibody",
+        "Anti SS-B (LA) Antibody",
+        "Sm/RNP ANTIBODIES",
+        "Jo- 1 ANTIBODY",
+        "U1RNP ANTIBODIES, SERUM",
+        "Centromere Antibodies, IgG",
+        "Scl-70 (SCLERODERMA) ANTIBODY",
+        "Anti ds DNA Antibody"
+      ]
+    },
+    {
+      "num": 15,
+      "name": "Anaemia Profile - I",
+      "count": 6,
+      "tests": [
+        "Complete Blood Count (CBC)",
+        "IRON",
+        "TIBC (Total Iron Binding Capacity)",
+        "Vitamin B12",
+        "Folic Acid",
+        "FERRITIN"
+      ]
+    },
+    {
+      "num": 16,
+      "name": "ANC PROFILE",
+      "count": 8,
+      "tests": [
+        "HIV 1 & 2 Antibody ELISA",
+        "Hepatitis B surface antigen (HBs Ag) CLIA",
+        "Hepatitis C virus (HCV) CLIA",
+        "VDRL Quantitative",
+        "Thyroid Stimulating Hormone (TSH)",
+        "Urine R/M (Urine Analysis)",
+        "ABO Group & RH Type (Blood Group)",
+        "Complete Blood Count (CBC)+ESR"
+      ]
+    },
+    {
+      "num": 19,
+      "name": "ANC PROFILE 2",
+      "count": 7,
+      "tests": [
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Complete Blood Count (CBC)",
+        "ABO Group & RH Type (Blood Group)",
+        "HIV 1 & 2 Antibody ELISA",
+        "Hepatitis B surface antigen (HBsAg)-ELISA",
+        "Hepatitis C virus (HCV) CLIA",
+        "Vdrl (Rapid)"
+      ]
+    },
+    {
+      "num": 20,
+      "name": "ANC PROFILE NEW RAPID",
+      "count": 9,
+      "tests": [
+        "HIV 1 & 2 Antibody -Rapid",
+        "Hepatitis B surface antigen (HBs Ag) (Rapid)",
+        "Hepatitis C virus (HCV Rapid)",
+        "Vdrl (Rapid)",
+        "Thyroid Stimulating Hormone (TSH)",
+        "Urine R/M (Urine Analysis)",
+        "ABO Group & RH Type (Blood Group)",
+        "Complete Blood Count (CBC)+ESR",
+        "Glucose R (Blood Sugar Random)"
+      ]
+    },
+    {
+      "num": 21,
+      "name": "ANEMIA PROFILE - A",
+      "count": 11,
+      "tests": [
+        "IRON PROFILE",
+        "LIVER FUNCTION TESTS",
+        "Lipid Profile",
+        "Kidney Profile",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Glycated Haemoglobin (HbA1c)",
+        "FERRITIN",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "LACTATE DEHYDROGENASE(LDH)",
+        "Complete Blood Count (CBC)+ESR"
+      ]
+    },
+    {
+      "num": 23,
+      "name": "ANEMIA PROFILE - B",
+      "count": 12,
+      "tests": [
+        "IRON PROFILE",
+        "LIVER FUNCTION TESTS",
+        "Lipid Profile",
+        "Kidney Profile",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Glycated Haemoglobin (HbA1c)",
+        "FERRITIN",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "LACTATE DEHYDROGENASE(LDH)",
+        "Blood Toxic Element Profile 9 test",
+        "Complete Blood Count (CBC)+ESR"
+      ]
+    },
+    {
+      "num": 24,
+      "name": "ANEMIA PROFILE - C",
+      "count": 15,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Glycated Haemoglobin (HbA1c)",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "GFR (GLOMERULAR FILTRATION RATE)",
+        "Lipid Profile",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "Folic Acid",
+        "LACTATE DEHYDROGENASE(LDH)",
+        "FERRITIN",
+        "Hb Electrophoresis by HPLC",
+        "Blood Toxic Element Profile 9 test",
+        "IRON PROFILE"
+      ]
+    },
+    {
+      "num": 25,
+      "name": "ANEMIA PROFILE - I",
+      "count": 6,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "FERRITIN",
+        "Folic Acid",
+        "Vitamin B12",
+        "IRON",
+        "TIBC (Total Iron Binding Capacity)"
+      ]
+    },
+    {
+      "num": 26,
+      "name": "ANEMIA PROFILE - III",
+      "count": 8,
+      "tests": [
+        "Complete Blood Count (CBC)",
+        "IRON",
+        "TIBC (Total Iron Binding Capacity)",
+        "FERRITIN",
+        "LACTATE DEHYDROGENASE(LDH)",
+        "Vitamin B12",
+        "Hb Electrophoresis by HPLC",
+        "Hb Electrophoresis by HPLC"
+      ]
+    },
+    {
+      "num": 27,
+      "name": "ANEMIA PROFILE - M",
+      "count": 9,
+      "tests": [
+        "IRON PROFILE",
+        "LIVER FUNCTION TESTS",
+        "Lipid Profile",
+        "Kidney Profile",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Glycated Haemoglobin (HbA1c)",
+        "FERRITIN",
+        "Vitamin B12",
+        "Complete Blood Count (CBC)+ESR"
+      ]
+    },
+    {
+      "num": 28,
+      "name": "ANEMIA PROFILE II",
+      "count": 7,
+      "tests": [
+        "Folic Acid",
+        "FERRITIN",
+        "Vitamin B12",
+        "IRON",
+        "TIBC (Total Iron Binding Capacity)",
+        "Complete Blood Count (CBC)+ESR",
+        "Thyroid Stimulating Hormone (TSH)"
+      ]
+    },
+    {
+      "num": 29,
+      "name": "ANEMIA STUDY",
+      "count": 6,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Peripheral Blood Smear (PBS O R PBF)",
+        "Erythrocyte Sedimentation Rate (ESR)",
+        "IRON",
+        "TIBC (Total Iron Binding Capacity)",
+        "FERRITIN"
+      ]
+    },
+    {
+      "num": 30,
+      "name": "ANP PROFILE",
+      "count": 9,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "ABO Group & RH Type (Blood Group)",
+        "Glucose R (Blood Sugar Random)",
+        "HIV 1 & 2 Antibody -Rapid",
+        "Hepatitis B surface antigen (HBs Ag) (Rapid)",
+        "Hepatitis C virus (HCV Rapid)",
+        "Vdrl (Rapid)",
+        "Thyroid Stimulating Hormone (TSH)",
+        "Urine R/M (Urine Analysis)"
+      ]
+    },
+    {
+      "num": 31,
+      "name": "APLA PROFILE",
+      "count": 3,
+      "tests": [
+        "ANTI PHOSPHOLIPID ANTIBODY (APL) - IgG, IgM",
+        "Cardiolipin Antibodies IgA, IgG, IgM",
+        "Lupus Anticoagulant (DRVVT)"
+      ]
+    },
+    {
+      "num": 32,
+      "name": "Apollo Essentials 1.3",
+      "count": 13,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Glycated Haemoglobin (HbA1c)",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "LIVER FUNCTION TESTS",
+        "Lipid Profile",
+        "Kidney Profile",
+        "GFR (GLOMERULAR FILTRATION RATE)",
+        "IRON PROFILE, 25"
+      ]
+    },
+    {
+      "num": 33,
+      "name": "ARTHRITIS ANA IFA PROFILE",
+      "count": 13,
+      "tests": [
+        "HLA- B27 ESTIMATION",
+        "Complete Blood Count (CBC)",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Lipid Profile",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "GFR (GLOMERULAR FILTRATION RATE)",
+        "IRON PROFILE",
+        "ANTI NUCLEAR ANTIBODY (ANA-IFA)",
+        "Anti Cyclic Citrullinated Peptide Antibody (Anti-CCP)",
+        "Anti streptolysin-0 ( ASO) Titre",
+        "Rheumatoid Factor (RA test) Quantitative",
+        "C Reactive Protein (CRP) Quantitative"
+      ]
+    },
+    {
+      "num": 34,
+      "name": "ARTHRITIS BASIC PANEL",
+      "count": 7,
+      "tests": [
+        "Complete Blood Count (CBC)",
+        "C Reactive Protein (CRP) Quantitative",
+        "Rheumatoid Factor (RA test) Quantitative",
+        "Uric Acid",
+        "Calcium",
+        "Vitamin B12",
+        "25 OH VITAMIN D 3 TOTAL"
+      ]
+    },
+    {
+      "num": 35,
+      "name": "ARTHRITIS BASIC PANEL - 2",
+      "count": 10,
+      "tests": [
+        "Complete Blood Count (CBC)",
+        "C Reactive Protein (CRP) Quantitative",
+        "Rheumatoid Factor (RA test) Quantitative",
+        "Uric Acid",
+        "Calcium",
+        "Vitamin B12",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Anti Cyclic Citrullinated Peptide Antibody (Anti- CCP)",
+        "ANTI NUCLEAR ANTIBODY (ANA)",
+        "Anti streptolysin-0 ( ASO) Titre"
+      ]
+    },
+    {
+      "num": 36,
+      "name": "Arthritis first",
+      "count": 5,
+      "tests": [
+        "Anti streptolysin-0 ( ASO) Titre",
+        "Rheumatoid Factor (RA test) Quantitative",
+        "C Reactive Protein (CRP) Quantitative",
+        "Uric Acid",
+        "Calcium"
+      ]
+    },
+    {
+      "num": 37,
+      "name": "ARTHRITIS PANAL (MINI)",
+      "count": 6,
+      "tests": [
+        "ANTI NUCLEAR ANTIBODY (ANA)",
+        "Rheumatoid Factor (RA test) Quantitative",
+        "C Reactive Protein (CRP) Quantitative",
+        "Anti streptolysin-0 ( ASO) Titre",
+        "Uric Acid",
+        "Urine R/M (Urine Analysis)"
+      ]
+    },
+    {
+      "num": 38,
+      "name": "ARTHRITIS PANAL I",
+      "count": 7,
+      "tests": [
+        "ANTI NUCLEAR ANTIBODY (ANA)",
+        "Complement 4 (C4)",
+        "C Reactive Protein (CRP) Quantitative",
+        "Calcium",
+        "Rheumatoid Factor (RA test) Quantitative",
+        "Anti streptolysin-0 ( ASO) Titre",
+        "Urine R/M (Urine Analysis)"
+      ]
+    },
+    {
+      "num": 39,
+      "name": "ARTHRITIS PANAL II",
+      "count": 7,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Uric Acid",
+        "Rheumatoid Factor (RA test) Quantitative",
+        "C Reactive Protein (CRP) Quantitative",
+        "Anti Cyclic Citrullinated Peptide Antibody (Anti-CCP)",
+        "ANTI NUCLEAR ANTIBODY (ANA)",
+        "Urine R/M (Urine Analysis)"
+      ]
+    },
+    {
+      "num": 42,
+      "name": "ARTHRITIS PROFILE - A",
+      "count": 13,
+      "tests": [
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Lipid Profile",
+        "C Reactive Protein (CRP) Quantitative",
+        "Rheumatoid Factor (RA test) Quantitative",
+        "Anti streptolysin-0 ( ASO) Titre",
+        "Anti Cyclic Citrullinated Peptide Antibody (Anti- CCP)",
+        "ANTI NUCLEAR ANTIBODY (ANA)",
+        "IRON PROFILE",
+        "Complete Blood Count (CBC)",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "GFR (GLOMERULAR FILTRATION RATE)",
+        "HLA- B27 ESTIMATION"
+      ]
+    },
+    {
+      "num": 43,
+      "name": "ARTHRITIS PROFILE - B",
+      "count": 17,
+      "tests": [
+        "LIVER FUNCTION TESTS",
+        "Lipid Profile",
+        "Kidney Profile",
+        "IRON PROFILE",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Glycated Haemoglobin (HbA1c)",
+        "C Reactive Protein (CRP) Quantitative",
+        "Rheumatoid Factor (RA test) Quantitative",
+        "Anti streptolysin-0 ( ASO) Titre",
+        "ANTI NUCLEAR ANTIBODY (ANA)",
+        "Anti Cyclic Citrullinated Peptide Antibody (Anti-CCP)",
+        "HLA- B27 ESTIMATION",
+        "Phosphorous, serum",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "Complete Blood Count (CBC)+ESR",
+        "Complement 4 (C4)"
+      ]
+    },
+    {
+      "num": 44,
+      "name": "ARTHRITIS PROFILE - C",
+      "count": 16,
+      "tests": [
+        "LIVER FUNCTION TESTS",
+        "Lipid Profile",
+        "Kidney Profile",
+        "IRON PROFILE",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Glycated Haemoglobin (HbA1c)",
+        "C Reactive Protein (CRP) Quantitative",
+        "Rheumatoid Factor (RA test) Quantitative",
+        "ANTI NUCLEAR ANTIBODY (ANA)",
+        "Anti streptolysin-0 ( ASO) Titre",
+        "Anti Cyclic Citrullinated Peptide Antibody (Anti-CCP)",
+        "HLA- B27 ESTIMATION",
+        "Phosphorous, serum",
+        "Vitamin B12",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Complete Blood Count (CBC)+ESR"
+      ]
+    },
+    {
+      "num": 45,
+      "name": "ARTHRITIS PROFILE - M",
+      "count": 10,
+      "tests": [
+        "LIVER FUNCTION TESTS",
+        "Lipid Profile",
+        "Kidney Profile",
+        "IRON PROFILE",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Glycated Haemoglobin (HbA1c)",
+        "C Reactive Protein (CRP) Quantitative",
+        "Rheumatoid Factor (RA test) Quantitative",
+        "ANTI NUCLEAR ANTIBODY (ANA)",
+        "Complete Blood Count (CBC)+ESR"
+      ]
+    },
+    {
+      "num": 46,
+      "name": "ATHLETIC HEALTH CHECKUP PACKAGES",
+      "count": 21,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Glycated Haemoglobin (HbA1c)",
+        "Lipid Profile",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "IRON PROFILE",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "Testosterone- Total",
+        "HLA- B27 ESTIMATION",
+        "Homocysteine, Serum",
+        "CORTISOL MORNING",
+        "LACTATE DEHYDROGENASE(LDH)",
+        "Creatine phosphokinase (CPK TOTAL)",
+        "Urine R/M (Urine Analysis)",
+        "Folic Acid",
+        "Magnesium",
+        "Glucose F (Blood Sugar Fasting)",
+        "Glucose PP (Blood Sugar Post prandial)",
+        "hs-CRP (hs-C Reactive Protein )",
+        "FERRITIN"
+      ]
+    },
+    {
+      "num": 47,
+      "name": "Ayurved panel",
+      "count": 8,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Glycated Haemoglobin (HbA1c)",
+        "Glucose R (Blood Sugar Random)",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Rheumatoid Factor (RA test) Quantitative",
+        "C Reactive Protein (CRP) Quantitative",
+        "HLA- B27 ESTIMATION"
+      ]
+    },
+    {
+      "num": 48,
+      "name": "AYUSH PATH-LAB",
+      "count": 6,
+      "tests": [
+        "Thyroid Stimulating Hormone (TSH)",
+        "Kidney Profile",
+        "LIVER FUNCTION TESTS",
+        "Lipid Profile",
+        "IRON PROFILE",
+        "Glycated Haemoglobin (HbA1c)"
+      ]
+    },
+    {
+      "num": 49,
+      "name": "Basic fever panel",
+      "count": 3,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Widal Test (Slide Test)",
+        "Malarial Parasite slide"
+      ]
+    },
+    {
+      "num": 50,
+      "name": "basic fever panel-2",
+      "count": 4,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Malarial Parasite slide",
+        "Widal Test (Slide Test)",
+        "DENGUE IgG, IgM, NS1 RAPID"
+      ]
+    },
+    {
+      "num": 51,
+      "name": "BASIC HEALTH PACKAGE",
+      "count": 6,
+      "tests": [
+        "Glucose F (Blood Sugar Fasting)",
+        "Creatinine",
+        "Cholesterol Total",
+        "SGPT ; ALANINE AMINOTRANSFERASE (ALT)",
+        "ABO Group & RH Type (Blood Group)",
+        "Complete Blood Count (CBC)"
+      ]
+    },
+    {
+      "num": 52,
+      "name": "BETACELL FUNCTION TEST ADVANCED",
+      "count": 4,
+      "tests": [
+        "HOMA -IR",
+        "Glucose PP (Blood Sugar Post prandial)",
+        "Glycated Haemoglobin (HbA1c)",
+        "C-PEPTIDE (F)"
+      ]
+    },
+    {
+      "num": 53,
+      "name": "BIO-1",
+      "count": 7,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Glycated Haemoglobin (HbA1c)",
+        "Calcium",
+        "IRON PROFILE",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "THYROID PROFILE -3 (T3 T4 TSH)"
+      ]
+    },
+    {
+      "num": 54,
+      "name": "Bio-T",
+      "count": 9,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Glucose F (Blood Sugar Fasting)",
+        "Urine R/ M (Urine Analysis)",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Lipid Profile",
+        "GFR (GLOMERULAR FILTRATION RATE)",
+        "IRON PROFILE"
+      ]
+    },
+    {
+      "num": 55,
+      "name": "BIO-T PLUS",
+      "count": 12,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Glycated Haemoglobin (HbA1c)",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Lipid Profile",
+        "IRON PROFILE",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "GFR (GLOMERULAR FILTRATION RATE)",
+        "Urine R/M (Urine Analysis)",
+        "Glucose F (Blood Sugar Fasting)"
+      ]
+    },
+    {
+      "num": 56,
+      "name": "BIOT-PLATINUM",
+      "count": 13,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Glycated Haemoglobin (HbA1c)",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "IRON PROFILE",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Lipid Profile",
+        "Vitamin B12",
+        "25 OH VITAMIN D 3 TOTAL",
+        "C Reactive Protein (CRP) Quantitative",
+        "Rheumatoid Factor (RA test) Quantitative",
+        "Urine R/M (Urine Analysis)",
+        "Glucose F (Blood Sugar Fasting)"
+      ]
+    },
+    {
+      "num": 57,
+      "name": "BIOT-SMALL",
+      "count": 7,
+      "tests": [
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Lipid Profile",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "IRON",
+        "Complete Blood Count (CBC)+ESR",
+        "GFR (GLOMERULAR FILTRATION RATE)"
+      ]
+    },
+    {
+      "num": 58,
+      "name": "BODY (DIAMOND) HEALTH PLAN- FEMALE",
+      "count": 24,
+      "tests": [
+        "Urine R/M (Urine Analysis)",
+        "Glycated Haemoglobin (HbA1c)",
+        "Kidney Profile",
+        "LIVER FUNCTION TESTS",
+        "Lipid Profile",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "IRON PROFILE",
+        "Lipoprotein (A) [Lp(a)]",
+        "hs-CRP (hs-C Reactive Protein )",
+        "Homocysteine, Serum",
+        "Magnesium",
+        "Carcino embryonic antigen (CEA)",
+        "CA125 - Cancer marker",
+        "CA19.9 - Pancreatic Cancer Marker",
+        "CA15.3 - Breast Cancer marker",
+        "Alpha Fetoprotein (AFP), SERUM",
+        "IMMUNOGLOBULIN-IgE(Total IgE)",
+        "LH",
+        "FSH",
+        "PRL",
+        "APOLIPOPROTEIN B/A1",
+        "Glucose F (Blood Sugar Fasting)",
+        "Glucose PP (Blood Sugar Post prandial)",
+        "Complete Blood Count (CBC)+ESR"
+      ]
+    },
+    {
+      "num": 59,
+      "name": "BODY (DIAMOND)",
+      "count": 29,
+      "tests": [
+        "Urine R/M (Urine Analysis)",
+        "Glycated Haemoglobin (HbA1c)",
+        "Kidney Profile",
+        "HEALTH PLAN-MALE Lipid Profile",
+        "LIVER FUNCTION TESTS",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "IRON PROFILE",
+        "APOLIPOPROTEIN B/A1",
+        "Lipoprotein (A) [Lp(a)]",
+        "hs-CRP (hs-C Reactive Protein )",
+        "Homocysteine, Serum",
+        "Magnesium",
+        "PSA- Total (Prostrate Specific Antigen total)",
+        "Carcino embryonic antigen (CEA)",
+        "CA19.9 - Pancreatic Cancer Marker",
+        "PSA- Free (Prostrate Specific Antigen Free)",
+        "Alpha Fetoprotein (AFP), SERUM",
+        "Folic Acid",
+        "IMMUNOGLOBULIN-IgE(Total IgE)",
+        "Troponin - I HIGH SENSITIVE (Quantitative)",
+        "Amylase (Serum)",
+        "Lipase",
+        "HLA- B27 ESTIMATION",
+        "Creatine phosphokinase (CPK TOTAL)",
+        "Glucose F (Blood Sugar Fasting)",
+        "Glucose PP (Blood Sugar Post prandial)",
+        "Complete Blood Count (CBC)+ESR"
+      ]
+    },
+    {
+      "num": 62,
+      "name": "BODY (GOLD) HEALTH PLAN- FEMALE",
+      "count": 16,
+      "tests": [
+        "Complete Blood Count (CBC)",
+        "Urine R/M (Urine Analysis)",
+        "Kidney Profile",
+        "LIVER FUNCTION TESTS",
+        "Lipid Profile",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "IRON PROFILE",
+        "APOLIPOPROTEIN B/A1",
+        "CA125 - Cancer marker",
+        "CA15.3 - Breast Cancer marker",
+        "Folic Acid",
+        "Glycated Haemoglobin (HbA1c)",
+        "Glucose F (Blood Sugar Fasting)",
+        "Glucose PP (Blood Sugar Post prandial)"
+      ]
+    },
+    {
+      "num": 65,
+      "name": "BODY (PLATINUM) HEALTH PLAN- FEMALE",
+      "count": 24,
+      "tests": [
+        "Urine R/M (Urine Analysis)",
+        "Glycated Haemoglobin (HbA1c)",
+        "Kidney Profile",
+        "LIVER FUNCTION TESTS",
+        "Lipid Profile",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "IRON PROFILE",
+        "APOLIPOPROTEIN B/A1",
+        "Lipoprotein (A) [Lp(a)]",
+        "hs-CRP (hs-C Reactive Protein )",
+        "Homocysteine, Serum",
+        "Magnesium",
+        "Carcino embryonic antigen (CEA)",
+        "CA125 - Cancer marker",
+        "CA19.9 - Pancreatic Cancer Marker",
+        "CA15.3 - Breast Cancer marker",
+        "Alpha Fetoprotein (AFP), SERUM",
+        "Folic Acid",
+        "IMMUNOGLOBULIN-IgE(Total IgE)",
+        "Glucose F (Blood Sugar Fasting)",
+        "Glucose PP (Blood Sugar Post prandial)",
+        "Complete Blood Count (CBC)+ESR"
+      ]
+    },
+    {
+      "num": 66,
+      "name": "BODY (PLATINUM) HEALTH PLAN-MALE",
+      "count": 24,
+      "tests": [
+        "Urine R/M (Urine Analysis)",
+        "Glycated Haemoglobin (HbA1c)",
+        "Kidney Profile",
+        "Lipid Profile",
+        "LIVER FUNCTION TESTS",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "IRON PROFILE",
+        "APOLIPOPROTEIN B/A1",
+        "Lipoprotein (A) [Lp(a)]",
+        "hs-CRP (hs-C Reactive Protein )",
+        "Homocysteine, Serum",
+        "Magnesium",
+        "PSA- Free (Prostrate Specific Antigen Free)",
+        "PSA- Total (Prostrate Specific Antigen total)",
+        "Carcino embryonic antigen (CEA)",
+        "CA19.9 - Pancreatic Cancer Marker",
+        "Alpha Fetoprotein (AFP), SERUM",
+        "Folic Acid",
+        "IMMUNOGLOBULIN-IgE(Total IgE)",
+        "Glucose F (Blood Sugar Fasting)",
+        "Glucose PP (Blood Sugar Post prandial)",
+        "Complete Blood Count (CBC)+ESR"
+      ]
+    },
+    {
+      "num": 67,
+      "name": "BODY (PRIMARY) HEALTH PLAN- FEMALE",
+      "count": 11,
+      "tests": [
+        "Complete Blood Count (CBC)",
+        "Lipid Profile",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Glycated Haemoglobin (HbA1c)",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "CA125 - Cancer marker",
+        "Urine R/M (Urine Analysis)",
+        "IRON PROFILE",
+        "Glucose F (Blood Sugar Fasting)",
+        "Glucose PP (Blood Sugar Post prandial)"
+      ]
+    },
+    {
+      "num": 68,
+      "name": "BODY (PRIMARY)",
+      "count": 12,
+      "tests": [
+        "Complete Blood Count (CBC)",
+        "Lipid Profile",
+        "LIVER FUNCTION TESTS",
+        "Kidney"
+      ]
+    },
+    {
+      "num": 69,
+      "name": "BODY HEALTHKAVACH GOLD HEALTH PLAN",
+      "count": 14,
+      "tests": [
+        "Glucose F (Blood Sugar Fasting)",
+        "Glycated Haemoglobin (HbA1c)",
+        "IRON PROFILE",
+        "LIVER FUNCTION TESTS",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Vitamin B12",
+        "25 OH VITAMIN D 3 TOTAL",
+        "C Reactive Protein (CRP) Quantitative",
+        "Kidney Profile",
+        "Urine R/M (Urine Analysis)",
+        "Complete Blood Count (CBC)",
+        "Lipid Profile",
+        "GFR (GLOMERULAR FILTRATION RATE)",
+        "Phosphorous, serum"
+      ]
+    },
+    {
+      "num": 70,
+      "name": "BODY HEALTHKAVACH PLATINUM HEALTH PLAN-FEMALE",
+      "count": 15,
+      "tests": [
+        "Lipid Profile",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Glycated Haemoglobin (HbA1c)",
+        "IRON PROFILE",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "C Reactive Protein (CRP) Quantitative",
+        "CA125 - Cancer marker",
+        "Urine R/M (Urine Analysis)",
+        "Glucose F (Blood Sugar Fasting)",
+        "Glucose PP (Blood Sugar Post prandial)",
+        "Phosphorous, serum",
+        "Complete Blood Count (CBC)+ESR",
+        "IMMUNOGLOBULIN-IgE(Total IgE)",
+        "Amylase (Serum)"
+      ]
+    },
+    {
+      "num": 71,
+      "name": "BODY HEALTHKAVACH PLATINUM HEALTH PLAN-MALE",
+      "count": 15,
+      "tests": [
+        "Complete Blood Count (CBC)",
+        "Lipid Profile",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Glycated Haemoglobin (HbA1c)",
+        "IRON PROFILE",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "C Reactive Protein (CRP) Quantitative",
+        "PSA- Total (Prostrate Specific Antigen total)",
+        "Urine R/M (Urine Analysis)",
+        "Glucose F (Blood Sugar Fasting)",
+        "Glucose PP (Blood Sugar Post prandial)",
+        "Phosphorous, serum",
+        "IMMUNOGLOBULIN-IgE(Total IgE)",
+        "Amylase (Serum)"
+      ]
+    },
+    {
+      "num": 72,
+      "name": "BODY HEALTHKAVACH SILVER HEALTH PLAN",
+      "count": 11,
+      "tests": [
+        "Complete Blood Count (CBC)",
+        "Lipid Profile",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Urine R/M (Urine Analysis)",
+        "Glycated Haemoglobin (HbA1c)",
+        "IRON PROFILE",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Glucose F (Blood Sugar Fasting)",
+        "Glucose PP (Blood Sugar Post prandial)",
+        "Phosphorous, serum"
+      ]
+    },
+    {
+      "num": 73,
+      "name": "BODY INFLAMMATION ANALYSIS PROFILE",
+      "count": 5,
+      "tests": [
+        "hs-CRP (hs-C Reactive Protein )",
+        "Homocysteine, Serum",
+        "Lipoprotein (A) [Lp(a)]",
+        "LP-PLA2",
+        "APOLIPOPROTEIN B/A1"
+      ]
+    },
+    {
+      "num": 76,
+      "name": "BODY(GOLD) HEALTH PLAN-MALE",
+      "count": 16,
+      "tests": [
+        "Urine R/M (Urine Analysis)",
+        "Kidney Profile",
+        "LIVER FUNCTION TESTS",
+        "Lipid Profile",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "IRON PROFILE",
+        "APOLIPOPROTEIN B/A1",
+        "PSA- Free (Prostrate Specific Antigen Free)",
+        "PSA- Total (Prostrate Specific Antigen total)",
+        "Folic Acid",
+        "Glycated Haemoglobin (HbA1c)",
+        "Glucose F (Blood Sugar Fasting)",
+        "Glucose PP (Blood Sugar Post prandial)",
+        "Complete Blood Count (CBC)+ESR"
+      ]
+    },
+    {
+      "num": 77,
+      "name": "BOH PROFILE",
+      "count": 6,
+      "tests": [
+        "ANTI NUCLEAR ANTIBODY (ANA)",
+        "ANTI PHOSPHOLIPID ANTIBODY (APL) - IgG, IgM",
+        "Lupus Anticoagulant (DRVVT)",
+        "Thyroid Stimulating Hormone (TSH)",
+        "TORCH-10",
+        "Cardiolipin Antibodies IgA, IgG, IgM"
+      ]
+    },
+    {
+      "num": 78,
+      "name": "BOKARO HEALTH",
+      "count": 6,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Urea (Blood)",
+        "Creatinine",
+        "Glucose R (Blood Sugar Random)",
+        "Lipid Profile",
+        "LIVER FUNCTION TESTS"
+      ]
+    },
+    {
+      "num": 79,
+      "name": "BONE PROFILE - A",
+      "count": 8,
+      "tests": [
+        "25 OH VITAMIN D 3 TOTAL",
+        "Intact Parathyroid Hormone (iPTH)",
+        "Calcium",
+        "Alkaline Phosphatase (ALP)",
+        "Phosphorous, serum",
+        "Zinc SERUM",
+        "Vitamin B12",
+        "Magnesium"
+      ]
+    },
+    {
+      "num": 80,
+      "name": "BONE PROFILE - B",
+      "count": 11,
+      "tests": [
+        "25 OH VITAMIN D 3 TOTAL",
+        "Intact Parathyroid Hormone (iPTH)",
+        "Calcium",
+        "Phosphorous, serum",
+        "Alkaline Phosphatase (ALP)",
+        "Zinc SERUM",
+        "Vitamin B12",
+        "Magnesium",
+        "Rheumatoid Factor (RA test) Quantitative",
+        "Uric Acid",
+        "Copper (Serum)"
+      ]
+    },
+    {
+      "num": 81,
+      "name": "BONE PROFILE - C",
+      "count": 10,
+      "tests": [
+        "25 OH VITAMIN D 3 TOTAL",
+        "Intact Parathyroid Hormone (iPTH)",
+        "Calcium",
+        "Zinc SERUM",
+        "Vitamin B12",
+        "Rheumatoid Factor, RA test",
+        "Uric Acid",
+        "Copper (Serum)",
+        "Anti Cyclic Citrullinated Peptide Antibody (Anti-CCP)",
+        "ANTI NUCLEAR ANTIBODY (ANA)"
+      ]
+    },
+    {
+      "num": 82,
+      "name": "Camp 1.2",
+      "count": 6,
+      "tests": [
+        "Complete Blood Count (CBC)",
+        "Glycated Haemoglobin (HbA1c)",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Lipid Profile",
+        "THYROID PROFILE -3 (T3 T4 TSH)"
+      ]
+    },
+    {
+      "num": 83,
+      "name": "Camp Combo",
+      "count": 3,
+      "tests": [
+        "Complete Blood Count (CBC)",
+        "Thyroid Stimulating Hormone (TSH)",
+        "Glucose R (Blood Sugar Random)"
+      ]
+    },
+    {
+      "num": 84,
+      "name": "CAMP COMBO1",
+      "count": 3,
+      "tests": [
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "Complete Blood Count (CBC)+ESR"
+      ]
+    },
+    {
+      "num": 85,
+      "name": "camp profile",
+      "count": 3,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Glucose F (Blood Sugar Fasting)",
+        "Lipid Profile"
+      ]
+    },
+    {
+      "num": 86,
+      "name": "camp05",
+      "count": 3,
+      "tests": [
+        "Glycated Haemoglobin (HbA1c)",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Lipid Profile"
+      ]
+    },
+    {
+      "num": 89,
+      "name": "CANCER MARKER - II (FEMALE)",
+      "count": 7,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Alpha Fetoprotein (AFP), SERUM",
+        "Beta Human Chorionic Gonodotropin Hormone (BHCG)",
+        "CA125 - Cancer marker",
+        "CA15.3 - Breast Cancer marker",
+        "CA19.9 - Pancreatic Cancer Marker",
+        "Carcino embryonic antigen (CEA)"
+      ]
+    },
+    {
+      "num": 90,
+      "name": "CANCER PANEL (MALE)",
+      "count": 6,
+      "tests": [
+        "Alpha Fetoprotein (AFP), SERUM",
+        "Carcino embryonic antigen (CEA)",
+        "PSA- Free (Prostrate Specific Antigen Free)",
+        "PSA- Total (Prostrate Specific Antigen total)",
+        "CA19.9 - Pancreatic Cancer Marker",
+        "Beta Human Chorionic Gonodotropin Hormone (BHCG)"
+      ]
+    },
+    {
+      "num": 91,
+      "name": "CANCER SCREENING",
+      "count": 8,
+      "tests": [
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "IRON PROFILE",
+        "Lipid Profile",
+        "Kidney Profile",
+        "GFR (GLOMERULAR FILTRATION RATE)",
+        "LIVER FUNCTION TESTS",
+        "Complete Blood Count (CBC)+ESR",
+        "Carcino embryonic antigen (CEA)"
+      ]
+    },
+    {
+      "num": 93,
+      "name": "CARDIAC PANEL - II",
+      "count": 5,
+      "tests": [
+        "CPK-MB (creatine kinase myocardial band)",
+        "LACTATE DEHYDROGENASE(LDH)",
+        "SGOT ; Aspartate Aminotransferase (AST)",
+        "SGPT ; ALANINE AMINOTRANSFERASE (ALT)",
+        "SGPT ; ALANINE AMINOTRANSFERASE (ALT)"
+      ]
+    },
+    {
+      "num": 94,
+      "name": "CARDIAC PANEL-I",
+      "count": 3,
+      "tests": [
+        "SGOT ; Aspartate Aminotransferase (AST)",
+        "CPK-MB (creatine kinase myocardial band)",
+        "LACTATE DEHYDROGENASE(LDH)"
+      ]
+    },
+    {
+      "num": 95,
+      "name": "CARDIAC PROFILE - A",
+      "count": 12,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Glycated Haemoglobin (HbA1c)",
+        "Lipid Profile",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "GFR (GLOMERULAR FILTRATION RATE)",
+        "IRON PROFILE",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Homocysteine, Serum",
+        "APOLIPOPROTEIN B/A1",
+        "Lipoprotein (A) [Lp(a)]",
+        "hs- CRP (hs-C Reactive Protein )"
+      ]
+    },
+    {
+      "num": 96,
+      "name": "CARDIAC PROFILE - B",
+      "count": 12,
+      "tests": [
+        "Homocysteine, Serum",
+        "Lipoprotein (A) [Lp(a)]",
+        "APOLIPOPROTEIN B/A1",
+        "Lipid Profile",
+        "Glycated Haemoglobin (HbA1c)",
+        "Kidney Profile",
+        "IRON PROFILE",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "LIVER FUNCTION TESTS",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "Complete Blood Count (CBC)+ESR"
+      ]
+    },
+    {
+      "num": 97,
+      "name": "CARDIAC PROFILE - C",
+      "count": 13,
+      "tests": [
+        "Lipid Profile",
+        "Kidney Profile",
+        "LIVER FUNCTION TESTS",
+        "IRON PROFILE",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Glycated Haemoglobin (HbA1c)",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "Complete Blood Count (CBC)+ESR",
+        "Homocysteine, Serum",
+        "Lipoprotein (A) [Lp(a)]",
+        "APOLIPOPROTEIN B/A1",
+        "hs- CRP (hs-C Reactive Protein )"
+      ]
+    },
+    {
+      "num": 98,
+      "name": "CARDIAC PROFILE - M",
+      "count": 4,
+      "tests": [
+        "APOLIPOPROTEIN B/A1",
+        "Lipoprotein (A) [Lp(a)]",
+        "hs-CRP (hs-C Reactive Protein )",
+        "Lipid Profile"
+      ]
+    },
+    {
+      "num": 100,
+      "name": "cbc+gbp (pbs)",
+      "count": 2,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Peripheral Blood Smear (PBS O R PBF)"
+      ]
+    },
+    {
+      "num": 102,
+      "name": "COD PROFILE",
+      "count": 5,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Lipid Profile",
+        "KIDPRO",
+        "Urine R/M (Urine Analysis)",
+        "Glucose R (Blood Sugar Random)"
+      ]
+    },
+    {
+      "num": 104,
+      "name": "Complete Blood Count (CBC) +PS+ESR",
+      "count": 2,
+      "tests": [
+        "Peripheral Blood Smear (PBS O R PBF)",
+        "Complete Blood Count (CBC)+ESR"
+      ]
+    },
+    {
+      "num": 106,
+      "name": "COMPLETE VITAMIN PROFILE",
+      "count": 12,
+      "tests": [
+        "Vitamin D PROFILE (D2,D3,TOTAL D)",
+        "VITAMIN A",
+        "Vitamin B12",
+        "Thiamine (VITAMIN B 1)",
+        "Riboflavin (VITAMIN B2)",
+        "Niacin (VITAMIN B3)",
+        "Pantothenic acid (VITAMIN B5)",
+        "Pyridoxal 5 phosphate (VITAMIN B6)",
+        "BIOTIN (VITAMIN B7)",
+        "Folic Acid",
+        "VITAMIN E",
+        "VITAMIN K"
+      ]
+    },
+    {
+      "num": 108,
+      "name": "CPL FULL BODY HEALTH CHECKUP",
+      "count": 13,
+      "tests": [
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Lipid Profile",
+        "Glycated Haemoglobin (HbA1c)",
+        "IRON PROFILE",
+        "GFR (GLOMERULAR FILTRATION RATE)",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "LACTATE DEHYDROGENASE(LDH)",
+        "Phosphorous, serum",
+        "Glucose F (Blood Sugar Fasting)",
+        "Urine R/M (Urine Analysis)",
+        "Complete Blood Count (CBC)"
+      ]
+    },
+    {
+      "num": 112,
+      "name": "DIABETIC PANEL -",
+      "count": 11,
+      "tests": [
+        "Lipid Profile",
+        "Uric Acid",
+        "Glucose F (Blood Sugar Fasting)",
+        "Glycated"
+      ]
+    },
+    {
+      "num": 116,
+      "name": "DIABETIC PROFILE - B",
+      "count": 18,
+      "tests": [
+        "LIVER FUNCTION TESTS",
+        "Lipid Profile",
+        "Kidney Profile",
+        "IRON PROFILE",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Glycated Haemoglobin (HbA1c)",
+        "Fructosamine",
+        "Ketone (Acetone,Hydroxybutyrate), serum",
+        "Amylase (Serum)",
+        "Lipase",
+        "hs-CRP (hs-C Reactive Protein )",
+        "APOLIPOPROTEIN B/A1",
+        "Lipoprotein (A) [Lp(a)]",
+        "Homocysteine, Serum",
+        "Insulin Fasting",
+        "C-Peptide",
+        "Complete Blood Count (CBC)+ESR",
+        "Urine R/M (Urine Analysis)"
+      ]
+    },
+    {
+      "num": 118,
+      "name": "DIABETIC PROFILE - M",
+      "count": 11,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Glycated Haemoglobin (HbA1c)",
+        "LIVER FUNCTION TESTS",
+        "Lipid Profile",
+        "Kidney Profile",
+        "GFR (GLOMERULAR FILTRATION RATE)",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "IRON PROFILE",
+        "Microalbumin & Creatinine ratio (Urine )",
+        "Fructosamine",
+        "Ketone (Acetone, Hydroxybutyrate), serum"
+      ]
+    },
+    {
+      "num": 120,
+      "name": "DIABETIC SCREENING PROFILE",
+      "count": 9,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Glucose F (Blood Sugar Fasting)",
+        "Glucose PP (Blood Sugar Post prandial)",
+        "Glycated Haemoglobin (HbA1c)",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Lipid Profile",
+        "Urine R/M (Urine Analysis)",
+        "Microalbumin & Creatinine ratio (Urine )"
+      ]
+    },
+    {
+      "num": 122,
+      "name": "Dr bhavika profile",
+      "count": 19,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "ABO Group & RH Type (Blood Group)",
+        "Glucose R (Blood Sugar Random)",
+        "SGPT ; ALANINE AMINOTRANSFERASE (ALT)",
+        "Creatinine",
+        "HIV 1 & 2 Antibody -Rapid",
+        "Hepatitis B surface antigen (HBs Ag) (Rapid)",
+        "Hepatitis C virus (HCV Rapid)",
+        "Vdrl (Rapid)",
+        "Prolactin (PRL)",
+        "Beta Human Chorionic Gonodotropin Hormone (BHCG)",
+        "Thyroid Stimulating Hormone (TSH)",
+        "FT3 (Trilodothyronine- Free)",
+        "FT4 (Thyroxine- Free)",
+        "Urine R/M (Urine Analysis)",
+        "Anti Mullerian Hormone (AMH)",
+        "ESTRADIOL (E2)",
+        "Progesterone",
+        "Hb Electrophoresis by HPLC"
+      ]
+    },
+    {
+      "num": 124,
+      "name": "Executive Health Checkup for Men",
+      "count": 5,
+      "tests": [
+        "Glucose F (Blood Sugar Fasting)",
+        "Lipid Profile",
+        "LIVER FUNCTION TESTS",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Kidney Profile"
+      ]
+    },
+    {
+      "num": 126,
+      "name": "FAMILY PROFILE",
+      "count": 3,
+      "tests": [
+        "Complete Blood Count (CBC)",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile"
+      ]
+    },
+    {
+      "num": 130,
+      "name": "FIT-1.3",
+      "count": 8,
+      "tests": [
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Lipid Profile",
+        "Complete Blood Count (CBC)+ESR",
+        "Glycated Haemoglobin (HbA1c)",
+        "Vitamin B12",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Thyroid Stimulating Hormone (TSH)"
+      ]
+    },
+    {
+      "num": 132,
+      "name": "fluid cytology,R/M",
+      "count": 2,
+      "tests": [
+        "Fluid Routine Examination",
+        "Fluid Cytology"
+      ]
+    },
+    {
+      "num": 134,
+      "name": "GASTRO 2",
+      "count": 8,
+      "tests": [
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "IRON PROFILE",
+        "FERRITIN",
+        "Amylase (Serum)",
+        "Lipase",
+        "IMMUNOGLOBULIN-IgE(Total IgE)",
+        "FT3",
+        "FT4",
+        "TSH"
+      ]
+    },
+    {
+      "num": 136,
+      "name": "GASTRO 4",
+      "count": 7,
+      "tests": [
+        "Vitamin B12",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Complete Blood Count (CBC)+ESR",
+        "LIVER FUNCTION TESTS",
+        "IRON PROFILE",
+        "Glycated Haemoglobin (HbA1c)",
+        "C Reactive Protein (CRP) Quantitative"
+      ]
+    },
+    {
+      "num": 138,
+      "name": "GDPL CAMP PROFILE",
+      "count": 10,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Glucose R (Blood Sugar Random)",
+        "Creatinine",
+        "Uric Acid",
+        "Cholesterol Total",
+        "SGPT ; ALANINE AMINOTRANSFERASE (ALT)",
+        "Protein (Serum)",
+        "Calcium",
+        "Phosphorous, serum",
+        "SGOT ; Aspartate Aminotransferase (AST)"
+      ]
+    },
+    {
+      "num": 140,
+      "name": "GUJ11",
+      "count": 4,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Glucose R (Blood Sugar Random)",
+        "Cholesterol Total",
+        "Urine R/M (Urine Analysis)"
+      ]
+    },
+    {
+      "num": 142,
+      "name": "GUT HEALTH",
+      "count": 7,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "LIVER FUNCTION TESTS",
+        "Creatinine",
+        "Electrolyte Panel- (N a, K, Cl)",
+        "Thyroid Stimulating Hormone (TSH)",
+        "Glucose F (Blood Sugar Fasting)",
+        "Triple H Rapid - (HIV,HBsAg,HCV)"
+      ]
+    },
+    {
+      "num": 146,
+      "name": "Health Care Profile-1",
+      "count": 6,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Lipid Profile",
+        "25 OH VITAMIN D 3 TOTAL",
+        "IMMUNOGLOBULIN-IgE(Total IgE)"
+      ]
+    },
+    {
+      "num": 148,
+      "name": "health check advance",
+      "count": 12,
+      "tests": [
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "GFR (GLOMERULAR FILTRATION RATE)",
+        "Lipid Profile",
+        "IRON PROFILE",
+        "Glycated Haemoglobin (HbA1c)",
+        "Complete Blood Count (CBC)+ESR",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "Urine R/M (Urine Analysis)",
+        "Microalbumin & Creatinine ratio (Urine )"
+      ]
+    },
+    {
+      "num": 150,
+      "name": "health check extended",
+      "count": 27,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Glycated Haemoglobin (HbA1c)",
+        "IRON PROFILE",
+        "Lipid Profile",
+        "GFR (GLOMERULAR FILTRATION RATE)",
+        "Kidney Profile",
+        "LIVER FUNCTION TESTS",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Lipoprotein (A) [Lp(a)]",
+        "APOLIPOPROTEIN B/A1",
+        "hs-CRP (hs-C Reactive Protein )",
+        "Homocysteine, Serum",
+        "Ketone (Acetone,Hydroxybutyrate), serum",
+        "Fructosamine",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "Testosterone- Total",
+        "Cystatin - C",
+        "Zinc SERUM",
+        "Copper (Serum)",
+        "Amylase (Serum)",
+        "Lipase",
+        "Anti streptolysin-0 ( ASO) Titre",
+        "Rheumatoid Factor (RA test) Quantitative",
+        "Urine R/M (Urine Analysis)",
+        "Microalbumin & Creatinine ratio (Urine )",
+        "Blood Toxic Element Profile 9 test"
+      ]
+    },
+    {
+      "num": 152,
+      "name": "health check extended male",
+      "count": 32,
+      "tests": [
+        "Glucose F (Blood Sugar Fasting)",
+        "Carcino embryonic antigen (CEA)",
+        "PSA- Total (Prostrate Specific Antigen total)",
+        "Magnesium",
+        "HIV 1 & 2 Antibody ELISA",
+        "Complete Blood Count (CBC)+ESR",
+        "Glycated Haemoglobin (HbA1c)",
+        "IRON PROFILE",
+        "Lipid Profile",
+        "GFR (GLOMERULAR FILTRATION RATE)",
+        "Kidney Profile",
+        "LIVER FUNCTION TESTS",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Lipoprotein (A) [Lp(a)]",
+        "APOLIPOPROTEIN B/A1",
+        "hs-CRP (hs-C Reactive Protein )",
+        "Homocysteine, Serum",
+        "Ketone (Acetone,Hydroxybutyrate), serum",
+        "Fructosamine",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "Testosterone- Total",
+        "Cystatin - C",
+        "Zinc SERUM",
+        "Copper (Serum)",
+        "Amylase (Serum)",
+        "Lipase",
+        "Anti streptolysin-0 ( ASO) Titre",
+        "Rheumatoid Factor (RA test) Quantitative",
+        "Urine R/M (Urine Analysis)",
+        "Microalbumin & Creatinine ratio (Urine )",
+        "Blood Toxic Element Profile 9 test"
+      ]
+    },
+    {
+      "num": 154,
+      "name": "Health packge platinum",
+      "count": 11,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Lipid Profile",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Glucose F (Blood Sugar"
+      ]
+    },
+    {
+      "num": 156,
+      "name": "HEALTH PROFILE 1.3",
+      "count": 12,
+      "tests": [
+        "Complete Blood Count (CBC)",
+        "Glycated Haemoglobin (HbA1c)",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Lipid Profile",
+        "Kidney Profile",
+        "LIVER FUNCTION TESTS",
+        "IRON PROFILE",
+        "GFR (GLOMERULAR FILTRATION RATE)",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "Glucose F (Blood Sugar Fasting)",
+        "Urine R/M (Urine Analysis)"
+      ]
+    },
+    {
+      "num": 158,
+      "name": "HEALTH PROFILE-1",
+      "count": 9,
+      "tests": [
+        "Complete Blood Count (CBC)",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "IRON PROFILE",
+        "Glucose F (Blood Sugar Fasting)",
+        "Urine R/M (Urine Analysis)",
+        "GFR (GLOMERULAR FILTRATION RATE)",
+        "Lipid Profile"
+      ]
+    },
+    {
+      "num": 160,
+      "name": "HEALTHCARE-044",
+      "count": 10,
+      "tests": [
+        "Vitamin B12",
+        "25 OH VITAMIN D 3 TOTAL",
+        "LIVER FUNCTION TESTS",
+        "Glycated Haemoglobin (HbA1c)",
+        "IRON PROFILE",
+        "Lipid Profile",
+        "Kidney Profile",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Complete Blood Count (CBC)+ESR",
+        "Glucose R (Blood Sugar Random)"
+      ]
+    },
+    {
+      "num": 162,
+      "name": "HEMOPHILIA PROFILE",
+      "count": 3,
+      "tests": [
+        "Activated Partial Thromboplastin Time (APTT/PTTK)",
+        "Factor VIII FUNCTIONAL / ACTIVITY",
+        "Factor IX FUNCTIONAL"
+      ]
+    },
+    {
+      "num": 164,
+      "name": "HEPATITIS B PROFILE",
+      "count": 9,
+      "tests": [
+        "LIVER FUNCTION TESTS",
+        "HEPATITIS B ENVELOPE ANTIGEN (HbeAg )",
+        "Hepatitis B Envelope antibody(Anti-HBeAb)",
+        "Hepatitis B core antibody IgM (HBC IgM)",
+        "Hepatitis B core antigen - Total",
+        "Hepatitis B surface antigen (HBsAg)-ELISA",
+        "Hepatitis B surface Antibody (HBsAb)",
+        "Complete Blood Count (CBC)+ESR",
+        "Glycated Haemoglobin (HbA1c)"
+      ]
+    },
+    {
+      "num": 166,
+      "name": "HPCL",
+      "count": 7,
+      "tests": [
+        "Glucose F (Blood Sugar Fasting)",
+        "Urine R/M (Urine Analysis)",
+        "Complete Blood Count (CBC)",
+        "Lipid Profile",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Phosphorus"
+      ]
+    },
+    {
+      "num": 250,
+      "name": "IME/PME",
+      "count": 4,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Urine R/M (Urine Analysis)",
+        "Cholesterol Total",
+        "Creatinine"
+      ]
+    },
+    {
+      "num": 252,
+      "name": "Independence Profile-1",
+      "count": 8,
+      "tests": [
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "GFR (GLOMERULAR FILTRATION RATE)",
+        "Lipid Profile",
+        "Glycated Haemoglobin (HbA1c)",
+        "Complete Blood Count (CBC)",
+        "IRON PROFILE"
+      ]
+    },
+    {
+      "num": 256,
+      "name": "INFERTILITY PROFILE - A",
+      "count": 6,
+      "tests": [
+        "LH",
+        "FSH",
+        "PRL",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Anti Mullerian Hormone (AMH)",
+        "Androstenedione (A4)",
+        "Dehydroepiandrosterone Sulphate (DHEA-S)",
+        "17 OH Progesterone"
+      ]
+    },
+    {
+      "num": 258,
+      "name": "INFERTILITY PROFILE-FEMALE",
+      "count": 6,
+      "tests": [
+        "Thyroid Stimulating Hormone (TSH)",
+        "LH",
+        "FSH",
+        "PRL",
+        "Testosterone- Total",
+        "ESTRADIOL (E2)",
+        "Anti Mullerian Hormone (AMH)",
+        "Progesterone"
+      ]
+    },
+    {
+      "num": 260,
+      "name": "JANTA HEALTH PACKAGE",
+      "count": 12,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Glycated Haemoglobin (HbA1c)",
+        "IRON PROFILE",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Lipid Profile",
+        "C Reactive Protein (CRP) Quantitative",
+        "URINE C/S",
+        "Urine R/M (Urine Analysis)",
+        "Phosphorous, serum",
+        "GFR (GLOMERULAR FILTRATION RATE)"
+      ]
+    },
+    {
+      "num": 262,
+      "name": "KALP FULL BODY",
+      "count": 11,
+      "tests": [
+        "Glycated Haemoglobin (HbA1c)",
+        "Urine R/M (Urine Analysis)",
+        "Glucose F (Blood Sugar Fasting)",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Lipid Profile",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "IRON PROFILE",
+        "Complete Blood Count (CBC)"
+      ]
+    },
+    {
+      "num": 264,
+      "name": "KALP PACKGE 5",
+      "count": 7,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Glucose F (Blood Sugar Fasting)",
+        "Creatinine",
+        "Glycated Haemoglobin (HbA1c)",
+        "Lipid Profile",
+        "Salmonella Typhi (TYPHI DOT IgG & IgM)",
+        "Kidney Profile"
+      ]
+    },
+    {
+      "num": 266,
+      "name": "Kamothe Camp2",
+      "count": 5,
+      "tests": [
+        "Creatinine",
+        "Lipid Profile",
+        "Glycated Haemoglobin (HbA1c)",
+        "Complete Blood Count (CBC)",
+        "C-PEPTIDE (F)"
+      ]
+    },
+    {
+      "num": 268,
+      "name": "KIDNEY WITH PHOSPHOROUS",
+      "count": 2,
+      "tests": [
+        "Kidney Profile",
+        "Phosphorous, serum"
+      ]
+    },
+    {
+      "num": 270,
+      "name": "Labridge -1",
+      "count": 12,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "LIVER FUNCTION TESTS",
+        "Lipid Profile",
+        "Kidney Profile",
+        "Glycated Haemoglobin (HbA1c)",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "Glucose F (Blood Sugar Fasting)",
+        "Urine R/M (Urine Analysis)",
+        "GFR (GLOMERULAR FILTRATION RATE)",
+        "IRON PROFILE"
+      ]
+    },
+    {
+      "num": 274,
+      "name": "MALE HORMONE PROFILE",
+      "count": 6,
+      "tests": [
+        "Androstenedione (A4)",
+        "DIHYDROTESTOSTERONE DHT FREE",
+        "Growth Hormone (HGH)",
+        "LH",
+        "FSH",
+        "PRL",
+        "Sex Hormone Binding Globulin (SHBG)",
+        "Testosterone- Free"
+      ]
+    },
+    {
+      "num": 278,
+      "name": "MCTD PANELS",
+      "count": 8,
+      "tests": [
+        "Complete Blood Count (CBC)",
+        "Urine R/M (Urine Analysis)",
+        "C Reactive Protein (CRP) Quantitative",
+        "ANTI NUCLEAR ANTIBODY (ANA)",
+        "U1RNP ANTIBODIES, SERUM",
+        "Amylase (Serum)",
+        "Lipase",
+        "B-TYPE NATRIURETIC PEPTIDE (BNP)"
+      ]
+    },
+    {
+      "num": 280,
+      "name": "MULTIPLE MYELOMA PROFILE",
+      "count": 6,
+      "tests": [
+        "Beta 2 Microglobulin, SERUM",
+        "Protein Electrophoresis (Serum)",
+        "Immunoglobulin G (IgG)",
+        "Immunoglobulin (IgA)",
+        "Immunoglobulin M (IgM)",
+        "KAPPA / LAMBDA LIGHT CHAINS",
+        "FREE, SERUM"
+      ]
+    },
+    {
+      "num": 282,
+      "name": "NDPL-1.2",
+      "count": 11,
+      "tests": [
+        "Complete Blood Count (CBC)",
+        "Glycated Haemoglobin (HbA1c)",
+        "Glucose F (Blood Sugar Fasting)",
+        "Glucose PP (Blood Sugar Post prandial)",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Lipid Profile",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "C Reactive Protein (CRP) Quantitative",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12"
+      ]
+    },
+    {
+      "num": 284,
+      "name": "NEW YEAR OFFER -2",
+      "count": 8,
+      "tests": [
+        "Thyroid Stimulating Hormone (TSH)",
+        "Lipid Profile",
+        "LIVER FUNCTION TESTS",
+        "KIDPRO",
+        "Anti streptolysin-0 ( ASO) Titre",
+        "Complete Blood Count (CBC)+ESR",
+        "Glycated Haemoglobin (HbA1c)",
+        "Rheumatoid Factor (RA test) Quantitative"
+      ]
+    },
+    {
+      "num": 286,
+      "name": "NURVI BASIC PROFILE",
+      "count": 7,
+      "tests": [
+        "Glycated Haemoglobin (HbA1c)",
+        "Complete Blood Count (CBC)+ESR",
+        "Lipid Profile",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "IRON PROFILE"
+      ]
+    },
+    {
+      "num": 288,
+      "name": "NURVI HEALTHCARE ADVANCE",
+      "count": 10,
+      "tests": [
+        "Complete Blood Count (CBC)",
+        "Vitamin B12",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Glycated Haemoglobin (HbA1c)",
+        "IRON PROFILE",
+        "Lipid Profile",
+        "Kidney Profile",
+        "LIVER FUNCTION TESTS",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "GFR (GLOMERULAR FILTRATION RATE)"
+      ]
+    },
+    {
+      "num": 292,
+      "name": "ORTHO CARE BASIC",
+      "count": 11,
+      "tests": [
+        "Complete Blood Count (CBC)",
+        "C Reactive Protein (CRP) Quantitative",
+        "Calcium",
+        "Uric Acid",
+        "Rheumatoid Factor (RA test) Quantitative",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "Anti Cyclic Citrullinated Peptide Antibody (Anti-CCP)",
+        "IRON PROFILE",
+        "Phosphorous, serum",
+        "Anti streptolysin-0 ( ASO) Titre"
+      ]
+    },
+    {
+      "num": 296,
+      "name": "P850",
+      "count": 8,
+      "tests": [
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Lipid Profile",
+        "GFR (GLOMERULAR FILTRATION RATE)",
+        "Glucose F (Blood Sugar Fasting)",
+        "Complete Blood Count (CBC)+ESR",
+        "Urine R/M (Urine Analysis)",
+        "THYROID PROFILE -3 (T3 T4 TSH)"
+      ]
+    },
+    {
+      "num": 298,
+      "name": "PANCHSHEEL 1",
+      "count": 2,
+      "tests": [
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12"
+      ]
+    },
+    {
+      "num": 300,
+      "name": "PCOD PROFILE",
+      "count": 7,
+      "tests": [
+        "LH",
+        "FSH",
+        "PRL",
+        "Thyroid Stimulating Hormone (TSH)",
+        "Testosterone- Total",
+        "Insulin Fasting",
+        "Dehydroepiandrosterone Sulphate (DHEA-S)",
+        "Glycated Haemoglobin (HbA1c)",
+        "Complete Blood Count (CBC)+ESR"
+      ]
+    },
+    {
+      "num": 302,
+      "name": "PCOD PROFILE-S",
+      "count": 8,
+      "tests": [
+        "Luteinising Hormone (LH)",
+        "FSH (Follicle Stimulating Hormone)",
+        "Prolactin (PRL)",
+        "Thyroid Stimulating Hormone (TSH)",
+        "Testosterone- Total",
+        "Insulin Fasting",
+        "Dehydroepiandrosterone Sulphate (DHEA-S)",
+        "ESTRADIOL (E2)"
+      ]
+    },
+    {
+      "num": 304,
+      "name": "PLATINUM BODY HEALTH PLAN- FEMALE",
+      "count": 22,
+      "tests": [
+        "IMMUNOGLOBULIN-IgE(Total IgE)",
+        "Folic Acid",
+        "Alpha Fetoprotein (AFP), SERUM",
+        "CA15.3 - Breast Cancer marker",
+        "CA19.9 - Pancreatic Cancer Marker",
+        "CA125 - Cancer marker",
+        "Carcino embryonic antigen (CEA)",
+        "Magnesium",
+        "Homocysteine, Serum",
+        "hs-CRP (hs-C Reactive Protein )",
+        "Lipoprotein (A) [Lp(a)]",
+        "APOLIPOPROTEIN B/A1",
+        "IRON PROFILE",
+        "Vitamin B12",
+        "25 OH VITAMIN D 3 TOTAL",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Lipid Profile",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Glycated Haemoglobin (HbA1c)",
+        "Urine R/ M (Urine Analysis)",
+        "Complete Blood Count (CBC)"
+      ]
+    },
+    {
+      "num": 310,
+      "name": "Pre hair transplant",
+      "count": 8,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "BLEEDING TIME AND CLOTTING TIME (BT, CT)",
+        "Prothrombin Time (PT) with INR",
+        "Vdrl (Rapid)",
+        "Triple H Rapid - (HIV, HBsAg,HCV)",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Glucose R (Blood Sugar Random)",
+        "Glycated Haemoglobin (HbA1c)"
+      ]
+    },
+    {
+      "num": 312,
+      "name": "PRE HEALTH",
+      "count": 4,
+      "tests": [
+        "Complete Blood Count (CBC)",
+        "Glucose R (Blood Sugar Random)",
+        "C Reactive Protein (CRP) Quantitative",
+        "Uric Acid"
+      ]
+    },
+    {
+      "num": 314,
+      "name": "pregnancy profile",
+      "count": 8,
+      "tests": [
+        "Complete Blood Count (CBC)",
+        "Glucose Random (Blood Sugar Random)",
+        "ABO Group & RH Type (Blood Group)",
+        "HIV 1 & 2 Antibody -Rapid",
+        "Hepatitis B surface antigen (HBs Ag) (Rapid)",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Vdrl (Rapid)",
+        "Hepatitis C virus (HCV Rapid)"
+      ]
+    },
+    {
+      "num": 316,
+      "name": "PUNE CAMP-1",
+      "count": 8,
+      "tests": [
+        "Lipid Profile",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Glucose PP (Blood Sugar Post prandial)",
+        "Glucose F (Blood Sugar Fasting)",
+        "ABO Group & RH Type (Blood Group)",
+        "Urine R/M (Urine Analysis)",
+        "Complete Blood Count (CBC)+ESR"
+      ]
+    },
+    {
+      "num": 318,
+      "name": "Renal/KFT Function - Aarogya365-2",
+      "count": 8,
+      "tests": [
+        "Calcium",
+        "BUN (Blood Urea Nitrogen)",
+        "Urea (Blood)",
+        "Phosphorous, serum",
+        "GFR (GLOMERULAR FILTRATION RATE)",
+        "Urine R/M (Urine Analysis)",
+        "Uric Acid",
+        "Creatinine"
+      ]
+    },
+    {
+      "num": 320,
+      "name": "SAPHIRE MINOR FEMALE",
+      "count": 29,
+      "tests": [
+        "Zinc SERUM",
+        "Phosphorous, serum",
+        "Magnesium",
+        "LACTATE DEHYDROGENASE(LDH)",
+        "Intact Parathyroid Hormone (iPTH)",
+        "Homocysteine, Serum",
+        "CPK-MB (creatine kinase myocardial band)",
+        "Carcino embryonic antigen (CEA)",
+        "CA19.9 - Pancreatic Cancer Marker",
+        "Beta Human Chorionic Gonodotropin Hormone (BHCG)",
+        "Glycated Haemoglobin (HbA1c)",
+        "Urine R/M (Urine Analysis)",
+        "Glucose F (Blood Sugar Fasting)",
+        "IRON PROFILE",
+        "Lipid Profile",
+        "Anti streptolysin-0 ( ASO) Titre",
+        "ANTI NUCLEAR ANTIBODY (ANA)",
+        "Anti Cyclic Citrullinated Peptide Antibody (Anti-CCP)",
+        "Complete Blood Count (CBC)",
+        "C Reactive Protein (CRP) Quantitative",
+        "Rheumatoid Factor, RA test",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Riboflavin (VITAMIN B2)",
+        "Kidney Profile",
+        "GFR (GLOMERULAR FILTRATION RATE)",
+        "LIVER FUNCTION TESTS",
+        "CA125 - Cancer marker",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Glucose PP (Blood Sugar Post prandial)"
+      ]
+    },
+    {
+      "num": 322,
+      "name": "Saphire Package Female",
+      "count": 33,
+      "tests": [
+        "Zinc SERUM",
+        "Phosphorous, serum",
+        "Magnesium",
+        "LACTATE DEHYDROGENASE(LDH)",
+        "Intact Parathyroid Hormone (iPTH)",
+        "Homocysteine"
+      ]
+    },
+    {
+      "num": 324,
+      "name": "Senior Citizen Men Executive Health Check Up",
+      "count": 10,
+      "tests": [
+        "Kidney Profile",
+        "Glycated Haemoglobin (HbA1c)",
+        "LIVER FUNCTION TESTS",
+        "Lipid Profile",
+        "IRON PROFILE",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12",
+        "Complete Blood Count (CBC)+ESR",
+        "PSA- Total (Prostrate Specific Antigen total)"
+      ]
+    },
+    {
+      "num": 326,
+      "name": "SEVA-2",
+      "count": 7,
+      "tests": [
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Lipid Profile",
+        "IRON PROFILE",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Glycated Haemoglobin (HbA1c)",
+        "Complete Blood Count (CBC)+ESR"
+      ]
+    },
+    {
+      "num": 328,
+      "name": "Shree Health Package 1",
+      "count": 9,
+      "tests": [
+        "Lipid Profile",
+        "LIVER FUNCTION TESTS",
+        "Glycated Haemoglobin (HbA1c)",
+        "Glucose F (Blood Sugar Fasting)",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Urine R/ M (Urine Analysis)",
+        "Complete Blood Count (CBC)+ESR",
+        "GFR (GLOMERULAR FILTRATION RATE)",
+        "Kidney Profile"
+      ]
+    },
+    {
+      "num": 330,
+      "name": "Shree Health Profile - 1 Advance",
+      "count": 10,
+      "tests": [
+        "Complete Blood Count (CBC)+ESR",
+        "Lipid Profile",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "Glycated Haemoglobin (HbA1c)",
+        "IRON PROFILE",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "Urine R/M (Urine Analysis)",
+        "GFR (GLOMERULAR FILTRATION RATE)",
+        "Glucose F (Blood Sugar Fasting)"
+      ]
+    },
+    {
+      "num": 336,
+      "name": "Strength Fitness",
+      "count": 4,
+      "tests": [
+        "Testosterone- Total",
+        "LIVER FUNCTION TESTS",
+        "Vitamin B12",
+        "Kidney Profile"
+      ]
+    },
+    {
+      "num": 338,
+      "name": "Swastick SPL 3",
+      "count": 9,
+      "tests": [
+        "Complete Blood Count (CBC)",
+        "Glycated Haemoglobin (HbA1c)",
+        "Lipid Profile",
+        "LIVER FUNCTION TESTS",
+        "Kidney Profile",
+        "IRON PROFILE",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12"
+      ]
+    },
+    {
+      "num": 340,
+      "name": "TANMAY -1",
+      "count": 5,
+      "tests": [
+        "Complete Blood Count (CBC)",
+        "+",
+        "Lipid Profile",
+        "Urine R/M (Urine Analysis)",
+        "Glucose F (Blood Sugar Fasting)"
+      ]
+    },
+    {
+      "num": 342,
+      "name": "THALASSEMIA PROFILE",
+      "count": 6,
+      "tests": [
+        "Complete Blood Count (CBC)",
+        "Peripheral Blood Smear (PBS O R PBF)",
+        "Hb Electrophoresis by HPLC",
+        "IRON",
+        "TIBC (Total Iron Binding Capacity)",
+        "FERRITIN"
+      ]
+    },
+    {
+      "num": 344,
+      "name": "THALASSEMIA SCREEN",
+      "count": 3,
+      "tests": [
+        "Complete Blood Count (CBC)",
+        "Peripheral Blood Smear (PBS O R PBF)",
+        "Hb Electrophoresis by HPLC"
+      ]
+    },
+    {
+      "num": 346,
+      "name": "tmh profile",
+      "count": 7,
+      "tests": [
+        "Thyroid Stimulating Hormone (TSH)",
+        "Complete Blood Count (CBC)+ESR",
+        "LIVER FUNCTION TESTS",
+        "Lipid Profile",
+        "Kidney Profile",
+        "25 OH VITAMIN D 3 TOTAL",
+        "Vitamin B12"
+      ]
+    },
+    {
+      "num": 348,
+      "name": "TUMOUR PANEL (FEMALE)",
+      "count": 6,
+      "tests": [
+        "Alpha Fetoprotein (AFP), SERUM",
+        "Beta Human Chorionic Gonodotropin Hormone (BHCG)",
+        "CA125 - Cancer marker",
+        "CA15.3 - Breast Cancer marker",
+        "CA19.9 - Pancreatic Cancer Marker",
+        "Carcino embryonic antigen (CEA)"
+      ]
+    },
+    {
+      "num": 350,
+      "name": "VITAMIN B COMPLEX PROFILE",
+      "count": 8,
+      "tests": [
+        "Thiamine (VITAMIN B 1)",
+        "Niacin (VITAMIN B3)",
+        "Pyridoxal 5 phosphate (VITAMIN B6)",
+        "Folic Acid",
+        "Riboflavin (VITAMIN B2)",
+        "Pantothenic acid (VITAMIN B5)",
+        "BIOTIN (VITAMIN B7)",
+        "Vitamin B12"
+      ]
+    },
+    {
+      "num": 354,
+      "name": "VIVEKPATHLABS",
+      "count": 9,
+      "tests": [
+        "Vitamin B12",
+        "25 OH VITAMIN D 3 TOTAL",
+        "THYROID PROFILE -3 (T3 T4 TSH)",
+        "IRON PROFILE",
+        "Kidney Profile",
+        "LIVER FUNCTION TESTS",
+        "Complete Blood Count (CBC)",
+        "Glycated Haemoglobin (HbA1c)",
+        "Lipid Profile"
+      ]
+    }
+  ],
+  "skipped": [
+    {
+      "reason": "hy",
+      "name": "Alcohol Impact Profile - Aarogya365 - 2 - HY",
+      "num": 8
+    },
+    {
+      "reason": "hy",
+      "name": "ANC Profile (Mini) - Aarogya365 - 2 - HY",
+      "num": 18
+    },
+    {
+      "reason": "hy",
+      "name": "Anemia Profile - Aarogya365 - 2 - HY",
+      "num": 22
+    },
+    {
+      "reason": "hy",
+      "name": "Arthritis Profile (Maxi) - Aarogya365 - 2 - HY",
+      "num": 40
+    },
+    {
+      "reason": "hy",
+      "name": "Arthritis Profile (Mini) - Aarogya365- 2 - HY",
+      "num": 41
+    },
+    {
+      "reason": "hy",
+      "name": "Body (Essential) Health Plan - Aarogya365 - 2 - HY",
+      "num": 60
+    },
+    {
+      "reason": "hy",
+      "name": "Body (Executive) Health Plan - Aarogya365 - 2 - HY",
+      "num": 61
+    },
+    {
+      "reason": "hy",
+      "name": "Body (Maxi) Health Plan - Aarogya365 - 2 - HY",
+      "num": 63
+    },
+    {
+      "reason": "hy",
+      "name": "Body (Mini) Heath Plan - Aarogya365 - 2 - HY",
+      "num": 64
+    },
+    {
+      "reason": "hy",
+      "name": "Body Senior Citizen Health Plan (Men's) - Aarogya365 - 2 - HY",
+      "num": 74
+    },
+    {
+      "reason": "hy",
+      "name": "Body Senior Citizen Health Plan (Women's) - Aarogya365 - 2 - HY",
+      "num": 75
+    },
+    {
+      "reason": "hy",
+      "name": "Cancer Marker (Female) - Aarogya365 - 2 - HY",
+      "num": 87
+    },
+    {
+      "reason": "hy",
+      "name": "Cancer Marker (Male) - Aarogya365 - 2 - HY",
+      "num": 88
+    },
+    {
+      "reason": "hy",
+      "name": "Cardiac Care Profile - Aarogya365 - 2 - HY",
+      "num": 92
+    },
+    {
+      "reason": "hy",
+      "name": "DHT Basic Profile - Aarogya365 - 2 - HY",
+      "num": 110
+    },
+    {
+      "reason": "hy",
+      "name": "Diabetic Profile (Mini) - Aarogya365 - 2 - HY",
+      "num": 114
+    },
+    {
+      "reason": "hy",
+      "name": "Fever Profile (Maxi) - Aarogya365 - 2 - HY",
+      "num": 128
+    },
+    {
+      "reason": "hy",
+      "name": "Hair Loss Profile - Aarogya365 - 2 - HY",
+      "num": 144
+    },
+    {
+      "reason": "hy",
+      "name": "HY FIT PROFILE",
+      "num": 168
+    },
+    {
+      "reason": "hy",
+      "name": "HY AD CHECK",
+      "num": 170
+    },
+    {
+      "reason": "wellness",
+      "name": "HY AD WELLNESS -1. 3",
+      "num": 172
+    },
+    {
+      "reason": "hy",
+      "name": "HY ADVANCE MEN PACKAGE",
+      "num": 174
+    },
+    {
+      "reason": "hy",
+      "name": "HY ANC ADVANCE",
+      "num": 176
+    },
+    {
+      "reason": "hy",
+      "name": "HY coagulation profile -1",
+      "num": 178
+    },
+    {
+      "reason": "hy",
+      "name": "HY DIABETIC PROFILE - ADVANCED",
+      "num": 180
+    },
+    {
+      "reason": "hy",
+      "name": "HY DIABETIC-1",
+      "num": 182
+    },
+    {
+      "reason": "hy",
+      "name": "HY FEVER KYN",
+      "num": 184
+    },
+    {
+      "reason": "hy",
+      "name": "HY FEVER-2",
+      "num": 186
+    },
+    {
+      "reason": "hy",
+      "name": "HY FEVER-4",
+      "num": 188
+    },
+    {
+      "reason": "hy",
+      "name": "HY FIT 1+ ESR",
+      "num": 190
+    },
+    {
+      "reason": "hy",
+      "name": "HY FIT 3+ESR",
+      "num": 192
+    },
+    {
+      "reason": "hy",
+      "name": "HY FIT MALE",
+      "num": 194
+    },
+    {
+      "reason": "hy",
+      "name": "HY FIT PACK -B",
+      "num": 196
+    },
+    {
+      "reason": "hy",
+      "name": "HY FIT PACK -D",
+      "num": 198
+    },
+    {
+      "reason": "hy",
+      "name": "HY FIT1.3+Cardiac Risk",
+      "num": 200
+    },
+    {
+      "reason": "hy",
+      "name": "HY FITNESS 1.0",
+      "num": 202
+    },
+    {
+      "reason": "hy",
+      "name": "HY FITNESS 4.1",
+      "num": 204
+    },
+    {
+      "reason": "hy",
+      "name": "HY FITNESS COMPREHENSIVE PROFILE",
+      "num": 206
+    },
+    {
+      "reason": "hy",
+      "name": "HY FITNESS SMART 3",
+      "num": 208
+    },
+    {
+      "reason": "hy",
+      "name": "HY FITNESS-1.1",
+      "num": 210
+    },
+    {
+      "reason": "hy",
+      "name": "HY FITNESS-1.3",
+      "num": 212
+    },
+    {
+      "reason": "hy",
+      "name": "HY FITNESS-1.3 PRO",
+      "num": 214
+    },
+    {
+      "reason": "hy",
+      "name": "HY FITNESS-3",
+      "num": 216
+    },
+    {
+      "reason": "hy",
+      "name": "HY FITNESS-A",
+      "num": 218
+    },
+    {
+      "reason": "hy",
+      "name": "HY FLUID-1",
+      "num": 220
+    },
+    {
+      "reason": "hy",
+      "name": "HY HEALTH NGP",
+      "num": 222
+    },
+    {
+      "reason": "hy",
+      "name": "HY HEALTH- 1.2",
+      "num": 224
+    },
+    {
+      "reason": "hy",
+      "name": "HY HEART BASIC",
+      "num": 226
+    },
+    {
+      "reason": "hy",
+      "name": "HY MINI PROFILE",
+      "num": 228
+    },
+    {
+      "reason": "hy",
+      "name": "HY MUMBAI PROFILE",
+      "num": 230
+    },
+    {
+      "reason": "hy",
+      "name": "HY PATH 72 WITH LIPOPROTEIN PROFILE",
+      "num": 232
+    },
+    {
+      "reason": "hy",
+      "name": "HY PB- 2",
+      "num": 234
+    },
+    {
+      "reason": "hy",
+      "name": "HY SPL",
+      "num": 236
+    },
+    {
+      "reason": "hy",
+      "name": "HY SPL1.2",
+      "num": 238
+    },
+    {
+      "reason": "hy",
+      "name": "HY SUPREME PLUS WELLCARE PROFILE",
+      "num": 240
+    },
+    {
+      "reason": "hy",
+      "name": "HY ULTIMA PLUS DIABETIC PROFILE",
+      "num": 242
+    },
+    {
+      "reason": "hy",
+      "name": "HY WOMEN PROFILE",
+      "num": 244
+    },
+    {
+      "reason": "hy",
+      "name": "HYFIT2NASHIK",
+      "num": 246
+    },
+    {
+      "reason": "hy",
+      "name": "HYPATH",
+      "num": 248
+    },
+    {
+      "reason": "hy",
+      "name": "Infertility Profile (Female) - Aarogya365 - 2 - HY",
+      "num": 254
+    },
+    {
+      "reason": "corrupt",
+      "name": "LH,FSH,PRL,TSH",
+      "num": 272
+    },
+    {
+      "reason": "hy",
+      "name": "Mansoon Profile (Mini) - Aarogya365 - 2 - HY",
+      "num": 276
+    },
+    {
+      "reason": "hy",
+      "name": "Obesity Profile - Aarogya365 - 2 - HY",
+      "num": 290
+    },
+    {
+      "reason": "hy",
+      "name": "Osteoporosis Profile - Aarogya365 - 2 - HY",
+      "num": 294
+    },
+    {
+      "reason": "hy",
+      "name": "Post Chemotherapy Profile - Aarogya365 - 2 - HY",
+      "num": 306
+    },
+    {
+      "reason": "hy",
+      "name": "Pre Chemotherapy Profile - Aarogya365 - 2 - HY",
+      "num": 308
+    },
+    {
+      "reason": "hy",
+      "name": "SMA 12+2 - Aarogya365 - 2 - HY",
+      "num": 332
+    },
+    {
+      "reason": "hy",
+      "name": "Smoking Impact Profile - Aarogya365 - 2 - HY",
+      "num": 334
+    },
+    {
+      "reason": "corrupt",
+      "name": "VITAMIN PROFILE (TOTAL VID- D,B 12, FOLIC ACID, CALCIUM,T3 T4 TSH )",
+      "num": 352
+    },
+    {
+      "reason": "wellness",
+      "name": "Wellness -2",
+      "num": 356
+    },
+    {
+      "reason": "wellness",
+      "name": "wellness bg",
+      "num": 358
+    },
+    {
+      "reason": "wellness",
+      "name": "WELLNESS-1.1",
+      "num": 360
+    },
+    {
+      "reason": "wellness",
+      "name": "WELLNESS-1.1+CBC",
+      "num": 362
+    },
+    {
+      "reason": "wellness",
+      "name": "WELLNESS-1.2",
+      "num": 364
+    },
+    {
+      "reason": "wellness",
+      "name": "WELLNESS-1.3+ESR",
+      "num": 366
+    },
+    {
+      "reason": "wellness",
+      "name": "WELLNESS-1.4",
+      "num": 368
+    },
+    {
+      "reason": "wellness",
+      "name": "WELLNESS-1.6",
+      "num": 370
+    },
+    {
+      "reason": "wellness",
+      "name": "WELLNESS-1.7 PRO",
+      "num": 372
+    }
+  ]
+}

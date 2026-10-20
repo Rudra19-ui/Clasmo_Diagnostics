@@ -92,6 +92,11 @@ export const api = {
     const query = new URLSearchParams(params).toString();
     return request(`/test-packages/${query ? `?${query}` : ''}`);
   },
+  createTestPackage: (payload) =>
+    request('/test-packages/', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
   getReportFormats: (params = {}) => {
     const query = new URLSearchParams(params).toString();
     return request(`/report-formats/${query ? `?${query}` : ''}`);

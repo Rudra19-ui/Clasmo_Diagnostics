@@ -193,6 +193,14 @@ class TestPackage(models.Model):
 
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
+    mrp = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0,
+        help_text='Profile MRP shown to the patient.',
+    )
+    rate = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0,
+        help_text='Profile rate charged for this combination.',
+    )
     is_active = models.BooleanField(default=True)
     tests = models.ManyToManyField(Test, blank=True, related_name='packages')
     sort_order = models.PositiveIntegerField(default=0)

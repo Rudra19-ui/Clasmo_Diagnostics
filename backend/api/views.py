@@ -340,6 +340,9 @@ class TestListView(generics.ListAPIView):
 
     def get_queryset(self):
         qs = Test.objects.select_related('category').all()
+        # Profiles live under TestPackage — do not list them as individual tests.
+        profile_names = TestPackage.objects.filter(is_active=True).values_list('name', flat=True)
+        qs = qs.exclude(name__in=profile_names)
         search = self.request.query_params.get('search', '').strip()
         category = self.request.query_params.get('category', '').strip()
         if search:
@@ -419,9 +422,13 @@ class TestCategoryListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
 
-class TestPackageListView(generics.ListAPIView):
+class TestPackageListView(generics.ListCreateAPIView):
     serializer_class = TestPackageSerializer
-    permission_classes = [permissions.IsAuthenticated]
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [IsAdmin()]
+        return [permissions.IsAuthenticated()]
 
     def get_queryset(self):
         qs = TestPackage.objects.filter(is_active=True).prefetch_related('tests')

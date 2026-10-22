@@ -2,7 +2,12 @@ from django.contrib.auth import authenticate
 from django.utils import timezone
 from rest_framework import serializers
 
-from .role_permissions import ALL_PERMISSION_KEYS, ROLE_PERMISSION_SCHEMA
+from .role_permissions import (
+    ALL_PERMISSION_KEYS,
+    PRICE_ALWAYS_VISIBLE_ROLES,
+    ROLE_PERMISSION_SCHEMA,
+    role_shows_amount,
+)
 
 from .models import (
     LabMessage,
@@ -53,6 +58,8 @@ class UserSerializer(serializers.ModelSerializer):
     zone_code = serializers.SerializerMethodField()
     zone_name = serializers.SerializerMethodField()
     role_label = serializers.SerializerMethodField()
+    show_price = serializers.SerializerMethodField()
+    show_mrp = serializers.SerializerMethodField()
     email = serializers.EmailField(read_only=True)
 
     class Meta:
@@ -61,7 +68,7 @@ class UserSerializer(serializers.ModelSerializer):
             'id', 'username', 'email', 'role', 'role_label', 'display_name', 'mobile', 'lab_code',
             'is_active', 'save_credentials', 'save_info', 'last_login',
             'parent_franchisee_id', 'parent_franchisee_name', 'parent_franchisee_role',
-            'zone_id', 'zone_code', 'zone_name',
+            'zone_id', 'zone_code', 'zone_name', 'show_price', 'show_mrp',
         ]
         read_only_fields = ['last_login']
 
@@ -83,6 +90,26 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_role_label(self, obj):
         return obj.get_role_display()
+
+    def _role_permissions(self, obj):
+        cache = self.context.get('_price_role_cache')
+        if cache is None:
+            cache = {
+                role.code: role.permissions
+                for role in LabRole.objects.all().only('code', 'permissions')
+            }
+            self.context['_price_role_cache'] = cache
+        return cache.get(obj.role)
+
+    def get_show_price(self, obj):
+        if obj.is_superuser or obj.role in PRICE_ALWAYS_VISIBLE_ROLES:
+            return True
+        return role_shows_amount(obj.role, self._role_permissions(obj), 'show_price')
+
+    def get_show_mrp(self, obj):
+        if obj.is_superuser or obj.role in PRICE_ALWAYS_VISIBLE_ROLES:
+            return True
+        return role_shows_amount(obj.role, self._role_permissions(obj), 'show_mrp')
 
 
 class RegisterSerializer(serializers.Serializer):
@@ -327,6 +354,14 @@ class LabRoleUpdateSerializer(serializers.ModelSerializer):
             cleaned[key] = bool(value.get(key, False))
         return cleaned
 
+    def validate(self, attrs):
+        permissions = attrs.get('permissions')
+        if permissions is not None and self.instance and self.instance.code in PRICE_ALWAYS_VISIBLE_ROLES:
+            permissions['show_price'] = True
+            permissions['show_mrp'] = True
+            attrs['permissions'] = permissions
+        return attrs
+
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
@@ -371,6 +406,35 @@ class TestCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = TestCategory
         fields = ['id', 'name']
+
+
+class TestRenameSerializer(serializers.ModelSerializer):
+    """Admin-only rename of the catalog test name and its prices."""
+
+    class Meta:
+        model = Test
+        fields = ['name', 'price', 'mrp']
+
+    def validate_name(self, value):
+        name = (value or '').strip()
+        if not name:
+            raise serializers.ValidationError('Enter a test name.')
+        if len(name) > 200:
+            raise serializers.ValidationError('Test name must be 200 characters or less.')
+        package_exists = TestPackage.objects.filter(is_active=True, name__iexact=name).exists()
+        if package_exists:
+            raise serializers.ValidationError('That name is already a test profile.')
+        return name
+
+    def validate_price(self, value):
+        if value is None or value < 0:
+            raise serializers.ValidationError('Enter a price of 0 or more.')
+        return value
+
+    def validate_mrp(self, value):
+        if value is None or value < 0:
+            raise serializers.ValidationError('Enter an MRP of 0 or more.')
+        return value
 
 
 class TestSerializer(serializers.ModelSerializer):

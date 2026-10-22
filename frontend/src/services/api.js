@@ -87,6 +87,11 @@ export const api = {
     const query = new URLSearchParams(params).toString();
     return request(`/tests/${query ? `?${query}` : ''}`);
   },
+  updateTest: (id, payload) =>
+    request(`/tests/${id}/`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    }),
   getTestCategories: () => request('/test-categories/'),
   getTestPackages: (params = {}) => {
     const query = new URLSearchParams(params).toString();

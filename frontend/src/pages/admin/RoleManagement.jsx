@@ -5,7 +5,11 @@ import Layout from '../../components/Layout';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../services/api';
 import { ROLE_LABELS, ROLE_OPTIONS, ROLES } from '../../utils/roles';
-import { ROLE_PERMISSION_SCHEMA } from '../../utils/rolePermissions';
+import { PRICE_ALWAYS_VISIBLE_ROLES, ROLE_PERMISSION_SCHEMA } from '../../utils/rolePermissions';
+
+const MODULE_PERMISSIONS = ROLE_PERMISSION_SCHEMA.filter(
+  (item) => item.key !== 'show_price' && item.key !== 'show_mrp',
+);
 
 function roleBadgeClass(role) {
   switch (role) {
@@ -89,15 +93,24 @@ export default function RoleManagement() {
     setError('');
   };
 
+  const permissionOn = (key) => Boolean(
+    roleDraft.permissions?.[key] ?? roleDraft.permissions?.show_price_mrp,
+  );
+
   const togglePermission = (key) => {
     if (!isAdmin) return;
-    setRoleDraft((prev) => ({
-      ...prev,
-      permissions: {
-        ...prev.permissions,
-        [key]: !prev.permissions?.[key],
-      },
-    }));
+    setRoleDraft((prev) => {
+      const current = key === 'show_price' || key === 'show_mrp'
+        ? Boolean(prev.permissions?.[key] ?? prev.permissions?.show_price_mrp)
+        : Boolean(prev.permissions?.[key]);
+      return {
+        ...prev,
+        permissions: {
+          ...prev.permissions,
+          [key]: !current,
+        },
+      };
+    });
   };
 
   const handleSaveRole = async () => {
@@ -160,7 +173,7 @@ export default function RoleManagement() {
             <div>
               <h2 className="change-password-title">Role Management</h2>
               <p className="role-management-subtitle">
-                Manage role permissions and assign roles to users.
+                Manage role permissions, and choose separately which roles can see Price and which can see MRP.
               </p>
             </div>
             <button type="button" className="btn-outline" onClick={loadData} disabled={loading}>
@@ -228,9 +241,45 @@ export default function RoleManagement() {
                     </div>
                   </div>
 
+                  <div className="price-visibility-sections">
+                    <section className="price-visibility-option">
+                      <h4 className="role-permissions-title">Price</h4>
+                      <label className="role-permission-item">
+                        <input
+                          type="checkbox"
+                          checked={
+                            PRICE_ALWAYS_VISIBLE_ROLES.includes(selectedRole.code)
+                            || permissionOn('show_price')
+                          }
+                          onChange={() => togglePermission('show_price')}
+                          disabled={!isAdmin || PRICE_ALWAYS_VISIBLE_ROLES.includes(selectedRole.code)}
+                        />
+                        <span>Show Price</span>
+                      </label>
+                    </section>
+                    <section className="price-visibility-option">
+                      <h4 className="role-permissions-title">MRP</h4>
+                      <label className="role-permission-item">
+                        <input
+                          type="checkbox"
+                          checked={
+                            PRICE_ALWAYS_VISIBLE_ROLES.includes(selectedRole.code)
+                            || permissionOn('show_mrp')
+                          }
+                          onChange={() => togglePermission('show_mrp')}
+                          disabled={!isAdmin || PRICE_ALWAYS_VISIBLE_ROLES.includes(selectedRole.code)}
+                        />
+                        <span>Show MRP</span>
+                      </label>
+                    </section>
+                  </div>
+                  {PRICE_ALWAYS_VISIBLE_ROLES.includes(selectedRole.code) && (
+                    <p className="role-readonly-note">Admin and Super Admin always see Price and MRP.</p>
+                  )}
+
                   <h4 className="role-permissions-title">Module Permissions</h4>
                   <div className="role-permissions-grid">
-                    {ROLE_PERMISSION_SCHEMA.map((item) => (
+                    {MODULE_PERMISSIONS.map((item) => (
                       <label key={item.key} className="role-permission-item">
                         <input
                           type="checkbox"

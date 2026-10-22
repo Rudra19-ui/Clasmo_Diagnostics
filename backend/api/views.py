@@ -101,6 +101,7 @@ from .serializers import (
     PatientSampleBarcodeSerializer,
     TestCategorySerializer,
     TestPackageSerializer,
+    TestRenameSerializer,
     ReportFormatAssetSerializer,
     TestSerializer,
     UserRoleUpdateSerializer,
@@ -414,6 +415,23 @@ class TestListView(generics.ListAPIView):
                 'report_extra_sections': test.report_extra_sections or {},
             })
         return Response(rows)
+
+
+class TestUpdateView(generics.UpdateAPIView):
+    """Super admin and admin can rename a test and change its price and MRP."""
+
+    serializer_class = TestRenameSerializer
+    permission_classes = [IsAdmin]
+    http_method_names = ['patch']
+    queryset = Test.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', True)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(TestSerializer(instance, context=self.get_serializer_context()).data)
 
 
 class TestCategoryListView(generics.ListAPIView):

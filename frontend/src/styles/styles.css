@@ -4362,6 +4362,24 @@ input, select, textarea, button {
   resize: vertical;
 }
 
+.price-visibility-sections {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin: 0 0 16px;
+}
+
+.price-visibility-option {
+  padding: 12px 14px;
+  border: 1px solid #d5e4f2;
+  border-radius: 6px;
+  background: #f7fbff;
+}
+
+.price-visibility-option .role-permissions-title {
+  margin-top: 0;
+}
+
 .role-permissions-title {
   font-size: 13px;
   font-weight: 700;
@@ -7638,6 +7656,33 @@ input, select, textarea, button {
   text-align: center;
   color: #666;
   padding: 24px 8px;
+}
+
+.test-rename-input {
+  width: 100%;
+  min-width: 160px;
+  padding: 6px 8px;
+  border: 1px solid #b7cbe0;
+  border-radius: 3px;
+  font: inherit;
+}
+
+.test-rename-input--money {
+  min-width: 90px;
+  max-width: 120px;
+}
+
+.test-rename-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.test-rename-error {
+  flex-basis: 100%;
+  color: #9b2c2c;
+  font-size: 12px;
 }
 
 .portfolio-profile-grid {

@@ -7,6 +7,7 @@ import { useAuth } from '../../context/AuthContext';
 import { isFranchiseRole } from '../../utils/franchiseNav';
 import { filterPorCatalogPdfs } from '../../utils/porCatalog';
 import { ADMIN_ROLES } from '../../utils/roles';
+import { canViewMrp, canViewPrice } from '../../utils/rolePermissions';
 
 function money(value) {
   const amount = Number(value);
@@ -188,6 +189,8 @@ export default function TestProfile() {
   const { user } = useAuth();
   const franchise = isFranchiseRole(user?.role);
   const canCreate = ADMIN_ROLES.includes(user?.role);
+  const showPrice = canViewPrice(user);
+  const showMrp = canViewMrp(user);
   const [creating, setCreating] = useState(false);
   const [packages, setPackages] = useState([]);
   const [porPdfs, setPorPdfs] = useState([]);
@@ -202,11 +205,11 @@ export default function TestProfile() {
     ])
       .then(([rows, formats]) => {
         setPackages(Array.isArray(rows) ? rows : []);
-        setPorPdfs(filterPorCatalogPdfs(formats, { hidePriceCatalog: franchise }));
+        setPorPdfs(filterPorCatalogPdfs(formats, { hidePriceCatalog: !showPrice && !showMrp }));
       })
       .catch((err) => setError(err.message || 'Could not load packages.'))
       .finally(() => setLoading(false));
-  }, [franchise]);
+  }, [franchise, showPrice, showMrp]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -288,8 +291,8 @@ export default function TestProfile() {
                   <p className="package-count-line">
                     <strong>{pkg.test_count}</strong> test{pkg.test_count === 1 ? '' : 's'} in this package
                   </p>
-                  <p><strong>PROFILE MRP:</strong> {money(pkg.mrp)}</p>
-                  <p><strong>Profile rate:</strong> {money(pkg.rate)}</p>
+                  {showMrp && <p><strong>PROFILE MRP:</strong> {money(pkg.mrp)}</p>}
+                  {showPrice && <p><strong>Profile rate:</strong> {money(pkg.rate)}</p>}
                   {pkg.description && <p>{pkg.description}</p>}
                   <p><strong>Includes:</strong> {(pkg.test_names || []).join(', ') || '—'}</p>
                   <Link to="/portfolio/sample-report" className="portfolio-profile-link">

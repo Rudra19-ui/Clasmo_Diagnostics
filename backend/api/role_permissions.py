@@ -15,7 +15,12 @@ ROLE_PERMISSION_SCHEMA = [
     {'key': 'test_parameters', 'label': 'Test Parameter Master'},
     {'key': 'manage_users', 'label': 'Manage Users'},
     {'key': 'manage_roles', 'label': 'Manage Roles'},
+    {'key': 'show_price', 'label': 'Show Price'},
+    {'key': 'show_mrp', 'label': 'Show MRP'},
 ]
+
+# These roles always see catalog Price and MRP.
+PRICE_ALWAYS_VISIBLE_ROLES = {'admin', 'super_admin'}
 
 ALL_PERMISSION_KEYS = [item['key'] for item in ROLE_PERMISSION_SCHEMA]
 
@@ -28,11 +33,27 @@ def build_permissions(**enabled):
     return {key: bool(enabled.get(key, False)) for key in ALL_PERMISSION_KEYS}
 
 
+def role_shows_amount(role_code: str, permissions: dict | None, key: str) -> bool:
+    if role_code in PRICE_ALWAYS_VISIBLE_ROLES:
+        return True
+    stored = permissions or {}
+    if key in stored:
+        return bool(stored.get(key))
+    # Older roles stored one combined switch.
+    return bool(stored.get('show_price_mrp'))
+
+
 DEFAULT_ROLE_DEFINITIONS = [
     {
         'code': 'admin',
         'name': 'Admin',
         'description': 'Full access to all lab modules and administration.',
+        'permissions': all_permissions_enabled(),
+    },
+    {
+        'code': 'super_admin',
+        'name': 'Super Admin',
+        'description': 'Full access, including Price and MRP visibility for every module.',
         'permissions': all_permissions_enabled(),
     },
     {
@@ -50,6 +71,8 @@ DEFAULT_ROLE_DEFINITIONS = [
             elab_pay=True,
             help=True,
             report_preview=True,
+            show_price=True,
+            show_mrp=True,
         ),
     },
     {
@@ -68,6 +91,8 @@ DEFAULT_ROLE_DEFINITIONS = [
             help=True,
             result_entry=True,
             report_preview=True,
+            show_price=True,
+            show_mrp=True,
         ),
     },
     {
@@ -83,6 +108,8 @@ DEFAULT_ROLE_DEFINITIONS = [
             help=True,
             report_preview=True,
             test_parameters=True,
+            show_price=True,
+            show_mrp=True,
         ),
     },
     {
@@ -96,6 +123,8 @@ DEFAULT_ROLE_DEFINITIONS = [
             dashboard=True,
             help=True,
             manage_users=True,
+            show_price=True,
+            show_mrp=True,
         ),
     },
     {
@@ -111,6 +140,8 @@ DEFAULT_ROLE_DEFINITIONS = [
             dashboard=True,
             help=True,
             report_preview=True,
+            show_price=True,
+            show_mrp=True,
         ),
     },
     {
@@ -124,6 +155,8 @@ DEFAULT_ROLE_DEFINITIONS = [
             dashboard=True,
             help=True,
             manage_users=True,
+            show_price=False,
+            show_mrp=False,
         ),
     },
     {
@@ -137,6 +170,8 @@ DEFAULT_ROLE_DEFINITIONS = [
             dashboard=True,
             help=True,
             manage_users=True,
+            show_price=False,
+            show_mrp=False,
         ),
     },
     {
@@ -149,6 +184,8 @@ DEFAULT_ROLE_DEFINITIONS = [
             reports=True,
             dashboard=True,
             help=True,
+            show_price=False,
+            show_mrp=False,
         ),
     },
 ]

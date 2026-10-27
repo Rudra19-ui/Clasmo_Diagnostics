@@ -28,6 +28,19 @@ export const SUPER_ADMIN_WORKFLOW_COLUMNS = [
   },
 ];
 
+/** Franchise tools in Administration for Super Admin and Admin. */
+export const FRANCHISE_ADMIN_COLUMN = {
+  id: 'franchise-management',
+  title: 'Franchise',
+  roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
+  links: [
+    { href: '/admin/list-franchisee', label: 'List Franchisee', desc: 'View Supreme, Prime, and Sub-Franchise accounts.' },
+    { href: '/admin/add-franchisee', label: 'Add Franchisee', desc: 'Create a new franchise account.' },
+    { href: '/admin/franchise-bulk-pricing', label: 'Franchise Pricing', desc: 'Set bulk franchise test pricing.' },
+    { href: '/admin/franchise-transfer-pricing', label: 'Transfer Price', desc: 'Transfer pricing between franchise levels.' },
+  ],
+};
+
 /** Paths that keep the Administration sidebar open for Super Admin. */
 export const SUPER_ADMIN_ADMIN_SHELL_PATHS = [
   '/sample-scan',
@@ -40,6 +53,10 @@ export const SUPER_ADMIN_ADMIN_SHELL_PATHS = [
   '/notifications/test-cancellation',
   '/hold-tests',
   '/sample-rejection',
+  '/admin/list-franchisee',
+  '/admin/add-franchisee',
+  '/admin/franchise-bulk-pricing',
+  '/admin/franchise-transfer-pricing',
 ];
 
 export function isSuperAdminAdminShellPath(pathname = '') {
@@ -50,6 +67,7 @@ export function isSuperAdminAdminShellPath(pathname = '') {
 
 export const ADMIN_COLUMNS = [
   ...SUPER_ADMIN_WORKFLOW_COLUMNS,
+  FRANCHISE_ADMIN_COLUMN,
   {
     id: 'user-management',
     title: 'User Management',

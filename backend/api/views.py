@@ -3052,6 +3052,9 @@ class UserListView(generics.ListAPIView):
         role = (self.request.query_params.get('role') or '').strip()
         if role:
             qs = qs.filter(role=role)
+        zone_id = (self.request.query_params.get('zone_id') or '').strip()
+        if zone_id.isdigit():
+            qs = qs.filter(zone_id=int(zone_id))
         active = self.request.query_params.get('is_active')
         if active in ('1', 'true', 'True'):
             qs = qs.filter(is_active=True)

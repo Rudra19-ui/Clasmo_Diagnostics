@@ -245,6 +245,7 @@ export const api = {
   getUsers: (params = {}) => {
     const query = new URLSearchParams();
     if (params.role) query.set('role', params.role);
+    if (params.zone_id) query.set('zone_id', String(params.zone_id));
     if (params.is_active) query.set('is_active', params.is_active === true ? 'true' : String(params.is_active));
     const suffix = query.toString() ? `?${query.toString()}` : '';
     return request(`/users/${suffix}`);

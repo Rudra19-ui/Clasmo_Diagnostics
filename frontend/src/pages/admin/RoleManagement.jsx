@@ -23,6 +23,7 @@ function roleBadgeClass(role) {
 export default function RoleManagement() {
   const { user, isAdmin, isSuperAdmin } = useAuth();
   const [roles, setRoles] = useState([]);
+  const [zones, setZones] = useState([]);
   const [users, setUsers] = useState([]);
   const [selectedRoleCode, setSelectedRoleCode] = useState('');
   const [roleDraft, setRoleDraft] = useState({ name: '', description: '', permissions: {} });
@@ -31,6 +32,11 @@ export default function RoleManagement() {
   const [showPasswords, setShowPasswords] = useState({});
   const [savingPasswordId, setSavingPasswordId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadingUsers, setLoadingUsers] = useState(false);
+  const [usersLoaded, setUsersLoaded] = useState(false);
+  const [filterZoneId, setFilterZoneId] = useState('');
+  const [filterRole, setFilterRole] = useState('');
+  const [filterSearch, setFilterSearch] = useState('');
   const [savingRole, setSavingRole] = useState(false);
   const [savingUserId, setSavingUserId] = useState(null);
   const [error, setError] = useState('');
@@ -51,9 +57,24 @@ export default function RoleManagement() {
   }, [roles, isSuperAdmin]);
 
   const visibleUsers = useMemo(() => {
-    if (isSuperAdmin) return users;
-    return users.filter((row) => row.role !== ROLES.ADMIN && row.role !== ROLES.SUPER_ADMIN);
-  }, [users, isSuperAdmin]);
+    let list = users;
+    if (!isSuperAdmin) {
+      list = list.filter((row) => row.role !== ROLES.ADMIN && row.role !== ROLES.SUPER_ADMIN);
+    }
+    const q = filterSearch.trim().toLowerCase();
+    if (!q) return list;
+    return list.filter((row) => {
+      const hay = [
+        row.username,
+        row.display_name,
+        row.mobile,
+        row.email,
+        ROLE_LABELS[row.role],
+        row.zone_name,
+      ].join(' ').toLowerCase();
+      return hay.includes(q);
+    });
+  }, [users, isSuperAdmin, filterSearch]);
 
   const selectedRole = useMemo(
     () => visibleRoles.find((role) => role.code === selectedRoleCode) || null,
@@ -72,13 +93,13 @@ export default function RoleManagement() {
     setLoading(true);
     setError('');
     try {
-      const [roleData, userData] = await Promise.all([api.getRoles(), api.getUsers()]);
+      const [roleData, zoneData] = await Promise.all([api.getRoles(), api.getZones()]);
       setRoles(roleData);
-      setUsers(userData);
-      setDraftRoles(Object.fromEntries(userData.map((row) => [row.id, row.role])));
-      setPasswordDrafts(Object.fromEntries(
-        userData.map((row) => [row.id, row.login_password || '']),
-      ));
+      const zoneList = Array.isArray(zoneData) ? zoneData : [];
+      setZones(zoneList);
+      if (!isSuperAdmin && zoneList.length === 1 && !filterZoneId) {
+        setFilterZoneId(String(zoneList[0].id));
+      }
       const filteredRoles = isSuperAdmin
         ? roleData
         : roleData.filter((role) => role.code !== ROLES.ADMIN);
@@ -101,7 +122,50 @@ export default function RoleManagement() {
     } finally {
       setLoading(false);
     }
-  }, [selectedRoleCode, isSuperAdmin]);
+  }, [selectedRoleCode, isSuperAdmin, filterZoneId]);
+
+  const loadUsers = useCallback(async () => {
+    if (!filterZoneId && isSuperAdmin) {
+      setError('Select a zone first, then apply the filter.');
+      return;
+    }
+    if (!filterZoneId && !isSuperAdmin) {
+      setError('Select a zone first, then apply the filter.');
+      return;
+    }
+    setLoadingUsers(true);
+    setError('');
+    setSuccess('');
+    try {
+      const params = { is_active: true };
+      if (filterZoneId) params.zone_id = filterZoneId;
+      if (filterRole) params.role = filterRole;
+      const userData = await api.getUsers(params);
+      const list = Array.isArray(userData) ? userData : [];
+      setUsers(list);
+      setDraftRoles(Object.fromEntries(list.map((row) => [row.id, row.role])));
+      setPasswordDrafts(Object.fromEntries(
+        list.map((row) => [row.id, row.login_password || '']),
+      ));
+      setShowPasswords({});
+      setUsersLoaded(true);
+    } catch (err) {
+      setError(err.message || 'Unable to load users.');
+      setUsers([]);
+      setUsersLoaded(true);
+    } finally {
+      setLoadingUsers(false);
+    }
+  }, [filterZoneId, filterRole, isSuperAdmin]);
+
+  const clearUserFilter = () => {
+    setFilterRole('');
+    setFilterSearch('');
+    if (isSuperAdmin) setFilterZoneId('');
+    setUsers([]);
+    setUsersLoaded(false);
+    setSuccess('');
+  };
 
   useEffect(() => {
     loadData();
@@ -245,7 +309,15 @@ export default function RoleManagement() {
                 Manage role permissions, and choose separately which roles can see Price and which can see MRP.
               </p>
             </div>
-            <button type="button" className="btn-outline" onClick={loadData} disabled={loading}>
+            <button
+              type="button"
+              className="btn-outline"
+              onClick={() => {
+                loadData();
+                if (usersLoaded) loadUsers();
+              }}
+              disabled={loading || loadingUsers}
+            >
               Refresh
             </button>
           </div>
@@ -369,111 +441,196 @@ export default function RoleManagement() {
 
           <div className="role-users-section">
             <h3 className="role-section-title">Assign Roles to Users</h3>
-            <div className="data-table-wrap">
-              <div className="data-table-scroll">
-                <table className="data-table role-management-table">
-                  <thead>
-                    <tr>
-                      <th>Username</th>
-                      {canViewPasswords && <th>Password</th>}
-                      <th>Display Name</th>
-                      <th>Current Role</th>
-                      {isAdmin && <th>Assign Role</th>}
-                      {isAdmin && <th>Action</th>}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {loading && (
+            <p className="role-management-subtitle">
+              Select a zone (and optional role), then apply the filter to load users.
+            </p>
+
+            <form
+              className="role-user-filter-bar"
+              onSubmit={(event) => {
+                event.preventDefault();
+                loadUsers();
+              }}
+            >
+              <label className="role-user-filter-field">
+                <span>Zone</span>
+                <select
+                  value={filterZoneId}
+                  onChange={(event) => {
+                    setFilterZoneId(event.target.value);
+                    setUsersLoaded(false);
+                    setUsers([]);
+                  }}
+                  required
+                >
+                  <option value="">Select zone…</option>
+                  {zones.map((zone) => (
+                    <option key={zone.id} value={zone.id}>
+                      {zone.name} ({zone.code})
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="role-user-filter-field">
+                <span>Role</span>
+                <select
+                  value={filterRole}
+                  onChange={(event) => {
+                    setFilterRole(event.target.value);
+                    setUsersLoaded(false);
+                    setUsers([]);
+                  }}
+                >
+                  <option value="">All roles</option>
+                  {ROLE_OPTIONS.filter((option) => (
+                    isSuperAdmin || (option.value !== ROLES.ADMIN && option.value !== ROLES.SUPER_ADMIN)
+                  )).map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="role-user-filter-field role-user-filter-search">
+                <span>Search</span>
+                <input
+                  type="search"
+                  value={filterSearch}
+                  onChange={(event) => setFilterSearch(event.target.value)}
+                  placeholder="Name, username, mobile"
+                  disabled={!usersLoaded}
+                />
+              </label>
+              <div className="role-user-filter-actions">
+                <button type="submit" className="btn-blue btn-sm" disabled={loadingUsers || !filterZoneId}>
+                  {loadingUsers ? 'Loading…' : 'Apply Filter'}
+                </button>
+                <button type="button" className="btn-outline btn-sm" onClick={clearUserFilter} disabled={loadingUsers}>
+                  Clear
+                </button>
+              </div>
+            </form>
+
+            {!usersLoaded && !loadingUsers && (
+              <p className="role-panel-empty">
+                No users shown yet. Choose a zone and click Apply Filter.
+              </p>
+            )}
+
+            {(usersLoaded || loadingUsers) && (
+              <div className="data-table-wrap">
+                <div className="data-table-scroll">
+                  <table className="data-table role-management-table">
+                    <thead>
                       <tr>
-                        <td colSpan={tableColSpan} className="empty-msg">Loading users...</td>
+                        <th>Username</th>
+                        {canViewPasswords && <th>Password</th>}
+                        <th>Display Name</th>
+                        <th>Current Role</th>
+                        {isAdmin && <th>Assign Role</th>}
+                        {isAdmin && <th>Action</th>}
                       </tr>
-                    )}
-                    {!loading && visibleUsers.map((row) => {
-                      const isSelf = row.id === user?.id;
-                      const draftRole = draftRoles[row.id] || row.role;
-                      const hasChanges = draftRole !== row.role;
-                      const passwordValue = passwordDrafts[row.id] ?? row.login_password ?? '';
-                      const passwordDirty = passwordValue !== (row.login_password || '');
-                      return (
-                        <tr key={row.id}>
-                          <td>{row.username}</td>
-                          {canViewPasswords && (
-                            <td>
-                              <div className="role-password-cell">
-                                <input
-                                  type={showPasswords[row.id] ? 'text' : 'password'}
-                                  value={passwordValue}
-                                  onChange={(event) => handlePasswordDraftChange(row.id, event.target.value)}
-                                  placeholder="Set password"
-                                  autoComplete="new-password"
-                                  disabled={savingPasswordId === row.id}
-                                />
-                                <label className="role-password-show">
+                    </thead>
+                    <tbody>
+                      {loadingUsers && (
+                        <tr>
+                          <td colSpan={tableColSpan} className="empty-msg">Loading users...</td>
+                        </tr>
+                      )}
+                      {!loadingUsers && visibleUsers.length === 0 && (
+                        <tr>
+                          <td colSpan={tableColSpan} className="empty-msg">No users match this filter.</td>
+                        </tr>
+                      )}
+                      {!loadingUsers && visibleUsers.map((row) => {
+                        const isSelf = row.id === user?.id;
+                        const draftRole = draftRoles[row.id] || row.role;
+                        const hasChanges = draftRole !== row.role;
+                        const passwordValue = passwordDrafts[row.id] ?? row.login_password ?? '';
+                        const passwordDirty = passwordValue !== (row.login_password || '');
+                        return (
+                          <tr key={row.id}>
+                            <td>{row.username}</td>
+                            {canViewPasswords && (
+                              <td>
+                                <div className="role-password-cell">
                                   <input
-                                    type="checkbox"
-                                    checked={Boolean(showPasswords[row.id])}
-                                    onChange={() => toggleShowPassword(row.id)}
+                                    type={showPasswords[row.id] ? 'text' : 'password'}
+                                    value={passwordValue}
+                                    onChange={(event) => handlePasswordDraftChange(row.id, event.target.value)}
+                                    placeholder="Set password"
+                                    autoComplete="new-password"
+                                    disabled={savingPasswordId === row.id}
                                   />
-                                  Show
-                                </label>
+                                  <label className="role-password-show">
+                                    <input
+                                      type="checkbox"
+                                      checked={Boolean(showPasswords[row.id])}
+                                      onChange={() => toggleShowPassword(row.id)}
+                                    />
+                                    Show
+                                  </label>
+                                  <button
+                                    type="button"
+                                    className="btn-outline btn-sm"
+                                    onClick={() => handleSavePassword(row)}
+                                    disabled={
+                                      savingPasswordId === row.id
+                                      || !passwordDirty
+                                      || passwordValue.trim().length < 8
+                                    }
+                                  >
+                                    {savingPasswordId === row.id ? 'Saving...' : 'Set'}
+                                  </button>
+                                </div>
+                              </td>
+                            )}
+                            <td>{row.display_name || '—'}</td>
+                            <td>
+                              <span className={roleBadgeClass(row.role)}>
+                                {ROLE_LABELS[row.role] || row.role}
+                              </span>
+                            </td>
+                            {isAdmin && (
+                              <td>
+                                <select
+                                  value={draftRole}
+                                  onChange={(event) => handleUserRoleChange(row.id, event.target.value)}
+                                  disabled={isSelf || savingUserId === row.id}
+                                >
+                                  {assignableRoles.map((option) => (
+                                    <option key={option.value} value={option.value}>{option.label}</option>
+                                  ))}
+                                  {!assignableRoles.some((option) => option.value === draftRole) && (
+                                    <option value={draftRole}>{ROLE_LABELS[draftRole] || draftRole}</option>
+                                  )}
+                                </select>
+                                {isSelf && <span className="role-self-note">Your account</span>}
+                              </td>
+                            )}
+                            {isAdmin && (
+                              <td>
                                 <button
                                   type="button"
-                                  className="btn-outline btn-sm"
-                                  onClick={() => handleSavePassword(row)}
-                                  disabled={
-                                    savingPasswordId === row.id
-                                    || !passwordDirty
-                                    || passwordValue.trim().length < 8
-                                  }
+                                  className="btn-blue btn-sm"
+                                  onClick={() => handleSaveUserRole(row)}
+                                  disabled={isSelf || !hasChanges || savingUserId === row.id}
                                 >
-                                  {savingPasswordId === row.id ? 'Saving...' : 'Set'}
+                                  {savingUserId === row.id ? 'Saving...' : 'Update'}
                                 </button>
-                              </div>
-                            </td>
-                          )}
-                          <td>{row.display_name || '—'}</td>
-                          <td>
-                            <span className={roleBadgeClass(row.role)}>
-                              {ROLE_LABELS[row.role] || row.role}
-                            </span>
-                          </td>
-                          {isAdmin && (
-                            <td>
-                              <select
-                                value={draftRole}
-                                onChange={(event) => handleUserRoleChange(row.id, event.target.value)}
-                                disabled={isSelf || savingUserId === row.id}
-                              >
-                                {assignableRoles.map((option) => (
-                                  <option key={option.value} value={option.value}>{option.label}</option>
-                                ))}
-                                {/* Keep current role visible even if not creatable */}
-                                {!assignableRoles.some((option) => option.value === draftRole) && (
-                                  <option value={draftRole}>{ROLE_LABELS[draftRole] || draftRole}</option>
-                                )}
-                              </select>
-                              {isSelf && <span className="role-self-note">Your account</span>}
-                            </td>
-                          )}
-                          {isAdmin && (
-                            <td>
-                              <button
-                                type="button"
-                                className="btn-blue btn-sm"
-                                onClick={() => handleSaveUserRole(row)}
-                                disabled={isSelf || !hasChanges || savingUserId === row.id}
-                              >
-                                {savingUserId === row.id ? 'Saving...' : 'Update'}
-                              </button>
-                            </td>
-                          )}
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                              </td>
+                            )}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+                {usersLoaded && !loadingUsers && (
+                  <p className="role-management-subtitle" style={{ marginTop: '0.75rem' }}>
+                    Showing {visibleUsers.length} user{visibleUsers.length === 1 ? '' : 's'}.
+                  </p>
+                )}
               </div>
-            </div>
+            )}
             {!isAdmin && (
               <p className="role-readonly-note">
                 You can view roles and permissions. Only admins can edit roles or assign them to users.

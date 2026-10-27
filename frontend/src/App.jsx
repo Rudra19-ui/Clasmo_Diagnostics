@@ -23,6 +23,7 @@ import FranchiseSupremeList from './pages/admin/FranchiseSupremeList';
 import FranchiseAddSignUp from './pages/admin/FranchiseAddSignUp';
 import FranchiseBulkPricing from './pages/admin/FranchiseBulkPricing';
 import FranchiseTransferPricing from './pages/admin/FranchiseTransferPricing';
+import MyBusiness from './pages/MyBusiness';
 import EnquireBox from './pages/EnquireBox';
 import UserSignUp from './pages/UserSignUp';
 import SelfPatientQuery from './pages/SelfPatientQuery';
@@ -319,6 +320,7 @@ export default function App() {
           <Route path="/give-feedback" element={<ProtectedRoute><GiveFeedback /></ProtectedRoute>} />
           <Route path="/admin/enquiries" element={<Navigate to="/enquire-box" replace />} />
           <Route path="/administration" element={<ProtectedRoute allowedRoles={ADMINISTRATION_ROLES}><Administration /></ProtectedRoute>} />
+          <Route path="/my-business" element={<ProtectedRoute allowedRoles={[ROLES.SUPER_ADMIN]}><MyBusiness /></ProtectedRoute>} />
           <Route path="/admin/change-password" element={<ProtectedRoute allowedRoles={ALL_ROLES}><ChangePassword /></ProtectedRoute>} />
           <Route path="/admin/role-management" element={<ProtectedRoute allowedRoles={ALL_ROLES}><RoleManagement /></ProtectedRoute>} />
           <Route path="/admin/membership" element={<ProtectedRoute allowedRoles={ALL_ROLES}><Membership /></ProtectedRoute>} />

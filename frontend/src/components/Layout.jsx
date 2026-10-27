@@ -47,19 +47,10 @@ export default function Layout({ activePage, children }) {
   const profileRef = useRef(null);
   const sidebarRef = useRef(null);
   const isStandalonePage = activePage === 'enquire-box' || activePage === 'user-signup' || activePage === 'self-patient-query' || activePage === 'give-feedback';
-  const FRANCHISE_MAIN_NAV_PATHS = [
-    '/admin/list-franchisee',
-    '/admin/add-franchisee',
-    '/admin/franchise-bulk-pricing',
-    '/admin/franchise-transfer-pricing',
-  ];
-  const isFranchiseMainNavRoute = FRANCHISE_MAIN_NAV_PATHS.some(
-    (path) => location.pathname === path || location.pathname.startsWith(`${path}/`),
-  );
   const isSuperAdminWorkflowAdminRoute = user?.role === 'super_admin'
     && isSuperAdminAdminShellPath(location.pathname);
+  // Franchise list/pricing live under Administration (AdminSidebar).
   const isAdminRoute = !isStandalonePage
-    && !isFranchiseMainNavRoute
     && (
       activePage === 'administration'
       || location.pathname.startsWith('/admin/')

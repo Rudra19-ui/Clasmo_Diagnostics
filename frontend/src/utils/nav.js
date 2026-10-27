@@ -117,15 +117,9 @@ export const STANDARD_NAV = [
   {
     id: 'my-business',
     label: 'My Business',
-    href: '/admin/list-franchisee',
+    href: '/my-business',
     icon: 'franchise',
     roles: [ROLES.SUPER_ADMIN],
-    children: [
-      { label: 'List Franchisee', href: '/admin/list-franchisee' },
-      { label: 'Add Franchisee', href: '/admin/add-franchisee' },
-      { label: 'Franchise Pricing', href: '/admin/franchise-bulk-pricing' },
-      { label: 'Transfer Price', href: '/admin/franchise-transfer-pricing' },
-    ],
   },
   {
     section: 'SAMPLE WORKFLOW',
@@ -251,39 +245,6 @@ export const STANDARD_NAV = [
           { label: 'Test Profile', href: '/portfolio/test-profile' },
           { label: 'Sample Report', href: '/portfolio/sample-report' },
         ],
-      },
-    ],
-  },
-  {
-    section: 'FRANCHISE',
-    items: [
-      {
-        id: 'list-franchisee',
-        label: 'List Franchisee',
-        href: '/admin/list-franchisee',
-        icon: 'franchise',
-        roles: [ROLES.ADMIN],
-      },
-      {
-        id: 'add-franchisee',
-        label: 'Add Franchisee',
-        href: '/admin/add-franchisee',
-        icon: 'user-signup',
-        roles: [ROLES.ADMIN],
-      },
-      {
-        id: 'franchise-bulk-pricing',
-        label: 'Franchise Pricing',
-        href: '/admin/franchise-bulk-pricing',
-        icon: 'payment',
-        roles: [ROLES.ADMIN],
-      },
-      {
-        id: 'franchise-transfer-pricing',
-        label: 'Transfer Price',
-        href: '/admin/franchise-transfer-pricing',
-        icon: 'layers',
-        roles: [ROLES.ADMIN],
       },
     ],
   },

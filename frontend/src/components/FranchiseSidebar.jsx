@@ -45,14 +45,7 @@ function menuIdForPath(pathname) {
     return 'sample-rejection';
   }
   if (pathname.startsWith('/portfolio/')) return 'test-portfolio';
-  if (
-    pathname.startsWith('/admin/list-franchisee')
-    || pathname.startsWith('/admin/add-franchisee')
-    || pathname.startsWith('/admin/franchise-bulk-pricing')
-    || pathname.startsWith('/admin/franchise-transfer-pricing')
-  ) {
-    return 'my-business';
-  }
+  if (pathname.startsWith('/my-business')) return 'my-business';
   if (pathname === '/reports' || pathname.startsWith('/reports#')) return 'reports';
   if (pathname.startsWith('/device/')) return 'device-request';
   return null;
@@ -103,11 +96,11 @@ function isItemActive(item, location, activePage) {
     }
     return location.pathname.startsWith('/administration') || location.pathname.startsWith('/admin/');
   }
-  if (item.id === 'my-business' || item.id === 'list-franchisee') {
-    return location.pathname.startsWith('/admin/list-franchisee')
-      || location.pathname.startsWith('/admin/add-franchisee')
-      || location.pathname.startsWith('/admin/franchise-bulk-pricing')
-      || location.pathname.startsWith('/admin/franchise-transfer-pricing');
+  if (item.id === 'my-business') {
+    return location.pathname.startsWith('/my-business');
+  }
+  if (item.id === 'list-franchisee') {
+    return location.pathname.startsWith('/admin/list-franchisee');
   }
   if (item.id === 'add-franchisee') {
     return location.pathname.startsWith('/admin/add-franchisee');

@@ -68,13 +68,6 @@ export const SAMPLE_WORKFLOW_PORTAL_NAV = [
         icon: 'chip',
         roles: SAMPLE_SCAN_ROLES,
       },
-      {
-        id: 'barcode-scan',
-        label: 'Scan',
-        href: '/notifications/scan',
-        icon: 'chip',
-        roles: SAMPLE_SCAN_ROLES,
-      },
     ],
   },
   {

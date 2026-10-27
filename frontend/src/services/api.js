@@ -261,6 +261,11 @@ export const api = {
       method: 'PATCH',
       body: JSON.stringify({ role }),
     }),
+  updateUserPassword: (userId, password) =>
+    request(`/users/${userId}/password/`, {
+      method: 'PATCH',
+      body: JSON.stringify({ password }),
+    }),
   getMembershipTypes: () => request('/membership-types/'),
   getMemberships: () => request('/memberships/'),
   createMembership: (formData) => requestForm('/memberships/', formData),

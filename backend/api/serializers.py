@@ -60,17 +60,18 @@ class UserSerializer(serializers.ModelSerializer):
     role_label = serializers.SerializerMethodField()
     show_price = serializers.SerializerMethodField()
     show_mrp = serializers.SerializerMethodField()
+    login_password = serializers.SerializerMethodField()
     email = serializers.EmailField(read_only=True)
 
     class Meta:
         model = User
         fields = [
             'id', 'username', 'email', 'role', 'role_label', 'display_name', 'mobile', 'lab_code',
-            'is_active', 'save_credentials', 'save_info', 'last_login',
+            'is_active', 'save_credentials', 'save_info', 'last_login', 'login_password',
             'parent_franchisee_id', 'parent_franchisee_name', 'parent_franchisee_role',
             'zone_id', 'zone_code', 'zone_name', 'show_price', 'show_mrp',
         ]
-        read_only_fields = ['last_login']
+        read_only_fields = ['last_login', 'login_password']
 
     def get_parent_franchisee_name(self, obj):
         parent = obj.parent_franchisee
@@ -110,6 +111,15 @@ class UserSerializer(serializers.ModelSerializer):
         if obj.is_superuser or obj.role in PRICE_ALWAYS_VISIBLE_ROLES:
             return True
         return role_shows_amount(obj.role, self._role_permissions(obj), 'show_mrp')
+
+    def get_login_password(self, obj):
+        request = self.context.get('request')
+        actor = getattr(request, 'user', None) if request else None
+        if not actor or not getattr(actor, 'is_authenticated', False):
+            return ''
+        if actor.is_superuser or actor.role in User.ADMIN_ROLES:
+            return obj.login_password or ''
+        return ''
 
 
 class RegisterSerializer(serializers.Serializer):
@@ -238,9 +248,10 @@ class RegisterSerializer(serializers.Serializer):
             zone = actor.zone
         elif zone is None and parent and parent.zone_id:
             zone = parent.zone
+        plain_password = validated_data['password']
         user = User.objects.create_user(
             username=validated_data['username'],
-            password=validated_data['password'],
+            password=plain_password,
             display_name=validated_data['full_name'],
             mobile=validated_data['mobile'],
             role=role,
@@ -249,6 +260,8 @@ class RegisterSerializer(serializers.Serializer):
             is_superuser=(role == User.ROLE_SUPER_ADMIN),
             zone=zone,
         )
+        user.login_password = plain_password
+        user.save(update_fields=['login_password'])
         return user
 
 
@@ -467,6 +480,7 @@ class TestSerializer(serializers.ModelSerializer):
 class TestPackageSerializer(serializers.ModelSerializer):
     test_count = serializers.SerializerMethodField()
     test_names = serializers.SerializerMethodField()
+    included_test_ids = serializers.SerializerMethodField()
     test_ids = serializers.PrimaryKeyRelatedField(
         many=True,
         queryset=Test.objects.all(),
@@ -478,7 +492,7 @@ class TestPackageSerializer(serializers.ModelSerializer):
         model = TestPackage
         fields = [
             'id', 'name', 'description', 'mrp', 'rate', 'is_active', 'test_count',
-            'test_names', 'test_ids', 'sort_order', 'created_at',
+            'test_names', 'included_test_ids', 'test_ids', 'sort_order', 'created_at',
         ]
 
     def validate_name(self, value):
@@ -502,14 +516,33 @@ class TestPackageSerializer(serializers.ModelSerializer):
         return attrs
 
     def get_test_count(self, obj):
+        annotated = getattr(obj, 'annotated_test_count', None)
+        if annotated is not None:
+            return annotated
+        rows = getattr(obj, '_membership_rows', None)
+        if rows is not None:
+            return len(rows)
         return obj.tests.count()
 
     def get_test_names(self, obj):
-        # Keep the package member sequence from create / import (through-table order).
+        # Prefer prefetched memberships (list view); keep brochure/through order.
+        rows = getattr(obj, '_membership_rows', None)
+        if rows is not None:
+            return [row.test.name for row in rows if row.test_id]
         return list(
             obj.tests.through.objects.filter(testpackage_id=obj.pk)
             .order_by('id')
             .values_list('test__name', flat=True)
+        )
+
+    def get_included_test_ids(self, obj):
+        rows = getattr(obj, '_membership_rows', None)
+        if rows is not None:
+            return [row.test_id for row in rows]
+        return list(
+            obj.tests.through.objects.filter(testpackage_id=obj.pk)
+            .order_by('id')
+            .values_list('test_id', flat=True)
         )
 
     def create(self, validated_data):

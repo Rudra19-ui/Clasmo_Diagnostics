@@ -498,12 +498,13 @@ class SampleReportGeneratorView(APIView):
         except (TypeError, ValueError):
             limit = 50
 
+        ordered_ids = None
         qs = Test.objects.all().order_by('name')
         if test_id:
             qs = qs.filter(pk=test_id)
         elif test_ids:
-            ids = [int(x) for x in test_ids.split(',') if x.strip().isdigit()]
-            qs = qs.filter(pk__in=ids)
+            ordered_ids = [int(x) for x in test_ids.split(',') if x.strip().isdigit()]
+            qs = qs.filter(pk__in=ordered_ids)
         elif search:
             qs = qs.filter(Q(name__icontains=search) | Q(test_code__icontains=search))
 
@@ -513,7 +514,11 @@ class SampleReportGeneratorView(APIView):
                 active_params=Count('parameters', filter=Q(parameters__is_active=True))
             ).filter(active_params=0)
 
-        tests = list(qs[:limit])
+        if ordered_ids is not None:
+            by_id = {test.id: test for test in qs}
+            tests = [by_id[tid] for tid in ordered_ids if tid in by_id][:limit]
+        else:
+            tests = list(qs[:limit])
         reports = [build_sample_report_payload(test) for test in tests]
         return Response({
             'count': len(reports),

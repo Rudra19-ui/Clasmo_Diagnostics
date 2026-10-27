@@ -151,9 +151,18 @@ function demoValue(value) {
   return { text: '', blank: true };
 }
 
-function Field({ label, value, blank }) {
+/** Clean test/INV titles so print wrap does not orphan ")" after a stray space. */
+export function formatReportTitle(name = '') {
+  return String(name || '')
+    .replace(/\s+/g, ' ')
+    .replace(/\(\s+/g, '(')
+    .replace(/\s+\)/g, ')')
+    .trim();
+}
+
+function Field({ label, value, blank, className = '' }) {
   return (
-    <div className="clasmo-report-field">
+    <div className={`clasmo-report-field${className ? ` ${className}` : ''}`}>
       <span className="clasmo-report-field-label">{label}</span>
       <strong className={blank ? 'is-placeholder' : ''}>{value}</strong>
     </div>
@@ -274,7 +283,8 @@ export default function ClasmoReportSheet({
   clinicalSignificance = '',
   reportExtraSections = null,
 }) {
-  const isOh = isOhProgesteroneTest(title);
+  const displayTitle = formatReportTitle(title);
+  const isOh = isOhProgesteroneTest(displayTitle);
   const rawSample = Array.isArray(sampleType) ? sampleType.join(', ') : (sampleType || '');
   const sampleLabel = (rawSample && rawSample !== 'General')
     ? rawSample
@@ -304,7 +314,7 @@ export default function ClasmoReportSheet({
   const sheetRows = (!loading && !sourceRows.length && isOh)
     ? [{
       id: 'ohpg-default',
-      parameter_name: title || '17 OH Progesterone',
+      parameter_name: displayTitle || '17 OH Progesterone',
       method: 'CLIA',
       unit: 'ng/mL',
       result: '',
@@ -315,7 +325,7 @@ export default function ClasmoReportSheet({
           ...row,
           method: row.method || 'CLIA',
           unit: row.unit || 'ng/mL',
-          parameter_name: row.parameter_name || title,
+          parameter_name: row.parameter_name || displayTitle,
         }
         : row
     ));
@@ -365,7 +375,7 @@ export default function ClasmoReportSheet({
           <div className="clasmo-report-patient-col">
             <Field label="Reg No:" value={regNo.text} blank={regNo.blank} />
             <Field label="Barcode:" value={barcode.text} blank={barcode.blank} />
-            <Field label="INV:" value={title} blank={false} />
+            <Field label="INV:" value={displayTitle} blank={false} className="clasmo-report-field--inv" />
           </div>
           <div className="clasmo-report-patient-col">
             <Field label="Reg. Date:" value={regDate.text} blank={regDate.blank} />
@@ -374,7 +384,7 @@ export default function ClasmoReportSheet({
           </div>
         </div>
 
-        <h3 className="clasmo-report-test-title">{title}</h3>
+        <h3 className="clasmo-report-test-title">{displayTitle}</h3>
         <div className="clasmo-report-result-bar">TEST RESULT</div>
 
         {loading && <p className="clasmo-report-loading">Loading parameters…</p>}
@@ -547,38 +557,70 @@ export async function printClasmoReport() {
       width: 210mm;
     }
     .no-print { display: none !important; }
+    /* Block flow (not flex): Chrome orphans the letterhead when flex + break-inside:avoid. */
     .clasmo-report-sheet,
     .clasmo-report-sheet--a4 {
       width: 210mm !important;
       min-height: 297mm !important;
+      height: auto !important;
       max-width: 210mm !important;
       margin: 0 !important;
       border: none !important;
       box-shadow: none !important;
       border-radius: 0 !important;
-      overflow: hidden !important;
+      overflow: visible !important;
       page-break-after: always !important;
       break-after: page !important;
-      page-break-inside: avoid !important;
+      page-break-inside: auto !important;
+      break-inside: auto !important;
       background: #fff !important;
-      display: flex !important;
-      flex-direction: column !important;
+      display: block !important;
+      position: relative !important;
+      box-sizing: border-box !important;
     }
     .clasmo-report-sheet:last-child {
       page-break-after: auto !important;
       break-after: auto !important;
     }
-    .clasmo-report-body { flex: 1 1 auto !important; }
-    .clasmo-report-letterhead { margin: 0 !important; padding: 0 !important; }
-    .clasmo-report-letterhead-banner,
+    .clasmo-report-body {
+      display: block !important;
+      margin: 0 !important;
+      padding: 0 0 28mm !important;
+    }
+    .clasmo-report-letterhead {
+      margin: 0 !important;
+      padding: 0 !important;
+      page-break-after: avoid !important;
+      break-after: avoid-page !important;
+      page-break-inside: avoid !important;
+    }
+    .clasmo-report-letterhead-banner {
+      display: block !important;
+      width: 100% !important;
+      height: auto !important;
+      max-height: 28mm !important;
+      object-fit: contain !important;
+      object-position: left top !important;
+    }
     .clasmo-report-footer-banner {
       display: block !important;
       width: 100% !important;
       height: auto !important;
-      max-height: none !important;
+      max-height: 26mm !important;
       object-fit: contain !important;
+      object-position: bottom center !important;
     }
-    .clasmo-report-footer { margin-top: auto !important; }
+    /* Keep footer anchored to the bottom of each sheet. */
+    .clasmo-report-sheet > .clasmo-report-footer {
+      position: absolute !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
     .clasmo-report-sidetext {
       display: block !important;
       position: absolute !important;
@@ -602,15 +644,23 @@ export async function printClasmoReport() {
       background: #eef8fc !important;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
+      page-break-before: avoid !important;
+      break-before: avoid-page !important;
     }
     .clasmo-report-field {
       display: grid !important;
-      grid-template-columns: 70px 1fr !important;
+      grid-template-columns: 70px minmax(0, 1fr) !important;
       gap: 4px !important;
       font-size: 10px !important;
       line-height: 1.3 !important;
     }
     .clasmo-report-field-label { color: #000 !important; font-weight: 700 !important; }
+    .clasmo-report-field--inv strong {
+      font-size: 9.5px !important;
+      line-height: 1.25 !important;
+      overflow-wrap: break-word !important;
+      word-break: break-word !important;
+    }
     .clasmo-report-field strong.is-placeholder {
       border-bottom: none !important;
       min-height: 1em !important;

@@ -4,7 +4,7 @@ import Footer from '../../components/Footer';
 import Layout from '../../components/Layout';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../services/api';
-import { ROLE_LABELS, ROLE_OPTIONS, ROLES } from '../../utils/roles';
+import { ROLE_LABELS, ROLE_OPTIONS, ROLES, getSignupRoleOptionsForUser } from '../../utils/roles';
 import { PRICE_ALWAYS_VISIBLE_ROLES, ROLE_PERMISSION_SCHEMA } from '../../utils/rolePermissions';
 
 const MODULE_PERMISSIONS = ROLE_PERMISSION_SCHEMA.filter(
@@ -21,21 +21,43 @@ function roleBadgeClass(role) {
 }
 
 export default function RoleManagement() {
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, isSuperAdmin } = useAuth();
   const [roles, setRoles] = useState([]);
   const [users, setUsers] = useState([]);
   const [selectedRoleCode, setSelectedRoleCode] = useState('');
   const [roleDraft, setRoleDraft] = useState({ name: '', description: '', permissions: {} });
   const [draftRoles, setDraftRoles] = useState({});
+  const [passwordDrafts, setPasswordDrafts] = useState({});
+  const [showPasswords, setShowPasswords] = useState({});
+  const [savingPasswordId, setSavingPasswordId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [savingRole, setSavingRole] = useState(false);
   const [savingUserId, setSavingUserId] = useState(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  const canViewPasswords = Boolean(isAdmin);
+  const assignableRoles = useMemo(
+    () => getSignupRoleOptionsForUser(user).length
+      ? getSignupRoleOptionsForUser(user)
+      : ROLE_OPTIONS.filter((option) => option.value !== ROLES.SUPER_ADMIN),
+    [user],
+  );
+
+  const visibleRoles = useMemo(() => {
+    if (isSuperAdmin) return roles;
+    // Admin login: hide Admin role card (and its user count).
+    return roles.filter((role) => role.code !== ROLES.ADMIN);
+  }, [roles, isSuperAdmin]);
+
+  const visibleUsers = useMemo(() => {
+    if (isSuperAdmin) return users;
+    return users.filter((row) => row.role !== ROLES.ADMIN && row.role !== ROLES.SUPER_ADMIN);
+  }, [users, isSuperAdmin]);
+
   const selectedRole = useMemo(
-    () => roles.find((role) => role.code === selectedRoleCode) || null,
-    [roles, selectedRoleCode],
+    () => visibleRoles.find((role) => role.code === selectedRoleCode) || null,
+    [visibleRoles, selectedRoleCode],
   );
 
   const roleHasChanges = selectedRole && (
@@ -54,20 +76,32 @@ export default function RoleManagement() {
       setRoles(roleData);
       setUsers(userData);
       setDraftRoles(Object.fromEntries(userData.map((row) => [row.id, row.role])));
-      if (!selectedRoleCode && roleData.length) {
-        setSelectedRoleCode(roleData[0].code);
+      setPasswordDrafts(Object.fromEntries(
+        userData.map((row) => [row.id, row.login_password || '']),
+      ));
+      const filteredRoles = isSuperAdmin
+        ? roleData
+        : roleData.filter((role) => role.code !== ROLES.ADMIN);
+      if (!selectedRoleCode && filteredRoles.length) {
+        setSelectedRoleCode(filteredRoles[0].code);
         setRoleDraft({
-          name: roleData[0].name,
-          description: roleData[0].description || '',
-          permissions: { ...roleData[0].permissions },
+          name: filteredRoles[0].name,
+          description: filteredRoles[0].description || '',
+          permissions: { ...filteredRoles[0].permissions },
         });
+      } else if (
+        selectedRoleCode === ROLES.ADMIN
+        && !isSuperAdmin
+        && filteredRoles.length
+      ) {
+        setSelectedRoleCode(filteredRoles[0].code);
       }
     } catch (err) {
       setError(err.message || 'Unable to load role management data.');
     } finally {
       setLoading(false);
     }
-  }, [selectedRoleCode]);
+  }, [selectedRoleCode, isSuperAdmin]);
 
   useEffect(() => {
     loadData();
@@ -156,6 +190,41 @@ export default function RoleManagement() {
     }
   };
 
+  const handlePasswordDraftChange = (userId, value) => {
+    setPasswordDrafts((prev) => ({ ...prev, [userId]: value }));
+  };
+
+  const toggleShowPassword = (userId) => {
+    setShowPasswords((prev) => ({ ...prev, [userId]: !prev[userId] }));
+  };
+
+  const handleSavePassword = async (row) => {
+    const nextPassword = (passwordDrafts[row.id] || '').trim();
+    if (nextPassword.length < 8) {
+      setError('Password must be at least 8 characters.');
+      return;
+    }
+    if (nextPassword === (row.login_password || '')) {
+      setSuccess('Password unchanged.');
+      return;
+    }
+    setSavingPasswordId(row.id);
+    setError('');
+    setSuccess('');
+    try {
+      const updated = await api.updateUserPassword(row.id, nextPassword);
+      setUsers((prev) => prev.map((item) => (item.id === row.id ? updated : item)));
+      setPasswordDrafts((prev) => ({ ...prev, [row.id]: updated.login_password || nextPassword }));
+      setSuccess(`Password updated for ${row.display_name || row.username}.`);
+    } catch (err) {
+      setError(err.message || 'Unable to update password.');
+    } finally {
+      setSavingPasswordId(null);
+    }
+  };
+
+  const tableColSpan = 3 + (canViewPasswords ? 1 : 0) + (isAdmin ? 2 : 0);
+
   return (
     <Layout activePage="administration">
       <main className="dash-main admin-content-main">
@@ -188,7 +257,7 @@ export default function RoleManagement() {
             <aside className="role-list-panel">
               <h3 className="role-section-title">Roles</h3>
               {loading && <p className="role-panel-empty">Loading roles...</p>}
-              {!loading && roles.map((role) => (
+              {!loading && visibleRoles.map((role) => (
                 <button
                   key={role.code}
                   type="button"
@@ -306,6 +375,7 @@ export default function RoleManagement() {
                   <thead>
                     <tr>
                       <th>Username</th>
+                      {canViewPasswords && <th>Password</th>}
                       <th>Display Name</th>
                       <th>Current Role</th>
                       {isAdmin && <th>Assign Role</th>}
@@ -315,16 +385,52 @@ export default function RoleManagement() {
                   <tbody>
                     {loading && (
                       <tr>
-                        <td colSpan={isAdmin ? 5 : 3} className="empty-msg">Loading users...</td>
+                        <td colSpan={tableColSpan} className="empty-msg">Loading users...</td>
                       </tr>
                     )}
-                    {!loading && users.map((row) => {
+                    {!loading && visibleUsers.map((row) => {
                       const isSelf = row.id === user?.id;
                       const draftRole = draftRoles[row.id] || row.role;
                       const hasChanges = draftRole !== row.role;
+                      const passwordValue = passwordDrafts[row.id] ?? row.login_password ?? '';
+                      const passwordDirty = passwordValue !== (row.login_password || '');
                       return (
                         <tr key={row.id}>
                           <td>{row.username}</td>
+                          {canViewPasswords && (
+                            <td>
+                              <div className="role-password-cell">
+                                <input
+                                  type={showPasswords[row.id] ? 'text' : 'password'}
+                                  value={passwordValue}
+                                  onChange={(event) => handlePasswordDraftChange(row.id, event.target.value)}
+                                  placeholder="Set password"
+                                  autoComplete="new-password"
+                                  disabled={savingPasswordId === row.id}
+                                />
+                                <label className="role-password-show">
+                                  <input
+                                    type="checkbox"
+                                    checked={Boolean(showPasswords[row.id])}
+                                    onChange={() => toggleShowPassword(row.id)}
+                                  />
+                                  Show
+                                </label>
+                                <button
+                                  type="button"
+                                  className="btn-outline btn-sm"
+                                  onClick={() => handleSavePassword(row)}
+                                  disabled={
+                                    savingPasswordId === row.id
+                                    || !passwordDirty
+                                    || passwordValue.trim().length < 8
+                                  }
+                                >
+                                  {savingPasswordId === row.id ? 'Saving...' : 'Set'}
+                                </button>
+                              </div>
+                            </td>
+                          )}
                           <td>{row.display_name || '—'}</td>
                           <td>
                             <span className={roleBadgeClass(row.role)}>
@@ -338,9 +444,13 @@ export default function RoleManagement() {
                                 onChange={(event) => handleUserRoleChange(row.id, event.target.value)}
                                 disabled={isSelf || savingUserId === row.id}
                               >
-                                {ROLE_OPTIONS.map((option) => (
+                                {assignableRoles.map((option) => (
                                   <option key={option.value} value={option.value}>{option.label}</option>
                                 ))}
+                                {/* Keep current role visible even if not creatable */}
+                                {!assignableRoles.some((option) => option.value === draftRole) && (
+                                  <option value={draftRole}>{ROLE_LABELS[draftRole] || draftRole}</option>
+                                )}
                               </select>
                               {isSelf && <span className="role-self-note">Your account</span>}
                             </td>

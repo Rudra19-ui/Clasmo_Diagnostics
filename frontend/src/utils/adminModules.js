@@ -1,4 +1,55 @@
+import { ROLES } from './roles';
+
+/** Workflow modules shown only to Super Admin inside Administration. */
+export const SUPER_ADMIN_WORKFLOW_COLUMNS = [
+  {
+    id: 'registration-sections',
+    title: 'Registration Sections',
+    roles: [ROLES.SUPER_ADMIN],
+    links: [
+      { href: '/entry/new', label: 'New Entry', desc: 'Register a new patient visit.' },
+      { href: '/entry/list', label: 'Edit Entry', desc: 'Find and edit registrations.' },
+      { href: '/entry/test-addition', label: 'Test Addition', desc: 'Add tests to an existing entry.' },
+      { href: '/reports-section/all', label: 'All Reports', desc: 'Open the full reports worklist.' },
+      { href: '/reports-section/search', label: 'Search Reports', desc: 'Search registration reports.' },
+    ],
+  },
+  {
+    id: 'notifications',
+    title: 'Notifications',
+    roles: [ROLES.SUPER_ADMIN],
+    links: [
+      { href: '/notifications/find-barcode', label: 'Find Barcode', desc: 'Look up barcodes and linked patients.' },
+      { href: '/notifications/clinical-history', label: 'Clinical History', desc: 'Patient clinical history records.' },
+      { href: '/notifications/test-cancellation', label: 'Test Cancellation', desc: 'Cancel ordered tests.' },
+      { href: '/hold-tests', label: 'Hold', desc: 'Hold tests pending review.' },
+      { href: '/sample-rejection', label: 'Rejection', desc: 'Reject samples from workflow.' },
+    ],
+  },
+];
+
+/** Paths that keep the Administration sidebar open for Super Admin. */
+export const SUPER_ADMIN_ADMIN_SHELL_PATHS = [
+  '/sample-scan',
+  '/entry',
+  '/barcode-link',
+  '/registration',
+  '/reports-section',
+  '/notifications/find-barcode',
+  '/notifications/clinical-history',
+  '/notifications/test-cancellation',
+  '/hold-tests',
+  '/sample-rejection',
+];
+
+export function isSuperAdminAdminShellPath(pathname = '') {
+  return SUPER_ADMIN_ADMIN_SHELL_PATHS.some(
+    (path) => pathname === path || pathname.startsWith(`${path}/`),
+  );
+}
+
 export const ADMIN_COLUMNS = [
+  ...SUPER_ADMIN_WORKFLOW_COLUMNS,
   {
     id: 'user-management',
     title: 'User Management',

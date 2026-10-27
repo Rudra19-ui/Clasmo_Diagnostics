@@ -157,7 +157,7 @@ export default function UserSignUp() {
           <h2 className="change-password-title">New User Sign Up</h2>
           <p className="user-signup-intro">
             {isAdminCreator
-              ? 'Admin can create every account type, including Supreme, Prime, and Sub-Franchise.'
+              ? 'Create staff and franchise accounts (Supreme, Prime, Sub-Franchise). Only Super Admin can create Admin accounts.'
               : 'Create accounts for your franchise hierarchy and link them to the correct parent supervisor.'}
           </p>
 

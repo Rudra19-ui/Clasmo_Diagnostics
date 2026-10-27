@@ -58,6 +58,13 @@ export default function SampleReport() {
   const [reportError, setReportError] = useState('');
   const [coverage, setCoverage] = useState(null);
   const [autoBusy, setAutoBusy] = useState(false);
+  const [packageInfo, setPackageInfo] = useState(null);
+  const [packageReports, setPackageReports] = useState([]);
+  const [packageLoading, setPackageLoading] = useState(false);
+  const [packageError, setPackageError] = useState('');
+
+  const packageId = (searchParams.get('package') || '').trim();
+  const packageMode = Boolean(packageId);
 
   const refreshCoverage = useCallback(() => {
     if (!isAdmin) return;
@@ -75,7 +82,7 @@ export default function SampleReport() {
         const list = Array.isArray(rows) ? rows : [];
         setTests(list);
         setFormats(Array.isArray(formatRows) ? formatRows : []);
-        if (list.length) {
+        if (list.length && !searchParams.get('package')) {
           setSelectedId(pickDefaultTestId(list, searchParams.get('test') || ''));
         }
       })
@@ -84,6 +91,58 @@ export default function SampleReport() {
     refreshCoverage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!packageId) {
+      setPackageInfo(null);
+      setPackageReports([]);
+      setPackageError('');
+      return undefined;
+    }
+    let cancelled = false;
+    setPackageLoading(true);
+    setPackageError('');
+    setPatientReport(null);
+    (async () => {
+      try {
+        const packages = await api.getTestPackages({ id: packageId });
+        const pkg = Array.isArray(packages) ? packages[0] : null;
+        if (!pkg) {
+          throw new Error('Profile not found.');
+        }
+        const ids = Array.isArray(pkg.included_test_ids) ? pkg.included_test_ids : [];
+        if (!ids.length) {
+          throw new Error('This profile has no tests yet.');
+        }
+        const data = await api.generateSampleReports({
+          test_ids: ids.join(','),
+          limit: String(Math.max(ids.length, 1)),
+        });
+        if (cancelled) return;
+        setPackageInfo(pkg);
+        setPackageReports(Array.isArray(data?.reports) ? data.reports : []);
+      } catch (err) {
+        if (!cancelled) {
+          setPackageInfo(null);
+          setPackageReports([]);
+          setPackageError(err.message || 'Could not load profile report formats.');
+        }
+      } finally {
+        if (!cancelled) setPackageLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [packageId]);
+
+  useEffect(() => {
+    if (!packageMode || packageLoading || packageError || !packageReports.length) {
+      return undefined;
+    }
+    const timer = window.setTimeout(() => {
+      printClasmoReport();
+    }, 700);
+    return () => window.clearTimeout(timer);
+  }, [packageMode, packageLoading, packageError, packageReports]);
 
   const handleAutoGenerateMissing = async () => {
     if (!window.confirm('Create default parameters for all tests missing a sample report?')) return;
@@ -238,10 +297,15 @@ export default function SampleReport() {
           </ul>
         </nav>
 
-        <h2 className="page-heading">Reports Format</h2>
+        <h2 className="page-heading">
+          {packageMode && packageInfo
+            ? `Reports Format — ${packageInfo.name}`
+            : 'Reports Format'}
+        </h2>
         <p className="portfolio-intro">
-          One Clasmo letterhead format for the whole catalog. Choose any test — only the test name,
-          sample type, and parameters change. You can refine parameters later via CSV Import.
+          {packageMode
+            ? `Blank sample formats for all ${packageInfo?.test_count || packageReports.length || ''} tests in this profile. Print / PDF opens every sheet.`
+            : 'One Clasmo letterhead format for the whole catalog. Choose any test — only the test name, sample type, and parameters change. You can refine parameters later via CSV Import.'}
         </p>
         {isAdmin && coverage && (
           <div className="sample-report-coverage-banner no-print">
@@ -327,146 +391,200 @@ export default function SampleReport() {
         </section>
 
         <section className={`content-panel portfolio-panel${franchise ? ' franchise-module-panel' : ''}`}>
-          <h3 className="test-addition-subtitle">Interactive sample preview</h3>
-          <form className="sample-report-barcode-bar" onSubmit={handleBarcodeSubmit}>
-            <label>
-              <span>Sample barcode</span>
-              <input
-                value={barcodeInput}
-                onChange={(e) => setBarcodeInput(e.target.value)}
-                placeholder="Scan barcode to load live patient report"
-                autoComplete="off"
-              />
-            </label>
-            <button type="submit" className="sample-report-btn" disabled={reportLoading}>
-              {reportLoading ? 'Loading…' : 'Load patient report'}
-            </button>
-            {isLive && (
-              <button type="button" className="sample-report-btn sample-report-btn--secondary" onClick={clearPatientReport}>
-                Clear / format preview
+          <h3 className="test-addition-subtitle">
+            {packageMode ? 'Profile report formats' : 'Interactive sample preview'}
+          </h3>
+          {packageMode ? (
+            <div className="sample-report-barcode-bar no-print">
+              <Link to="/portfolio/test-profile" className="sample-report-btn sample-report-btn--secondary">
+                ← Back to Test Profile
+              </Link>
+              <button
+                type="button"
+                className="sample-report-btn"
+                onClick={() => { printClasmoReport(); }}
+                disabled={packageLoading || !packageReports.length}
+              >
+                Print / PDF ({packageReports.length || 0} sheets)
               </button>
-            )}
-            <button
-              type="button"
-              className="sample-report-btn sample-report-btn--secondary"
-              onClick={() => { printClasmoReport(); }}
-            >
-              Print / PDF
-            </button>
-            <Link to="/device/test-result-batch" className="sample-report-btn sample-report-btn--secondary">
-              Capture machine results
-            </Link>
-          </form>
+            </div>
+          ) : (
+            <form className="sample-report-barcode-bar" onSubmit={handleBarcodeSubmit}>
+              <label>
+                <span>Sample barcode</span>
+                <input
+                  value={barcodeInput}
+                  onChange={(e) => setBarcodeInput(e.target.value)}
+                  placeholder="Scan barcode to load live patient report"
+                  autoComplete="off"
+                />
+              </label>
+              <button type="submit" className="sample-report-btn" disabled={reportLoading}>
+                {reportLoading ? 'Loading…' : 'Load patient report'}
+              </button>
+              {isLive && (
+                <button type="button" className="sample-report-btn sample-report-btn--secondary" onClick={clearPatientReport}>
+                  Clear / format preview
+                </button>
+              )}
+              <button
+                type="button"
+                className="sample-report-btn sample-report-btn--secondary"
+                onClick={() => { printClasmoReport(); }}
+              >
+                Print / PDF
+              </button>
+              <Link to="/device/test-result-batch" className="sample-report-btn sample-report-btn--secondary">
+                Capture machine results
+              </Link>
+            </form>
+          )}
           {reportError && <p className="change-password-message error">{reportError}</p>}
+          {packageError && <p className="change-password-message error">{packageError}</p>}
           {isLive && patientReport.message && (
             <p className="change-password-message">{patientReport.message}</p>
           )}
 
-          <div className="portfolio-sample-layout">
-            <aside className="portfolio-sample-picker no-print">
-              <label className="portfolio-search">
-                <span>Find test</span>
-                <input
-                  type="search"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Type to search… e.g. 17 OH"
-                  disabled={isLive}
-                />
-              </label>
-
-              {loading && <p>Loading tests…</p>}
-              {error && <p className="change-password-message error">{error}</p>}
-
-              {!loading && !error && (
-                <ul className="portfolio-test-picker-list" role="listbox" aria-label="Tests">
-                  {filtered.map((test) => (
-                    <li key={test.id}>
-                      <button
-                        type="button"
-                        className={`portfolio-test-picker-item${String(test.id) === String(selectedId) ? ' is-active' : ''}`}
-                        onClick={() => {
-                          if (isLive) return;
-                          setSelectedId(String(test.id));
-                        }}
-                        disabled={isLive}
-                      >
-                        {test.name}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </aside>
-
+          {packageMode ? (
             <div className="portfolio-sample-preview print-clasmo-reports-root">
-              {!selectedTest && !isLive ? (
-                <p className="portfolio-empty">Select a test to view its sample report.</p>
-              ) : (
-                <ClasmoReportSheet
-                  title={title}
-                  sampleType={sampleTypes}
-                  demographics={demographics}
-                  rows={sheetRows}
-                  isLive={isLive}
-                  isSample={!isLive}
-                  loading={!isLive && paramsLoading}
-                  showReferenceColumn
-                  reportNote={selectedTest?.report_note || ''}
-                  reportComments={selectedTest?.report_comments || ''}
-                  clinicalSignificance={selectedTest?.clinical_significance || ''}
-                  reportExtraSections={selectedTest?.report_extra_sections || null}
-                  emptyMessage={
-                    isAdmin
-                      ? 'No parameters for this test yet. Use Auto-generate missing or CSV Import.'
-                      : 'No parameters for this test yet. Ask an admin to import parameters.'
-                  }
-                  linkedFiles={(
-                    (linkedFormats.length > 0 || masterFormats.length > 0) ? (
-                      <div className="sample-report-linked-files no-print">
-                        {[...masterFormats, ...linkedFormats].map((asset) => {
-                          const href = asset.file_url || asset.external_url;
-                          if (!href) return null;
-                          return (
-                            <a
-                              key={asset.id}
-                              href={href}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="sample-report-btn sample-report-btn--secondary"
-                            >
-                              Open {asset.title} PDF
-                            </a>
-                          );
-                        })}
-                      </div>
-                    ) : null
-                  )}
-                  footerNote={
-                    isLive
-                      ? 'Patient demographics and results loaded via sample barcode. Machine values appear after analyzer ingest or result entry.'
-                      : 'This is the shared Clasmo letterhead. Change the selected test to swap parameters; refine units/ranges later anytime.'
-                  }
-                  actions={(
-                    <>
-                      <Link to="/clinical/result-entry" className="sample-report-btn">
-                        Open Result Entry
-                      </Link>
-                      <Link to="/clinical/report-preview" className="sample-report-btn sample-report-btn--secondary">
-                        Open Live Report Preview
-                      </Link>
-                      <Link to="/clinical/parameter-import" className="sample-report-btn sample-report-btn--secondary">
-                        Edit Parameters Later
-                      </Link>
-                      <Link to="/portfolio/test-list" className="sample-report-btn sample-report-btn--secondary">
-                        Back to Test List
-                      </Link>
-                    </>
-                  )}
-                />
+              {packageLoading && <p>Loading profile report formats…</p>}
+              {!packageLoading && !packageError && packageReports.length === 0 && (
+                <p className="portfolio-empty">No report formats found for this profile.</p>
               )}
+              {!packageLoading && packageReports.map((report, index) => (
+                <ClasmoReportSheet
+                  key={report.test_id || index}
+                  title={report.test_name}
+                  sampleType={splitSampleTypes(report.sample_type)}
+                  demographics={PLACEHOLDER_DEMOGRAPHICS}
+                  rows={(report.parameters || []).map((param) => ({
+                    ...param,
+                    result: '',
+                    sample_value: '',
+                  }))}
+                  isLive={false}
+                  isSample
+                  showReferenceColumn
+                  reportNote={report.report_note || ''}
+                  reportComments={report.report_comments || ''}
+                  clinicalSignificance={report.clinical_significance || ''}
+                  reportExtraSections={report.report_extra_sections || null}
+                  emptyMessage="No parameters for this test yet."
+                  footerNote={
+                    index === packageReports.length - 1
+                      ? `Blank formats for ${packageInfo?.name || 'this profile'} — use Print / PDF to save all sheets.`
+                      : ''
+                  }
+                />
+              ))}
             </div>
-          </div>
+          ) : (
+            <div className="portfolio-sample-layout">
+              <aside className="portfolio-sample-picker no-print">
+                <label className="portfolio-search">
+                  <span>Find test</span>
+                  <input
+                    type="search"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Type to search… e.g. 17 OH"
+                    disabled={isLive}
+                  />
+                </label>
+
+                {loading && <p>Loading tests…</p>}
+                {error && <p className="change-password-message error">{error}</p>}
+
+                {!loading && !error && (
+                  <ul className="portfolio-test-picker-list" role="listbox" aria-label="Tests">
+                    {filtered.map((test) => (
+                      <li key={test.id}>
+                        <button
+                          type="button"
+                          className={`portfolio-test-picker-item${String(test.id) === String(selectedId) ? ' is-active' : ''}`}
+                          onClick={() => {
+                            if (isLive) return;
+                            setSelectedId(String(test.id));
+                          }}
+                          disabled={isLive}
+                        >
+                          {test.name}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </aside>
+
+              <div className="portfolio-sample-preview print-clasmo-reports-root">
+                {!selectedTest && !isLive ? (
+                  <p className="portfolio-empty">Select a test to view its sample report.</p>
+                ) : (
+                  <ClasmoReportSheet
+                    title={title}
+                    sampleType={sampleTypes}
+                    demographics={demographics}
+                    rows={sheetRows}
+                    isLive={isLive}
+                    isSample={!isLive}
+                    loading={!isLive && paramsLoading}
+                    showReferenceColumn
+                    reportNote={selectedTest?.report_note || ''}
+                    reportComments={selectedTest?.report_comments || ''}
+                    clinicalSignificance={selectedTest?.clinical_significance || ''}
+                    reportExtraSections={selectedTest?.report_extra_sections || null}
+                    emptyMessage={
+                      isAdmin
+                        ? 'No parameters for this test yet. Use Auto-generate missing or CSV Import.'
+                        : 'No parameters for this test yet. Ask an admin to import parameters.'
+                    }
+                    linkedFiles={(
+                      (linkedFormats.length > 0 || masterFormats.length > 0) ? (
+                        <div className="sample-report-linked-files no-print">
+                          {[...masterFormats, ...linkedFormats].map((asset) => {
+                            const href = asset.file_url || asset.external_url;
+                            if (!href) return null;
+                            return (
+                              <a
+                                key={asset.id}
+                                href={href}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="sample-report-btn sample-report-btn--secondary"
+                              >
+                                Open {asset.title} PDF
+                              </a>
+                            );
+                          })}
+                        </div>
+                      ) : null
+                    )}
+                    footerNote={
+                      isLive
+                        ? 'Patient demographics and results loaded via sample barcode. Machine values appear after analyzer ingest or result entry.'
+                        : 'This is the shared Clasmo letterhead. Change the selected test to swap parameters; refine units/ranges later anytime.'
+                    }
+                    actions={(
+                      <>
+                        <Link to="/clinical/result-entry" className="sample-report-btn">
+                          Open Result Entry
+                        </Link>
+                        <Link to="/clinical/report-preview" className="sample-report-btn sample-report-btn--secondary">
+                          Open Live Report Preview
+                        </Link>
+                        <Link to="/clinical/parameter-import" className="sample-report-btn sample-report-btn--secondary">
+                          Edit Parameters Later
+                        </Link>
+                        <Link to="/portfolio/test-list" className="sample-report-btn sample-report-btn--secondary">
+                          Back to Test List
+                        </Link>
+                      </>
+                    )}
+                  />
+                )}
+              </div>
+            </div>
+          )}
         </section>
       </main>
       <Footer />

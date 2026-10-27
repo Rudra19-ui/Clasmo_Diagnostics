@@ -15,7 +15,10 @@ export default function Administration() {
         <h2 className="page-heading">Administration</h2>
         <section className="content-panel admin-welcome-panel">
           <h3>Welcome to Administration</h3>
-          <p>Select any module from the sidebar to manage users, lab settings, accounting, and test master data.</p>
+          <p>
+            Select any module from the sidebar to manage users, lab settings, accounting, and test master data.
+            Super Admin also opens Scan, Registration Sections, and Notifications from this panel.
+          </p>
         </section>
       </main>
       <Footer />

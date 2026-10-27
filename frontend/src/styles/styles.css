@@ -4260,6 +4260,35 @@ input, select, textarea, button {
   background: #fafcff;
 }
 
+.role-password-cell {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 220px;
+}
+
+.role-password-cell input[type='password'],
+.role-password-cell input[type='text'] {
+  width: 130px;
+  min-width: 110px;
+  padding: 6px 8px;
+  border: 1px solid #c5d4e3;
+  border-radius: 4px;
+  font-size: 12px;
+  background: #fafcff;
+}
+
+.role-password-show {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
 .role-badge {
   display: inline-block;
   padding: 4px 10px;
@@ -7847,6 +7876,9 @@ input, select, textarea, button {
 .print-clasmo-reports-root {
   width: 100%;
   container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 /* Exact official PDF page as background (guarantees 1-page print) */
@@ -8007,6 +8039,20 @@ input, select, textarea, button {
   font-weight: 700;
   min-height: 1.1em;
   border-bottom: 1px solid transparent;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.clasmo-report-field--inv {
+  align-items: start;
+}
+
+.clasmo-report-field--inv strong {
+  font-size: 0.95em;
+  line-height: 1.25;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .clasmo-report-field strong.is-placeholder {
@@ -8389,9 +8435,11 @@ input, select, textarea, button {
     background: #fff !important;
     color: #000 !important;
     overflow: visible !important;
+    display: block !important;
     page-break-after: always !important;
     break-after: page !important;
-    page-break-inside: avoid !important;
+    page-break-inside: auto !important;
+    break-inside: auto !important;
   }
 
   body.printing-clasmo-report .print-clasmo-report:last-child {
@@ -8399,10 +8447,16 @@ input, select, textarea, button {
     break-after: auto !important;
   }
 
+  body.printing-clasmo-report .clasmo-report-letterhead {
+    page-break-after: avoid !important;
+    break-after: avoid-page !important;
+  }
+
   body.printing-clasmo-report .clasmo-report-letterhead-banner {
     display: block !important;
     width: 100% !important;
-    max-height: 22mm !important;
+    max-height: 28mm !important;
+    height: auto !important;
     object-fit: contain !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
@@ -8415,6 +8469,8 @@ input, select, textarea, button {
     background: #eef8fc !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    page-break-before: avoid !important;
+    break-before: avoid-page !important;
   }
 
   body.printing-clasmo-report .clasmo-report-field {
@@ -8498,16 +8554,21 @@ input, select, textarea, button {
     width: 210mm !important;
     min-height: 297mm !important;
     max-width: 210mm !important;
-    display: flex !important;
-    flex-direction: column !important;
+    display: block !important;
+    position: relative !important;
   }
 
   body.printing-clasmo-report .clasmo-report-body {
-    flex: 1 1 auto !important;
+    display: block !important;
+    padding-bottom: 28mm !important;
   }
 
   body.printing-clasmo-report .clasmo-report-footer {
-    margin-top: auto !important;
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    margin: 0 !important;
   }
 
   body.printing-clasmo-report .clasmo-report-footer-banner {
@@ -9180,6 +9241,63 @@ input, select, textarea, button {
   padding: 0.35rem 0.55rem;
   border: 1px solid #c5d0db;
   border-radius: 4px;
+}
+
+.franchise-list-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.75rem 0 1rem;
+}
+
+.franchise-list-filter {
+  border: 1px solid #c5d0db;
+  background: #fff;
+  color: #334155;
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.franchise-list-filter.is-active {
+  background: #0b3d5c;
+  border-color: #0b3d5c;
+  color: #fff;
+}
+
+.franchise-type-badge {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: #e8eef5;
+  color: #1e3a5f;
+}
+
+.franchise-type-badge--super_franchisee {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.franchise-type-badge--franchisee {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.franchise-type-badge--sub_franchise {
+  background: #fff3e0;
+  color: #ef6c00;
+}
+
+.franchise-login-password {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.25rem;
+  font-size: 0.85rem;
 }
 
 .franchise-list-table thead th {

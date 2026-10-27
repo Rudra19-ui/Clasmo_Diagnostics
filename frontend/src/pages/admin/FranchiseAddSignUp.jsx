@@ -148,7 +148,7 @@ export default function FranchiseAddSignUp() {
           <p className="user-signup-intro">
             Create Supreme, Prime, or Sub-Franchise accounts only.
             {' '}
-            <Link to="/admin/list-franchisee">View Supreme list</Link>
+            <Link to="/admin/list-franchisee">View franchise list</Link>
           </p>
 
           <form className="change-password-form user-signup-form" onSubmit={handleSubmit}>

@@ -50,6 +50,7 @@ urlpatterns = [
     path('reports/summary/', views.ReportSummaryView.as_view(), name='report-summary'),
     path('users/', views.UserListView.as_view(), name='users'),
     path('users/<int:pk>/role/', views.UserRoleUpdateView.as_view(), name='user-role-update'),
+    path('users/<int:pk>/password/', views.UserPasswordUpdateView.as_view(), name='user-password-update'),
     path('zones/', views.ZoneListView.as_view(), name='zones'),
     path('roles/', views.RoleListView.as_view(), name='roles'),
     path('roles/<str:code>/', views.RoleDetailView.as_view(), name='role-detail'),

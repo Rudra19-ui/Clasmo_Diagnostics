@@ -167,7 +167,9 @@ export function getSignupRoleOptionsForUser(user) {
     return SIGNUP_ROLE_OPTIONS;
   }
   if (user.role === ROLES.ADMIN) {
-    return SIGNUP_ROLE_OPTIONS.filter((option) => option.value !== ROLES.SUPER_ADMIN);
+    return SIGNUP_ROLE_OPTIONS.filter((option) => (
+      option.value !== ROLES.SUPER_ADMIN && option.value !== ROLES.ADMIN
+    ));
   }
   if (user.role === ROLES.SUPER_FRANCHISEE) {
     return SIGNUP_ROLE_OPTIONS.filter((option) => (

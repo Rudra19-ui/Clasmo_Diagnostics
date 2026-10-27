@@ -45,6 +45,14 @@ function menuIdForPath(pathname) {
     return 'sample-rejection';
   }
   if (pathname.startsWith('/portfolio/')) return 'test-portfolio';
+  if (
+    pathname.startsWith('/admin/list-franchisee')
+    || pathname.startsWith('/admin/add-franchisee')
+    || pathname.startsWith('/admin/franchise-bulk-pricing')
+    || pathname.startsWith('/admin/franchise-transfer-pricing')
+  ) {
+    return 'my-business';
+  }
   if (pathname === '/reports' || pathname.startsWith('/reports#')) return 'reports';
   if (pathname.startsWith('/device/')) return 'device-request';
   return null;
@@ -95,8 +103,11 @@ function isItemActive(item, location, activePage) {
     }
     return location.pathname.startsWith('/administration') || location.pathname.startsWith('/admin/');
   }
-  if (item.id === 'list-franchisee') {
-    return location.pathname.startsWith('/admin/list-franchisee');
+  if (item.id === 'my-business' || item.id === 'list-franchisee') {
+    return location.pathname.startsWith('/admin/list-franchisee')
+      || location.pathname.startsWith('/admin/add-franchisee')
+      || location.pathname.startsWith('/admin/franchise-bulk-pricing')
+      || location.pathname.startsWith('/admin/franchise-transfer-pricing');
   }
   if (item.id === 'add-franchisee') {
     return location.pathname.startsWith('/admin/add-franchisee');
@@ -285,6 +296,42 @@ export default function FranchiseSidebar({
           if (!canSeeNavItem(entry, user?.role)) return null;
 
           const active = isItemActive(entry, location, activePage);
+          const hasChildren = Boolean(entry.children?.length);
+          const menuOpen = openMenu === entry.id;
+
+          if (hasChildren) {
+            return (
+              <li
+                key={entry.id}
+                className={`has-submenu${active ? ' active' : ''}${menuOpen ? ' open' : ''}`}
+              >
+                <NavRow
+                  item={entry}
+                  isActive={active}
+                  menuOpen={menuOpen}
+                  onToggle={() => setOpenMenu(openMenu === entry.id ? null : entry.id)}
+                  onNavigate={closeNav}
+                />
+                <ul className="submenu">
+                  {entry.children.map((child) => {
+                    const childActive = hrefMatchesLocation(child.href, location);
+                    return (
+                      <li key={child.label}>
+                        <Link
+                          to={child.href}
+                          className={childActive ? 'active' : ''}
+                          onClick={closeNav}
+                        >
+                          {child.label}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </li>
+            );
+          }
+
           return (
             <li key={entry.id} className={active ? 'active' : ''}>
               <NavRow item={entry} isActive={active} onNavigate={closeNav} />

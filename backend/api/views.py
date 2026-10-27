@@ -221,7 +221,10 @@ def roles_creatable_by(actor):
     if actor.is_superuser or actor.role == User.ROLE_SUPER_ADMIN:
         return {choice[0] for choice in User.ROLE_CHOICES}
     if actor.role == User.ROLE_ADMIN:
-        return {choice[0] for choice in User.ROLE_CHOICES} - {User.ROLE_SUPER_ADMIN}
+        return {choice[0] for choice in User.ROLE_CHOICES} - {
+            User.ROLE_SUPER_ADMIN,
+            User.ROLE_ADMIN,
+        }
     if actor.role == User.ROLE_SUPER_FRANCHISEE:
         return {User.ROLE_FRANCHISEE, User.ROLE_SUB_FRANCHISE}
     if actor.role == User.ROLE_FRANCHISEE:
@@ -449,11 +452,40 @@ class TestPackageListView(generics.ListCreateAPIView):
         return [permissions.IsAuthenticated()]
 
     def get_queryset(self):
-        qs = TestPackage.objects.filter(is_active=True).prefetch_related('tests')
+        qs = TestPackage.objects.filter(is_active=True).annotate(
+            annotated_test_count=Count('tests', distinct=True),
+        )
+        package_id = self.request.query_params.get('id', '').strip()
+        if package_id.isdigit():
+            qs = qs.filter(pk=int(package_id))
         search = self.request.query_params.get('search', '').strip()
         if search:
             qs = qs.filter(name__icontains=search)
         return qs
+
+    def list(self, request, *args, **kwargs):
+        # One packages query + one membership query (avoids N+1 over Railway).
+        packages = list(self.filter_queryset(self.get_queryset()))
+        self._attach_ordered_memberships(packages)
+        serializer = self.get_serializer(packages, many=True)
+        return Response(serializer.data)
+
+    @staticmethod
+    def _attach_ordered_memberships(packages):
+        if not packages:
+            return
+        through = TestPackage.tests.through
+        package_ids = [pkg.pk for pkg in packages]
+        rows = (
+            through.objects.filter(testpackage_id__in=package_ids)
+            .select_related('test')
+            .order_by('id')
+        )
+        grouped = {}
+        for row in rows:
+            grouped.setdefault(row.testpackage_id, []).append(row)
+        for pkg in packages:
+            pkg._membership_rows = grouped.get(pkg.pk, [])
 
 
 class ReportFormatListView(generics.ListAPIView):
@@ -3024,6 +3056,14 @@ class UserListView(generics.ListAPIView):
         if active in ('1', 'true', 'True'):
             qs = qs.filter(is_active=True)
         qs = scope_users_for_user(self.request.user, qs)
+        # Zone Admin must not see Admin / Super Admin accounts.
+        actor = self.request.user
+        if (
+            actor.role == User.ROLE_ADMIN
+            and not actor.is_superuser
+            and actor.role != User.ROLE_SUPER_ADMIN
+        ):
+            qs = qs.exclude(role__in=[User.ROLE_ADMIN, User.ROLE_SUPER_ADMIN])
         from .zone_rates import downstream_franchise_role_for_manager
         expected = downstream_franchise_role_for_manager(self.request.user)
         if expected and role == expected:
@@ -3062,19 +3102,75 @@ class UserRoleUpdateView(APIView):
                 {'detail': 'You cannot change your own role.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+        actor = request.user
+        if (
+            actor.role == User.ROLE_ADMIN
+            and not actor.is_superuser
+            and target.role in {User.ROLE_ADMIN, User.ROLE_SUPER_ADMIN}
+        ):
+            return Response(
+                {'detail': 'Admin accounts can only be managed by Super Admin.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        next_role = (request.data.get('role') or '').strip()
+        allowed = roles_creatable_by(actor)
+        if next_role and next_role not in allowed and actor.role == User.ROLE_ADMIN:
+            return Response(
+                {'detail': 'You are not allowed to assign this role.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
         serializer = UserRoleUpdateSerializer(target, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         user.is_staff = user.role in User.ADMIN_ROLES
         user.is_superuser = user.role == User.ROLE_SUPER_ADMIN or user.is_superuser
         user.save(update_fields=['is_staff', 'is_superuser'])
-        return Response(UserSerializer(user).data)
+        return Response(UserSerializer(user, context={'request': request}).data)
+
+
+class UserPasswordUpdateView(APIView):
+    """Admin / Super Admin can set a user's login password (also stored for admin view)."""
+
+    permission_classes = [IsAdmin]
+
+    def patch(self, request, pk):
+        target = get_object_or_404(User, pk=pk)
+        actor = request.user
+        if (
+            actor.role == User.ROLE_ADMIN
+            and not actor.is_superuser
+            and target.role in {User.ROLE_ADMIN, User.ROLE_SUPER_ADMIN}
+        ):
+            return Response(
+                {'detail': 'Admin accounts can only be managed by Super Admin.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        password = (request.data.get('password') or '').strip()
+        if len(password) < 8:
+            return Response(
+                {'detail': 'Password must be at least 8 characters.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        target.set_password(password)
+        target.login_password = password
+        target.save(update_fields=['password', 'login_password'])
+        return Response(UserSerializer(target, context={'request': request}).data)
 
 
 class RoleListView(generics.ListAPIView):
-    queryset = LabRole.objects.all()
     serializer_class = LabRoleSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        qs = LabRole.objects.all()
+        actor = self.request.user
+        # Hide Admin role card (and its user count) from zone Admin logins.
+        if (
+            actor.role == User.ROLE_ADMIN
+            and not actor.is_superuser
+        ):
+            qs = qs.exclude(code=User.ROLE_ADMIN)
+        return qs
 
 
 class RoleDetailView(APIView):

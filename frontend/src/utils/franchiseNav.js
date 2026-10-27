@@ -41,18 +41,6 @@ export const FRANCHISE_NAV = [
   },
 
   {
-    section: 'SCAN',
-    items: [
-      {
-        id: 'barcode-scan',
-        label: 'Scan',
-        href: '/franchise/scan',
-        icon: 'chip',
-      },
-    ],
-  },
-
-  {
     section: 'NOTIFICATIONS',
     items: [
       {

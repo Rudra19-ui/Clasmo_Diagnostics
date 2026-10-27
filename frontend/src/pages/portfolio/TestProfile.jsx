@@ -199,16 +199,29 @@ export default function TestProfile() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    Promise.all([
-      api.getTestPackages(),
-      api.getReportFormats().catch(() => []),
-    ])
-      .then(([rows, formats]) => {
-        setPackages(Array.isArray(rows) ? rows : []);
-        setPorPdfs(filterPorCatalogPdfs(formats, { hidePriceCatalog: !showPrice && !showMrp }));
+    let cancelled = false;
+    setLoading(true);
+    setError('');
+    api.getTestPackages()
+      .then((rows) => {
+        if (!cancelled) setPackages(Array.isArray(rows) ? rows : []);
       })
-      .catch((err) => setError(err.message || 'Could not load packages.'))
-      .finally(() => setLoading(false));
+      .catch((err) => {
+        if (!cancelled) setError(err.message || 'Could not load packages.');
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    api.getReportFormats()
+      .then((formats) => {
+        if (!cancelled) {
+          setPorPdfs(filterPorCatalogPdfs(formats, { hidePriceCatalog: !showPrice && !showMrp }));
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setPorPdfs([]);
+      });
+    return () => { cancelled = true; };
   }, [franchise, showPrice, showMrp]);
 
   const filtered = useMemo(() => {
@@ -306,7 +319,10 @@ export default function TestProfile() {
                       <span> —</span>
                     )}
                   </div>
-                  <Link to="/portfolio/sample-report" className="portfolio-profile-link">
+                  <Link
+                    to={`/portfolio/sample-report?package=${pkg.id}`}
+                    className="portfolio-profile-link"
+                  >
                     View Reports Format →
                   </Link>
                 </article>

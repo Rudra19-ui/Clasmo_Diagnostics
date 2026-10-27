@@ -89,7 +89,7 @@ def ensure_zone_admins(*, reset_passwords=True, stdout=None):
         zone = zones_by_code[zone_code]
         user = User.objects.filter(username=username).first()
         if user is None:
-            User.objects.create_user(
+            user = User.objects.create_user(
                 username=username,
                 password=password,
                 role=User.ROLE_ADMIN,
@@ -99,6 +99,8 @@ def ensure_zone_admins(*, reset_passwords=True, stdout=None):
                 is_active=True,
                 zone=zone,
             )
+            user.login_password = password
+            user.save(update_fields=['login_password'])
             created_count += 1
             if stdout:
                 stdout.write(f'Created zone admin: {username} ({zone.name})')
@@ -107,7 +109,8 @@ def ensure_zone_admins(*, reset_passwords=True, stdout=None):
         changed_fields = []
         if reset_passwords:
             user.set_password(password)
-            changed_fields.append('password')
+            user.login_password = password
+            changed_fields.extend(['password', 'login_password'])
         if user.role != User.ROLE_ADMIN:
             user.role = User.ROLE_ADMIN
             changed_fields.append('role')
@@ -164,6 +167,8 @@ def ensure_all_zone_role_accounts(*, reset_passwords=True, stdout=None):
                     is_active=True,
                     zone=zone,
                 )
+                user.login_password = password
+                user.save(update_fields=['login_password'])
                 created_count += 1
                 if stdout:
                     stdout.write(f'Created: {username} ({zone.name} / {label})')
@@ -171,6 +176,7 @@ def ensure_all_zone_role_accounts(*, reset_passwords=True, stdout=None):
                 changed = False
                 if reset_passwords:
                     user.set_password(password)
+                    user.login_password = password
                     changed = True
                 if user.role != role:
                     user.role = role
@@ -247,6 +253,8 @@ def ensure_super_admin(*, reset_password=True, stdout=None):
             is_active=True,
             zone=None,
         )
+        user.login_password = password
+        user.save(update_fields=['login_password'])
         if stdout:
             stdout.write(f'Created super admin: {username}')
         return user, True
@@ -254,6 +262,7 @@ def ensure_super_admin(*, reset_password=True, stdout=None):
     changed = False
     if reset_password:
         user.set_password(password)
+        user.login_password = password
         changed = True
     if user.role != User.ROLE_SUPER_ADMIN:
         user.role = User.ROLE_SUPER_ADMIN

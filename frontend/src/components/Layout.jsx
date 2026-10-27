@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useNav } from '../context/NavContext';
 import AdminSidebar from './AdminSidebar';
+import { isSuperAdminAdminShellPath } from '../utils/adminModules';
 import FranchiseSidebar from './FranchiseSidebar';
 import LandingBrandTitle from './landing/LandingBrandTitle';
 import WalletBalanceBadge from './WalletBalanceBadge';
@@ -55,9 +56,15 @@ export default function Layout({ activePage, children }) {
   const isFranchiseMainNavRoute = FRANCHISE_MAIN_NAV_PATHS.some(
     (path) => location.pathname === path || location.pathname.startsWith(`${path}/`),
   );
+  const isSuperAdminWorkflowAdminRoute = user?.role === 'super_admin'
+    && isSuperAdminAdminShellPath(location.pathname);
   const isAdminRoute = !isStandalonePage
     && !isFranchiseMainNavRoute
-    && (activePage === 'administration' || location.pathname.startsWith('/admin/'));
+    && (
+      activePage === 'administration'
+      || location.pathname.startsWith('/admin/')
+      || isSuperAdminWorkflowAdminRoute
+    );
   const isPathologist = user?.role === 'pathologist';
 
   const handleSidebarClick = useCallback((event) => {

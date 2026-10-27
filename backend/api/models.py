@@ -69,6 +69,8 @@ class User(AbstractUser):
     lab_code = models.CharField(max_length=20, default='202505017')
     save_credentials = models.BooleanField(default=False)
     save_info = models.BooleanField(default=False)
+    # Last password set via signup / admin reset — visible only to Super Admin & Admin.
+    login_password = models.CharField(max_length=128, blank=True, default='')
     zone = models.ForeignKey(
         Zone,
         on_delete=models.PROTECT,

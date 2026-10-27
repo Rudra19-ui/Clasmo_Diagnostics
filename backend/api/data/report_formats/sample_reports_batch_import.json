@@ -8,21 +8,25 @@
       "ABO GROUP & RH TYPE"
     ],
     "sample_type": "EDTA Blood",
-    "clinical_significance": "This ABO and Rh blood typing test identifies the presence of specific red cell antigens and antibodies to determine the ABO/Rh type. Please correlate with clinical conditions.",
+    "clinical_significance": "This ABO and Rh blood typing test identifies the presence of specific red cell antigens and antibodies to determine the ABO/Rh type.\n\nPlease correlate with clinical conditions",
     "parameters": [
       {
         "parameter_name": "ABO Group",
-        "unit": "",
+        "unit": ".",
         "method": "Erythrocyte Magnetized Technology",
-        "reference_range_male": "",
+        "reference_range_male": ".-.",
+        "reference_range_female": ".-.",
+        "reference_range_child": ".-.",
         "sample_value": "B",
         "sort_order": 1
       },
       {
         "parameter_name": "Rh Factor",
-        "unit": "",
-        "method": "",
-        "reference_range_male": "",
+        "unit": ".",
+        "method": ".",
+        "reference_range_male": "..-.",
+        "reference_range_female": "..-.",
+        "reference_range_child": "..-.",
         "sample_value": "POSITIVE",
         "sort_order": 2
       }

@@ -218,7 +218,8 @@ export default function SampleReport() {
   }));
   const sampleRows = parameters.map((param) => ({
     ...param,
-    result: param.sample_value || '',
+    result: '',
+    sample_value: '',
   }));
   const sheetRows = isLive ? liveRows : sampleRows;
   const porPdfs = useMemo(

@@ -160,7 +160,7 @@ function Field({ label, value, blank }) {
   );
 }
 
-function resultDisplay(row, editable, values, onValueChange) {
+function resultDisplay(row, editable, values, onValueChange, { showSampleValues = false } = {}) {
   if (editable) {
     return (
       <input
@@ -175,7 +175,7 @@ function resultDisplay(row, editable, values, onValueChange) {
   if (row.result != null && String(row.result).trim() !== '') {
     return <strong>{row.result}</strong>;
   }
-  if (row.sample_value) {
+  if (showSampleValues && row.sample_value) {
     return <strong title="Example sample value">{row.sample_value}</strong>;
   }
   return <span className="report-result-placeholder">&nbsp;</span>;
@@ -389,7 +389,7 @@ export default function ClasmoReportSheet({
                 <th>TEST DESCRIPTION</th>
                 <th>RESULT</th>
                 <th>UNITS</th>
-                {showReferenceColumn && <th>REFERENCE RANGE</th>}
+                {showReferenceColumn && <th>BIOLOGICAL REFERENCE RANGE</th>}
               </tr>
             </thead>
             <tbody>
@@ -403,7 +403,9 @@ export default function ClasmoReportSheet({
                       {row.flag ? <div className="clasmo-report-method">{row.flag}{row.source === 'machine' ? ' · Machine' : ''}</div> : null}
                     </td>
                     <td className="clasmo-report-result-cell">
-                      {resultDisplay(row, editable, values, onValueChange)}
+                      {resultDisplay(row, editable, values, onValueChange, {
+                        showSampleValues: !isSample && isLive,
+                      })}
                     </td>
                     <td>{row.unit || ''}</td>
                     {showReferenceColumn && (

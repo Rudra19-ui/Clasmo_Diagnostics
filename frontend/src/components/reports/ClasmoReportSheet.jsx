@@ -17,32 +17,106 @@ export function isOhProgesteroneTest(name = '') {
   return /17\s*-?\s*oh\s*progesterone/i.test(name);
 }
 
-export function referenceInterval(param) {
-  const male = (param.reference_range_male || param.reference_range || '').trim();
-  const female = (param.reference_range_female || '').trim();
-  const child = (param.reference_range_child || '').trim();
-  const parts = [];
-  if (male && !female && !child) return male;
-  if (male) parts.push(`M: ${male}`);
-  if (female) parts.push(`F: ${female}`);
-  if (child) parts.push(`Child: ${child}`);
-  if (parts.length) return parts.join(' · ');
+function parseAgeYears(value) {
+  if (value == null || value === '') return null;
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
+  const text = String(value);
+  const yearsMatch = text.match(/(\d+)\s*(?:Y|Yr|Years?)\b/i)
+    || text.match(/-(\d+)\s*\(Y\)/i)
+    || text.match(/\b(\d+)\s*\(Y\)/i);
+  if (yearsMatch) return Number(yearsMatch[1]);
+  const bare = Number(text);
+  return Number.isFinite(bare) ? bare : null;
+}
+
+function parseGenderToken(value) {
+  const text = String(value || '').trim().toLowerCase();
+  if (!text) return '';
+  if (text === 'm' || text === 'male' || /\bmale\b/.test(text)) return 'male';
+  if (text === 'f' || text === 'female' || /\bfemale\b/.test(text)) return 'female';
   return '';
 }
 
-function referenceRowsForParameter(row) {
-  const name = (row.parameter_name || '').trim();
-  const male = (row.reference_range_male || row.reference_range || '').trim();
+/** Resolve Male / Female / Child from registration demographics after entry. */
+export function resolveReportCategory(demographics = {}) {
+  const years = parseAgeYears(
+    demographics.age_years
+    ?? demographics.patient_age
+    ?? demographics.age_display
+    ?? demographics.age_gender,
+  );
+  const gender = parseGenderToken(
+    demographics.gender
+    || demographics.patient_gender
+    || demographics.gender_label
+    || demographics.age_gender
+    || demographics.age_display,
+  );
+
+  if (years != null && years > 0 && years < 18) return 'child';
+  if (gender === 'female') return 'female';
+  if (gender === 'male') return 'male';
+  return null;
+}
+
+function pickRangeForCategory(row, category) {
+  const male = (row.reference_range_male || '').trim();
   const female = (row.reference_range_female || '').trim();
   const child = (row.reference_range_child || '').trim();
-  const rows = [];
-  if (male && !female && !child) rows.push({ category: name, range: male });
-  else {
-    if (male) rows.push({ category: name ? `${name} — Male` : 'Male', range: male });
-    if (female) rows.push({ category: name ? `${name} — Female` : 'Female', range: female });
-    if (child) rows.push({ category: name ? `${name} — Child` : 'Child', range: child });
+  const selected = (row.reference_range || '').trim();
+
+  if (category === 'child') return child || selected || male || female;
+  if (category === 'female') return female || selected || male || child;
+  if (category === 'male') return male || selected || female || child;
+  return selected || male || female || child;
+}
+
+export function referenceInterval(param, demographics = {}) {
+  const category = resolveReportCategory(demographics);
+  if (category) return pickRangeForCategory(param, category);
+
+  const male = (param.reference_range_male || '').trim();
+  const female = (param.reference_range_female || '').trim();
+  const child = (param.reference_range_child || '').trim();
+  const selected = (param.reference_range || '').trim();
+
+  // Sample / no patient yet: one range in the column (prefer male), not M+F+Child text.
+  return selected || male || female || child || '';
+}
+
+function referenceRowsForParameter(row, category) {
+  const name = (row.parameter_name || '').trim();
+  const male = (row.reference_range_male || '').trim();
+  const female = (row.reference_range_female || '').trim();
+  const child = (row.reference_range_child || '').trim();
+  const selected = (row.reference_range || '').trim();
+  const demographicCount = [male, female, child].filter(Boolean).length;
+
+  // Before patient entry: hide Male / Female / Child triples.
+  if (!category) {
+    if (demographicCount > 1) return [];
+    if (male && !female && !child) {
+      return [{ category: name || 'Reference', range: male }];
+    }
+    if (female && !male && !child) {
+      return [{ category: name || 'Reference', range: female }];
+    }
+    if (child && !male && !female) {
+      return [{ category: name || 'Reference', range: child }];
+    }
+    if (selected) return [{ category: name || 'Reference', range: selected }];
+    return [];
   }
-  return rows.filter((item) => item.range);
+
+  const range = pickRangeForCategory(row, category);
+  if (!range) return [];
+
+  const label = category === 'child' ? 'Child' : category === 'female' ? 'Female' : 'Male';
+  // Keep plain parameter name when only one demographic range exists.
+  if (demographicCount <= 1 && !selected) {
+    return [{ category: name || label, range }];
+  }
+  return [{ category: name ? `${name} — ${label}` : label, range }];
 }
 
 const OH_CATEGORY_RANGES = [
@@ -107,8 +181,8 @@ function resultDisplay(row, editable, values, onValueChange) {
   return <span className="report-result-placeholder">&nbsp;</span>;
 }
 
-function ReferenceRangeTables({ rows, rangeHeading = 'RANGE' }) {
-  const items = rows.flatMap(referenceRowsForParameter);
+function ReferenceRangeTables({ rows, rangeHeading = 'RANGE', category = null }) {
+  const items = rows.flatMap((row) => referenceRowsForParameter(row, category));
   if (!items.length) return null;
   const midpoint = Math.ceil(items.length / 2);
   const columns = items.length === 1 ? [items] : [items.slice(0, midpoint), items.slice(midpoint)];
@@ -188,7 +262,7 @@ export default function ClasmoReportSheet({
   isSample = true,
   loading = false,
   emptyMessage = 'No parameters for this test yet.',
-  showReferenceColumn = false,
+  showReferenceColumn = true,
   footerNote = '',
   actions = null,
   linkedFiles = null,
@@ -259,6 +333,7 @@ export default function ClasmoReportSheet({
     ? (sheetRows[0].unit || '')
     : '';
   const rangeHeading = sharedUnit ? `RANGE (${sharedUnit})` : 'RANGE';
+  const patientCategory = resolveReportCategory(demographics);
 
   return (
     <>
@@ -314,7 +389,7 @@ export default function ClasmoReportSheet({
                 <th>TEST DESCRIPTION</th>
                 <th>RESULT</th>
                 <th>UNITS</th>
-                {showReferenceColumn && <th>BIOLOGICAL REFERENCE RANGE</th>}
+                {showReferenceColumn && <th>REFERENCE RANGE</th>}
               </tr>
             </thead>
             <tbody>
@@ -331,7 +406,9 @@ export default function ClasmoReportSheet({
                       {resultDisplay(row, editable, values, onValueChange)}
                     </td>
                     <td>{row.unit || ''}</td>
-                    {showReferenceColumn && <td>{row.reference_range || referenceInterval(row)}</td>}
+                    {showReferenceColumn && (
+                      <td>{referenceInterval(row, demographics)}</td>
+                    )}
                   </tr>
                 );
               })}
@@ -341,7 +418,11 @@ export default function ClasmoReportSheet({
 
         {isOh ? <OhReferenceTables /> : (
           !showReferenceColumn && (
-            <ReferenceRangeTables rows={sheetRows} rangeHeading={rangeHeading} />
+            <ReferenceRangeTables
+              rows={sheetRows}
+              rangeHeading={rangeHeading}
+              category={patientCategory}
+            />
           )
         )}
 
@@ -595,7 +676,9 @@ export async function printClasmoReport() {
     .clasmo-report-table td.clasmo-report-result-cell,
     .clasmo-report-table td:nth-child(2),
     .clasmo-report-table th:nth-child(3),
-    .clasmo-report-table td:nth-child(3) {
+    .clasmo-report-table td:nth-child(3),
+    .clasmo-report-table--with-ref th:nth-child(4),
+    .clasmo-report-table--with-ref td:nth-child(4) {
       text-align: center !important;
     }
     .clasmo-report-dual-ref td:last-child { text-align: right !important; font-weight: 600 !important; }

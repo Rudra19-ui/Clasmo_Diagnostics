@@ -32,6 +32,9 @@ class ReportValueSerializer(serializers.ModelSerializer):
     test_id = serializers.IntegerField(source='parameter.test_id', read_only=True)
     test_name = serializers.CharField(source='parameter.test.name', read_only=True)
     reference_range = serializers.SerializerMethodField()
+    reference_range_male = serializers.CharField(source='parameter.reference_range_male', read_only=True)
+    reference_range_female = serializers.CharField(source='parameter.reference_range_female', read_only=True)
+    reference_range_child = serializers.CharField(source='parameter.reference_range_child', read_only=True)
     report_note = serializers.CharField(source='parameter.test.report_note', read_only=True)
     report_comments = serializers.CharField(source='parameter.test.report_comments', read_only=True)
     clinical_significance = serializers.CharField(source='parameter.test.clinical_significance', read_only=True)
@@ -42,6 +45,7 @@ class ReportValueSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'parameter', 'parameter_name', 'unit', 'method', 'sample_type',
             'test_id', 'test_name', 'value', 'flag', 'source', 'reference_range',
+            'reference_range_male', 'reference_range_female', 'reference_range_child',
             'report_note', 'report_comments', 'clinical_significance', 'report_extra_sections',
         ]
 

@@ -410,7 +410,7 @@ export default function SampleReport() {
                   isLive={isLive}
                   isSample={!isLive}
                   loading={!isLive && paramsLoading}
-                  showReferenceColumn={false}
+                  showReferenceColumn
                   reportNote={selectedTest?.report_note || ''}
                   reportComments={selectedTest?.report_comments || ''}
                   clinicalSignificance={selectedTest?.clinical_significance || ''}

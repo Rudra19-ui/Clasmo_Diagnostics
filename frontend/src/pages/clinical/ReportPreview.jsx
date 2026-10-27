@@ -105,6 +105,10 @@ export default function ReportPreview() {
     return {
       patient_name: details.full_name || details.patient_name || report.patient_name || '',
       age_gender: age,
+      age_years: details.age_years ?? report.patient_age ?? null,
+      gender: details.gender || report.patient_gender || '',
+      patient_gender: details.gender || report.patient_gender || '',
+      patient_age: details.age_years ?? report.patient_age ?? null,
       doctor_name: details.doctor_name || '',
       lab_code: details.lab_code || report.lab_code || '',
       barcode: details.barcode || report.lab_code || '',
@@ -224,13 +228,16 @@ export default function ReportPreview() {
                           result: v.value,
                           unit: v.unit,
                           reference_range: v.reference_range,
+                          reference_range_male: v.reference_range_male,
+                          reference_range_female: v.reference_range_female,
+                          reference_range_child: v.reference_range_child,
                           method: v.method,
                           flag: v.flag,
                           source: v.source,
                         }))}
                         isLive
                         isSample={false}
-                        showReferenceColumn={false}
+                        showReferenceColumn
                         reportNote={narrative.reportNote}
                         reportComments={narrative.reportComments}
                         clinicalSignificance={narrative.clinicalSignificance}

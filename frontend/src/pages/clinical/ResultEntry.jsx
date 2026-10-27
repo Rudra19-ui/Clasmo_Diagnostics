@@ -271,6 +271,10 @@ export default function ResultEntry() {
                         demographics={{
                           patient_name: details.full_name || report.patient_name || '',
                           age_gender: details.age_display || `${report.patient_age || ''} Y / ${report.patient_gender || ''}`,
+                          age_years: details.age_years ?? report.patient_age ?? null,
+                          gender: details.gender || report.patient_gender || '',
+                          patient_gender: details.gender || report.patient_gender || '',
+                          patient_age: details.age_years ?? report.patient_age ?? null,
                           doctor_name: details.doctor_name || '',
                           lab_code: report.lab_code || '',
                           barcode: details.barcode || '',

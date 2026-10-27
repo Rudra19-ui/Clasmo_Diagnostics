@@ -505,7 +505,28 @@ class TestPackageSerializer(serializers.ModelSerializer):
         return obj.tests.count()
 
     def get_test_names(self, obj):
-        return list(obj.tests.order_by('name').values_list('name', flat=True))
+        # Keep the package member sequence from create / import (through-table order).
+        return list(
+            obj.tests.through.objects.filter(testpackage_id=obj.pk)
+            .order_by('id')
+            .values_list('test__name', flat=True)
+        )
+
+    def create(self, validated_data):
+        tests = validated_data.pop('tests', [])
+        package = TestPackage.objects.create(**validated_data)
+        if tests:
+            package.tests.set([test.pk for test in tests])
+        return package
+
+    def update(self, instance, validated_data):
+        tests = validated_data.pop('tests', None)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        if tests is not None:
+            instance.tests.set([test.pk for test in tests])
+        return instance
 
 
 class ReportFormatAssetSerializer(serializers.ModelSerializer):

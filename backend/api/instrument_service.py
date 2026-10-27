@@ -424,6 +424,7 @@ def build_patient_report_by_barcode(barcode, *, test_filter='cbc', user=None):
             'reference_range': select_reference_range(param, patient),
             'reference_range_male': param.reference_range_male,
             'reference_range_female': param.reference_range_female,
+            'reference_range_child': param.reference_range_child,
             'sort_order': param.sort_order,
         })
 

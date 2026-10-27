@@ -294,7 +294,18 @@ export default function TestProfile() {
                   {showMrp && <p><strong>PROFILE MRP:</strong> {money(pkg.mrp)}</p>}
                   {showPrice && <p><strong>Profile rate:</strong> {money(pkg.rate)}</p>}
                   {pkg.description && <p>{pkg.description}</p>}
-                  <p><strong>Includes:</strong> {(pkg.test_names || []).join(', ') || '—'}</p>
+                  <div className="package-includes">
+                    <strong>Includes:</strong>
+                    {(pkg.test_names || []).length ? (
+                      <ol className="package-includes-list">
+                        {(pkg.test_names || []).map((testName, index) => (
+                          <li key={`${pkg.id}-${index}`}>{testName}</li>
+                        ))}
+                      </ol>
+                    ) : (
+                      <span> —</span>
+                    )}
+                  </div>
                   <Link to="/portfolio/sample-report" className="portfolio-profile-link">
                     View Reports Format →
                   </Link>

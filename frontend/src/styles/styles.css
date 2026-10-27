@@ -7711,6 +7711,22 @@ input, select, textarea, button {
   line-height: 1.45;
 }
 
+.package-includes {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: #333;
+  line-height: 1.45;
+}
+
+.package-includes-list {
+  margin: 6px 0 0;
+  padding-left: 1.35rem;
+}
+
+.package-includes-list li {
+  margin: 0 0 2px;
+}
+
 .portfolio-profile-link {
   display: inline-block;
   margin-top: 8px;
@@ -8053,13 +8069,20 @@ input, select, textarea, button {
 .clasmo-report-table td.clasmo-report-result-cell,
 .clasmo-report-table td:nth-child(2) {
   text-align: center;
-  width: 22%;
+  width: 16%;
 }
 
 .clasmo-report-table th:nth-child(3),
 .clasmo-report-table td:nth-child(3) {
   text-align: center;
-  width: 14%;
+  width: 12%;
+}
+
+.clasmo-report-table--with-ref th:nth-child(4),
+.clasmo-report-table--with-ref td:nth-child(4) {
+  text-align: center;
+  width: 18%;
+  white-space: nowrap;
 }
 
 .clasmo-report-param-name {

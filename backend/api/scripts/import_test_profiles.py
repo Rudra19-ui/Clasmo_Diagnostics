@@ -91,11 +91,13 @@ def main() -> int:
             else:
                 unmatched[test_name] = unmatched.get(test_name, 0) + 1
 
+        sequence = int(row.get('num') or index)
         pkg = pkg_by_exact.get(name.lower()) or pkg_by_norm.get(norm(name))
         if pkg:
             pkg.name = name
             pkg.is_active = True
-            pkg.save(update_fields=['name', 'is_active'])
+            pkg.sort_order = sequence
+            pkg.save(update_fields=['name', 'is_active', 'sort_order'])
             updated += 1
             action = 'updated'
         else:
@@ -104,13 +106,21 @@ def main() -> int:
                 mrp=Decimal('0'),
                 rate=Decimal('0'),
                 is_active=True,
+                sort_order=sequence,
             )
             pkg_by_exact[name.lower()] = pkg
             pkg_by_norm[norm(name)] = pkg
             created += 1
             action = 'created'
 
-        pkg.tests.set(test_ids)
+        # Clear then add in profile sequence so Includes keeps brochure order.
+        pkg.tests.clear()
+        if test_ids:
+            through = pkg.tests.through
+            through.objects.bulk_create([
+                through(testpackage_id=pkg.pk, test_id=test_id)
+                for test_id in test_ids
+            ])
         if index % 25 == 0 or index == len(profiles):
             print(
                 f'progress={index}/{len(profiles)} last={action}:{name} linked={len(test_ids)}',

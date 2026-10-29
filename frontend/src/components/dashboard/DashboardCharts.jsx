@@ -29,7 +29,7 @@ export function SummaryCard({ title, data }) {
   );
 }
 
-export function DonutChart({ segments, size = 180 }) {
+export function DonutChart({ segments, size = 180, money = true }) {
   const total = segments.reduce((sum, item) => sum + Number(item.value || 0), 0);
   const radius = 70;
   const stroke = 28;
@@ -79,7 +79,9 @@ export function DonutChart({ segments, size = 180 }) {
           <li key={segment.label}>
             <span className="elab-legend-swatch" style={{ background: segment.color }} />
             {segment.label}
-            <strong>₹ {formatMoney(segment.value)}</strong>
+            <strong>
+              {money ? `₹ ${formatMoney(segment.value)}` : Number(segment.value || 0)}
+            </strong>
           </li>
         ))}
       </ul>

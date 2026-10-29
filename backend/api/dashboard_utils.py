@@ -3,10 +3,11 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 
 from django.db.models import Count, Sum, F, Q, Avg, DurationField, ExpressionWrapper
-from django.db.models.functions import TruncMonth
+from django.db.models.functions import TruncDate, TruncMonth
 from django.utils import timezone
 
 from .models import (
+    Patient,
     Registration,
     RegistrationTest,
     Report,
@@ -552,3 +553,203 @@ def zone_daily_income(report_date, user=None, zone_id=None):
         zone_id=zone_id,
         user=user,
     )
+
+
+def my_business_analytics(*, zone_id=None, days=14, user=None):
+    """
+    Super Admin My Business charts for one zone (or all zones if zone_id is empty).
+    Includes daily revenue, test completed vs pending, franchise performance,
+    and new patient acquisition.
+    """
+    from .models import Zone, User
+
+    today = timezone.localdate()
+    try:
+        days = max(7, min(60, int(days or 14)))
+    except (TypeError, ValueError):
+        days = 14
+    from_date = today - timedelta(days=days - 1)
+
+    selected_zone_id = None
+    zone_name = 'All Zones'
+    if zone_id not in (None, '', 'all'):
+        try:
+            selected_zone_id = int(zone_id)
+        except (TypeError, ValueError):
+            selected_zone_id = None
+    if selected_zone_id is not None:
+        zone = Zone.objects.filter(pk=selected_zone_id, is_active=True).first()
+        if zone:
+            zone_name = zone.name
+        else:
+            selected_zone_id = None
+            zone_name = 'All Zones'
+
+    reg_qs = registration_queryset(from_date, today, user=user)
+    if selected_zone_id is not None:
+        reg_qs = reg_qs.filter(zone_id=selected_zone_id)
+
+    daily_rows = {
+        row['day']: row
+        for row in reg_qs.annotate(day=TruncDate('registration_date'))
+        .values('day')
+        .annotate(
+            registrations=Count('id'),
+            net_amount=Sum('net_amount'),
+            paid_amount=Sum('paid'),
+        )
+    }
+    daily_revenue = []
+    cursor = from_date
+    while cursor <= today:
+        row = daily_rows.get(cursor) or {}
+        daily_revenue.append({
+            'date': cursor.isoformat(),
+            'label': cursor.strftime('%d %b'),
+            'registrations': int(row.get('registrations') or 0),
+            'net_amount': float(_decimal(row.get('net_amount'))),
+            'paid_amount': float(_decimal(row.get('paid_amount'))),
+        })
+        cursor += timedelta(days=1)
+
+    status_counts = {
+        item['status']: item['count']
+        for item in reg_qs.values('status').annotate(count=Count('id'))
+    }
+    completed_statuses = {
+        Registration.STATUS_RESULT_READY,
+        Registration.STATUS_PRINTED,
+    }
+    pending_statuses = {
+        Registration.STATUS_REGISTERED,
+        Registration.STATUS_COLLECTION,
+    }
+    completed = sum(status_counts.get(s, 0) for s in completed_statuses)
+    pending = sum(status_counts.get(s, 0) for s in pending_statuses)
+    other_status = sum(
+        count for status, count in status_counts.items()
+        if status not in completed_statuses and status not in pending_statuses
+    )
+    test_status = [
+        {'label': 'Completed', 'value': completed, 'color': '#1abc9c'},
+        {'label': 'Pending', 'value': pending, 'color': '#e67e22'},
+    ]
+    if other_status:
+        test_status.append({'label': 'Other', 'value': other_status, 'color': '#95a5a6'})
+
+    status_detail = [
+        {'label': status or 'Unknown', 'value': count, 'color': '#5dade2'}
+        for status, count in sorted(status_counts.items(), key=lambda item: -item[1])
+    ]
+
+    franchise_users = User.objects.filter(
+        role__in=_FRANCHISE_ROLE_ORDER,
+        is_active=True,
+    )
+    if selected_zone_id is not None:
+        franchise_users = franchise_users.filter(zone_id=selected_zone_id)
+    franchise_users = list(franchise_users.select_related('zone').order_by('role', 'username'))
+
+    by_creator = {
+        row['created_by_id']: row
+        for row in reg_qs.filter(created_by_id__isnull=False)
+        .values('created_by_id')
+        .annotate(
+            registrations=Count('id'),
+            net_amount=Sum('net_amount'),
+            paid_amount=Sum('paid'),
+        )
+    }
+    franchise_colors = {
+        'super_franchisee': '#c0392b',
+        'franchisee': '#e67e22',
+        'sub_franchise': '#5dade2',
+    }
+    franchise_performance = []
+    for fu in franchise_users:
+        stats = by_creator.get(fu.id) or {}
+        franchise_performance.append({
+            'user_id': fu.id,
+            'label': fu.display_name or fu.username,
+            'username': fu.username,
+            'role': fu.role,
+            'role_label': _FRANCHISE_ROLE_LABELS.get(fu.role, fu.get_role_display()),
+            'zone_name': fu.zone.name if fu.zone_id else '',
+            'registrations': int(stats.get('registrations') or 0),
+            'net_amount': float(_decimal(stats.get('net_amount'))),
+            'paid_amount': float(_decimal(stats.get('paid_amount'))),
+            'color': franchise_colors.get(fu.role, '#95a5a6'),
+            'active': bool(stats.get('registrations')),
+        })
+    franchise_performance.sort(key=lambda row: (-row['net_amount'], row['label']))
+    active_franchise_count = sum(1 for row in franchise_performance if row['active'])
+
+    role_perf = {
+        role: {
+            'label': _FRANCHISE_ROLE_LABELS[role],
+            'role': role,
+            'registrations': 0,
+            'net_amount': 0.0,
+            'color': franchise_colors[role],
+        }
+        for role in _FRANCHISE_ROLE_ORDER
+    }
+    for row in franchise_performance:
+        bucket = role_perf.get(row['role'])
+        if not bucket:
+            continue
+        bucket['registrations'] += row['registrations']
+        bucket['net_amount'] += row['net_amount']
+    franchise_role_performance = [
+        {**role_perf[role], 'net_amount': round(role_perf[role]['net_amount'], 2)}
+        for role in _FRANCHISE_ROLE_ORDER
+    ]
+
+    patient_qs = Patient.objects.filter(
+        is_active=True,
+        created_at__date__gte=from_date,
+        created_at__date__lte=today,
+    )
+    if selected_zone_id is not None:
+        patient_qs = patient_qs.filter(zone_id=selected_zone_id)
+    patient_days = {
+        row['day']: row['count']
+        for row in patient_qs.annotate(day=TruncDate('created_at'))
+        .values('day')
+        .annotate(count=Count('id'))
+    }
+    new_patients = []
+    cursor = from_date
+    while cursor <= today:
+        count = int(patient_days.get(cursor) or 0)
+        new_patients.append({
+            'date': cursor.isoformat(),
+            'label': cursor.strftime('%d %b'),
+            'registration_count': count,
+            'count': count,
+        })
+        cursor += timedelta(days=1)
+    new_patient_total = sum(item['count'] for item in new_patients)
+
+    period_cards = card_stats(reg_qs)
+    return {
+        'zone_id': selected_zone_id,
+        'zone_name': zone_name,
+        'from_date': from_date.isoformat(),
+        'to_date': today.isoformat(),
+        'days': days,
+        'summary': {
+            **period_cards,
+            'completed_tests': completed,
+            'pending_tests': pending,
+            'new_patients': new_patient_total,
+            'active_franchises': active_franchise_count,
+            'franchise_accounts': len(franchise_performance),
+        },
+        'daily_revenue': daily_revenue,
+        'test_status': test_status,
+        'status_detail': status_detail,
+        'franchise_performance': franchise_performance[:20],
+        'franchise_role_performance': franchise_role_performance,
+        'new_patients': new_patients,
+    }

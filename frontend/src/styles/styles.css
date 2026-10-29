@@ -9738,6 +9738,44 @@ input, select, textarea, button {
   gap: 1.25rem;
 }
 
+.my-business-analytics {
+  margin-bottom: 1rem;
+}
+
+.my-business-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.my-business-kpi-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid #d5e4f2;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #f7fbff 0%, #eef5fb 100%);
+}
+
+.my-business-kpi-card span {
+  font-size: 11px;
+  font-weight: 600;
+  color: #5b7a99;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.my-business-kpi-card strong {
+  font-size: 1.2rem;
+  color: #0b3d5c;
+}
+
+.my-business-chart-grid {
+  margin-top: 0.5rem;
+}
+
 .my-business-zone-header {
   display: flex;
   flex-wrap: wrap;

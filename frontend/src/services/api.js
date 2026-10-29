@@ -252,6 +252,15 @@ export const api = {
     const qs = query.toString();
     return request(`/dashboard/zone-daily-income/${qs ? `?${qs}` : ''}`);
   },
+  getMyBusinessAnalytics: (params = {}) => {
+    const query = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value === undefined || value === null || value === '') return;
+      query.set(key, String(value));
+    });
+    const qs = query.toString();
+    return request(`/dashboard/my-business-analytics/${qs ? `?${qs}` : ''}`);
+  },
   getReportSummary: (type) => request(`/reports/summary/?type=${type}`),
   createPickupRequest: (payload) =>
     request('/pickup-requests/', { method: 'POST', body: JSON.stringify(payload) }),

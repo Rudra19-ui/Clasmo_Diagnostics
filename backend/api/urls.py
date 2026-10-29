@@ -49,6 +49,7 @@ urlpatterns = [
     path('messages/', views.LabMessageListCreateView.as_view(), name='messages'),
     path('dashboard/summary/', views.DashboardSummaryView.as_view(), name='dashboard-summary'),
     path('dashboard/zone-daily-income/', views.ZoneDailyIncomeView.as_view(), name='zone-daily-income'),
+    path('dashboard/my-business-analytics/', views.MyBusinessAnalyticsView.as_view(), name='my-business-analytics'),
     path('reports/summary/', views.ReportSummaryView.as_view(), name='report-summary'),
     path('users/', views.UserListView.as_view(), name='users'),
     path('users/<int:pk>/role/', views.UserRoleUpdateView.as_view(), name='user-role-update'),

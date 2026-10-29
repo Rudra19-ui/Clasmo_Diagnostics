@@ -3131,6 +3131,24 @@ class ZoneDailyIncomeView(APIView):
         return Response(data)
 
 
+class MyBusinessAnalyticsView(APIView):
+    """Super Admin: My Business analytics charts for a selected zone."""
+
+    permission_classes = [permissions.IsAuthenticated, IsSuperAdmin]
+
+    def get(self, request):
+        from . import dashboard_utils as dash
+
+        zone_id = (request.query_params.get('zone_id') or '').strip() or None
+        days = request.query_params.get('days', 14)
+        data = dash.my_business_analytics(
+            zone_id=zone_id,
+            days=days,
+            user=request.user,
+        )
+        return Response(data)
+
+
 class ReportSummaryView(APIView):
     permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
 

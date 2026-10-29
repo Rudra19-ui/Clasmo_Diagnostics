@@ -489,6 +489,50 @@ class RegistrationTestHold(models.Model):
         return f'Hold {self.registration.lab_code} / {test_name}'
 
 
+class RegistrationTestCancellation(models.Model):
+    """
+    Log of a cancelled registration test.
+    Visible to the franchise/user who created the booking (entry initiator),
+    and to lab staff in the same zone.
+    """
+
+    registration = models.ForeignKey(
+        Registration, on_delete=models.CASCADE, related_name='test_cancellations',
+    )
+    test = models.ForeignKey(
+        Test, on_delete=models.SET_NULL, null=True, blank=True, related_name='cancellations',
+    )
+    test_name = models.CharField(max_length=255, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    reason = models.CharField(max_length=500, blank=True)
+    cancelled_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True, related_name='test_cancellations_made',
+    )
+    cancelled_at = models.DateTimeField(auto_now_add=True)
+    entry_initiated_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='test_cancellations_on_entries',
+        help_text='User/franchise who created the registration (visibility scope).',
+    )
+    zone = models.ForeignKey(
+        Zone, on_delete=models.SET_NULL, null=True, blank=True, related_name='test_cancellations',
+    )
+
+    class Meta:
+        ordering = ['-cancelled_at', '-id']
+        indexes = [
+            models.Index(fields=['zone', '-cancelled_at']),
+            models.Index(fields=['entry_initiated_by', '-cancelled_at']),
+            models.Index(fields=['registration', '-cancelled_at']),
+        ]
+
+    def __str__(self):
+        return f'Cancel {self.registration.lab_code} / {self.test_name or "test"}'
+
+
 class SampleRejection(models.Model):
     """Sample / booking rejection placed by lab staff; visible to entry initiator."""
 

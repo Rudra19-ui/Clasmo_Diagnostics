@@ -3,6 +3,7 @@
 ROLE_PERMISSION_SCHEMA = [
     {'key': 'search', 'label': 'Search'},
     {'key': 'registration', 'label': 'Test Registration'},
+    {'key': 'entry_section', 'label': 'Entry Section'},
     {'key': 'test_result', 'label': 'Test Result'},
     {'key': 'administration', 'label': 'Administration'},
     {'key': 'reports', 'label': 'Reports'},
@@ -18,6 +19,15 @@ ROLE_PERMISSION_SCHEMA = [
     {'key': 'show_price', 'label': 'Show Price'},
     {'key': 'show_mrp', 'label': 'Show MRP'},
 ]
+
+# Roles that already had Entry Section before the permission flag existed.
+ENTRY_SECTION_DEFAULT_ROLES = {
+    'super_admin',
+    'admin',
+    'super_franchisee',
+    'franchisee',
+    'sub_franchise',
+}
 
 # These roles always see catalog Price and MRP.
 PRICE_ALWAYS_VISIBLE_ROLES = {'admin', 'super_admin'}
@@ -43,6 +53,19 @@ def role_shows_amount(role_code: str, permissions: dict | None, key: str) -> boo
     return bool(stored.get('show_price_mrp'))
 
 
+def role_has_entry_section(role_code: str, permissions: dict | None) -> bool:
+    """Whether a role may open Entry Section (new/edit booking)."""
+    stored = permissions or {}
+    if 'entry_section' in stored:
+        return bool(stored.get('entry_section'))
+    return role_code in ENTRY_SECTION_DEFAULT_ROLES
+
+
+def normalize_permissions(permissions: dict | None) -> dict:
+    stored = permissions or {}
+    return {key: bool(stored.get(key, False)) for key in ALL_PERMISSION_KEYS}
+
+
 DEFAULT_ROLE_DEFINITIONS = [
     {
         'code': 'admin',
@@ -63,6 +86,7 @@ DEFAULT_ROLE_DEFINITIONS = [
         'permissions': build_permissions(
             search=True,
             registration=True,
+            entry_section=False,
             test_result=True,
             administration=True,
             reports=True,
@@ -82,6 +106,7 @@ DEFAULT_ROLE_DEFINITIONS = [
         'permissions': build_permissions(
             search=True,
             registration=True,
+            entry_section=False,
             test_result=True,
             administration=True,
             reports=True,
@@ -101,6 +126,7 @@ DEFAULT_ROLE_DEFINITIONS = [
         'description': 'Report review, authorization, and verification.',
         'permissions': build_permissions(
             search=True,
+            entry_section=False,
             test_result=True,
             administration=True,
             reports=True,
@@ -118,6 +144,7 @@ DEFAULT_ROLE_DEFINITIONS = [
         'description': 'Human resources, enquiries, and staff administration.',
         'permissions': build_permissions(
             search=True,
+            entry_section=False,
             administration=True,
             reports=True,
             dashboard=True,
@@ -134,6 +161,7 @@ DEFAULT_ROLE_DEFINITIONS = [
         'permissions': build_permissions(
             search=True,
             registration=True,
+            entry_section=False,
             test_result=True,
             reports=True,
             device_request=True,
@@ -151,6 +179,7 @@ DEFAULT_ROLE_DEFINITIONS = [
         'permissions': build_permissions(
             search=True,
             registration=True,
+            entry_section=True,
             reports=True,
             dashboard=True,
             help=True,
@@ -166,6 +195,7 @@ DEFAULT_ROLE_DEFINITIONS = [
         'permissions': build_permissions(
             search=True,
             registration=True,
+            entry_section=True,
             reports=True,
             dashboard=True,
             help=True,
@@ -181,6 +211,7 @@ DEFAULT_ROLE_DEFINITIONS = [
         'permissions': build_permissions(
             search=True,
             registration=True,
+            entry_section=True,
             reports=True,
             dashboard=True,
             help=True,

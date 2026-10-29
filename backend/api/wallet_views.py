@@ -48,6 +48,7 @@ from .zone_rates import (
     get_zone_franchise_rate,
     markup_on_franchisee_price,
     user_can_manage_all_zone_rates,
+    user_can_adjust_downstream_wallet,
     user_can_manage_franchise_test_rates,
     user_can_manage_zone_rate,
     user_can_set_pricing_override,
@@ -365,15 +366,38 @@ class WalletTopUpView(APIView):
 
 
 class WalletAdjustmentView(APIView):
-    """POST /api/wallets/adjust/ — admin manual credit, debit, or balance reset."""
+    """
+    POST /api/wallets/adjust/ — credit, debit, or balance reset.
 
-    permission_classes = [IsAdmin]
+    Admins: any franchise wallet in scope.
+    Supreme: direct Prime children. Prime: direct Sub-Franchise children.
+    """
+
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
         serializer = WalletAdjustmentSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
         user = get_object_or_404(User, pk=data['user_id'], is_active=True)
+
+        actor = request.user
+        is_admin = bool(actor.is_superuser or actor.role in User.ADMIN_ROLES)
+        if is_admin:
+            if (
+                actor.role == User.ROLE_ADMIN
+                and not actor.is_superuser
+                and actor.zone_id
+                and user.zone_id != actor.zone_id
+            ):
+                return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
+        elif not user_can_adjust_downstream_wallet(actor, user):
+            return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
+        elif data['mode'] == 'set_balance' and actor.role in User.FRANCHISE_ROLES:
+            return Response(
+                {'detail': 'Franchise managers may only credit or debit child wallets.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         try:
             if data['mode'] == 'set_balance':

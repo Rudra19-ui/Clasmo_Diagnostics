@@ -53,7 +53,7 @@ import DeviceStub from './pages/device/DeviceStub';
 import TestResultBatch from './pages/device/TestResultBatch';
 import ResponsiveProvider from './components/ResponsiveProvider';
 import { NavProvider } from './context/NavContext';
-import { ROLES, ALL_ROLES, SAMPLE_SCAN_ROLES, USER_CREATOR_ROLES, FRANCHISE_ROLES, PATIENT_ENTRY_ROLES, TECHNICIAN_REPORT_ROLES, PRICING_WALLET_ROLES, ADMIN_ROLES, ADMINISTRATION_ROLES, TEST_PORTFOLIO_ROLES, HOLD_STAFF_ROLES, REJECTION_STAFF_ROLES, EXTRA_SAMPLE_ROLES } from './utils/roles';
+import { ROLES, ALL_ROLES, SAMPLE_SCAN_ROLES, USER_CREATOR_ROLES, FRANCHISE_ROLES, PATIENT_ENTRY_ROLES, TECHNICIAN_REPORT_ROLES, TEST_CANCELLATION_ROLES, PRICING_WALLET_ROLES, ADMIN_ROLES, ADMINISTRATION_ROLES, TEST_PORTFOLIO_ROLES, HOLD_STAFF_ROLES, REJECTION_STAFF_ROLES, EXTRA_SAMPLE_ROLES } from './utils/roles';
 import MessageToLab from './pages/device/MessageToLab';
 import PickupRequest from './pages/device/PickupRequest';
 import TestList from './pages/portfolio/TestList';
@@ -80,6 +80,11 @@ import FranchiseDownstreamBulkPricing from './pages/franchise/FranchiseDownstrea
 import FranchiseDownstreamTransferPricing from './pages/franchise/FranchiseDownstreamTransferPricing';
 import Analytics from './pages/franchise/Analytics';
 import OnlinePayment from './pages/franchise/OnlinePayment';
+import FranchisePrimeList from './pages/franchise/FranchisePrimeList';
+import FranchisePrimeCredits from './pages/franchise/FranchisePrimeCredits';
+import FranchiseSubList from './pages/franchise/FranchiseSubList';
+import FranchiseSubCredits from './pages/franchise/FranchiseSubCredits';
+import FranchiseCreateChild from './pages/franchise/FranchiseCreateChild';
 import ReceptionModule from './pages/reception/ReceptionModule';
 import OutSources from './pages/reception/OutSources';
 import OutReceived from './pages/reception/OutReceived';
@@ -98,8 +103,6 @@ const FRANCHISE_PAGES = [
     allowedRoles: [...FRANCHISE_ROLES, ...ADMIN_ROLES],
   },
   { path: 'my-staff', title: 'My Staff', activePage: 'my-staff', description: 'Staff accounts under this franchise.' },
-  { path: 'sub-franchisee', title: 'Sub Franchisee', activePage: 'sub-franchisee', description: 'Manage sub-franchisee accounts.' },
-  { path: 'sub-franchisee-credits', title: 'SubFranchisee Credits', activePage: 'sub-franchisee-credits', description: 'Credits allocated to sub-franchisees.' },
   { path: 'update-profile', title: 'Update Profile', activePage: 'update-profile', description: 'Update franchise profile details.' },
 ];
 
@@ -146,7 +149,7 @@ export default function App() {
           <Route
             path="/notifications/test-cancellation"
             element={(
-              <ProtectedRoute allowedRoles={TECHNICIAN_REPORT_ROLES}>
+              <ProtectedRoute allowedRoles={TEST_CANCELLATION_ROLES}>
                 <TestCancellation />
               </ProtectedRoute>
             )}
@@ -233,11 +236,11 @@ export default function App() {
           />
           <Route path="/bill-receipt" element={<ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}><BillReceipt /></ProtectedRoute>} />
           <Route path="/test-result-entry" element={<ProtectedRoute><TestResultEntry /></ProtectedRoute>} />
-          <Route path="/registration" element={<ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}><Navigate to="/entry/new" replace /></ProtectedRoute>} />
+          <Route path="/registration" element={<ProtectedRoute requirePermission="entry_section"><Navigate to="/entry/new" replace /></ProtectedRoute>} />
           <Route
             path="/entry"
             element={(
-              <ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}>
+              <ProtectedRoute requirePermission="entry_section">
                 <Navigate to="/entry/new" replace />
               </ProtectedRoute>
             )}
@@ -245,7 +248,7 @@ export default function App() {
           <Route
             path="/entry/new"
             element={(
-              <ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}>
+              <ProtectedRoute requirePermission="entry_section">
                 <Registration
                   activePage="registration-entry"
                   pageTitle="New Entry"
@@ -257,7 +260,7 @@ export default function App() {
           <Route
             path="/entry/list"
             element={(
-              <ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}>
+              <ProtectedRoute requirePermission="entry_section">
                 <EditEntry />
               </ProtectedRoute>
             )}
@@ -265,7 +268,7 @@ export default function App() {
           <Route
             path="/entry/test-addition"
             element={(
-              <ProtectedRoute allowedRoles={PATIENT_ENTRY_ROLES}>
+              <ProtectedRoute requirePermission="entry_section">
                 <TestAddition />
               </ProtectedRoute>
             )}
@@ -379,7 +382,7 @@ export default function App() {
           <Route
             path="/franchise/manage-booking/new"
             element={(
-              <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
+              <ProtectedRoute allowedRoles={FRANCHISE_ROLES} requirePermission="entry_section">
                 <Registration
                   activePage="manage-booking"
                   pageTitle="New Entry"
@@ -391,7 +394,7 @@ export default function App() {
           <Route
             path="/franchise/manage-booking/list"
             element={(
-              <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
+              <ProtectedRoute allowedRoles={FRANCHISE_ROLES} requirePermission="entry_section">
                 <EditEntry />
               </ProtectedRoute>
             )}
@@ -399,7 +402,7 @@ export default function App() {
           <Route
             path="/franchise/manage-booking/test-addition"
             element={(
-              <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
+              <ProtectedRoute allowedRoles={FRANCHISE_ROLES} requirePermission="entry_section">
                 <TestAddition />
               </ProtectedRoute>
             )}
@@ -550,6 +553,54 @@ export default function App() {
             )}
           />
           <Route path="/franchise/extra-sample" element={<Navigate to="/franchise/scan" replace />} />
+          <Route
+            path="/franchise/prime-list"
+            element={(
+              <ProtectedRoute allowedRoles={[ROLES.SUPER_FRANCHISEE]}>
+                <FranchisePrimeList />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/franchise/prime-credits"
+            element={(
+              <ProtectedRoute allowedRoles={[ROLES.SUPER_FRANCHISEE]}>
+                <FranchisePrimeCredits />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/franchise/sub-franchisee"
+            element={(
+              <ProtectedRoute allowedRoles={[ROLES.SUPER_FRANCHISEE, ROLES.FRANCHISEE]}>
+                <FranchiseSubList />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/franchise/sub-franchisee-credits"
+            element={(
+              <ProtectedRoute allowedRoles={[ROLES.SUPER_FRANCHISEE, ROLES.FRANCHISEE]}>
+                <FranchiseSubCredits />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/franchise/create-prime"
+            element={(
+              <ProtectedRoute allowedRoles={[ROLES.SUPER_FRANCHISEE]}>
+                <FranchiseCreateChild mode="supreme_prime" />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/franchise/create-sub"
+            element={(
+              <ProtectedRoute allowedRoles={[ROLES.FRANCHISEE]}>
+                <FranchiseCreateChild mode="prime_sub" />
+              </ProtectedRoute>
+            )}
+          />
           {FRANCHISE_PAGES.map((page) => (
             <Route
               key={page.path}
@@ -568,7 +619,7 @@ export default function App() {
           <Route
             path="/franchise/manage-booking"
             element={(
-              <ProtectedRoute allowedRoles={FRANCHISE_ROLES}>
+              <ProtectedRoute allowedRoles={FRANCHISE_ROLES} requirePermission="entry_section">
                 <Navigate to="/franchise/manage-booking/new" replace />
               </ProtectedRoute>
             )}

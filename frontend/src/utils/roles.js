@@ -23,7 +23,7 @@ export const ROLE_LABELS = {
   [ROLES.RECEPTIONIST]: 'Receptionist',
   [ROLES.SUPER_FRANCHISEE]: 'Supreme',
   [ROLES.FRANCHISEE]: 'Prime',
-  [ROLES.SUB_FRANCHISE]: 'Sub-Franchise',
+  [ROLES.SUB_FRANCHISE]: 'Sub',
 };
 
 export const SIGNUP_ROLE_OPTIONS = [
@@ -36,7 +36,7 @@ export const SIGNUP_ROLE_OPTIONS = [
   { value: ROLES.RECEPTIONIST, label: 'Receptionist' },
   { value: ROLES.SUPER_FRANCHISEE, label: 'Supreme' },
   { value: ROLES.FRANCHISEE, label: 'Prime' },
-  { value: ROLES.SUB_FRANCHISE, label: 'Sub-Franchise' },
+  { value: ROLES.SUB_FRANCHISE, label: 'Sub' },
 ];
 
 export const ROLE_OPTIONS = ALL_ROLES.map((value) => ({
@@ -84,6 +84,27 @@ export const PATIENT_ENTRY_ROLES = [
 export const TECHNICIAN_REPORT_ROLES = [
   ...PATIENT_ENTRY_ROLES,
   ROLES.TECHNICIAN,
+];
+
+/** Staff + franchise who can open Test Cancellation. */
+export const TEST_CANCELLATION_ROLES = [
+  ROLES.SUPER_ADMIN,
+  ROLES.ADMIN,
+  ROLES.HR,
+  ROLES.TECHNICIAN,
+  ROLES.RECEPTIONIST,
+  ROLES.USER,
+  ...FRANCHISE_ROLES,
+];
+
+/** Lab staff who can cancel tests (with reason). */
+export const TEST_CANCEL_STAFF_ROLES = [
+  ROLES.SUPER_ADMIN,
+  ROLES.ADMIN,
+  ROLES.HR,
+  ROLES.TECHNICIAN,
+  ROLES.RECEPTIONIST,
+  ROLES.USER,
 ];
 
 /** Admin + franchise — pricing, wallets, commissions. */

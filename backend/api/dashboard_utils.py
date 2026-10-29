@@ -276,3 +276,279 @@ def filter_options():
         'affiliations': list(Affiliation.objects.order_by('name').values('id', 'name')),
         'sales_reps': list(SalesReference.objects.order_by('name').values('id', 'name')),
     }
+
+
+def _month_bounds(year, month):
+    start = datetime(year, month, 1).date()
+    if month == 12:
+        end = datetime(year + 1, 1, 1).date() - timedelta(days=1)
+    else:
+        end = datetime(year, month + 1, 1).date() - timedelta(days=1)
+    return start, end
+
+
+def _year_bounds(year):
+    return datetime(year, 1, 1).date(), datetime(year, 12, 31).date()
+
+
+_FRANCHISE_ROLE_ORDER = (
+    'super_franchisee',
+    'franchisee',
+    'sub_franchise',
+)
+
+_FRANCHISE_ROLE_LABELS = {
+    'super_franchisee': 'Supreme',
+    'franchisee': 'Prime',
+    'sub_franchise': 'Sub-Franchise',
+}
+
+
+def _empty_money_stats():
+    return {
+        'registrations': 0,
+        'total_amount': 0.0,
+        'net_amount': 0.0,
+        'paid_amount': 0.0,
+        'balance_amount': 0.0,
+    }
+
+
+def _stats_from_agg(row=None):
+    row = row or {}
+    return {
+        'registrations': int(row.get('registrations') or 0),
+        'total_amount': float(_decimal(row.get('total_amount'))),
+        'net_amount': float(_decimal(row.get('net_amount'))),
+        'paid_amount': float(_decimal(row.get('paid_amount'))),
+        'balance_amount': float(_decimal(row.get('balance_amount'))),
+    }
+
+
+def _add_stats(target, source):
+    target['registrations'] += source['registrations']
+    target['total_amount'] += source['total_amount']
+    target['net_amount'] += source['net_amount']
+    target['paid_amount'] += source['paid_amount']
+    target['balance_amount'] += source['balance_amount']
+
+
+def _round_stats(stats):
+    for key in ('total_amount', 'net_amount', 'paid_amount', 'balance_amount'):
+        stats[key] = round(stats[key], 2)
+    return stats
+
+
+def _franchise_breakdown_for_zone(zone_obj, zone_regs_qs):
+    """
+    Supreme / Prime / Sub income for one zone, plus Lab/Staff for non-franchise bookings.
+    Income is attributed by registration.created_by (no hierarchy double-counting).
+    """
+    from .models import User
+
+    franchise_users = list(
+        User.objects.filter(
+            zone_id=zone_obj.id if zone_obj else None,
+            role__in=_FRANCHISE_ROLE_ORDER,
+            is_active=True,
+        ).order_by('role', 'username')
+    )
+    # Keep role order Supreme → Prime → Sub even if multiple accounts share a role.
+    franchise_users.sort(
+        key=lambda u: (_FRANCHISE_ROLE_ORDER.index(u.role) if u.role in _FRANCHISE_ROLE_ORDER else 99, u.username)
+    )
+
+    by_creator = {
+        row['created_by_id']: _stats_from_agg(row)
+        for row in zone_regs_qs.values('created_by_id').annotate(
+            registrations=Count('id'),
+            total_amount=Sum('total'),
+            net_amount=Sum('net_amount'),
+            paid_amount=Sum('paid'),
+            balance_amount=Sum('balance'),
+        )
+    }
+
+    franchise_ids = {u.id for u in franchise_users}
+    franchises = []
+    for fu in franchise_users:
+        stats = by_creator.get(fu.id) or _empty_money_stats()
+        franchises.append({
+            'user_id': fu.id,
+            'username': fu.username,
+            'display_name': fu.display_name or fu.username,
+            'role': fu.role,
+            'role_label': _FRANCHISE_ROLE_LABELS.get(fu.role, fu.get_role_display()),
+            **_round_stats(dict(stats)),
+        })
+
+    # Always show all three franchise roles for the zone, even if account missing.
+    present_roles = {f['role'] for f in franchises}
+    for role in _FRANCHISE_ROLE_ORDER:
+        if role in present_roles:
+            continue
+        franchises.append({
+            'user_id': None,
+            'username': '',
+            'display_name': f'{_FRANCHISE_ROLE_LABELS[role]} (not created)',
+            'role': role,
+            'role_label': _FRANCHISE_ROLE_LABELS[role],
+            **_empty_money_stats(),
+        })
+    franchises.sort(
+        key=lambda row: (_FRANCHISE_ROLE_ORDER.index(row['role']) if row['role'] in _FRANCHISE_ROLE_ORDER else 99)
+    )
+
+    other = _empty_money_stats()
+    for creator_id, stats in by_creator.items():
+        if creator_id in franchise_ids:
+            continue
+        _add_stats(other, stats)
+
+    return franchises, _round_stats(other)
+
+
+def zone_period_income(
+    *,
+    period='day',
+    report_date=None,
+    year=None,
+    month=None,
+    zone_id=None,
+    user=None,
+):
+    """
+    Income by zone for a day / month / year, with Supreme/Prime/Sub franchise split.
+    Optional zone_id filters to one zone; otherwise includes all active zones.
+    """
+    from .models import Zone
+
+    today = timezone.localdate()
+    period = (period or 'day').strip().lower()
+    if period not in {'day', 'month', 'year'}:
+        period = 'day'
+
+    if period == 'day':
+        day = report_date or today
+        from_date, to_date = day, day
+        label = day.isoformat()
+    elif period == 'month':
+        y = int(year or today.year)
+        m = int(month or today.month)
+        if m < 1 or m > 12:
+            m = today.month
+        from_date, to_date = _month_bounds(y, m)
+        label = f'{y:04d}-{m:02d}'
+    else:
+        y = int(year or today.year)
+        from_date, to_date = _year_bounds(y)
+        label = f'{y:04d}'
+
+    qs = registration_queryset(from_date, to_date, user=user)
+    selected_zone_id = None
+    if zone_id not in (None, '', 'all'):
+        try:
+            selected_zone_id = int(zone_id)
+        except (TypeError, ValueError):
+            selected_zone_id = None
+    if selected_zone_id is not None:
+        qs = qs.filter(zone_id=selected_zone_id)
+
+    grouped = {
+        row['zone_id']: row
+        for row in qs.values('zone_id').annotate(
+            registrations=Count('id'),
+            total_amount=Sum('total'),
+            net_amount=Sum('net_amount'),
+            paid_amount=Sum('paid'),
+            balance_amount=Sum('balance'),
+        )
+    }
+
+    zone_qs = Zone.objects.filter(is_active=True).order_by('sort_order', 'id')
+    if selected_zone_id is not None:
+        zone_qs = zone_qs.filter(pk=selected_zone_id)
+
+    zones = []
+    totals = _empty_money_stats()
+    franchise_totals = {
+        role: {**_empty_money_stats(), 'role': role, 'role_label': _FRANCHISE_ROLE_LABELS[role]}
+        for role in _FRANCHISE_ROLE_ORDER
+    }
+    lab_staff_totals = _empty_money_stats()
+
+    def _append_zone(zone_obj, row):
+        stats = _stats_from_agg(row)
+        zone_regs = qs.filter(zone_id=zone_obj.id) if zone_obj else qs.filter(zone__isnull=True)
+        franchises, other = _franchise_breakdown_for_zone(zone_obj, zone_regs)
+        item = {
+            'zone_id': zone_obj.id if zone_obj else None,
+            'zone_code': zone_obj.code if zone_obj else 'unassigned',
+            'zone_name': zone_obj.name if zone_obj else 'Unassigned',
+            **_round_stats(dict(stats)),
+            'franchises': franchises,
+            'lab_staff': other,
+        }
+        zones.append(item)
+        _add_stats(totals, stats)
+        for franchise in franchises:
+            role = franchise.get('role')
+            if role in franchise_totals:
+                _add_stats(franchise_totals[role], franchise)
+        _add_stats(lab_staff_totals, other)
+
+    for zone in zone_qs:
+        _append_zone(zone, grouped.get(zone.id))
+
+    # Only include unassigned when viewing all zones.
+    if selected_zone_id is None:
+        unzoned = grouped.get(None)
+        if unzoned:
+            _append_zone(None, unzoned)
+
+    _round_stats(totals)
+    for role_stats in franchise_totals.values():
+        _round_stats(role_stats)
+    _round_stats(lab_staff_totals)
+
+    # eLAB-style All / IPD / OPD summary cards for the filtered period + zone.
+    def _patient_type_card(subset):
+        stats = card_stats(subset)
+        return {
+            'registrations': stats['registrations'],
+            'total_amount': stats['total_amount'],
+            'paid_amount': stats['paid_amount'],
+            'balance_amount': stats['balance_amount'],
+            'amount_after_discount': stats['amount_after_discount'],
+            'net_amount': stats['amount_after_discount'],
+        }
+
+    summary_cards = {
+        'all': _patient_type_card(qs),
+        'ipd': _patient_type_card(qs.filter(patient__patient_type='I.P.D.')),
+        'opd': _patient_type_card(qs.filter(patient__patient_type='O.P.D.')),
+    }
+
+    return {
+        'period': period,
+        'label': label,
+        'from_date': from_date.isoformat(),
+        'to_date': to_date.isoformat(),
+        'date': from_date.isoformat() if period == 'day' else label,
+        'zone_id': selected_zone_id,
+        'zones': zones,
+        'totals': totals,
+        'franchise_totals': [franchise_totals[role] for role in _FRANCHISE_ROLE_ORDER],
+        'lab_staff_totals': lab_staff_totals,
+        'summary_cards': summary_cards,
+    }
+
+
+def zone_daily_income(report_date, user=None, zone_id=None):
+    """Backward-compatible wrapper for single-day zone income. """
+    return zone_period_income(
+        period='day',
+        report_date=report_date,
+        zone_id=zone_id,
+        user=user,
+    )

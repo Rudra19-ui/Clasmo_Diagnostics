@@ -7,7 +7,7 @@ import { useAuth } from '../../context/AuthContext';
 import { api } from '../../services/api';
 import { getReportSectionPaths } from '../../utils/reportSection';
 import { matchesWorklist, summarizeWorklist, WORKLIST_FILTERS } from '../../utils/reportWorklist';
-import { ROLES } from '../../utils/roles';
+import { FRANCHISE_ROLES, ROLES } from '../../utils/roles';
 
 function toApiDate(value) {
   if (!value) return '';
@@ -47,6 +47,7 @@ export default function AllReports() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const isTechnician = user?.role === ROLES.TECHNICIAN;
+  const isFranchise = FRANCHISE_ROLES.includes(user?.role);
   const [searchParams] = useSearchParams();
   const reportPaths = getReportSectionPaths(location.pathname);
   const exportView = searchParams.get('view') === 'export';
@@ -61,8 +62,8 @@ export default function AllReports() {
   const [error, setError] = useState('');
   const worklistCounts = useMemo(() => summarizeWorklist(rows), [rows]);
   const visibleRows = useMemo(
-    () => rows.filter((row) => matchesWorklist(row, worklist)),
-    [rows, worklist],
+    () => (isFranchise ? rows : rows.filter((row) => matchesWorklist(row, worklist))),
+    [rows, worklist, isFranchise],
   );
 
   const load = useCallback(async () => {
@@ -116,29 +117,31 @@ export default function AllReports() {
         </header>
 
         <section className="franchise-module-panel">
-          <div className="report-worklist" role="toolbar" aria-label="Report status">
-            {WORKLIST_FILTERS.map((item) => {
-              const selected = worklist === item.id;
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  className={`report-worklist-chip report-worklist-chip--${item.tone}${selected ? ' is-selected' : ''}`}
-                  aria-pressed={selected}
-                  onClick={() => setWorklist(item.id)}
-                >
-                  <span className="report-worklist-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" width="16" height="16">
-                      <circle cx="12" cy="8" r="3.2" fill="currentColor" />
-                      <path d="M5.5 19.2c.8-3.2 3.3-5 6.5-5s5.7 1.8 6.5 5" fill="currentColor" />
-                    </svg>
-                  </span>
-                  <span>{item.label}</span>
-                  <span className="report-worklist-count">{worklistCounts[item.id] || 0}</span>
-                </button>
-              );
-            })}
-          </div>
+          {!isFranchise && (
+            <div className="report-worklist" role="toolbar" aria-label="Report status">
+              {WORKLIST_FILTERS.map((item) => {
+                const selected = worklist === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className={`report-worklist-chip report-worklist-chip--${item.tone}${selected ? ' is-selected' : ''}`}
+                    aria-pressed={selected}
+                    onClick={() => setWorklist(item.id)}
+                  >
+                    <span className="report-worklist-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="16" height="16">
+                        <circle cx="12" cy="8" r="3.2" fill="currentColor" />
+                        <path d="M5.5 19.2c.8-3.2 3.3-5 6.5-5s5.7 1.8 6.5 5" fill="currentColor" />
+                      </svg>
+                    </span>
+                    <span>{item.label}</span>
+                    <span className="report-worklist-count">{worklistCounts[item.id] || 0}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
 
           <div className="franchise-report-filters">
             {isTechnician && (

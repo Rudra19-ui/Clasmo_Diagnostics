@@ -5,10 +5,23 @@ from __future__ import annotations
 from datetime import datetime
 from decimal import Decimal, ROUND_HALF_UP
 
-from django.db.models import Count, Q, Sum
+from django.db.models import Count, Prefetch, Q, Sum
 
-from .franchise_scope import scope_barcodes_for_user, scope_registrations_for_user
-from .models import FranchiseLedgerEvent, PatientSampleBarcode, Registration, RegistrationTest
+from .franchise_scope import (
+    scope_barcodes_for_user,
+    scope_registrations_for_user,
+    scope_wallet_transactions_for_user,
+    visible_creator_ids,
+)
+from .models import (
+    FranchiseLedgerEvent,
+    FranchiseWallet,
+    PatientSampleBarcode,
+    Registration,
+    RegistrationTest,
+    User,
+    WalletTransaction,
+)
 
 
 TWOPLACES = Decimal('0.01')
@@ -16,6 +29,45 @@ TWOPLACES = Decimal('0.01')
 
 def _money(value) -> Decimal:
     return Decimal(str(value or 0)).quantize(TWOPLACES, rounding=ROUND_HALF_UP)
+
+
+def _patient_name(registration) -> str:
+    if not registration or not registration.patient_id:
+        return ''
+    patient = registration.patient
+    return (getattr(patient, 'display_name', None) or patient.patient_name or '').strip()
+
+
+def _test_names(registration) -> str:
+    if not registration:
+        return ''
+    names = []
+    for row in registration.tests.all():
+        name = ''
+        if row.test_id and getattr(row.test, 'name', None):
+            name = row.test.name
+        if name:
+            names.append(name)
+    return ', '.join(names)
+
+
+def _opening_closing_for_txn(txn: WalletTransaction) -> tuple[float, float]:
+    amount = _money(txn.amount)
+    closing = _money(txn.balance_after)
+    if txn.direction == WalletTransaction.DIR_CREDIT:
+        opening = closing - amount
+    else:
+        opening = closing + amount
+    return float(opening), float(closing)
+
+
+def _opening_closing_for_txns(txns: list[WalletTransaction]) -> tuple[float | None, float | None]:
+    if not txns:
+        return None, None
+    ordered = sorted(txns, key=lambda item: (item.created_at, item.id))
+    opening, _ = _opening_closing_for_txn(ordered[0])
+    _, closing = _opening_closing_for_txn(ordered[-1])
+    return opening, closing
 
 
 def parse_ddmmyyyy(value):
@@ -104,14 +156,36 @@ def scoped_registrations_in_range(user, from_date=None, to_date=None):
 
 
 def ledger_summary(user, from_date=None, to_date=None):
-    events = FranchiseLedgerEvent.objects.select_related('registration', 'created_by')
-    creator_ids = None
-    from .franchise_scope import visible_creator_ids
-    creator_ids = visible_creator_ids(user)
-    if creator_ids is not None:
+    """
+    Ledger visibility for franchise roles:
+    - Supreme: own entries + commission from Prime/Sub bookings (own wallet)
+    - Prime: own entries + commission from Sub bookings (own wallet)
+    - Sub: own entries only (no commission rows)
+    Child entry/refund/addition rows are never listed on a parent account.
+    """
+    tests_prefetch = Prefetch(
+        'registration__tests',
+        queryset=RegistrationTest.objects.select_related('test'),
+    )
+    events = FranchiseLedgerEvent.objects.select_related(
+        'registration',
+        'registration__patient',
+        'created_by',
+    ).prefetch_related(tests_prefetch)
+
+    is_franchise = bool(user and getattr(user, 'role', None) in User.FRANCHISE_ROLES)
+    # Franchise ledger rows = own bookings only (not network descendants).
+    if is_franchise:
         events = events.filter(
-            Q(created_by_id__in=creator_ids) | Q(registration__created_by_id__in=creator_ids)
+            Q(created_by_id=user.id) | Q(registration__created_by_id=user.id)
         )
+    else:
+        creator_ids = visible_creator_ids(user)
+        if creator_ids is not None:
+            events = events.filter(
+                Q(created_by_id__in=creator_ids) | Q(registration__created_by_id__in=creator_ids)
+            )
+
     if from_date:
         events = events.filter(created_at__date__gte=from_date)
     if to_date:
@@ -125,8 +199,18 @@ def ledger_summary(user, from_date=None, to_date=None):
             'amount': float(_money(agg['total'])),
         }
 
-    # Refunds also pulled from registration.refund_amount in range (covers bill refunds).
-    regs = scoped_registrations_in_range(user, from_date, to_date)
+    # Investments follow the same own-booking scope for franchise viewers.
+    if is_franchise:
+        regs = Registration.objects.select_related('patient', 'created_by').prefetch_related(
+            'tests__test'
+        ).filter(created_by_id=user.id)
+        if from_date:
+            regs = regs.filter(registration_date__date__gte=from_date)
+        if to_date:
+            regs = regs.filter(registration_date__date__lte=to_date)
+    else:
+        regs = scoped_registrations_in_range(user, from_date, to_date)
+
     refund_agg = regs.filter(refund_amount__gt=0).aggregate(
         total=Sum('refund_amount'), count=Count('id')
     )
@@ -151,17 +235,119 @@ def ledger_summary(user, from_date=None, to_date=None):
     additions = bucket(FranchiseLedgerEvent.TYPE_TEST_ADDITION)
     total_amount = _money(entries['amount']) + _money(additions['amount']) - _money(refund['amount'])
 
-    rows = list(
-        events.order_by('-created_at')[:200].values(
-            'id', 'event_type', 'amount', 'quantity', 'description', 'created_at',
-            'registration__lab_code', 'created_by__username',
-        )
+    # Own-wallet activity — opening/closing; commissions for Supreme/Prime only.
+    own_wallet_qs = scope_wallet_transactions_for_user(
+        user,
+        WalletTransaction.objects.select_related(
+            'wallet__user',
+            'registration',
+            'registration__patient',
+        ).prefetch_related(
+            Prefetch(
+                'registration__tests',
+                queryset=RegistrationTest.objects.select_related('test'),
+            )
+        ),
+    ).filter(wallet__user_id=user.id)
+    period_wallet_qs = own_wallet_qs
+    if from_date:
+        period_wallet_qs = period_wallet_qs.filter(created_at__date__gte=from_date)
+    if to_date:
+        period_wallet_qs = period_wallet_qs.filter(created_at__date__lte=to_date)
+
+    own_wallet_txns = list(period_wallet_qs.order_by('created_at', 'id')[:500])
+    own_by_reg: dict[int, list[WalletTransaction]] = {}
+    for txn in own_wallet_txns:
+        if txn.registration_id:
+            own_by_reg.setdefault(txn.registration_id, []).append(txn)
+
+    period_opening = None
+    period_closing = None
+    if own_wallet_txns:
+        period_opening, _ = _opening_closing_for_txn(own_wallet_txns[0])
+        _, period_closing = _opening_closing_for_txn(own_wallet_txns[-1])
+    else:
+        wallet = FranchiseWallet.objects.filter(user_id=user.id).first()
+        if wallet is not None:
+            bal = float(_money(wallet.balance))
+            period_opening = bal
+            period_closing = bal
+
+    rows = []
+    for event in events.order_by('-created_at')[:200]:
+        registration = event.registration
+        related = own_by_reg.get(event.registration_id, []) if event.registration_id else []
+        # Entry/refund/addition rows use non-commission wallet moves (usually debit).
+        impact = [
+            txn for txn in related
+            if txn.txn_type != WalletTransaction.TYPE_COMMISSION
+        ] or related
+        opening, closing = _opening_closing_for_txns(impact)
+        rows.append({
+            'id': f'event-{event.id}',
+            'source': 'ledger',
+            'event_type': event.event_type,
+            'amount': float(_money(event.amount)),
+            'quantity': event.quantity,
+            'description': event.description or '',
+            'created_at': event.created_at.isoformat() if event.created_at else '',
+            'lab_code': registration.lab_code if registration else '',
+            'created_by': (
+                event.created_by.username if event.created_by_id else ''
+            ),
+            'patient_name': _patient_name(registration),
+            'test_names': _test_names(registration),
+            'opening_balance': opening,
+            'closing_balance': closing,
+            'commission_rate_pct': None,
+            'base_amount': None,
+        })
+
+    # Commission on same list for Supreme/Prime (own wallet credits from child bookings).
+    # Sub-Franchise never shows commission rows.
+    show_commission = (
+        not is_franchise
+        or getattr(user, 'role', None) in {
+            User.ROLE_SUPER_FRANCHISEE,
+            User.ROLE_FRANCHISEE,
+        }
     )
-    for row in rows:
-        row['amount'] = float(_money(row['amount']))
-        row['lab_code'] = row.pop('registration__lab_code') or ''
-        row['created_by'] = row.pop('created_by__username') or ''
-        row['created_at'] = row['created_at'].isoformat() if row['created_at'] else ''
+    if show_commission:
+        for txn in reversed(own_wallet_txns):
+            if txn.txn_type != WalletTransaction.TYPE_COMMISSION:
+                continue
+            registration = txn.registration
+            opening, closing = _opening_closing_for_txn(txn)
+            rows.append({
+                'id': f'commission-{txn.id}',
+                'source': 'wallet',
+                'event_type': 'commission',
+                'amount': float(_money(txn.amount)),
+                'quantity': 1,
+                'description': txn.description or 'Commission credit',
+                'created_at': txn.created_at.isoformat() if txn.created_at else '',
+                'lab_code': (
+                    registration.lab_code
+                    if registration
+                    else (txn.metadata or {}).get('lab_code', '') or ''
+                ),
+                'created_by': '',
+                'patient_name': _patient_name(registration),
+                'test_names': _test_names(registration),
+                'opening_balance': opening,
+                'closing_balance': closing,
+                'commission_rate_pct': (
+                    float(_money(txn.commission_rate_pct))
+                    if txn.commission_rate_pct is not None
+                    else None
+                ),
+                'base_amount': (
+                    float(_money(txn.base_amount)) if txn.base_amount is not None else None
+                ),
+            })
+
+    rows.sort(key=lambda row: row.get('created_at') or '', reverse=True)
+    rows = rows[:300]
 
     return {
         'from_date': from_date.isoformat() if from_date else '',
@@ -171,6 +357,10 @@ def ledger_summary(user, from_date=None, to_date=None):
             'test_additions': additions,
             'refund': refund,
             'total': float(total_amount),
+        },
+        'wallet': {
+            'opening_balance': period_opening,
+            'closing_balance': period_closing,
         },
         'rows': rows,
     }

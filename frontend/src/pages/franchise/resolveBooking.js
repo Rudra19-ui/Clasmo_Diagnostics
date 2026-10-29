@@ -1,14 +1,20 @@
 import { sanitizeBarcodeScannedValue } from '../../utils/barcodeScan';
 import { api } from '../../services/api';
 
-/** Resolve a franchise booking by sample barcode, lab / book id, or patient id. */
-export async function resolveFranchiseBooking({ barcode = '', bookId = '', patientId = '' } = {}) {
+/** Resolve a booking by sample barcode, lab / book id, patient id, or patient name. */
+export async function resolveFranchiseBooking({
+  barcode = '',
+  bookId = '',
+  patientId = '',
+  patientName = '',
+} = {}) {
   const cleanedBarcode = sanitizeBarcodeScannedValue(barcode);
   const cleanedBookId = String(bookId || '').trim();
   const cleanedPatientId = String(patientId || '').trim();
+  const cleanedPatientName = String(patientName || '').trim();
 
-  if (!cleanedBarcode && !cleanedBookId && !cleanedPatientId) {
-    throw new Error('Enter a barcode, Lab Code, or Patient ID.');
+  if (!cleanedBarcode && !cleanedBookId && !cleanedPatientId && !cleanedPatientName) {
+    throw new Error('Enter a barcode, Lab Code, Patient ID, or Patient Name.');
   }
 
   if (cleanedBarcode) {
@@ -19,6 +25,14 @@ export async function resolveFranchiseBooking({ barcode = '', bookId = '', patie
       }
     } catch {
       // fall through to registration search
+    }
+    try {
+      const scan = await api.scanSampleBarcode(cleanedBarcode);
+      if (scan?.found && scan.lab_code) {
+        return api.getRegistration(scan.lab_code);
+      }
+    } catch {
+      // fall through
     }
     const rows = await api.searchRegistrations({ barcode: cleanedBarcode });
     const match = Array.isArray(rows) ? rows[0] : null;
@@ -50,5 +64,18 @@ export async function resolveFranchiseBooking({ barcode = '', bookId = '', patie
     }
   }
 
-  throw new Error('No booking found for the given barcode, Lab Code, or Patient ID.');
+  if (cleanedPatientName) {
+    const rows = await api.searchRegistrations({ patient_name: cleanedPatientName });
+    const list = Array.isArray(rows) ? rows : [];
+    if (list.length === 1 && list[0]?.lab_code) {
+      return api.getRegistration(list[0].lab_code);
+    }
+    if (list.length > 1) {
+      const err = new Error(`Found ${list.length} bookings for that patient name. Use Lab Code or barcode to pick one.`);
+      err.matches = list;
+      throw err;
+    }
+  }
+
+  throw new Error('No booking found for the given barcode, Lab Code, Patient ID, or Patient Name.');
 }

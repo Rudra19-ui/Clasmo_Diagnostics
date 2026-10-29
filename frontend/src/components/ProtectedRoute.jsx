@@ -1,8 +1,14 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { userHasPermission } from '../utils/rolePermissions';
 import { defaultHomeForRole } from '../utils/roles';
 
-export default function ProtectedRoute({ children, adminOnly = false, allowedRoles }) {
+export default function ProtectedRoute({
+  children,
+  adminOnly = false,
+  allowedRoles,
+  requirePermission,
+}) {
   const { user, loading } = useAuth();
   const location = useLocation();
 
@@ -15,6 +21,9 @@ export default function ProtectedRoute({ children, adminOnly = false, allowedRol
     return <Navigate to={`/login?next=${next}`} replace />;
   }
   if (adminOnly && user.role !== 'admin' && user.role !== 'super_admin') {
+    return <Navigate to={defaultHomeForRole(user.role)} replace />;
+  }
+  if (requirePermission && !userHasPermission(user, requirePermission)) {
     return <Navigate to={defaultHomeForRole(user.role)} replace />;
   }
   if (allowedRoles?.length && !allowedRoles.includes(user.role)) {

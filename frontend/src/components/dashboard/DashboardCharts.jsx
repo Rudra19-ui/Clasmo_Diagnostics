@@ -5,11 +5,11 @@ function formatMoney(value) {
 
 export function SummaryCard({ title, data }) {
   const rows = [
-    ['Registration', data?.registrations ?? 0],
-    ['Total Amount (₹)', formatMoney(data?.total_amount)],
-    ['Paid Amount (₹)', formatMoney(data?.paid_amount)],
-    ['Balance Amount (₹)', formatMoney(data?.balance_amount)],
-    ['Amount After Discount (₹)', formatMoney(data?.amount_after_discount)],
+    ['Registration :', data?.registrations ?? 0, false],
+    ['Total Amount :', `₹ ${formatMoney(data?.total_amount)}`, true],
+    ['Paid Amount :', `₹ ${formatMoney(data?.paid_amount)}`, true],
+    ['Balance Amount :', `₹ ${formatMoney(data?.balance_amount)}`, true],
+    ['Amount After Discount :', `₹ ${formatMoney(data?.amount_after_discount)}`, true],
   ];
 
   return (
@@ -17,10 +17,10 @@ export function SummaryCard({ title, data }) {
       <h3>{title}</h3>
       <table>
         <tbody>
-          {rows.map(([label, value]) => (
+          {rows.map(([label, value, isMoney]) => (
             <tr key={label}>
               <th>{label}</th>
-              <td>{value}</td>
+              <td className={isMoney ? 'elab-summary-money' : ''}>{value}</td>
             </tr>
           ))}
         </tbody>
@@ -79,7 +79,7 @@ export function DonutChart({ segments, size = 180 }) {
           <li key={segment.label}>
             <span className="elab-legend-swatch" style={{ background: segment.color }} />
             {segment.label}
-            <strong>{segment.value}</strong>
+            <strong>₹ {formatMoney(segment.value)}</strong>
           </li>
         ))}
       </ul>
@@ -87,11 +87,18 @@ export function DonutChart({ segments, size = 180 }) {
   );
 }
 
-export function BarChart({ rows, valueKey = 'value', labelKey = 'label', color = '#5dade2', height = 220 }) {
+export function BarChart({
+  rows,
+  valueKey = 'value',
+  labelKey = 'label',
+  color = '#5dade2',
+  height = 220,
+  money = false,
+}) {
   const max = Math.max(...rows.map((row) => Number(row[valueKey] || 0)), 1);
 
   return (
-    <div className="elab-bar-chart" style={{ height }}>
+    <div className={`elab-bar-chart${money ? ' elab-bar-money' : ''}`} style={{ height }}>
       {rows.length === 0 && <p className="elab-chart-empty-text">No data</p>}
       {rows.map((row) => {
         const value = Number(row[valueKey] || 0);
@@ -102,7 +109,7 @@ export function BarChart({ rows, valueKey = 'value', labelKey = 'label', color =
             <div className="elab-bar-track">
               <div className="elab-bar-fill" style={{ width: `${pct}%`, background: row.color || color }} />
             </div>
-            <div className="elab-bar-value">{value}</div>
+            <div className="elab-bar-value">{money ? `₹ ${formatMoney(value)}` : value}</div>
           </div>
         );
       })}
@@ -150,27 +157,50 @@ export function StackedBarChart({ segments, monthLabel, totalLabel }) {
   );
 }
 
-export function ComboChart({ rows, barKey, lineKey, labelKey }) {
+export function ComboChart({
+  rows,
+  barKey,
+  lineKey,
+  labelKey,
+  barLabel = 'Net Amount',
+  lineLabel = 'Registration Count',
+}) {
   const barMax = Math.max(...rows.map((row) => Number(row[barKey] || 0)), 1);
   const lineMax = Math.max(...rows.map((row) => Number(row[lineKey] || 0)), 1);
 
   return (
     <div className="elab-combo-chart">
-      {rows.map((row) => (
-        <div key={row[labelKey]} className="elab-combo-group">
-          <div className="elab-combo-bar-wrap">
-            <div
-              className="elab-combo-bar"
-              style={{ height: `${(Number(row[barKey] || 0) / barMax) * 100}%` }}
-            />
+      {rows.length === 0 && <p className="elab-chart-empty-text">No data</p>}
+      {rows.map((row) => {
+        const barValue = Number(row[barKey] || 0);
+        const lineValue = Number(row[lineKey] || 0);
+        const barPct = (barValue / barMax) * 100;
+        // Keep markers inside the plot area (never overlapping x-axis labels).
+        const linePct = Math.min(100, (lineValue / lineMax) * 100);
+        const pointBottom = lineValue > 0 ? `calc(${linePct}% - 5px)` : '0px';
+        return (
+          <div key={row[labelKey]} className="elab-combo-group">
+            <div className="elab-combo-plot">
+              <div className="elab-combo-bar-wrap">
+                <div
+                  className={`elab-combo-bar${barValue <= 0 ? ' is-empty' : ''}`}
+                  style={{ height: barValue > 0 ? `${Math.max(barPct, 2)}%` : '0%' }}
+                  title={`${barLabel}: ₹ ${formatMoney(barValue)}`}
+                />
+              </div>
+              <div
+                className="elab-combo-line-point"
+                style={{ bottom: pointBottom }}
+                title={`${lineLabel}: ${lineValue}`}
+              />
+            </div>
+            <div className="elab-combo-label">{row[labelKey]}</div>
           </div>
-          <div className="elab-combo-line-point" style={{ bottom: `${(Number(row[lineKey] || 0) / lineMax) * 100}%` }} />
-          <div className="elab-combo-label">{row[labelKey]}</div>
-        </div>
-      ))}
+        );
+      })}
       <div className="elab-combo-legend">
-        <span><i className="elab-legend-bar" /> Registration wise count</span>
-        <span><i className="elab-legend-line" /> Registration Count</span>
+        <span><i className="elab-legend-bar" /> {barLabel}</span>
+        <span><i className="elab-legend-line" /> {lineLabel}</span>
       </div>
     </div>
   );

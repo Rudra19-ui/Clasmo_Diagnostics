@@ -1,6 +1,7 @@
 export const ROLE_PERMISSION_SCHEMA = [
   { key: 'search', label: 'Search' },
   { key: 'registration', label: 'Test Registration' },
+  { key: 'entry_section', label: 'Entry Section' },
   { key: 'test_result', label: 'Test Result' },
   { key: 'administration', label: 'Administration' },
   { key: 'reports', label: 'Reports' },
@@ -19,6 +20,15 @@ export const ROLE_PERMISSION_SCHEMA = [
 
 export const PRICE_ALWAYS_VISIBLE_ROLES = ['admin', 'super_admin'];
 
+/** Roles that had Entry Section before the Role Management toggle existed. */
+export const ENTRY_SECTION_DEFAULT_ROLES = [
+  'super_admin',
+  'admin',
+  'super_franchisee',
+  'franchisee',
+  'sub_franchise',
+];
+
 function alwaysSeesAmounts(user) {
   return user?.role === 'admin' || user?.role === 'super_admin';
 }
@@ -35,4 +45,21 @@ export function canViewMrp(user) {
   if (alwaysSeesAmounts(user)) return true;
   if (typeof user.show_mrp === 'boolean') return user.show_mrp;
   return Boolean(user.show_price_mrp);
+}
+
+export function canAccessEntrySection(user) {
+  if (!user) return false;
+  if (typeof user.entry_section === 'boolean') return user.entry_section;
+  return ENTRY_SECTION_DEFAULT_ROLES.includes(user.role);
+}
+
+export function userHasPermission(user, key) {
+  if (!user || !key) return false;
+  if (key === 'entry_section') return canAccessEntrySection(user);
+  if (key === 'show_price') return canViewPrice(user);
+  if (key === 'show_mrp') return canViewMrp(user);
+  if (user.permissions && typeof user.permissions[key] === 'boolean') {
+    return user.permissions[key];
+  }
+  return false;
 }

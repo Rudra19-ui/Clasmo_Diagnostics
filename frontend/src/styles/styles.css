@@ -4432,6 +4432,29 @@ input, select, textarea, button {
   resize: vertical;
 }
 
+.role-group {
+  margin-bottom: 14px;
+}
+
+.role-group:last-child {
+  margin-bottom: 0;
+}
+
+.role-group-title {
+  margin: 0 0 8px;
+  padding: 0 2px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #5b7a99;
+}
+
+.role-badge-franchise {
+  background: #e8f4ff;
+  color: #0b5cab;
+}
+
 .price-visibility-sections {
   display: grid;
   grid-template-columns: 1fr;
@@ -4444,10 +4467,21 @@ input, select, textarea, button {
   border: 1px solid #d5e4f2;
   border-radius: 6px;
   background: #f7fbff;
+  margin: 0 0 16px;
 }
 
 .price-visibility-option .role-permissions-title {
   margin-top: 0;
+}
+
+.price-visibility-combined .price-visibility-checks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 8px;
+}
+
+.price-visibility-combined .role-readonly-note {
+  margin: 8px 0 0;
 }
 
 .role-permissions-title {
@@ -4461,6 +4495,11 @@ input, select, textarea, button {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
   gap: 8px 12px;
+}
+
+.role-permission-item--accent {
+  border-color: #9ec5fe;
+  background: #f0f7ff;
 }
 
 .role-permission-item {
@@ -5886,6 +5925,25 @@ input, select, textarea, button {
   color: #334155;
 }
 
+.test-cancel-list-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.test-cancel-list-header .test-addition-subtitle {
+  margin: 0;
+}
+
+.test-cancel-list-filter {
+  margin: 0;
+  flex: 1;
+  min-width: 220px;
+}
+
 .test-cancel-list {
   list-style: none;
   margin: 0 0 14px;
@@ -5955,6 +6013,208 @@ input, select, textarea, button {
 
 .ledger-investment-card--total {
   background: linear-gradient(180deg, #0d7377 0%, #14919b 100%);
+}
+
+.zone-income-panel {
+  width: min(100%, 1100px);
+  margin: 0 auto 1.75rem;
+  padding: 1.1rem 1.25rem 1.25rem;
+  border: 1px solid #d7e3ef;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(11, 61, 92, 0.06);
+  text-align: left;
+}
+
+.zone-income-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.85rem 1.25rem;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+}
+
+.zone-income-title {
+  margin: 0 0 0.25rem;
+  font-size: 1.15rem;
+  color: #0b3d5c;
+}
+
+.zone-income-subtitle {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #64748b;
+}
+
+.zone-income-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid #e3ebf3;
+  border-radius: 8px;
+  background: #f7fbfe;
+}
+
+.zone-income-filter-field,
+.zone-income-date {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+.zone-income-filter-field select,
+.zone-income-filter-field input,
+.zone-income-date input {
+  min-width: 10.5rem;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid #c5d4e3;
+  border-radius: 4px;
+  background: #fafcff;
+  font-size: 0.9rem;
+  color: #1e293b;
+}
+
+.dashboard-home-shell .dashboard-welcome-hero {
+  margin-bottom: 1.5rem;
+}
+
+.zone-income-loading {
+  margin: 0.5rem 0;
+  color: #64748b;
+}
+
+.zone-income-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+}
+
+.zone-income-summary-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid #e3ebf3;
+  border-radius: 8px;
+  background: #f7fbfe;
+}
+
+.zone-income-summary-card span {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+}
+
+.zone-income-summary-card strong {
+  font-size: 1.05rem;
+  color: #0b3d5c;
+}
+
+.zone-income-summary-card em {
+  font-style: normal;
+  font-size: 0.8rem;
+  color: #334155;
+}
+
+.zone-income-table-wrap {
+  overflow-x: auto;
+}
+
+.zone-income-table thead th {
+  background: #e8f2fa;
+  color: #0b3d5c;
+}
+
+.zone-income-table tfoot td {
+  background: #f0f6fb;
+  border-top: 2px solid #c5d4e3;
+}
+
+.zone-income-franchise-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.65rem;
+  margin: 0 0 1rem;
+}
+
+.elab-franchise-detail-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+  align-items: flex-end;
+  margin: 0 0 14px;
+  padding: 12px;
+  background: #f8fafc;
+  border: 1px solid #e6edf5;
+}
+
+.elab-franchise-detail-filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+  min-width: 180px;
+}
+
+.elab-franchise-detail-filters label span {
+  font-size: 11px;
+  color: #666;
+  font-weight: 600;
+}
+
+.elab-franchise-detail-filters select {
+  min-height: 34px;
+  padding: 6px 8px;
+  border: 1px solid var(--gray-border);
+  background: #fff;
+  font-size: 13px;
+}
+
+.elab-franchise-detail-filters select:disabled {
+  background: #eef2f6;
+  color: #888;
+  cursor: not-allowed;
+}
+
+.zone-franchise-income-list {
+  margin-top: 1.25rem;
+}
+
+.zone-franchise-income-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+  color: #0b3d5c;
+}
+
+.zone-franchise-income-block {
+  margin-top: 0.9rem;
+  padding: 0.85rem;
+  border: 1px solid #e3ebf3;
+  border-radius: 8px;
+  background: #fbfdff;
+}
+
+.zone-franchise-income-heading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.85rem;
+  align-items: baseline;
+  margin-bottom: 0.55rem;
+}
+
+.zone-franchise-income-heading strong {
+  color: #0b3d5c;
+  font-size: 0.98rem;
 }
 
 .dashboard-welcome-heading {
@@ -6314,8 +6574,77 @@ input, select, textarea, button {
   }
 }
 
+.elab-superadmin-dashboard {
+  margin-top: 20px;
+  padding: 16px 16px 20px;
+  background: #f4f6f8;
+  border: 1px solid var(--gray-border);
+}
+
 .elab-dashboard-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
 .elab-dashboard-loading { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+
+.elab-history-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.elab-history-links button {
+  border: none;
+  background: transparent;
+  color: #1a73e8;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 3px;
+}
+
+.elab-history-links button:hover,
+.elab-history-links button.is-active {
+  background: #e8f0fe;
+  color: #0b57d0;
+}
+
+.elab-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+  align-items: flex-end;
+  background: var(--white);
+  border: 1px solid var(--gray-border);
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.elab-filter-bar label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+  min-width: 140px;
+}
+
+.elab-filter-bar label span { font-size: 11px; color: #666; font-weight: 600; }
+
+.elab-filter-bar select,
+.elab-filter-bar input[type="date"] {
+  min-height: 34px;
+  padding: 6px 8px;
+  border: 1px solid var(--gray-border);
+  background: #fff;
+  font-size: 13px;
+}
+
+.elab-card-caption {
+  margin: -4px 0 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
 
 .elab-summary-row {
   display: grid;
@@ -6331,8 +6660,8 @@ input, select, textarea, button {
 }
 
 .elab-summary-card h3 {
-  color: var(--blue-deep);
-  font-size: 14px;
+  color: #444;
+  font-size: 15px;
   font-weight: 700;
   margin-bottom: 10px;
   border-bottom: 1px solid #e6edf5;
@@ -6344,8 +6673,20 @@ input, select, textarea, button {
 .elab-summary-card td { padding: 5px 0; text-align: left; vertical-align: top; }
 .elab-summary-card th { color: #333; font-weight: 600; width: 58%; }
 .elab-summary-card td { color: #111; font-weight: 700; }
+.elab-summary-card td.elab-summary-money { color: #2e6da4; }
+
+.elab-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
 
 .elab-dashboard-grid .dash-card { min-height: 280px; }
+
+.elab-bar-chart.elab-bar-money .elab-bar-row {
+  grid-template-columns: 120px 1fr 110px;
+}
 
 .elab-donut-wrap { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
 .elab-donut-legend { list-style: none; margin: 0; padding: 0; font-size: 12px; }
@@ -6419,24 +6760,36 @@ input, select, textarea, button {
   position: relative;
   flex: 1;
   min-width: 80px;
-  height: 180px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
+  gap: 8px;
+}
+.elab-combo-plot {
+  position: relative;
+  width: 72px;
+  height: 160px;
+  flex-shrink: 0;
 }
 .elab-combo-bar-wrap {
-  width: 72px;
+  width: 100%;
   height: 100%;
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  border-bottom: 1px solid #d9e2ec;
 }
 .elab-combo-bar {
   width: 56px;
   background: #2e86c1;
-  min-height: 4px;
   border-radius: 2px 2px 0 0;
+}
+.elab-combo-bar.is-empty {
+  width: 56px;
+  height: 0 !important;
+  min-height: 0;
+  background: transparent;
 }
 .elab-combo-line-point {
   position: absolute;
@@ -6444,14 +6797,19 @@ input, select, textarea, button {
   height: 10px;
   border-radius: 50%;
   background: #27ae60;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px #27ae60;
   left: 50%;
   transform: translateX(-50%);
+  z-index: 2;
+  pointer-events: none;
 }
 .elab-combo-label {
-  margin-top: 8px;
   font-size: 12px;
   font-weight: 600;
   text-align: center;
+  line-height: 1.2;
+  min-height: 1.2em;
 }
 .elab-combo-legend {
   position: absolute;
@@ -6508,7 +6866,10 @@ input, select, textarea, button {
 
 @media (max-width: 991px) {
   .elab-summary-row { grid-template-columns: 1fr; }
+  .elab-dashboard-grid { grid-template-columns: 1fr; }
+  .elab-filter-bar label { min-width: 100%; }
   .elab-bar-row { grid-template-columns: 90px 1fr 40px; }
+  .elab-bar-chart.elab-bar-money .elab-bar-row { grid-template-columns: 90px 1fr 90px; }
   .elab-combo-chart { gap: 12px; overflow-x: auto; }
 }
 
@@ -9030,6 +9391,27 @@ input, select, textarea, button {
   font-size: 11px;
   color: #486581;
   font-weight: 500;
+}
+
+.report-section-download-cell {
+  min-width: 140px;
+  white-space: nowrap;
+}
+
+.report-section-download-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: stretch;
+}
+
+.report-section-download-actions .report-detail-download-btn {
+  padding: 5px 8px;
+  font-size: 11px;
+}
+
+.report-section-download-na {
+  color: #94a3b8;
 }
 
 .patient-status-badge {

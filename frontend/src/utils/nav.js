@@ -146,7 +146,8 @@ export const STANDARD_NAV = [
         label: 'Entry Section',
         href: '/entry/new',
         icon: 'layers',
-        excludeRoles: [...NO_PATIENT_ENTRY_ROLES, ROLES.SUPER_ADMIN],
+        permission: 'entry_section',
+        excludeRoles: [ROLES.SUPER_ADMIN],
         children: [
           { label: 'New Entry', href: '/entry/new' },
           { label: 'Edit Entry', href: '/entry/list' },
@@ -195,7 +196,7 @@ export const STANDARD_NAV = [
       },
       {
         id: 'hold-tests',
-        label: 'Hold',
+        label: 'Hold Tests',
         href: '/hold-tests',
         icon: 'chip',
         roles: HOLD_STAFF_ROLES,

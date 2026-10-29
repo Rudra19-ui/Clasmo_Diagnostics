@@ -94,6 +94,7 @@ export default function ReportPreview() {
   const isEntered = report?.status === 'entered';
   const franchiseBlocked = isFranchise && report && !isVerified;
   const registrationId = report?.registration || Number(searchParams.get('id')) || null;
+  const showLetterhead = searchParams.get('letterhead') !== '0';
 
   const demographics = useMemo(() => {
     if (!report) return {};
@@ -238,14 +239,19 @@ export default function ReportPreview() {
                         isLive
                         isSample={false}
                         showReferenceColumn
+                        showLetterhead={showLetterhead}
                         reportNote={narrative.reportNote}
                         reportComments={narrative.reportComments}
                         clinicalSignificance={narrative.clinicalSignificance}
                         reportExtraSections={narrative.reportExtraSections}
                         footerNote={
-                          isVerified
-                            ? 'Official Clasmo letterhead final report.'
-                            : 'Draft on official Clasmo letterhead — approve after pathologist review.'
+                          showLetterhead
+                            ? (isVerified
+                              ? 'Official Clasmo letterhead final report.'
+                              : 'Draft on official Clasmo letterhead — approve after pathologist review.')
+                            : (isVerified
+                              ? 'Final report without letterhead.'
+                              : 'Draft without letterhead — approve after pathologist review.')
                         }
                         actions={null}
                       />

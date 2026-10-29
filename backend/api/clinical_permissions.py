@@ -1,6 +1,7 @@
 from rest_framework import permissions
 
-from .models import User
+from .models import LabRole, User
+from .role_permissions import role_has_entry_section
 
 # Roles allowed to view/create patient bookings and registration master data.
 PATIENT_ENTRY_ROLES = frozenset({
@@ -10,6 +11,20 @@ PATIENT_ENTRY_ROLES = frozenset({
     User.ROLE_FRANCHISEE,
     User.ROLE_SUB_FRANCHISE,
 })
+
+
+def user_has_entry_section(user) -> bool:
+    if not user or not getattr(user, 'is_authenticated', False):
+        return False
+    if getattr(user, 'is_superuser', False):
+        return True
+    role_code = getattr(user, 'role', '') or ''
+    try:
+        lab_role = LabRole.objects.filter(code=role_code).only('permissions').first()
+        permissions = lab_role.permissions if lab_role else None
+    except Exception:
+        permissions = None
+    return role_has_entry_section(role_code, permissions)
 
 # Admin + franchise hierarchy — pricing, wallets, commissions.
 PRICING_WALLET_ROLES = PATIENT_ENTRY_ROLES
@@ -57,21 +72,37 @@ REJECTION_ACCESS_ROLES = frozenset({
     User.ROLE_SUB_FRANCHISE,
 })
 
+# Lab staff who may cancel ordered tests (with reason).
+CANCEL_STAFF_ROLES = frozenset({
+    User.ROLE_SUPER_ADMIN,
+    User.ROLE_ADMIN,
+    User.ROLE_HR,
+    User.ROLE_TECHNICIAN,
+    User.ROLE_RECEPTIONIST,
+    User.ROLE_USER,
+})
+
+# Staff + franchise who may view Test Cancellation (franchise list is creator-scoped).
+CANCEL_ACCESS_ROLES = frozenset({
+    *CANCEL_STAFF_ROLES,
+    User.ROLE_SUPER_FRANCHISEE,
+    User.ROLE_FRANCHISEE,
+    User.ROLE_SUB_FRANCHISE,
+})
+
 
 class CanAccessPatientEntry(permissions.BasePermission):
     message = 'You do not have permission to access patient entry data.'
 
     def has_permission(self, request, view):
-        return (
-            request.user.is_authenticated
-            and request.user.role in PATIENT_ENTRY_ROLES
-        )
+        return user_has_entry_section(request.user)
 
 
-# Technicians browse zone reports. They do not create or edit patient entries.
+# Technicians / reception browse zone reports for workflow (cancel, accession, etc.).
 REPORT_READ_ROLES = frozenset({
     *PATIENT_ENTRY_ROLES,
     User.ROLE_TECHNICIAN,
+    User.ROLE_RECEPTIONIST,
 })
 
 
@@ -148,6 +179,26 @@ class CanRejectSamples(permissions.BasePermission):
         return (
             request.user.is_authenticated
             and request.user.role in REJECTION_STAFF_ROLES
+        )
+
+
+class CanAccessCancellations(permissions.BasePermission):
+    message = 'You do not have permission to access test cancellations.'
+
+    def has_permission(self, request, view):
+        return (
+            request.user.is_authenticated
+            and request.user.role in CANCEL_ACCESS_ROLES
+        )
+
+
+class CanCancelTests(permissions.BasePermission):
+    message = 'You do not have permission to cancel tests.'
+
+    def has_permission(self, request, view):
+        return (
+            request.user.is_authenticated
+            and request.user.role in CANCEL_STAFF_ROLES
         )
 
 

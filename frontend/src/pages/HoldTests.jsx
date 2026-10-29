@@ -173,7 +173,7 @@ export default function HoldTests() {
           </nav>
           <h2 className="page-heading">Hold Tests</h2>
           <p className="portfolio-intro">
-            Scan or enter barcode / QR, then hold selected tests. Held tests are shown to the
+            Scan or enter barcode / QR, then put selected tests on hold. Held tests are shown to the
             franchise or user who created that patient entry.
           </p>
         </header>
@@ -281,7 +281,7 @@ export default function HoldTests() {
         <section className="franchise-module-panel rejection-panel">
           <div className="rejection-toolbar">
             <h3 className="rejection-toolbar-title">
-              Your holds
+              Your hold tests
               <span className="rejection-count">{rows.length}</span>
             </h3>
             <button type="button" className="btn-secondary" onClick={loadList} disabled={loadingList}>
@@ -298,14 +298,14 @@ export default function HoldTests() {
                   <th>Test</th>
                   <th>Reason</th>
                   <th>Entry by</th>
-                  <th>Held at</th>
+                  <th>Hold at</th>
                   <th>Action</th>
                 </tr>
               </thead>
               <tbody>
                 {loadingList && !rows.length && (
                   <tr>
-                    <td colSpan={7} className="empty-msg">Loading held tests…</td>
+                    <td colSpan={7} className="empty-msg">Loading hold tests…</td>
                   </tr>
                 )}
                 {!loadingList && rows.length === 0 && (

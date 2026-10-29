@@ -6,6 +6,8 @@ from .role_permissions import (
     ALL_PERMISSION_KEYS,
     PRICE_ALWAYS_VISIBLE_ROLES,
     ROLE_PERMISSION_SCHEMA,
+    normalize_permissions,
+    role_has_entry_section,
     role_shows_amount,
 )
 
@@ -18,6 +20,7 @@ from .models import (
     PickupRequest,
     Registration,
     RegistrationTest,
+    RegistrationTestCancellation,
     ReportFormatAsset,
     Test,
     TestCategory,
@@ -60,6 +63,7 @@ class UserSerializer(serializers.ModelSerializer):
     role_label = serializers.SerializerMethodField()
     show_price = serializers.SerializerMethodField()
     show_mrp = serializers.SerializerMethodField()
+    entry_section = serializers.SerializerMethodField()
     login_password = serializers.SerializerMethodField()
     email = serializers.EmailField(read_only=True)
 
@@ -69,7 +73,7 @@ class UserSerializer(serializers.ModelSerializer):
             'id', 'username', 'email', 'role', 'role_label', 'display_name', 'mobile', 'lab_code',
             'is_active', 'save_credentials', 'save_info', 'last_login', 'login_password',
             'parent_franchisee_id', 'parent_franchisee_name', 'parent_franchisee_role',
-            'zone_id', 'zone_code', 'zone_name', 'show_price', 'show_mrp',
+            'zone_id', 'zone_code', 'zone_name', 'show_price', 'show_mrp', 'entry_section',
         ]
         read_only_fields = ['last_login', 'login_password']
 
@@ -112,6 +116,11 @@ class UserSerializer(serializers.ModelSerializer):
             return True
         return role_shows_amount(obj.role, self._role_permissions(obj), 'show_mrp')
 
+    def get_entry_section(self, obj):
+        if obj.is_superuser:
+            return True
+        return role_has_entry_section(obj.role, self._role_permissions(obj))
+
     def get_login_password(self, obj):
         request = self.context.get('request')
         actor = getattr(request, 'user', None) if request else None
@@ -119,6 +128,19 @@ class UserSerializer(serializers.ModelSerializer):
             return ''
         if actor.is_superuser or actor.role in User.ADMIN_ROLES:
             return obj.login_password or ''
+        if obj.role not in User.FRANCHISE_ROLES or not obj.zone_id or obj.zone_id != actor.zone_id:
+            return ''
+        # Direct child (Supreme→Prime, Prime→Sub).
+        if (
+            actor.role in {User.ROLE_SUPER_FRANCHISEE, User.ROLE_FRANCHISEE}
+            and obj.parent_franchisee_id == actor.id
+        ):
+            return obj.login_password or ''
+        # Supreme may also view Sub passwords under their tree.
+        if actor.role == User.ROLE_SUPER_FRANCHISEE and obj.role == User.ROLE_SUB_FRANCHISE:
+            from .franchise_scope import franchise_descendant_ids
+            if obj.id in franchise_descendant_ids(actor):
+                return obj.login_password or ''
         return ''
 
 
@@ -345,13 +367,20 @@ class LabRoleSerializer(serializers.ModelSerializer):
     def get_permission_schema(self, obj):
         return ROLE_PERMISSION_SCHEMA
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        stored = data.get('permissions') or {}
+        # Keep legacy defaults for Entry Section until Super Admin saves the role.
+        if 'entry_section' not in stored:
+            from .role_permissions import ENTRY_SECTION_DEFAULT_ROLES
+            stored = {**stored, 'entry_section': instance.code in ENTRY_SECTION_DEFAULT_ROLES}
+        data['permissions'] = normalize_permissions(stored)
+        return data
+
     def validate_permissions(self, value):
         if not isinstance(value, dict):
             raise serializers.ValidationError('Permissions must be an object.')
-        cleaned = {}
-        for key in ALL_PERMISSION_KEYS:
-            cleaned[key] = bool(value.get(key, False))
-        return cleaned
+        return normalize_permissions(value)
 
 
 class LabRoleUpdateSerializer(serializers.ModelSerializer):
@@ -362,10 +391,7 @@ class LabRoleUpdateSerializer(serializers.ModelSerializer):
     def validate_permissions(self, value):
         if not isinstance(value, dict):
             raise serializers.ValidationError('Permissions must be an object.')
-        cleaned = {}
-        for key in ALL_PERMISSION_KEYS:
-            cleaned[key] = bool(value.get(key, False))
-        return cleaned
+        return normalize_permissions(value)
 
     def validate(self, attrs):
         permissions = attrs.get('permissions')
@@ -651,6 +677,43 @@ class HoldCreateSerializer(serializers.Serializer):
         child=serializers.IntegerField(), required=False, allow_empty=True, default=list,
     )
     reason = serializers.CharField(required=False, allow_blank=True, max_length=255)
+
+
+class RegistrationTestCancellationSerializer(serializers.ModelSerializer):
+    lab_code = serializers.CharField(source='registration.lab_code', read_only=True)
+    patient_name = serializers.SerializerMethodField()
+    patient_id = serializers.CharField(source='registration.patient.patient_id', read_only=True)
+    cancelled_by_name = serializers.SerializerMethodField()
+    cancelled_by_role = serializers.CharField(source='cancelled_by.role', read_only=True, default='')
+    entry_initiated_by_name = serializers.SerializerMethodField()
+    entry_initiated_by_role = serializers.CharField(
+        source='entry_initiated_by.role', read_only=True, default='',
+    )
+    zone_name = serializers.CharField(source='zone.name', read_only=True, default='')
+
+    class Meta:
+        model = RegistrationTestCancellation
+        fields = [
+            'id', 'lab_code', 'patient_name', 'patient_id', 'test_name', 'price', 'reason',
+            'cancelled_by_name', 'cancelled_by_role', 'cancelled_at',
+            'entry_initiated_by_name', 'entry_initiated_by_role', 'zone_name',
+        ]
+
+    def get_patient_name(self, obj):
+        patient = obj.registration.patient if obj.registration_id else None
+        if not patient:
+            return ''
+        return f'{patient.title} {patient.patient_name}'.strip()
+
+    def get_cancelled_by_name(self, obj):
+        if not obj.cancelled_by_id:
+            return ''
+        return obj.cancelled_by.display_name or obj.cancelled_by.username
+
+    def get_entry_initiated_by_name(self, obj):
+        if not obj.entry_initiated_by_id:
+            return ''
+        return obj.entry_initiated_by.display_name or obj.entry_initiated_by.username
 
 
 class SampleRejectionSerializer(serializers.ModelSerializer):

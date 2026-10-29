@@ -62,13 +62,13 @@ export default function FranchiseHold() {
             <ul>
               <li><Link to="/dashboard">Home</Link></li>
               <li>Notifications</li>
-              <li>Hold</li>
+              <li>Hold Tests</li>
             </ul>
           </nav>
-          <h2 className="page-heading">Hold</h2>
+          <h2 className="page-heading">Hold Tests</h2>
           <p className="portfolio-intro">
-            Tests placed on hold for bookings you (or your franchisees) created.
-            Lab staff hold by barcode; those records appear here only for your entries.
+            Tests put on hold for bookings you (or your franchises) created.
+            Lab staff place holds by barcode; those records appear here only for your entries.
           </p>
         </header>
 
@@ -78,7 +78,7 @@ export default function FranchiseHold() {
         <section className="franchise-module-panel rejection-panel">
           <div className="rejection-toolbar">
             <h3 className="rejection-toolbar-title">
-              Held tests
+              Hold tests
               <span className="rejection-count">{rows.length}</span>
             </h3>
             <button type="button" className="btn-secondary" onClick={load} disabled={loading}>
@@ -94,20 +94,20 @@ export default function FranchiseHold() {
                   <th>Patient</th>
                   <th>Test</th>
                   <th>Reason</th>
-                  <th>Held by</th>
-                  <th>Held at</th>
+                  <th>Hold by</th>
+                  <th>Hold at</th>
                   <th>Action</th>
                 </tr>
               </thead>
               <tbody>
                 {loading && !rows.length && (
                   <tr>
-                    <td colSpan={7} className="empty-msg">Loading held tests…</td>
+                    <td colSpan={7} className="empty-msg">Loading hold tests…</td>
                   </tr>
                 )}
                 {!loading && rows.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="empty-msg">No held tests for your entries.</td>
+                    <td colSpan={7} className="empty-msg">No hold tests for your entries.</td>
                   </tr>
                 )}
                 {rows.map((row) => (

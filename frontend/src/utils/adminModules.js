@@ -22,7 +22,7 @@ export const SUPER_ADMIN_WORKFLOW_COLUMNS = [
       { href: '/notifications/find-barcode', label: 'Find Barcode', desc: 'Look up barcodes and linked patients.' },
       { href: '/notifications/clinical-history', label: 'Clinical History', desc: 'Patient clinical history records.' },
       { href: '/notifications/test-cancellation', label: 'Test Cancellation', desc: 'Cancel ordered tests.' },
-      { href: '/hold-tests', label: 'Hold', desc: 'Hold tests pending review.' },
+      { href: '/hold-tests', label: 'Hold Tests', desc: 'Hold tests pending review.' },
       { href: '/sample-rejection', label: 'Rejection', desc: 'Reject samples from workflow.' },
     ],
   },
@@ -34,10 +34,15 @@ export const FRANCHISE_ADMIN_COLUMN = {
   title: 'Franchise',
   roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
   links: [
-    { href: '/admin/list-franchisee', label: 'List Franchisee', desc: 'View Supreme, Prime, and Sub-Franchise accounts.' },
+    { href: '/admin/list-franchisee', label: 'List Franchisee', desc: 'View Supreme, Prime, and Sub accounts.' },
     { href: '/admin/add-franchisee', label: 'Add Franchisee', desc: 'Create a new franchise account.' },
     { href: '/admin/franchise-bulk-pricing', label: 'Franchise Pricing', desc: 'Set bulk franchise test pricing.' },
-    { href: '/admin/franchise-transfer-pricing', label: 'Transfer Price', desc: 'Transfer pricing between franchise levels.' },
+    { href: '/admin/franchise-transfer-pricing', label: 'Transfer Price', desc: 'Copy test rates Supreme→Supreme, Prime→Prime, or Sub→Sub.' },
+    {
+      href: '/admin/franchise-pricing-credits',
+      label: 'Franchise Credits',
+      desc: 'Zone pricing, commission rates, wallet balances, and manual credit adjustments.',
+    },
   ],
 };
 
@@ -57,6 +62,7 @@ export const SUPER_ADMIN_ADMIN_SHELL_PATHS = [
   '/admin/add-franchisee',
   '/admin/franchise-bulk-pricing',
   '/admin/franchise-transfer-pricing',
+  '/admin/franchise-pricing-credits',
 ];
 
 export function isSuperAdminAdminShellPath(pathname = '') {
@@ -112,7 +118,6 @@ export const ADMIN_COLUMNS = [
       { slug: 'lab-accounting', label: 'Lab Accounting', desc: 'Revenue and expense summaries.' },
       { slug: 'billing', label: 'Billing', desc: 'Billing and invoices.' },
       { slug: 'rate-master', label: 'Rate Master', desc: 'Test pricing and MRP.' },
-      { slug: 'franchise-pricing-credits', label: 'Franchise Credits', desc: 'Zone pricing, commission rates, wallet balances, and manual credit adjustments.' },
     ],
   },
   {

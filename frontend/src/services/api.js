@@ -159,6 +159,10 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(payload),
     }),
+  listTestCancellations: (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    return request(`/test-cancellations/${query ? `?${query}` : ''}`);
+  },
   listHolds: (params = {}) => {
     const query = new URLSearchParams(params).toString();
     return request(`/holds/${query ? `?${query}` : ''}`);
@@ -233,6 +237,20 @@ export const api = {
     });
     const qs = query.toString();
     return request(`/dashboard/summary/${qs ? `?${qs}` : ''}`);
+  },
+  getZoneDailyIncome: (params = {}) => {
+    const query = new URLSearchParams();
+    // Backward compatible: allow string date or options object.
+    if (typeof params === 'string') {
+      if (params) query.set('date', params);
+    } else {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value === undefined || value === null || value === '') return;
+        query.set(key, String(value));
+      });
+    }
+    const qs = query.toString();
+    return request(`/dashboard/zone-daily-income/${qs ? `?${qs}` : ''}`);
   },
   getReportSummary: (type) => request(`/reports/summary/?type=${type}`),
   createPickupRequest: (payload) =>

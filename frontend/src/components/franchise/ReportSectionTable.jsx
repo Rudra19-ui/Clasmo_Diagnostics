@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import PatientStatusBadge from '../dashboard/PatientStatusBadge';
+import { useAuth } from '../../context/AuthContext';
 import {
   WORKFLOW_STAGE_ORDER,
   enrichRegistrationWithWorkflow,
@@ -8,6 +9,7 @@ import {
   summarizeWorkflowStages,
 } from '../../utils/patientWorkflowStatus';
 import { getReportSectionPaths } from '../../utils/reportSection';
+import { FRANCHISE_ROLES } from '../../utils/roles';
 
 function formatTestsList(tests) {
   const names = Array.isArray(tests)
@@ -34,6 +36,9 @@ export default function ReportSectionTable({
   selectedPatientId = null,
 }) {
   const location = useLocation();
+  const { user } = useAuth();
+  const isFranchise = FRANCHISE_ROLES.includes(user?.role);
+  const legendVisible = showLegend && !isFranchise;
   const reportPaths = getReportSectionPaths(location.pathname);
   const [selected, setSelected] = useState(() => new Set());
 
@@ -72,7 +77,7 @@ export default function ReportSectionTable({
 
   return (
     <div className="report-section-table-wrap">
-      {showLegend && rows.length > 0 && (
+      {legendVisible && rows.length > 0 && (
         <div className="report-section-legend" role="list" aria-label="Status color legend">
           {legendItems.map((item) => (
             <div
@@ -110,12 +115,13 @@ export default function ReportSectionTable({
             <th>Ref By</th>
             <th>Test Name</th>
             <th>Status</th>
+            <th>Download</th>
           </tr>
         </thead>
         <tbody>
           {!loading && rows.length === 0 && (
             <tr>
-              <td colSpan={7} className="report-section-empty">{emptyMessage}</td>
+              <td colSpan={8} className="report-section-empty">{emptyMessage}</td>
             </tr>
           )}
           {enrichedRows.map((row) => {
@@ -123,6 +129,8 @@ export default function ReportSectionTable({
             const patientLabel = row.patient_display
               || row.patient_name
               || '—';
+            const registrationId = row.id;
+            const canDownload = Boolean(registrationId);
             return (
               <tr
                 key={row.id || row.lab_code}
@@ -170,6 +178,28 @@ export default function ReportSectionTable({
                   <span className="report-section-progress">
                     {row.report_progress || row.status || '—'}
                   </span>
+                </td>
+                <td className="report-section-download-cell">
+                  {canDownload ? (
+                    <div className="report-section-download-actions">
+                      <Link
+                        to={`/clinical/report-preview?id=${registrationId}`}
+                        className="report-detail-download-btn"
+                        title="Download report with letterhead"
+                      >
+                        With Letterhead
+                      </Link>
+                      <Link
+                        to={`/clinical/report-preview?id=${registrationId}&letterhead=0`}
+                        className="report-detail-download-btn report-detail-download-btn--plain"
+                        title="Download report without letterhead"
+                      >
+                        Without Letterhead
+                      </Link>
+                    </div>
+                  ) : (
+                    <span className="report-section-download-na">—</span>
+                  )}
                 </td>
               </tr>
             );

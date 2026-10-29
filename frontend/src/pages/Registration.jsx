@@ -10,7 +10,7 @@ import { getEntrySectionPaths } from '../utils/entrySection';
 import { useSystemDateTime } from '../hooks/useSystemDateTime';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
-import { PATIENT_ENTRY_ROLES } from '../utils/roles';
+import { canAccessEntrySection } from '../utils/rolePermissions';
 import { withEffectivePrice } from '../utils/testPricing';
 
 const emptyPatient = () => ({
@@ -213,9 +213,8 @@ export default function Registration({
 
   const handleSave = async () => {
     setFormError('');
-    // Same roles as the /entry/new route: Admin, Super Admin, Supreme, Prime, Sub-Franchise.
-    if (!PATIENT_ENTRY_ROLES.includes(user?.role)) {
-      const message = 'Your account cannot create patient entries. Log out and sign in as Admin, Supreme, Prime, or Sub-Franchise.';
+    if (!canAccessEntrySection(user)) {
+      const message = 'Your role does not have Entry Section access. Ask Super Admin to enable it in Role Management.';
       setFormError(message);
       alert(message);
       return false;

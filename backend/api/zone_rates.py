@@ -78,6 +78,29 @@ def user_can_manage_franchise_test_rates(user, franchise_user) -> bool:
     return bool(user.zone_id and franchise_user.zone_id == user.zone_id)
 
 
+def user_can_adjust_downstream_wallet(user, franchise_user) -> bool:
+    """
+    Who may credit/debit another franchise wallet:
+    - Admin: same as manage rates
+    - Supreme: direct Prime children, or any Sub under the Supreme tree
+    - Prime: direct Sub children
+    """
+    if user_can_manage_franchise_test_rates(user, franchise_user):
+        return True
+    if not user or not franchise_user:
+        return False
+    if (
+        user.role == User.ROLE_SUPER_FRANCHISEE
+        and franchise_user.role == User.ROLE_SUB_FRANCHISE
+        and franchise_user.is_active
+        and user.zone_id
+        and franchise_user.zone_id == user.zone_id
+    ):
+        from .franchise_scope import franchise_descendant_ids
+        return franchise_user.id in franchise_descendant_ids(user)
+    return False
+
+
 def user_can_transfer_franchise_test_rates(user, source, target) -> bool:
     if not user_can_manage_franchise_test_rates(user, source):
         return False

@@ -2,14 +2,17 @@ import { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import NavIcon from './NavIcon';
 import { FRANCHISE_NAV } from '../utils/franchiseNav';
+import { userHasPermission } from '../utils/rolePermissions';
 
 function FranchiseNavIcon({ iconId }) {
   return <NavIcon id={iconId} />;
 }
 
-function canSeeNavItem(item, role) {
+function canSeeNavItem(item, user) {
+  const role = user?.role;
   if (item.excludeRoles?.includes(role)) return false;
   if (item.roles?.length && !item.roles.includes(role)) return false;
+  if (item.permission && !userHasPermission(user, item.permission)) return false;
   return true;
 }
 
@@ -224,7 +227,7 @@ export default function FranchiseSidebar({
       <ul className="sidebar-menu franchise-sidebar-menu">
         {navConfig.map((entry) => {
           if (entry.section) {
-            const visibleItems = (entry.items || []).filter((item) => canSeeNavItem(item, user?.role));
+            const visibleItems = (entry.items || []).filter((item) => canSeeNavItem(item, user));
             if (!visibleItems.length) return null;
             return (
               <li key={entry.section} className="franchise-nav-section">
@@ -286,7 +289,7 @@ export default function FranchiseSidebar({
             );
           }
 
-          if (!canSeeNavItem(entry, user?.role)) return null;
+          if (!canSeeNavItem(entry, user)) return null;
 
           const active = isItemActive(entry, location, activePage);
           const hasChildren = Boolean(entry.children?.length);

@@ -78,15 +78,14 @@ export default function FranchisePricingCredits({ franchiseMode = false }) {
         setTransactions(txnRows || []);
         setMyWallet(ownWallet);
       } else {
-        const [zoneRate, walletRows, txnRows, ownWallet] = await Promise.all([
-          api.getMyZoneFranchiseRate().catch(() => null),
-          walletPromise,
+        // Franchise: own wallet + transactions only (no zone rate table / network wallet list).
+        const [txnRows, ownWallet] = await Promise.all([
           txnPromise,
           myWalletPromise,
         ]);
         setRates([]);
-        setMyZoneRate(zoneRate);
-        setWallets(walletRows || []);
+        setMyZoneRate(null);
+        setWallets([]);
         setTransactions(txnRows || []);
         setMyWallet(ownWallet);
       }
@@ -302,32 +301,6 @@ export default function FranchisePricingCredits({ franchiseMode = false }) {
           </section>
         )}
 
-        {isFranchise && myZoneRate && (
-          <section className="content-panel franchise-module-panel">
-            <h3 className="test-addition-subtitle">Zone base rates (admin defaults)</h3>
-            <div className="table-wrap">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>Zone</th>
-                    {RATE_FIELDS.map((field) => (
-                      <th key={field.key}>{field.label}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>{myZoneRate.zone_name}</td>
-                    {RATE_FIELDS.map((field) => (
-                      <td key={field.key}>{myZoneRate[field.key]}</td>
-                    ))}
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </section>
-        )}
-
         {isAdmin && (
           <section className="content-panel">
             <h3 className="test-addition-subtitle">Manual credit top-up</h3>
@@ -434,38 +407,40 @@ export default function FranchisePricingCredits({ franchiseMode = false }) {
           </section>
         )}
 
-        <section className={`content-panel ${isFranchise ? 'franchise-module-panel' : ''}`}>
-          <h3 className="test-addition-subtitle">Franchise wallet balances</h3>
-          {loading ? <p>Loading…</p> : (
-            <div className="table-wrap">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    {isAdmin && <th>Zone</th>}
-                    <th>User</th>
-                    <th>Role</th>
-                    <th>Balance</th>
-                    <th>Updated</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {franchiseWallets.length === 0 && (
-                    <tr><td colSpan={isAdmin ? 5 : 4} className="empty-msg">No franchise wallets in your scope.</td></tr>
-                  )}
-                  {franchiseWallets.map((wallet) => (
-                    <tr key={wallet.id} className={Number(wallet.balance) < 0 ? 'ledger-row-negative' : ''}>
-                      {isAdmin && <td>{wallet.zone_name || '—'}</td>}
-                      <td>{wallet.display_name || wallet.username}</td>
-                      <td>{ROLE_LABELS[wallet.role] || wallet.role}</td>
-                      <td>₹{Number(wallet.balance).toFixed(2)}</td>
-                      <td>{wallet.updated_at ? new Date(wallet.updated_at).toLocaleString() : '—'}</td>
+        {isAdmin && (
+          <section className="content-panel">
+            <h3 className="test-addition-subtitle">Franchise wallet balances</h3>
+            {loading ? <p>Loading…</p> : (
+              <div className="table-wrap">
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>Zone</th>
+                      <th>User</th>
+                      <th>Role</th>
+                      <th>Balance</th>
+                      <th>Updated</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </section>
+                  </thead>
+                  <tbody>
+                    {franchiseWallets.length === 0 && (
+                      <tr><td colSpan={5} className="empty-msg">No franchise wallets in your scope.</td></tr>
+                    )}
+                    {franchiseWallets.map((wallet) => (
+                      <tr key={wallet.id} className={Number(wallet.balance) < 0 ? 'ledger-row-negative' : ''}>
+                        <td>{wallet.zone_name || '—'}</td>
+                        <td>{wallet.display_name || wallet.username}</td>
+                        <td>{ROLE_LABELS[wallet.role] || wallet.role}</td>
+                        <td>₹{Number(wallet.balance).toFixed(2)}</td>
+                        <td>{wallet.updated_at ? new Date(wallet.updated_at).toLocaleString() : '—'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </section>
+        )}
 
         <section className={`content-panel ${isFranchise ? 'franchise-module-panel' : ''}`}>
           <h3 className="test-addition-subtitle">Recent wallet transactions</h3>

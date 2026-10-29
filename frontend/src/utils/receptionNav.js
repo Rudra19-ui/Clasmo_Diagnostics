@@ -108,12 +108,17 @@ export const SAMPLE_WORKFLOW_PORTAL_NAV = [
         icon: 'layers',
         roles: [ROLES.TECHNICIAN],
       },
+    ],
+  },
+  {
+    section: 'NOTIFICATIONS',
+    items: [
       {
-        id: 'cancel-test',
-        label: 'Cancel Test',
+        id: 'test-cancellation',
+        label: 'Test Cancellation',
         href: '/notifications/test-cancellation',
         icon: 'layers',
-        roles: [ROLES.TECHNICIAN],
+        roles: RECEPTION_WORKFLOW_ROLES,
       },
     ],
   },

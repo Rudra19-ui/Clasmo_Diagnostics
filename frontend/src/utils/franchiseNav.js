@@ -21,6 +21,7 @@ export const FRANCHISE_NAV = [
         label: 'Entry Section',
         href: '/franchise/manage-booking/new',
         icon: 'layers',
+        permission: 'entry_section',
         children: [
           { label: 'New Entry', href: '/franchise/manage-booking/new' },
           { label: 'Edit Entry', href: '/franchise/manage-booking/list' },
@@ -63,7 +64,7 @@ export const FRANCHISE_NAV = [
       },
       {
         id: 'hold',
-        label: 'Hold',
+        label: 'Hold Tests',
         href: '/franchise/hold',
         icon: 'chip',
       },
@@ -140,25 +141,59 @@ export const FRANCHISE_NAV = [
   },
 
   {
-    section: 'SUB FRANCHISEE',
+    section: 'PRIME',
+    items: [
+      {
+        id: 'prime-list',
+        label: 'Prime List',
+        href: '/franchise/prime-list',
+        icon: 'layers',
+        roles: [ROLES.SUPER_FRANCHISEE],
+      },
+      {
+        id: 'create-prime',
+        label: 'Create Prime',
+        href: '/franchise/create-prime',
+        icon: 'layers',
+        roles: [ROLES.SUPER_FRANCHISEE],
+      },
+      {
+        id: 'prime-credits',
+        label: 'Prime Credits',
+        href: '/franchise/prime-credits',
+        icon: 'layers',
+        roles: [ROLES.SUPER_FRANCHISEE],
+      },
+    ],
+  },
+
+  {
+    section: 'SUB',
     items: [
       {
         id: 'sub-franchisee',
-        label: 'Sub Franchisee',
+        label: 'Sub List',
         href: '/franchise/sub-franchisee',
         icon: 'layers',
         excludeRoles: [ROLES.SUB_FRANCHISE],
       },
       {
+        id: 'create-sub',
+        label: 'Create Sub',
+        href: '/franchise/create-sub',
+        icon: 'layers',
+        roles: [ROLES.FRANCHISEE],
+      },
+      {
         id: 'sub-franchisee-pricing',
-        label: 'SubFranchisee Pricing',
+        label: 'Sub Pricing',
         href: '/franchise/sub-franchisee-pricing',
         icon: 'layers',
         excludeRoles: [ROLES.SUPER_FRANCHISEE, ROLES.SUB_FRANCHISE],
       },
       {
         id: 'sub-franchisee-credits',
-        label: 'SubFranchisee Credits',
+        label: 'Sub Credits',
         href: '/franchise/sub-franchisee-credits',
         icon: 'layers',
         excludeRoles: [ROLES.SUB_FRANCHISE],

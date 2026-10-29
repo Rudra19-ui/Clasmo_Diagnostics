@@ -11,12 +11,27 @@ function toApiDate(value) {
   return `${day}-${month}-${year}`;
 }
 
+function formatDateTime(value) {
+  if (!value) return '—';
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? '—' : date.toLocaleString();
+}
+
+function money(value) {
+  if (value == null || value === '') return '—';
+  return `₹${Number(value).toFixed(2)}`;
+}
+
 const EMPTY_SUMMARY = {
   investments: {
     entries: { count: 0, amount: 0 },
     test_additions: { count: 0, amount: 0 },
     refund: { count: 0, amount: 0 },
     total: 0,
+  },
+  wallet: {
+    opening_balance: null,
+    closing_balance: null,
   },
   rows: [],
 };
@@ -42,7 +57,13 @@ export default function TrackLedger() {
         api.getFranchiseLedger(params),
         api.getFranchiseSampleUsage(params),
       ]);
-      setData(ledger || EMPTY_SUMMARY);
+      setData({
+        ...EMPTY_SUMMARY,
+        ...(ledger || {}),
+        investments: ledger?.investments || EMPTY_SUMMARY.investments,
+        wallet: ledger?.wallet || EMPTY_SUMMARY.wallet,
+        rows: ledger?.rows || [],
+      });
       setSampleData(samples);
     } catch (err) {
       setError(err.message || 'Could not load ledger.');
@@ -58,6 +79,7 @@ export default function TrackLedger() {
   }, [load]);
 
   const inv = data.investments || EMPTY_SUMMARY.investments;
+  const wallet = data.wallet || EMPTY_SUMMARY.wallet;
 
   return (
     <Layout activePage="track-ledger">
@@ -71,7 +93,8 @@ export default function TrackLedger() {
           </nav>
           <h2 className="page-heading">Track Ledger / Accounting</h2>
           <p className="portfolio-intro">
-            Search by date. Investments include entries, test additions, refunds, and totals.
+            Search by date. You see your own entries plus any commission credited to your wallet
+            (Supreme: from Prime/Sub; Prime: from Sub). Sub accounts show entries only.
           </p>
         </header>
 
@@ -98,21 +121,35 @@ export default function TrackLedger() {
             <div className="ledger-investment-card">
               <span>Entries</span>
               <strong>{inv.entries?.count || 0}</strong>
-              <em>₹{Number(inv.entries?.amount || 0).toFixed(2)}</em>
+              <em>{money(inv.entries?.amount)}</em>
             </div>
             <div className="ledger-investment-card">
               <span>Test Additions</span>
               <strong>{inv.test_additions?.count || 0}</strong>
-              <em>₹{Number(inv.test_additions?.amount || 0).toFixed(2)}</em>
+              <em>{money(inv.test_additions?.amount)}</em>
             </div>
             <div className="ledger-investment-card">
               <span>Refund</span>
               <strong>{inv.refund?.count || 0}</strong>
-              <em>₹{Number(inv.refund?.amount || 0).toFixed(2)}</em>
+              <em>{money(inv.refund?.amount)}</em>
             </div>
             <div className="ledger-investment-card ledger-investment-card--total">
               <span>Total</span>
-              <strong>₹{Number(inv.total || 0).toFixed(2)}</strong>
+              <strong>{money(inv.total)}</strong>
+            </div>
+          </div>
+        </section>
+
+        <section className="franchise-module-panel">
+          <h3 className="test-addition-subtitle">Wallet balance</h3>
+          <div className="ledger-investment-grid">
+            <div className="ledger-investment-card">
+              <span>Opening balance</span>
+              <strong>{money(wallet.opening_balance)}</strong>
+            </div>
+            <div className="ledger-investment-card ledger-investment-card--total">
+              <span>Closing balance</span>
+              <strong>{money(wallet.closing_balance)}</strong>
             </div>
           </div>
         </section>
@@ -160,25 +197,31 @@ export default function TrackLedger() {
               <thead>
                 <tr>
                   <th>Date</th>
+                  <th>Patient name</th>
+                  <th>Test name</th>
                   <th>Type</th>
                   <th>Lab Code</th>
-                  <th>Description</th>
                   <th>Qty</th>
                   <th>Amount</th>
+                  <th>Opening balance</th>
+                  <th>Closing balance</th>
                 </tr>
               </thead>
               <tbody>
                 {(data.rows || []).length === 0 && (
-                  <tr><td colSpan={6} className="empty-msg">No ledger events for this period.</td></tr>
+                  <tr><td colSpan={9} className="empty-msg">No ledger events for this period.</td></tr>
                 )}
                 {(data.rows || []).map((row) => (
                   <tr key={row.id}>
-                    <td>{row.created_at ? new Date(row.created_at).toLocaleString() : '—'}</td>
+                    <td>{formatDateTime(row.created_at)}</td>
+                    <td>{row.patient_name || '—'}</td>
+                    <td>{row.test_names || '—'}</td>
                     <td>{row.event_type}</td>
                     <td>{row.lab_code || '—'}</td>
-                    <td>{row.description || '—'}</td>
                     <td>{row.quantity}</td>
-                    <td>₹{Number(row.amount || 0).toFixed(2)}</td>
+                    <td>{money(row.amount)}</td>
+                    <td>{money(row.opening_balance)}</td>
+                    <td>{money(row.closing_balance)}</td>
                   </tr>
                 ))}
               </tbody>

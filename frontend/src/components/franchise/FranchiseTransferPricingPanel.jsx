@@ -5,15 +5,31 @@ import Layout from '../Layout';
 import { api } from '../../services/api';
 import { ROLES } from '../../utils/roles';
 
+const ADMIN_TRANSFER_LEVELS = [
+  { role: ROLES.SUPER_FRANCHISEE, label: 'Supreme' },
+  { role: ROLES.FRANCHISEE, label: 'Prime' },
+  { role: ROLES.SUB_FRANCHISE, label: 'Sub-Franchise' },
+];
+
 export const TRANSFER_PRICING_MODES = {
-  admin_supreme: {
-    targetRole: ROLES.SUPER_FRANCHISEE,
-    roleLabel: 'Supreme',
-    pageTitle: 'Transfer Price — Supreme',
+  admin: {
+    pageTitle: 'Transfer Price',
     breadcrumbs: [{ label: 'Home', to: '/search' }, { label: 'Franchise' }, { label: 'Transfer Price' }],
     activePage: 'franchise-transfer-pricing',
     bulkPricingPath: '/admin/franchise-bulk-pricing',
     adminMain: true,
+    allowLevelSelect: true,
+    defaultRole: ROLES.SUPER_FRANCHISEE,
+  },
+  // Kept for older imports / deep links.
+  admin_supreme: {
+    pageTitle: 'Transfer Price',
+    breadcrumbs: [{ label: 'Home', to: '/search' }, { label: 'Franchise' }, { label: 'Transfer Price' }],
+    activePage: 'franchise-transfer-pricing',
+    bulkPricingPath: '/admin/franchise-bulk-pricing',
+    adminMain: true,
+    allowLevelSelect: true,
+    defaultRole: ROLES.SUPER_FRANCHISEE,
   },
   supreme_prime: {
     targetRole: ROLES.FRANCHISEE,
@@ -23,6 +39,7 @@ export const TRANSFER_PRICING_MODES = {
     activePage: 'franchisee-transfer-pricing',
     bulkPricingPath: '/franchise/franchisee-pricing',
     adminMain: false,
+    allowLevelSelect: false,
   },
   prime_sub: {
     targetRole: ROLES.SUB_FRANCHISE,
@@ -32,6 +49,7 @@ export const TRANSFER_PRICING_MODES = {
     activePage: 'sub-franchisee-transfer-pricing',
     bulkPricingPath: '/franchise/sub-franchisee-pricing',
     adminMain: false,
+    allowLevelSelect: false,
   },
 };
 
@@ -42,8 +60,16 @@ function franchiseLabel(row) {
   return `${name}${zone} (${row.username})`;
 }
 
-export default function FranchiseTransferPricingPanel({ mode = 'admin_supreme' }) {
-  const config = TRANSFER_PRICING_MODES[mode] || TRANSFER_PRICING_MODES.admin_supreme;
+function roleLabelFor(role) {
+  return ADMIN_TRANSFER_LEVELS.find((row) => row.role === role)?.label || role;
+}
+
+export default function FranchiseTransferPricingPanel({ mode = 'admin' }) {
+  const config = TRANSFER_PRICING_MODES[mode] || TRANSFER_PRICING_MODES.admin;
+  const [targetRole, setTargetRole] = useState(
+    config.allowLevelSelect ? (config.defaultRole || ROLES.SUPER_FRANCHISEE) : config.targetRole,
+  );
+  const roleLabel = config.allowLevelSelect ? roleLabelFor(targetRole) : config.roleLabel;
 
   const [franchisees, setFranchisees] = useState([]);
   const [fromId, setFromId] = useState('');
@@ -56,10 +82,21 @@ export default function FranchiseTransferPricingPanel({ mode = 'admin_supreme' }
   const [success, setSuccess] = useState('');
 
   useEffect(() => {
-    api.getUsers({ role: config.targetRole, is_active: true })
+    if (!config.allowLevelSelect) {
+      setTargetRole(config.targetRole);
+    }
+  }, [config.allowLevelSelect, config.targetRole]);
+
+  useEffect(() => {
+    setFromId('');
+    setToId('');
+    setSourceCount(null);
+    setError('');
+    setSuccess('');
+    api.getUsers({ role: targetRole, is_active: true })
       .then((data) => setFranchisees(Array.isArray(data) ? data : []))
       .catch(() => setFranchisees([]));
-  }, [config.targetRole]);
+  }, [targetRole]);
 
   useEffect(() => {
     if (!fromId) {
@@ -94,7 +131,7 @@ export default function FranchiseTransferPricingPanel({ mode = 'admin_supreme' }
     setSuccess('');
 
     if (!fromId || !toId) {
-      setError(`Select both source and target ${config.roleLabel} franchisees.`);
+      setError(`Select both source and target ${roleLabel} accounts.`);
       return;
     }
     if (String(fromId) === String(toId)) {
@@ -109,7 +146,7 @@ export default function FranchiseTransferPricingPanel({ mode = 'admin_supreme' }
     const source = franchisees.find((row) => String(row.id) === String(fromId));
     const target = franchisees.find((row) => String(row.id) === String(toId));
     const confirmed = window.confirm(
-      `Copy all saved test rates from ${franchiseLabel(source)} to ${franchiseLabel(target)}?\n\n`
+      `Copy all saved ${roleLabel} test rates from ${franchiseLabel(source)} to ${franchiseLabel(target)}?\n\n`
       + 'Existing rates on the target will be overwritten for matching tests.',
     );
     if (!confirmed) return;
@@ -146,15 +183,32 @@ export default function FranchiseTransferPricingPanel({ mode = 'admin_supreme' }
 
         <h2 className="page-heading">{config.pageTitle}</h2>
         <p className="portfolio-intro">
-          Copy saved per-test rates from one {config.roleLabel} account to another.
+          {config.allowLevelSelect
+            ? 'Copy saved per-test rates between accounts of the same level (Supreme→Supreme, Prime→Prime, or Sub→Sub).'
+            : `Copy saved per-test rates from one ${roleLabel} account to another.`}
           {' '}
           <Link to={config.bulkPricingPath}>Back to rate list</Link>
         </p>
 
         <section className="content-panel">
           <form className="franchise-transfer-form" onSubmit={handleTransfer}>
+            {config.allowLevelSelect && (
+              <label>
+                <span>Transfer level</span>
+                <select
+                  value={targetRole}
+                  onChange={(e) => setTargetRole(e.target.value)}
+                  required
+                >
+                  {ADMIN_TRANSFER_LEVELS.map((level) => (
+                    <option key={level.role} value={level.role}>{level.label}</option>
+                  ))}
+                </select>
+              </label>
+            )}
+
             <label>
-              <span>From {config.roleLabel}</span>
+              <span>From {roleLabel}</span>
               <select value={fromId} onChange={(e) => setFromId(e.target.value)} required>
                 <option value="">Select source</option>
                 {franchisees.map((row) => (
@@ -164,7 +218,7 @@ export default function FranchiseTransferPricingPanel({ mode = 'admin_supreme' }
             </label>
 
             <label>
-              <span>To {config.roleLabel}</span>
+              <span>To {roleLabel}</span>
               <select value={toId} onChange={(e) => setToId(e.target.value)} required>
                 <option value="">Select target</option>
                 {targetOptions.map((row) => (

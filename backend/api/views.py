@@ -19,16 +19,19 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .clinical_permissions import (
+    CanAccessCancellations,
     CanAccessExtraSamples,
     CanAccessHolds,
     CanAccessOutsource,
     CanAccessPatientEntry,
+    CanCancelTests,
     CanReadRegistrations,
     CanAccessPricingWallet,
     CanAccessRejections,
     CanAccessSampleAccession,
     CanAccessScanLog,
     CanPlaceHolds,
+    CANCEL_STAFF_ROLES,
     HOLD_STAFF_ROLES,
     OUTSOURCE_ROLES,
     REJECTION_STAFF_ROLES,
@@ -50,7 +53,8 @@ from .franchise_scope import (
     visible_creator_ids,
 )
 from .models import (
-    LabMessage, PickupRequest, Registration, RegistrationTest, RegistrationTestHold, SampleRejection, ExtraSample, OutsourceTransfer, BarcodeScanLog, Test, TestCategory, TestPackage,
+    LabMessage, PickupRequest, Registration, RegistrationTest, RegistrationTestCancellation,
+    RegistrationTestHold, SampleRejection, ExtraSample, OutsourceTransfer, BarcodeScanLog, Test, TestCategory, TestPackage,
     ReportFormatAsset, User, LabRole,
     Membership, MembershipType, CollectionCenter, CollectionCenterBoy, DiscountReason, DiscountAuthority,
     WhatsAppMessageLog, ExpenseType, Area, RateMaster, Affiliation, SalesReference, Doctor, Patient, PatientAddress, LabConfiguration, ServiceAreaPincode, LabActivity,
@@ -89,6 +93,7 @@ from .serializers import (
     RegistrationSerializer,
     RegistrationTestHoldSerializer,
     HoldCreateSerializer,
+    RegistrationTestCancellationSerializer,
     SampleRejectionSerializer,
     SampleRejectionCreateSerializer,
     ExtraSampleSerializer,
@@ -1923,9 +1928,9 @@ class RegistrationAddTestsView(APIView):
 
 
 class RegistrationCancelTestsView(APIView):
-    """Cancel (remove) selected tests from a registration."""
+    """Cancel (remove) selected tests from a registration. Lab staff only."""
 
-    permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
+    permission_classes = [permissions.IsAuthenticated, CanCancelTests]
 
     @transaction.atomic
     def post(self, request, lab_code):
@@ -1935,6 +1940,11 @@ class RegistrationCancelTestsView(APIView):
 
         raw_ids = request.data.get('registration_test_ids') or request.data.get('test_ids') or []
         reason = str(request.data.get('reason') or '').strip()
+        if not reason:
+            return Response(
+                {'detail': 'Cancellation reason is required.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         try:
             row_ids = [int(value) for value in raw_ids]
         except (TypeError, ValueError):
@@ -1952,11 +1962,23 @@ class RegistrationCancelTestsView(APIView):
 
         cancelled_names = [row.test.name for row in rows if row.test_id]
         cancelled_amount = 0
+        zone = registration.zone or getattr(registration.created_by, 'zone', None)
+        entry_initiator = registration.created_by
         for row in rows:
+            price = float(row.price or 0)
             if row.test_id and row.test.mrp and float(row.test.mrp) > 0:
-                cancelled_amount += float(row.test.mrp)
-            else:
-                cancelled_amount += float(row.price)
+                price = float(row.test.mrp)
+            cancelled_amount += price
+            RegistrationTestCancellation.objects.create(
+                registration=registration,
+                test=row.test if row.test_id else None,
+                test_name=(row.test.name if row.test_id else '') or '',
+                price=price,
+                reason=reason,
+                cancelled_by=request.user,
+                entry_initiated_by=entry_initiator,
+                zone=zone,
+            )
         registration.tests.filter(id__in=[row.id for row in rows]).delete()
 
         total = sum(float(rt.price) for rt in registration.tests.all())
@@ -1989,6 +2011,54 @@ class RegistrationCancelTestsView(APIView):
             .get(pk=registration.pk)
         )
         return Response(RegistrationSerializer(registration).data)
+
+
+def _scope_cancellations_for_user(user, qs=None):
+    """
+    Franchise users only see cancellations on bookings they (or their network) created.
+    Lab staff see cancellations in their zone.
+    """
+    qs = qs if qs is not None else RegistrationTestCancellation.objects.all()
+    qs = scope_zone_queryset(user, qs, zone_field='zone_id')
+    if is_franchise_actor(user):
+        creator_ids = visible_creator_ids(user)
+        if creator_ids is None:
+            return qs
+        return qs.filter(entry_initiated_by_id__in=creator_ids)
+    if getattr(user, 'role', None) in CANCEL_STAFF_ROLES:
+        return qs
+    return qs.filter(
+        Q(cancelled_by_id=user.id) | Q(entry_initiated_by_id=user.id)
+    )
+
+
+class RegistrationTestCancellationListView(APIView):
+    """List cancelled tests (franchise: only own/network bookings)."""
+
+    permission_classes = [permissions.IsAuthenticated, CanAccessCancellations]
+
+    def get(self, request):
+        qs = (
+            _scope_cancellations_for_user(request.user)
+            .select_related(
+                'registration__patient',
+                'registration__created_by',
+                'cancelled_by',
+                'entry_initiated_by',
+                'zone',
+                'test',
+            )
+        )
+        q = str(request.query_params.get('q') or '').strip()
+        if q:
+            qs = qs.filter(
+                Q(registration__lab_code__icontains=q)
+                | Q(registration__patient__patient_name__icontains=q)
+                | Q(registration__patient__patient_id__icontains=q)
+                | Q(test_name__icontains=q)
+                | Q(reason__icontains=q)
+            )
+        return Response(RegistrationTestCancellationSerializer(qs[:200], many=True).data)
 
 
 def _scope_holds_for_user(user, qs=None):
@@ -2960,6 +3030,16 @@ class LabMessageListCreateView(generics.ListCreateAPIView):
         serializer.save(created_by=self.request.user)
 
 
+class IsSuperAdmin(permissions.BasePermission):
+    def has_permission(self, request, view):
+        user = request.user
+        return bool(
+            user
+            and user.is_authenticated
+            and (user.is_superuser or user.role == User.ROLE_SUPER_ADMIN)
+        )
+
+
 class DashboardSummaryView(APIView):
     permission_classes = [permissions.IsAuthenticated, CanAccessPatientEntry]
 
@@ -3023,6 +3103,32 @@ class DashboardSummaryView(APIView):
             'department_summary': department_summary,
         }
         return Response(DashboardSummarySerializer(data).data)
+
+
+class ZoneDailyIncomeView(APIView):
+    """Super Admin: day / month / year income by zone (optional zone filter)."""
+
+    permission_classes = [permissions.IsAuthenticated, IsSuperAdmin]
+
+    def get(self, request):
+        from . import dashboard_utils as dash
+
+        period = (request.query_params.get('period') or 'day').strip().lower()
+        report_date = dash.parse_dashboard_date(request.query_params.get('date', ''))
+        year_raw = (request.query_params.get('year') or '').strip()
+        month_raw = (request.query_params.get('month') or '').strip()
+        year = int(year_raw) if year_raw.isdigit() else None
+        month = int(month_raw) if month_raw.isdigit() else None
+        zone_id = (request.query_params.get('zone_id') or '').strip() or None
+        data = dash.zone_period_income(
+            period=period,
+            report_date=report_date,
+            year=year,
+            month=month,
+            zone_id=zone_id,
+            user=request.user,
+        )
+        return Response(data)
 
 
 class ReportSummaryView(APIView):

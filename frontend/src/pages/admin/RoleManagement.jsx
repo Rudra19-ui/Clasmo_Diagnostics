@@ -11,13 +11,47 @@ const MODULE_PERMISSIONS = ROLE_PERMISSION_SCHEMA.filter(
   (item) => item.key !== 'show_price' && item.key !== 'show_mrp',
 );
 
+const LAB_ROLE_CODES = [
+  ROLES.SUPER_ADMIN,
+  ROLES.ADMIN,
+  ROLES.HR,
+  ROLES.PATHOLOGIST,
+  ROLES.TECHNICIAN,
+  ROLES.RECEPTIONIST,
+  ROLES.USER,
+];
+
+const FRANCHISE_ROLE_CODES = [
+  ROLES.SUPER_FRANCHISEE,
+  ROLES.FRANCHISEE,
+  ROLES.SUB_FRANCHISE,
+];
+
 function roleBadgeClass(role) {
   switch (role) {
     case ROLES.ADMIN: return 'role-badge role-badge-admin';
     case ROLES.TECHNICIAN: return 'role-badge role-badge-tech';
     case ROLES.PATHOLOGIST: return 'role-badge role-badge-patho';
+    case ROLES.SUPER_FRANCHISEE:
+    case ROLES.FRANCHISEE:
+    case ROLES.SUB_FRANCHISE:
+      return 'role-badge role-badge-franchise';
     default: return 'role-badge role-badge-user';
   }
+}
+
+function displayRoleName(role) {
+  return ROLE_LABELS[role.code] || role.name;
+}
+
+function sortRolesByOrder(list, order) {
+  const rank = new Map(order.map((code, index) => [code, index]));
+  return [...list].sort((a, b) => {
+    const ai = rank.has(a.code) ? rank.get(a.code) : 999;
+    const bi = rank.has(b.code) ? rank.get(b.code) : 999;
+    if (ai !== bi) return ai - bi;
+    return (a.name || '').localeCompare(b.name || '');
+  });
 }
 
 export default function RoleManagement() {
@@ -55,6 +89,29 @@ export default function RoleManagement() {
     // Admin login: hide Admin role card (and its user count).
     return roles.filter((role) => role.code !== ROLES.ADMIN);
   }, [roles, isSuperAdmin]);
+
+  const labRoles = useMemo(
+    () => sortRolesByOrder(
+      visibleRoles.filter((role) => LAB_ROLE_CODES.includes(role.code)),
+      LAB_ROLE_CODES,
+    ),
+    [visibleRoles],
+  );
+
+  const franchiseRoles = useMemo(
+    () => sortRolesByOrder(
+      visibleRoles.filter((role) => FRANCHISE_ROLE_CODES.includes(role.code)),
+      FRANCHISE_ROLE_CODES,
+    ),
+    [visibleRoles],
+  );
+
+  const otherRoles = useMemo(
+    () => visibleRoles.filter(
+      (role) => !LAB_ROLE_CODES.includes(role.code) && !FRANCHISE_ROLE_CODES.includes(role.code),
+    ),
+    [visibleRoles],
+  );
 
   const visibleUsers = useMemo(() => {
     let list = users;
@@ -306,7 +363,7 @@ export default function RoleManagement() {
             <div>
               <h2 className="change-password-title">Role Management</h2>
               <p className="role-management-subtitle">
-                Manage role permissions, and choose separately which roles can see Price and which can see MRP.
+                Manage role permissions, Entry Section access, and which roles can see Price / MRP.
               </p>
             </div>
             <button
@@ -329,24 +386,69 @@ export default function RoleManagement() {
             <aside className="role-list-panel">
               <h3 className="role-section-title">Roles</h3>
               {loading && <p className="role-panel-empty">Loading roles...</p>}
-              {!loading && visibleRoles.map((role) => (
-                <button
-                  key={role.code}
-                  type="button"
-                  className={`role-list-item${selectedRoleCode === role.code ? ' is-active' : ''}`}
-                  onClick={() => selectRole(role)}
-                >
-                  <span className={roleBadgeClass(role.code)}>{role.name}</span>
-                  <span className="role-list-meta">{role.user_count} user{role.user_count === 1 ? '' : 's'}</span>
-                </button>
-              ))}
+              {!loading && (
+                <>
+                  <div className="role-group">
+                    <h4 className="role-group-title">Users in Lab</h4>
+                    {labRoles.length === 0 && (
+                      <p className="role-panel-empty">No lab roles.</p>
+                    )}
+                    {labRoles.map((role) => (
+                      <button
+                        key={role.code}
+                        type="button"
+                        className={`role-list-item${selectedRoleCode === role.code ? ' is-active' : ''}`}
+                        onClick={() => selectRole(role)}
+                      >
+                        <span className={roleBadgeClass(role.code)}>{displayRoleName(role)}</span>
+                        <span className="role-list-meta">{role.user_count} user{role.user_count === 1 ? '' : 's'}</span>
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="role-group">
+                    <h4 className="role-group-title">Users in Franchise</h4>
+                    {franchiseRoles.length === 0 && (
+                      <p className="role-panel-empty">No franchise roles.</p>
+                    )}
+                    {franchiseRoles.map((role) => (
+                      <button
+                        key={role.code}
+                        type="button"
+                        className={`role-list-item${selectedRoleCode === role.code ? ' is-active' : ''}`}
+                        onClick={() => selectRole(role)}
+                      >
+                        <span className={roleBadgeClass(role.code)}>{displayRoleName(role)}</span>
+                        <span className="role-list-meta">{role.user_count} user{role.user_count === 1 ? '' : 's'}</span>
+                      </button>
+                    ))}
+                  </div>
+
+                  {otherRoles.length > 0 && (
+                    <div className="role-group">
+                      <h4 className="role-group-title">Other</h4>
+                      {otherRoles.map((role) => (
+                        <button
+                          key={role.code}
+                          type="button"
+                          className={`role-list-item${selectedRoleCode === role.code ? ' is-active' : ''}`}
+                          onClick={() => selectRole(role)}
+                        >
+                          <span className={roleBadgeClass(role.code)}>{displayRoleName(role)}</span>
+                          <span className="role-list-meta">{role.user_count} user{role.user_count === 1 ? '' : 's'}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
             </aside>
 
             <div className="role-detail-panel">
               {selectedRole ? (
                 <>
                   <div className="role-detail-header">
-                    <h3 className="role-section-title">Manage Role: {selectedRole.name}</h3>
+                    <h3 className="role-section-title">Manage Role: {displayRoleName(selectedRole)}</h3>
                     {isAdmin && (
                       <button
                         type="button"
@@ -382,9 +484,9 @@ export default function RoleManagement() {
                     </div>
                   </div>
 
-                  <div className="price-visibility-sections">
-                    <section className="price-visibility-option">
-                      <h4 className="role-permissions-title">Price</h4>
+                  <section className="price-visibility-option price-visibility-combined">
+                    <h4 className="role-permissions-title">Price &amp; MRP</h4>
+                    <div className="price-visibility-checks">
                       <label className="role-permission-item">
                         <input
                           type="checkbox"
@@ -397,9 +499,6 @@ export default function RoleManagement() {
                         />
                         <span>Show Price</span>
                       </label>
-                    </section>
-                    <section className="price-visibility-option">
-                      <h4 className="role-permissions-title">MRP</h4>
                       <label className="role-permission-item">
                         <input
                           type="checkbox"
@@ -412,16 +511,19 @@ export default function RoleManagement() {
                         />
                         <span>Show MRP</span>
                       </label>
-                    </section>
-                  </div>
-                  {PRICE_ALWAYS_VISIBLE_ROLES.includes(selectedRole.code) && (
-                    <p className="role-readonly-note">Admin and Super Admin always see Price and MRP.</p>
-                  )}
+                    </div>
+                    {PRICE_ALWAYS_VISIBLE_ROLES.includes(selectedRole.code) && (
+                      <p className="role-readonly-note">Admin and Super Admin always see Price and MRP.</p>
+                    )}
+                  </section>
 
                   <h4 className="role-permissions-title">Module Permissions</h4>
+                  <p className="role-management-subtitle" style={{ marginTop: 0 }}>
+                    Tick <strong>Entry Section</strong> to show New / Edit Entry for that role after they log in again.
+                  </p>
                   <div className="role-permissions-grid">
                     {MODULE_PERMISSIONS.map((item) => (
-                      <label key={item.key} className="role-permission-item">
+                      <label key={item.key} className={`role-permission-item${item.key === 'entry_section' ? ' role-permission-item--accent' : ''}`}>
                         <input
                           type="checkbox"
                           checked={Boolean(roleDraft.permissions?.[item.key])}

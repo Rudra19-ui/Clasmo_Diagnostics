@@ -272,6 +272,7 @@ export default function ClasmoReportSheet({
   loading = false,
   emptyMessage = 'No parameters for this test yet.',
   showReferenceColumn = true,
+  showLetterhead = true,
   footerNote = '',
   actions = null,
   linkedFiles = null,
@@ -347,20 +348,26 @@ export default function ClasmoReportSheet({
 
   return (
     <>
-    <article className="clasmo-report-sheet clasmo-report-sheet--a4 clasmo-report-sheet--ohpg print-clasmo-report">
+    <article className={`clasmo-report-sheet clasmo-report-sheet--a4 clasmo-report-sheet--ohpg print-clasmo-report${showLetterhead ? '' : ' clasmo-report-sheet--no-letterhead'}`}>
       <div className="clasmo-report-sidetext" aria-hidden="true">CLASMO DIAGNOSTICS</div>
 
-      <header className="clasmo-report-letterhead">
-        <img
-          src={letterheadBanner}
-          alt="Clasmo Diagnostics"
-          className="clasmo-report-letterhead-banner"
-        />
-      </header>
+      {showLetterhead ? (
+        <header className="clasmo-report-letterhead">
+          <img
+            src={letterheadBanner}
+            alt="Clasmo Diagnostics"
+            className="clasmo-report-letterhead-banner"
+          />
+        </header>
+      ) : null}
 
       <div className="clasmo-report-status-row no-print">
         <strong>{isLive ? 'PATIENT REPORT' : (isSample ? 'SAMPLE REPORT' : 'LABORATORY REPORT')}</strong>
-        <span>Official Clasmo letterhead — Print / PDF matches this format</span>
+        <span>
+          {showLetterhead
+            ? 'Official Clasmo letterhead — Print / PDF matches this format'
+            : 'Without letterhead — Print / PDF'}
+        </span>
       </div>
 
       {linkedFiles}
@@ -469,13 +476,15 @@ export default function ClasmoReportSheet({
         ) : null}
       </div>
 
-      <footer className="clasmo-report-footer">
-        <img
-          src={footerBanner}
-          alt="Clasmo Diagnostics contact"
-          className="clasmo-report-footer-banner"
-        />
-      </footer>
+      {showLetterhead ? (
+        <footer className="clasmo-report-footer">
+          <img
+            src={footerBanner}
+            alt="Clasmo Diagnostics contact"
+            className="clasmo-report-footer-banner"
+          />
+        </footer>
+      ) : null}
     </article>
 
     {(footerNote || actions) ? (

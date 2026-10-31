@@ -7,6 +7,9 @@ const ICON_COLORS = {
   administration: '#7e57c2',
   franchise: '#26a69a',
   'user-signup': '#5c6bc0',
+  'expense-type': '#00897b',
+  notes: '#5d4037',
+  'test-profile': '#1565c0',
   'enquire-box': '#00838f',
   reports: '#8e24aa',
   'device-request': '#fb8c00',
@@ -80,6 +83,25 @@ export default function NavIcon({ id }) {
         <circle cx="9" cy="8" r="3" stroke={color} strokeWidth="2" />
         <path d="M4 19c0-3 2.5-5 5-5" stroke={color} strokeWidth="2" strokeLinecap="round" />
         <path d="M16 11v6M13 14h6" stroke={color} strokeWidth="2" strokeLinecap="round" />
+      </svg>
+    ),
+    'expense-type': (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+        <rect x="4" y="5" width="16" height="14" rx="2" stroke={color} strokeWidth="2" />
+        <path d="M8 10h8M8 14h5" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
+        <circle cx="17" cy="16" r="2.2" stroke={color} strokeWidth="1.8" />
+      </svg>
+    ),
+    notes: (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+        <path d="M7 4h8l4 4v12a1 1 0 01-1 1H7a1 1 0 01-1-1V5a1 1 0 011-1z" stroke={color} strokeWidth="2" />
+        <path d="M15 4v4h4M9 12h6M9 16h4" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
+      </svg>
+    ),
+    'test-profile': (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+        <rect x="4" y="5" width="16" height="14" rx="2" stroke={color} strokeWidth="2" />
+        <path d="M8 10h8M8 14h5M8 18h3" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
       </svg>
     ),
     'enquire-box': (

@@ -12,21 +12,21 @@
     "parameters": [
       {
         "parameter_name": "ABO Group",
-        "unit": ".",
+        "unit": "",
         "method": "Erythrocyte Magnetized Technology",
-        "reference_range_male": ".-.",
-        "reference_range_female": ".-.",
-        "reference_range_child": ".-.",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
         "sample_value": "B",
         "sort_order": 1
       },
       {
         "parameter_name": "Rh Factor",
-        "unit": ".",
-        "method": ".",
-        "reference_range_male": "..-.",
-        "reference_range_female": "..-.",
-        "reference_range_child": "..-.",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
         "sample_value": "POSITIVE",
         "sort_order": 2
       }
@@ -51,7 +51,9 @@
         "method": "Electrical Impedance",
         "reference_range_male": "50 - 550",
         "sample_value": "560",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ]
   },
@@ -77,7 +79,9 @@
         "method": "Photo Optical Clot Detection",
         "reference_range_male": "22 - 34",
         "sample_value": "30.2",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "Control Value",
@@ -85,7 +89,9 @@
         "method": "Photo Optical Clot Detection",
         "reference_range_male": "28",
         "sample_value": "28.0",
-        "sort_order": 2
+        "sort_order": 2,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ]
   },
@@ -106,7 +112,9 @@
         "method": "ENZYMATIC",
         "reference_range_male": "0.0 - 30.0",
         "sample_value": "11.8",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ]
   },
@@ -128,7 +136,9 @@
         "method": "ENZYMATIC",
         "reference_range_male": "0.0 - 43.00",
         "sample_value": "25.1",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ]
   },
@@ -150,7 +160,9 @@
         "method": "PHOTOMETRY",
         "reference_range_male": "3.2 - 5.2",
         "sample_value": "4.22",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ]
   },
@@ -172,7 +184,9 @@
         "method": "FS IFCC",
         "reference_range_male": "53.00 - 128.00",
         "sample_value": "72",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ]
   },
@@ -193,7 +207,9 @@
         "method": "PHOTOMETRY",
         "reference_range_male": "28 - 100",
         "sample_value": "59.25",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ]
   },
@@ -207,9 +223,9 @@
     "parameters": [
       {
         "parameter_name": "HIV -1 , Rapid",
-        "unit": ".",
+        "unit": "",
         "method": "rapid",
-        "reference_range_male": ". - .",
+        "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "NON REACTIVE",
@@ -217,9 +233,9 @@
       },
       {
         "parameter_name": "HIV -2 , Rapid",
-        "unit": "-",
+        "unit": "",
         "method": "rapid",
-        "reference_range_male": "- - -",
+        "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "NON REACTIVE",
@@ -264,9 +280,9 @@
     "parameters": [
       {
         "parameter_name": "HEPATITIS C VIRUS (HCV RAPID)",
-        "unit": ".",
-        "method": ".",
-        "reference_range_male": ". - .",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "NON REACTIVE",
@@ -309,9 +325,9 @@
     "parameters": [
       {
         "parameter_name": "Hepatitis B Surface Antigen (HBs Ag) ,Rapid",
-        "unit": ".",
+        "unit": "",
         "method": "Immuno Chromatography",
-        "reference_range_male": ". - .",
+        "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "NEGATIVE",
@@ -440,7 +456,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "",
-        "sort_order": 2
+        "sort_order": 2,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ]
   },
@@ -473,7 +491,8 @@
     "test_name": "Glucose F (Blood Sugar Fasting)",
     "match_names": [
       "Glucose F (Blood Sugar Fasting)",
-      "GLUCOSE F (BLOOD SUGAR FASTING)"
+      "GLUCOSE F (BLOOD SUGAR FASTING)",
+      "HY FITNESS SMART 3"
     ],
     "sample_type": "Fluoride Plasma-01",
     "parameters": [
@@ -588,7 +607,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "",
-        "sort_order": 2
+        "sort_order": 2,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ]
   },
@@ -858,7 +879,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "",
-        "sort_order": 24
+        "sort_order": 24,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ]
   },
@@ -866,7 +889,8 @@
     "test_name": "Complete Blood Count (CBC)",
     "match_names": [
       "Complete Blood Count (CBC)",
-      "COMPLETE BLOOD COUNT (CBC)"
+      "COMPLETE BLOOD COUNT (CBC)",
+      "HY FITNESS SMART 3"
     ],
     "sample_type": "EDTA Blood",
     "parameters": [
@@ -1136,7 +1160,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "100-129",
-        "sort_order": 2
+        "sort_order": 2,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "Borderline High",
@@ -1144,7 +1170,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "130-159",
-        "sort_order": 3
+        "sort_order": 3,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "High",
@@ -1152,7 +1180,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": ">160",
-        "sort_order": 4
+        "sort_order": 4,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ]
   },
@@ -1184,7 +1214,8 @@
     "test_name": "C Reactive Protein (CRP) Quantitative",
     "match_names": [
       "C Reactive Protein (CRP) Quantitative",
-      "C REACTIVE PROTEIN (CRP) QUANTITATIVE"
+      "C REACTIVE PROTEIN (CRP) QUANTITATIVE",
+      "HY FITNESS SMART 3"
     ],
     "sample_type": "Serum",
     "parameters": [
@@ -1266,7 +1297,8 @@
     "test_name": "25 OH Vitamin D 3 Total",
     "match_names": [
       "25 OH Vitamin D 3 Total",
-      "25 OH VITAMIN D 3 TOTAL"
+      "25 OH VITAMIN D 3 TOTAL",
+      "HY FITNESS SMART 3"
     ],
     "sample_type": "Serum",
     "parameters": [
@@ -1295,9 +1327,9 @@
     "parameters": [
       {
         "parameter_name": "TYPE OF SPECIMEN FLUID . . - . ORGANISM",
-        "unit": ".",
+        "unit": "",
         "method": "MICROSCOPY",
-        "reference_range_male": ". - .",
+        "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "NO MICRO-ORGANISM SEEN",
@@ -1319,7 +1351,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "FNAC SITE:",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_extra_sections": {
@@ -1387,7 +1421,7 @@
         "parameter_name": "INSULIN POSTPRANDIAL (PP)",
         "unit": "U/ML",
         "method": "CLIA",
-        "reference_range_male": ". - .",
+        "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "15.90",
@@ -1399,7 +1433,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "20 – 112",
-        "sort_order": 2
+        "sort_order": 2,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "Insulin 60 min",
@@ -1407,7 +1443,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "29 – 88",
-        "sort_order": 3
+        "sort_order": 3,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "Insulin 90 min",
@@ -1415,7 +1453,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "26 – 84",
-        "sort_order": 4
+        "sort_order": 4,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "Insulin 120 min",
@@ -1423,7 +1463,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "22 – 79",
-        "sort_order": 5
+        "sort_order": 5,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ]
   },
@@ -1452,7 +1494,8 @@
     "test_name": "Iron Profile",
     "match_names": [
       "Iron Profile",
-      "IRON PROFILE"
+      "IRON PROFILE",
+      "HY FITNESS SMART 3"
     ],
     "sample_type": "Serum",
     "parameters": [
@@ -1525,7 +1568,7 @@
         "parameter_name": "LUTEINISING HORMONE (LH)",
         "unit": "mIU/ml",
         "method": "CLIA",
-        "reference_range_male": ". - .",
+        "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "13.29",
@@ -1574,7 +1617,7 @@
     "parameters": [
       {
         "parameter_name": "P.Vivax",
-        "unit": ".",
+        "unit": "",
         "method": "Immunochromatography",
         "reference_range_male": "- - NEGATIVE",
         "reference_range_female": "",
@@ -1584,7 +1627,7 @@
       },
       {
         "parameter_name": "P.Falciparum",
-        "unit": ".",
+        "unit": "",
         "method": "Immunochromatography",
         "reference_range_male": ". - NEGATIVE",
         "reference_range_female": "",
@@ -1627,7 +1670,7 @@
         "parameter_name": "Microalbumin 24 Hours (URINE)",
         "unit": "mg/dL 24 Hrs",
         "method": "Spectrophotometry",
-        "reference_range_male": ". - .",
+        "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "1077.8",
@@ -1697,7 +1740,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "CONVENTIONAL PAP'S SMEARS",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "SPECIMEN ADEQUACY",
@@ -1705,7 +1750,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "Satisfactory for evaluation.",
-        "sort_order": 2
+        "sort_order": 2,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_comments": "The smear shows clusters of intermediate and superficial cells. Doderlein bacilli seen.",
@@ -1728,7 +1775,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ]
   },
@@ -1762,9 +1811,9 @@
     "parameters": [
       {
         "parameter_name": "PREGNANCY TEST, URINE",
-        "unit": ".",
+        "unit": "",
         "method": "ICT",
-        "reference_range_male": ". - .",
+        "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "POSITIVE",
@@ -1853,8 +1902,8 @@
       {
         "parameter_name": "PROTEIN/ALBUMIN RATIO",
         "unit": "Ratio",
-        "method": ".",
-        "reference_range_male": ". - .",
+        "method": "",
+        "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "1.89",
@@ -1884,7 +1933,7 @@
         "parameter_name": "Prothrombin Time Control Value",
         "unit": "sec",
         "method": "Clotting",
-        "reference_range_male": ". - .",
+        "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "13.5",
@@ -1892,7 +1941,7 @@
       },
       {
         "parameter_name": "Prothrombin Time INR",
-        "unit": ".",
+        "unit": "",
         "method": "CALCULATED",
         "reference_range_male": "0.90 - 1.10",
         "reference_range_female": "",
@@ -1904,7 +1953,7 @@
         "parameter_name": "index",
         "unit": "%",
         "method": "cu",
-        "reference_range_male": "- - -",
+        "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "85.44",
@@ -2246,7 +2295,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.25",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "ANISEED",
@@ -2254,7 +2305,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.25",
-        "sort_order": 2
+        "sort_order": 2,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "APPLE",
@@ -2262,7 +2315,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.22",
-        "sort_order": 3
+        "sort_order": 3,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "ARECANUT",
@@ -2270,7 +2325,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.21",
-        "sort_order": 4
+        "sort_order": 4,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "BAJARI",
@@ -2278,7 +2335,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.30",
-        "sort_order": 5
+        "sort_order": 5,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "BANANA",
@@ -2286,7 +2345,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.18",
-        "sort_order": 6
+        "sort_order": 6,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "BARLEY",
@@ -2294,7 +2355,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.17",
-        "sort_order": 7
+        "sort_order": 7,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "BLACK PEPPER",
@@ -2302,7 +2365,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.28",
-        "sort_order": 8
+        "sort_order": 8,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "BRINJAL",
@@ -2310,7 +2375,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.25",
-        "sort_order": 9
+        "sort_order": 9,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CABBAGE",
@@ -2318,7 +2385,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.13",
-        "sort_order": 10
+        "sort_order": 10,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CAPSICUM",
@@ -2326,7 +2395,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.23",
-        "sort_order": 11
+        "sort_order": 11,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CARDIMUM",
@@ -2334,7 +2405,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.29",
-        "sort_order": 12
+        "sort_order": 12,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CARROT",
@@ -2342,7 +2415,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.14",
-        "sort_order": 13
+        "sort_order": 13,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CASHEWNUT",
@@ -2350,7 +2425,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.19",
-        "sort_order": 14
+        "sort_order": 14,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CAULIFLOWER",
@@ -2358,7 +2435,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.30",
-        "sort_order": 15
+        "sort_order": 15,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CHEESE",
@@ -2366,7 +2445,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.16",
-        "sort_order": 16
+        "sort_order": 16,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CHILLY",
@@ -2374,7 +2455,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.24",
-        "sort_order": 17
+        "sort_order": 17,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CINNAMON",
@@ -2382,7 +2465,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.26",
-        "sort_order": 18
+        "sort_order": 18,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CLOVE",
@@ -2390,7 +2475,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.27",
-        "sort_order": 19
+        "sort_order": 19,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "COCOA",
@@ -2398,7 +2485,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.16",
-        "sort_order": 20
+        "sort_order": 20,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "COCONUT",
@@ -2406,7 +2495,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.15",
-        "sort_order": 21
+        "sort_order": 21,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "COFFEE",
@@ -2414,7 +2505,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.20",
-        "sort_order": 22
+        "sort_order": 22,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CORIANDER",
@@ -2422,7 +2515,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.23",
-        "sort_order": 23
+        "sort_order": 23,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "COTTON SEED",
@@ -2430,7 +2525,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.14",
-        "sort_order": 24
+        "sort_order": 24,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CUCUMBER",
@@ -2438,7 +2535,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.13",
-        "sort_order": 25
+        "sort_order": 25,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CUMMIN",
@@ -2446,7 +2545,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.22",
-        "sort_order": 26
+        "sort_order": 26,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CURD",
@@ -2454,7 +2555,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.17",
-        "sort_order": 27
+        "sort_order": 27,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "DAL ARHAR",
@@ -2462,7 +2565,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.28",
-        "sort_order": 28
+        "sort_order": 28,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "DAL CHANA",
@@ -2470,7 +2575,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.27",
-        "sort_order": 29
+        "sort_order": 29,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "DAL MASOOR",
@@ -2478,7 +2585,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.23",
-        "sort_order": 30
+        "sort_order": 30,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "DAL MOONG",
@@ -2486,7 +2595,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.22",
-        "sort_order": 31
+        "sort_order": 31,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "DAL RAJMA",
@@ -2494,7 +2605,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.15",
-        "sort_order": 32
+        "sort_order": 32,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "DAL URAD",
@@ -2502,7 +2615,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.10",
-        "sort_order": 33
+        "sort_order": 33,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "DATES",
@@ -2510,7 +2625,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.26",
-        "sort_order": 34
+        "sort_order": 34,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "EGGS",
@@ -2518,7 +2635,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.13",
-        "sort_order": 35
+        "sort_order": 35,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "FENUGREEK",
@@ -2526,7 +2645,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.15",
-        "sort_order": 36
+        "sort_order": 36,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "GARLIC",
@@ -2534,7 +2655,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.16",
-        "sort_order": 37
+        "sort_order": 37,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "GINGER",
@@ -2542,7 +2665,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.10",
-        "sort_order": 38
+        "sort_order": 38,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "GRAPES",
@@ -2550,7 +2675,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.21",
-        "sort_order": 39
+        "sort_order": 39,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "GROUNDNUT",
@@ -2558,7 +2685,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.19",
-        "sort_order": 40
+        "sort_order": 40,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "GUVAVA",
@@ -2566,7 +2695,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.12",
-        "sort_order": 41
+        "sort_order": 41,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "HONEY",
@@ -2574,7 +2705,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.16",
-        "sort_order": 42
+        "sort_order": 42,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "JAGGERY",
@@ -2582,7 +2715,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.18",
-        "sort_order": 43
+        "sort_order": 43,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "KATHA",
@@ -2590,7 +2725,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.27",
-        "sort_order": 44
+        "sort_order": 44,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "LADY S FINGER",
@@ -2598,7 +2735,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.26",
-        "sort_order": 45
+        "sort_order": 45,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "LEMON",
@@ -2606,7 +2745,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.10",
-        "sort_order": 46
+        "sort_order": 46,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "MAIZE",
@@ -2614,7 +2755,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.15",
-        "sort_order": 47
+        "sort_order": 47,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "MANGO",
@@ -2622,7 +2765,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.10",
-        "sort_order": 48
+        "sort_order": 48,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "MELON",
@@ -2630,7 +2775,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.11",
-        "sort_order": 49
+        "sort_order": 49,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "MILK",
@@ -2638,7 +2785,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.18",
-        "sort_order": 50
+        "sort_order": 50,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "MSG ( AJINOMOTO)",
@@ -2646,7 +2795,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.69",
-        "sort_order": 51
+        "sort_order": 51,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "MUSHROOM",
@@ -2654,7 +2805,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.14",
-        "sort_order": 52
+        "sort_order": 52,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "MUSTARD",
@@ -2662,7 +2815,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.11",
-        "sort_order": 53
+        "sort_order": 53,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "NUTMEG",
@@ -2670,7 +2825,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.17",
-        "sort_order": 54
+        "sort_order": 54,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "OAT",
@@ -2678,7 +2835,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.23",
-        "sort_order": 55
+        "sort_order": 55,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "ONION",
@@ -2686,7 +2845,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.22",
-        "sort_order": 56
+        "sort_order": 56,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "ORANGE",
@@ -2694,7 +2855,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.22",
-        "sort_order": 57
+        "sort_order": 57,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "PAPAYA",
@@ -2702,7 +2865,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.15",
-        "sort_order": 58
+        "sort_order": 58,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "PEAS",
@@ -2710,7 +2875,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.19",
-        "sort_order": 59
+        "sort_order": 59,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "PINEAPPLE",
@@ -2718,7 +2885,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.29",
-        "sort_order": 60
+        "sort_order": 60,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "PISTA",
@@ -2726,7 +2895,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.10",
-        "sort_order": 61
+        "sort_order": 61,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "POTATO",
@@ -2734,7 +2905,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.30",
-        "sort_order": 62
+        "sort_order": 62,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "RADISH",
@@ -2742,7 +2915,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.20",
-        "sort_order": 63
+        "sort_order": 63,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "RICE",
@@ -2750,7 +2925,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.28",
-        "sort_order": 64
+        "sort_order": 64,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "SALT",
@@ -2758,7 +2935,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.25",
-        "sort_order": 65
+        "sort_order": 65,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "SESAME",
@@ -2766,7 +2945,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.28",
-        "sort_order": 66
+        "sort_order": 66,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "SOYABEAN",
@@ -2774,7 +2955,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.12",
-        "sort_order": 67
+        "sort_order": 67,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "SPINACH",
@@ -2782,7 +2965,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.10",
-        "sort_order": 68
+        "sort_order": 68,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "SQUASH",
@@ -2790,7 +2975,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.16",
-        "sort_order": 69
+        "sort_order": 69,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "STRAW BERRY",
@@ -2798,7 +2985,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.87",
-        "sort_order": 70
+        "sort_order": 70,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "SUGAR",
@@ -2806,7 +2995,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.21",
-        "sort_order": 71
+        "sort_order": 71,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "SUNFLOWER",
@@ -2814,7 +3005,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.30",
-        "sort_order": 72
+        "sort_order": 72,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "TAMARIND",
@@ -2822,7 +3015,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.22",
-        "sort_order": 73
+        "sort_order": 73,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "TEA",
@@ -2830,7 +3025,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.15",
-        "sort_order": 74
+        "sort_order": 74,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "TOBACCO",
@@ -2838,7 +3035,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.29",
-        "sort_order": 75
+        "sort_order": 75,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "TOMATOES",
@@ -2846,7 +3045,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.12",
-        "sort_order": 76
+        "sort_order": 76,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "TURMERIC",
@@ -2854,7 +3055,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.22",
-        "sort_order": 77
+        "sort_order": 77,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "VINEGAR",
@@ -2862,7 +3065,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.14",
-        "sort_order": 78
+        "sort_order": 78,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "WALNUT",
@@ -2870,7 +3075,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.28",
-        "sort_order": 79
+        "sort_order": 79,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "WHEAT",
@@ -2878,7 +3085,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.20",
-        "sort_order": 80
+        "sort_order": 80,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "YEAST",
@@ -2886,7 +3095,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.87",
-        "sort_order": 81
+        "sort_order": 81,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "ACACIA ARABICA",
@@ -2894,7 +3105,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.18",
-        "sort_order": 82
+        "sort_order": 82,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "ADHATODA VASICA",
@@ -2902,7 +3115,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.20",
-        "sort_order": 83
+        "sort_order": 83,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "ALTERNARIA TENUIS",
@@ -2910,7 +3125,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.23",
-        "sort_order": 84
+        "sort_order": 84,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "AMARANTHUS",
@@ -2918,7 +3135,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.28",
-        "sort_order": 85
+        "sort_order": 85,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "ARGEMONE MEXICANA",
@@ -2926,7 +3145,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.12",
-        "sort_order": 86
+        "sort_order": 86,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "ARTEMISIA SCOPARIA",
@@ -2934,7 +3155,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.23",
-        "sort_order": 87
+        "sort_order": 87,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "ASPERGILLUS",
@@ -2942,7 +3165,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.18",
-        "sort_order": 88
+        "sort_order": 88,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "ASPERGILLUS NIGER",
@@ -2950,7 +3175,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.20",
-        "sort_order": 89
+        "sort_order": 89,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "ASPERGILLUS TAMARIE",
@@ -2958,7 +3185,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.11",
-        "sort_order": 90
+        "sort_order": 90,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "AZADIRACHTA INDICA",
@@ -2966,7 +3195,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.28",
-        "sort_order": 91
+        "sort_order": 91,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "BERMUDA GRASS",
@@ -2974,7 +3205,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.18",
-        "sort_order": 92
+        "sort_order": 92,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "BRASSICA CAMPESTRIS",
@@ -2982,7 +3215,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.29",
-        "sort_order": 93
+        "sort_order": 93,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "BUFFALO DANDER",
@@ -2990,7 +3225,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.22",
-        "sort_order": 94
+        "sort_order": 94,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CANDIDA ALBICANS",
@@ -2998,7 +3235,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.23",
-        "sort_order": 95
+        "sort_order": 95,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CANNABIS SATIVA",
@@ -3006,7 +3245,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.27",
-        "sort_order": 96
+        "sort_order": 96,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CARICA PAPAYA",
@@ -3014,7 +3255,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.28",
-        "sort_order": 97
+        "sort_order": 97,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CASSIA FISTULA",
@@ -3022,7 +3265,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.14",
-        "sort_order": 98
+        "sort_order": 98,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CAT DANDER",
@@ -3030,7 +3275,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.29",
-        "sort_order": 99
+        "sort_order": 99,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CEDRUS DEODARA",
@@ -3038,7 +3285,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.27",
-        "sort_order": 100
+        "sort_order": 100,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CENCHRUS CILIARIS",
@@ -3046,7 +3295,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.28",
-        "sort_order": 101
+        "sort_order": 101,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CHAK POWDER",
@@ -3054,7 +3305,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.13",
-        "sort_order": 102
+        "sort_order": 102,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CHENOPODIUM ALBUM",
@@ -3062,7 +3315,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.16",
-        "sort_order": 103
+        "sort_order": 103,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CLADOSPORIUM HERB",
@@ -3070,7 +3325,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.26",
-        "sort_order": 104
+        "sort_order": 104,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "COCKROACH DUST",
@@ -3078,7 +3335,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.19",
-        "sort_order": 105
+        "sort_order": 105,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "COCOS NUCIFERA",
@@ -3086,7 +3345,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.20",
-        "sort_order": 106
+        "sort_order": 106,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "COTTON DUST",
@@ -3094,7 +3355,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.20",
-        "sort_order": 107
+        "sort_order": 107,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "COTTON FIBERS",
@@ -3102,7 +3365,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.16",
-        "sort_order": 108
+        "sort_order": 108,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "COW DANDER",
@@ -3110,7 +3375,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.16",
-        "sort_order": 109
+        "sort_order": 109,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CRICKET DUST",
@@ -3118,7 +3385,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.22",
-        "sort_order": 110
+        "sort_order": 110,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CYNODON DACTYLON",
@@ -3126,7 +3395,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.22",
-        "sort_order": 111
+        "sort_order": 111,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CYPERUS ROTUNDUS",
@@ -3134,7 +3405,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.25",
-        "sort_order": 112
+        "sort_order": 112,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "DAISY",
@@ -3142,7 +3415,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.17",
-        "sort_order": 113
+        "sort_order": 113,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "DANDELION",
@@ -3150,7 +3425,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.19",
-        "sort_order": 114
+        "sort_order": 114,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "DOG DANDER",
@@ -3158,7 +3435,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.11",
-        "sort_order": 115
+        "sort_order": 115,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "ETHYLENE OXIDE",
@@ -3166,7 +3445,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.30",
-        "sort_order": 116
+        "sort_order": 116,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "EUCALYPTUS",
@@ -3174,7 +3455,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.30",
-        "sort_order": 117
+        "sort_order": 117,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "FEATHER DUST",
@@ -3182,7 +3465,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.12",
-        "sort_order": 118
+        "sort_order": 118,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "FLOUR MILL DUST",
@@ -3190,7 +3475,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.26",
-        "sort_order": 119
+        "sort_order": 119,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "GOAT DANDER",
@@ -3198,7 +3485,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.14",
-        "sort_order": 120
+        "sort_order": 120,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "GRAVEL DUST",
@@ -3206,7 +3495,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.12",
-        "sort_order": 121
+        "sort_order": 121,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "HAY DUST",
@@ -3214,7 +3505,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.16",
-        "sort_order": 122
+        "sort_order": 122,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "HOLOPTELEA INT",
@@ -3222,7 +3515,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.11",
-        "sort_order": 123
+        "sort_order": 123,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "HONEY BEE",
@@ -3230,7 +3525,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.26",
-        "sort_order": 124
+        "sort_order": 124,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "HORSE DANDER",
@@ -3238,7 +3535,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.27",
-        "sort_order": 125
+        "sort_order": 125,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "HOUSE DUST MITE",
@@ -3246,7 +3545,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.13",
-        "sort_order": 126
+        "sort_order": 126,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "HOUSE FLY",
@@ -3254,7 +3555,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.15",
-        "sort_order": 127
+        "sort_order": 127,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "HOUSEDUST",
@@ -3262,7 +3565,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.13",
-        "sort_order": 128
+        "sort_order": 128,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "IMPERATA CYLINDRICA",
@@ -3270,7 +3575,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.19",
-        "sort_order": 129
+        "sort_order": 129,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "INSECT",
@@ -3278,7 +3585,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "1.65",
-        "sort_order": 130
+        "sort_order": 130,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "IPOMOEA FISTULOSA",
@@ -3286,7 +3595,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.18",
-        "sort_order": 131
+        "sort_order": 131,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "JEERA DUST",
@@ -3294,7 +3605,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.24",
-        "sort_order": 132
+        "sort_order": 132,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "JOHNSON GRASS",
@@ -3302,7 +3615,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.18",
-        "sort_order": 133
+        "sort_order": 133,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "JOWAR DUST",
@@ -3310,7 +3625,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.10",
-        "sort_order": 134
+        "sort_order": 134,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "JULIFLORA",
@@ -3318,7 +3635,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.10",
-        "sort_order": 135
+        "sort_order": 135,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "JUNIPERUS COMMUNIS",
@@ -3326,7 +3645,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.15",
-        "sort_order": 136
+        "sort_order": 136,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "JUTE DUST",
@@ -3334,7 +3655,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "1.52",
-        "sort_order": 137
+        "sort_order": 137,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "KIGELIA PINNATA",
@@ -3342,7 +3665,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.18",
-        "sort_order": 138
+        "sort_order": 138,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "LAWSONIA INERMIS",
@@ -3350,7 +3675,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.22",
-        "sort_order": 139
+        "sort_order": 139,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "MOSQUITO",
@@ -3358,7 +3685,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.29",
-        "sort_order": 140
+        "sort_order": 140,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "MUGWORT",
@@ -3366,7 +3695,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.17",
-        "sort_order": 141
+        "sort_order": 141,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "NEUROSPOR SPP",
@@ -3374,7 +3705,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.18",
-        "sort_order": 142
+        "sort_order": 142,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "PAPER DUST",
@@ -3382,7 +3715,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.11",
-        "sort_order": 143
+        "sort_order": 143,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "PARTHENIUM",
@@ -3390,7 +3725,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.14",
-        "sort_order": 144
+        "sort_order": 144,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "PENICILLIUM SPP",
@@ -3398,7 +3735,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.29",
-        "sort_order": 145
+        "sort_order": 145,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "PHOENIX DACTYLIFERA",
@@ -3406,7 +3745,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.27",
-        "sort_order": 146
+        "sort_order": 146,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "PINE",
@@ -3414,7 +3755,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.12",
-        "sort_order": 147
+        "sort_order": 147,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "RAGWEED",
@@ -3422,7 +3765,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.14",
-        "sort_order": 148
+        "sort_order": 148,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "RHIZOPUS NIGRICANS",
@@ -3430,7 +3775,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.29",
-        "sort_order": 149
+        "sort_order": 149,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "RICE DUST",
@@ -3438,7 +3785,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.27",
-        "sort_order": 150
+        "sort_order": 150,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "RICINUS COMMUNIS",
@@ -3446,7 +3795,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.25",
-        "sort_order": 151
+        "sort_order": 151,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "RYE GRASS",
@@ -3454,7 +3805,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.21",
-        "sort_order": 152
+        "sort_order": 152,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "SHEEP WOOL",
@@ -3462,7 +3815,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.13",
-        "sort_order": 153
+        "sort_order": 153,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "SORGHUM VULGARE",
@@ -3470,7 +3825,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.11",
-        "sort_order": 154
+        "sort_order": 154,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "STRAW DUST",
@@ -3478,7 +3835,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.15",
-        "sort_order": 155
+        "sort_order": 155,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "SUAEDA FRUTICOSA",
@@ -3486,7 +3845,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.17",
-        "sort_order": 156
+        "sort_order": 156,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "TEA LEAVES",
@@ -3494,7 +3855,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.21",
-        "sort_order": 157
+        "sort_order": 157,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "TYPHA ANGUSTATA",
@@ -3502,7 +3865,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.25",
-        "sort_order": 158
+        "sort_order": 158,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "WHEAT DUST",
@@ -3510,7 +3875,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.26",
-        "sort_order": 159
+        "sort_order": 159,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "WOOD DUST",
@@ -3518,7 +3885,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.87",
-        "sort_order": 160
+        "sort_order": 160,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "XANTHIUM STERMARLUM",
@@ -3526,7 +3895,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.25",
-        "sort_order": 161
+        "sort_order": 161,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "ZEA MAYS",
@@ -3534,7 +3905,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.12",
-        "sort_order": 162
+        "sort_order": 162,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "ALCOHOL",
@@ -3542,7 +3915,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.17",
-        "sort_order": 163
+        "sort_order": 163,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "ASH-LEAF ELDER",
@@ -3550,7 +3925,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.25",
-        "sort_order": 164
+        "sort_order": 164,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "BONE CEMENT PMMA",
@@ -3558,7 +3935,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.24",
-        "sort_order": 165
+        "sort_order": 165,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CAUSTIC SODA",
@@ -3566,7 +3945,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.10",
-        "sort_order": 166
+        "sort_order": 166,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "DETERGENT",
@@ -3574,7 +3955,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.23",
-        "sort_order": 167
+        "sort_order": 167,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "HAIR DYE",
@@ -3582,7 +3965,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.28",
-        "sort_order": 168
+        "sort_order": 168,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "LATEX",
@@ -3590,7 +3975,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.26",
-        "sort_order": 169
+        "sort_order": 169,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "LEATHER",
@@ -3598,7 +3985,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.16",
-        "sort_order": 170
+        "sort_order": 170,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "LIME STONE",
@@ -3606,7 +3995,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.17",
-        "sort_order": 171
+        "sort_order": 171,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "NICKEL",
@@ -3614,7 +4005,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.16",
-        "sort_order": 172
+        "sort_order": 172,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "NYLON FIBERS",
@@ -3622,7 +4015,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.13",
-        "sort_order": 173
+        "sort_order": 173,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "PAINTS",
@@ -3630,7 +4025,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.24",
-        "sort_order": 174
+        "sort_order": 174,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "PERFUME",
@@ -3638,7 +4035,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.22",
-        "sort_order": 175
+        "sort_order": 175,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "PLASTIC",
@@ -3646,7 +4045,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.28",
-        "sort_order": 176
+        "sort_order": 176,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "POLYESTER",
@@ -3654,7 +4055,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.21",
-        "sort_order": 177
+        "sort_order": 177,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "POWDER",
@@ -3662,7 +4065,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.20",
-        "sort_order": 178
+        "sort_order": 178,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "SILK",
@@ -3670,7 +4075,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.17",
-        "sort_order": 179
+        "sort_order": 179,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "SMOKE",
@@ -3678,7 +4085,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.12",
-        "sort_order": 180
+        "sort_order": 180,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "SMOKING(TOBACCO)",
@@ -3686,7 +4095,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.13",
-        "sort_order": 181
+        "sort_order": 181,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "SOAP",
@@ -3694,7 +4105,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.15",
-        "sort_order": 182
+        "sort_order": 182,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "SULFUR",
@@ -3702,7 +4115,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.25",
-        "sort_order": 183
+        "sort_order": 183,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "WOOL MIX",
@@ -3710,7 +4125,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.26",
-        "sort_order": 184
+        "sort_order": 184,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "YARN FIBRE",
@@ -3718,7 +4135,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.15",
-        "sort_order": 185
+        "sort_order": 185,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "AMOXICILLIN",
@@ -3726,7 +4145,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.18",
-        "sort_order": 186
+        "sort_order": 186,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "AMPICILLIN",
@@ -3734,7 +4155,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.28",
-        "sort_order": 187
+        "sort_order": 187,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "ARTICAIN",
@@ -3742,7 +4165,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.24",
-        "sort_order": 188
+        "sort_order": 188,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "ASPIRIN",
@@ -3750,7 +4175,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.10",
-        "sort_order": 189
+        "sort_order": 189,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "BRUFEN",
@@ -3758,7 +4185,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.12",
-        "sort_order": 190
+        "sort_order": 190,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CEPHALOSPORIN",
@@ -3766,7 +4195,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.11",
-        "sort_order": 191
+        "sort_order": 191,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CIPROFLOXACIN",
@@ -3774,7 +4205,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.13",
-        "sort_order": 192
+        "sort_order": 192,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CLOXACILLIN",
@@ -3782,7 +4215,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.17",
-        "sort_order": 193
+        "sort_order": 193,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "DICLOFENAC",
@@ -3790,7 +4225,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.22",
-        "sort_order": 194
+        "sort_order": 194,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "DOXYCYCLIN",
@@ -3798,7 +4235,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.10",
-        "sort_order": 195
+        "sort_order": 195,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "EPINEPHRINE",
@@ -3806,7 +4245,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.24",
-        "sort_order": 196
+        "sort_order": 196,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "ERYTHROMYCIN",
@@ -3814,7 +4255,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.11",
-        "sort_order": 197
+        "sort_order": 197,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "INSULIN (HUMAN)",
@@ -3822,7 +4265,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.29",
-        "sort_order": 198
+        "sort_order": 198,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "KETOPROFEN",
@@ -3830,7 +4275,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.13",
-        "sort_order": 199
+        "sort_order": 199,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "METAMIZOL",
@@ -3838,7 +4285,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.15",
-        "sort_order": 200
+        "sort_order": 200,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "NIMESULIDE",
@@ -3846,7 +4295,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.27",
-        "sort_order": 201
+        "sort_order": 201,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "NORFLOXACIN",
@@ -3854,7 +4305,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.16",
-        "sort_order": 202
+        "sort_order": 202,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "OFLOXACIN",
@@ -3862,7 +4315,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.23",
-        "sort_order": 203
+        "sort_order": 203,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "OXACILLIN",
@@ -3870,7 +4325,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.26",
-        "sort_order": 204
+        "sort_order": 204,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "PARACETAMOL",
@@ -3878,7 +4335,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.15",
-        "sort_order": 205
+        "sort_order": 205,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "PENICILLIN",
@@ -3886,7 +4345,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.25",
-        "sort_order": 206
+        "sort_order": 206,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "PHENYLBUTAZONE",
@@ -3894,7 +4355,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.17",
-        "sort_order": 207
+        "sort_order": 207,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "PIROXICAM",
@@ -3902,7 +4365,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.17",
-        "sort_order": 208
+        "sort_order": 208,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "PROCAIN",
@@ -3910,7 +4375,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.25",
-        "sort_order": 209
+        "sort_order": 209,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "STREPTOMYCIN",
@@ -3918,7 +4385,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.18",
-        "sort_order": 210
+        "sort_order": 210,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "SULPHA",
@@ -3926,7 +4395,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.13",
-        "sort_order": 211
+        "sort_order": 211,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "TETRACYCLINE",
@@ -3934,7 +4405,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.18",
-        "sort_order": 212
+        "sort_order": 212,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "TETRAZINE",
@@ -3942,7 +4415,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.14",
-        "sort_order": 213
+        "sort_order": 213,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "THEOPHILLINE",
@@ -3950,7 +4425,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.29",
-        "sort_order": 214
+        "sort_order": 214,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "TINIDAZOLE",
@@ -3958,7 +4435,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.28",
-        "sort_order": 215
+        "sort_order": 215,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "TRIMETHROPRIM",
@@ -3966,7 +4445,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.18",
-        "sort_order": 216
+        "sort_order": 216,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "XYLOCAIN",
@@ -3974,7 +4455,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.10",
-        "sort_order": 217
+        "sort_order": 217,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ]
   },
@@ -4048,7 +4531,7 @@
     "clinical_significance": "Please correlate with clinical conditions."
   },
   {
-    "test_name": "SGPT ; ALANINE AMINOTRANSFERASE (ALT)",
+    "test_name": "Sgpt ; Alanine Aminotransferase (Alt)",
     "match_names": [
       "Sgpt ; Alanine Aminotransferase (Alt)",
       "SGPT ; ALANINE AMINOTRANSFERASE (ALT)"
@@ -4079,7 +4562,7 @@
       {
         "parameter_name": "SODIUM , SERUM",
         "unit": "mEq/L",
-        "method": "Electrode",
+        "method": "(Electrode)",
         "reference_range_male": "133 - 146",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -4832,7 +5315,7 @@
       {
         "parameter_name": "Typhi D -IgM",
         "unit": "OD Ratio",
-        "method": ".",
+        "method": "",
         "reference_range_male": "0.0 - 0.90",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -4855,7 +5338,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "BROWNISH",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "Form & Consistency",
@@ -4863,7 +5348,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "SEMI SOLID",
-        "sort_order": 2
+        "sort_order": 2,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "Mucus",
@@ -5031,8 +5518,8 @@
     "parameters": [
       {
         "parameter_name": "Troponin - I",
-        "unit": ".",
-        "method": ".",
+        "unit": "",
+        "method": "",
         "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -5228,7 +5715,7 @@
     "parameters": [
       {
         "parameter_name": "Anti Sm - Antibody",
-        "unit": ".",
+        "unit": "",
         "method": "IFA",
         "reference_range_male": "",
         "reference_range_female": "",
@@ -5238,8 +5725,8 @@
       },
       {
         "parameter_name": "Titre",
-        "unit": ".",
-        "method": ".",
+        "unit": "",
+        "method": "",
         "reference_range_male": "- - >1:80",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -5541,7 +6028,7 @@
       {
         "parameter_name": "Total Urine Volume",
         "unit": "ml/Day",
-        "method": ".",
+        "method": "",
         "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -5649,7 +6136,7 @@
       {
         "parameter_name": "SSA",
         "unit": "AU/mL",
-        "method": ".",
+        "method": "",
         "reference_range_male": "0.00 - 29.00",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -5672,7 +6159,7 @@
       {
         "parameter_name": "SSB",
         "unit": "AU/mL",
-        "method": ".",
+        "method": "",
         "reference_range_male": "0.00 - 29.00",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -6184,7 +6671,7 @@
       {
         "parameter_name": "Liver-Kidney Microsome (LKM) - 1 Antibody",
         "unit": "U/L",
-        "method": ".",
+        "method": "",
         "reference_range_male": "0.00 - 15.00",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -6305,8 +6792,8 @@
     "parameters": [
       {
         "parameter_name": "SICKLING",
-        "unit": ".",
-        "method": ".",
+        "unit": "",
+        "method": "",
         "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -6345,7 +6832,7 @@
       },
       {
         "parameter_name": "Final Result",
-        "unit": ".",
+        "unit": "",
         "method": "",
         "reference_range_male": "",
         "reference_range_female": "",
@@ -6381,7 +6868,9 @@
         "method": "CLIA",
         "reference_range_male": "20 - 150",
         "sample_value": "42.6",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_extra_sections": {
@@ -6549,12 +7038,24 @@
         "sort_order": 1
       },
       {
+        "parameter_name": ". Cortisol, the main glucocorticoid (representing 75%-90% of the plasma corticoids) plays a central role in glucose metabolism and in the body's response to stress. Cortisol levels are regulated by adrenocorticotropic hormone (ACTH), which is synthesized by the pituitary gland in response to corticotropin-releasing hormone (CRH). CRH is released in a cyclic fashion by the hypothalamus, resulting in diurnal peaks (6 a.m.-8 a.m.) and troughs (11 p.m.) in plasma ACTH and cortisol levels. The majority of cortisol circulates bound to cortisol-binding globulin (CBG-transcortin) and albumin. Normally, less than 5% of circulating cortisol is free (unbound). The free cortisol is the physiologically active form and is filterable by the renal glomerulus. Although hypercortisolism is uncommon, the signs and symptoms are common (eg, obesity, high blood pressure, increased blood glucose concentration). The most common cause of increased plasma cortisol levels in women is a high circulating concentration of estrogen (eg, estrogen therapy, pregnancy) resulting in increased concentration of cortisol-binding globulin. Spontaneous Cushing syndrome results from overproduction of glucocorticoids as a result of either primary adrenal disease (adenoma, carcinoma, or nodular hyperplasia) or an excess of ACTH (from a pituitary tumor or an ectopic source). ACTH-dependent Cushing syndrome due to a pituitary corticotroph adenoma is the most frequently diagnosed subtype; most commonly seen in women in the third through fifth decades of life. The onset is insidious and usually occurs 2 to 5 years before a clinical diagnosis is made. Causes of hypocortisolism are:",
+        "unit": "-Secondary adrenal insufficiency:",
+        "method": "",
+        "reference_range_male": "--Pituitary insufficiency",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "-Addison disease-primary adrenal insufficiency",
+        "sort_order": 2
+      },
+      {
         "parameter_name": "--Hypothalamic insufficiency",
         "unit": "",
         "method": "",
         "reference_range_male": "",
-        "sample_value": "-Congenital adrenal hyperplasia-defects in enzymes",
-        "sort_order": 2
+        "sample_value": "-Congenital adrenal hyperplasia-defects in enzymes involved in cortisol synthesis",
+        "sort_order": 3,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ]
   },
@@ -6682,7 +7183,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "Results",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_comments": "Condition which can cause a false negative Cultures : 1. Patient is on Antibiotics. 2. Anaerobic bacteria. 3. Fastidious aerobic bacteria which are not able to grow on routine culture media. 4. Besides all these factors, at least in 25-40 % of cases there is on direct correlation between in vivo clinincal pictures and in-vitro culture result.",
@@ -6728,7 +7231,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "Results",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_comments": "Condition which can cause a false negative Cultures : 1. Patient is on Antibiotics. 2. Anaerobic bacteria. 3. Fastidious aerobic bacteria which are not able to grow on routine culture media. 4. Besides all these factors, at least in 25-40 % of cases there is on direct correlation between in vivo clinincal pictures and in-vitro culture result.",
@@ -6836,7 +7341,7 @@
       {
         "parameter_name": "Bleeding Time",
         "unit": "MIN&SEC",
-        "method": ".",
+        "method": "",
         "reference_range_male": "2.5 - 9.5",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -6846,7 +7351,7 @@
       {
         "parameter_name": "Cloitting Time",
         "unit": "MIN&SEC",
-        "method": ".",
+        "method": "",
         "reference_range_male": "4.0 - 12.0",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -6980,7 +7485,7 @@
       {
         "parameter_name": "Marijuana",
         "unit": "",
-        "method": "-",
+        "method": "",
         "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -6990,7 +7495,7 @@
       {
         "parameter_name": "Opiate",
         "unit": "",
-        "method": "-",
+        "method": "",
         "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -7000,7 +7505,7 @@
       {
         "parameter_name": "Methadone",
         "unit": "",
-        "method": "-",
+        "method": "",
         "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -7010,7 +7515,7 @@
       {
         "parameter_name": "Fentanyl",
         "unit": "",
-        "method": "-",
+        "method": "",
         "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -7059,7 +7564,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "Giemsa Stain",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_extra_sections": {
@@ -7101,7 +7608,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "Method: DISC. DIFFUSION",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_comments": "Condition which can cause a false negative Cultures : 1. Patient is on Antibiotics. 2. Anaerobic bacteria. 3. Fastidious aerobic bacteria which are not able to grow on routine culture media. 4. Besides all these factors, at least in 25-40 % of cases there is on direct correlation between in vivo clinincal pictures and in-vitro culture result."
@@ -7145,6 +7654,16 @@
         "reference_range_child": "",
         "sample_value": "5.20",
         "sort_order": 1
+      },
+      {
+        "parameter_name": "Normal Range:",
+        "unit": "20.0-30.0 : Weak Positive",
+        "method": "",
+        "reference_range_male": "> 30.0 : Positive",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "< 20.0 : Negative",
+        "sort_order": 2
       }
     ],
     "clinical_significance": "Presence of the tissue transglutaminase (tTG) IgM antibody is associated with glutensensitive enteropathies such as celiac disease and dermatitis herpetiformis. tTG IgM antibody concentrations greater than 30 U/mL usually correlate with results of duodenal biopsies consistent with a diagnosis of celiac disease. For antibody concentrations greater or equal to 4 U/mL but less than or equal to 30 U/mL, additional testing for endomysial (EMA) IgA concentrations may improve the positive predictive value for disease."
@@ -7163,7 +7682,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "Results",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_comments": "Condition which can cause a false negative Cultures : 1. Patient is on Antibiotics. 2. Anaerobic bacteria. 3. Fastidious aerobic bacteria which are not able to grow on routine culture media. 4. Besides all these factors, at least in 25-40 % of cases there is on direct correlation between in vivo clinincal pictures and in-vitro culture result.",
@@ -7190,6 +7711,16 @@
         "sort_order": 1
       },
       {
+        "parameter_name": "< 1",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "80 NEGATIVE",
+        "sort_order": 2,
+        "reference_range_female": "",
+        "reference_range_child": ""
+      },
+      {
         "parameter_name": "Salmonella typhi H (TH)",
         "unit": "",
         "method": "Tube Agglutination",
@@ -7197,7 +7728,17 @@
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "1:40",
-        "sort_order": 2
+        "sort_order": 3
+      },
+      {
+        "parameter_name": "< 1",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "80 NEGATIVE",
+        "sort_order": 4,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "Salmonella paratyphi A, H (AH)",
@@ -7207,7 +7748,17 @@
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "1:20",
-        "sort_order": 3
+        "sort_order": 5
+      },
+      {
+        "parameter_name": "< 1",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "80 NEGATIVE",
+        "sort_order": 6,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "Salmonella paratyphi B, H (BH)",
@@ -7217,7 +7768,17 @@
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "1:20",
-        "sort_order": 4
+        "sort_order": 7
+      },
+      {
+        "parameter_name": "< 1",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "80 NEGATIVE",
+        "sort_order": 8,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_extra_sections": {
@@ -7236,18 +7797,12 @@
       {
         "parameter_name": "Human immunodeficiency virus 1 RNA Viral Load (Quantitative) PCR",
         "unit": "IU/mL",
-        "method": "Real Time PCR",
+        "method": "(Real Time PCR)",
         "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
         "sample_value": "< 39.1",
         "sort_order": 1
-      },
-      {
-        "parameter_name": "RESULT",
-        "unit": "",
-        "method": "",
-        "reference_range_male": "",
-        "sample_value": "NOT DETECTED",
-        "sort_order": 2
       }
     ],
     "report_note": ": The same assay method should be used throughout the patient’s care. It is not advisable to compare the viral loads between two different techniques. Wide variation in viral load have been observed and a clinically significant difference in viral load is 3-fold or 0.5 log10 IU/mL, changes due to use of different technologies/platforms for follow up testing. Hence, it is recommended to monitor patients using same technology. Limitation of Assay: PCR is a highly sensitive technique; common reasons for paradoxical results are contamination during specimen collection, selection of inappropriate specimen and inherent PCR inhibitors in the sample.",
@@ -7290,7 +7845,7 @@
       {
         "parameter_name": "Marijuana",
         "unit": "",
-        "method": ".",
+        "method": "",
         "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -7337,7 +7892,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "Mycobacterium Tuberculosis Complex",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_comments": "Mycobacterium tuberculosis complex & Non tuberculosis mycobacteria – Non Detected Mycobacteria not detected in the sample provided. Mycobacterium tuberculosis complex Detected Infection likely with any of the following species – Mycobacterium tuberculosis, Mycobacterium africanum, Mycobacterium bovis, Mycobacterium bovis BCG, Mycobacterium microti, Mycobacterium canettii, Mycobacterium pinnipedii and Mycobacterium mungi. Non tuberculosis mycobacteria Detected Infection likely with mycobacterium other than tuberculosis complex. Methodology: MTB/NTM detection is based on amplification of region of IS6110 and MPB64 gene of Mycoplasma tuberculosis (TB) and ITS gene of Nontuberculosis mycobacteria (NTM) and for a region of partial sequence of the Paulownia tomentosa external transcribed spacer(Internal control).",
@@ -7357,7 +7914,7 @@
       {
         "parameter_name": "Total volume",
         "unit": "ML/day",
-        "method": ".",
+        "method": "",
         "reference_range_male": "250 - 2400",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -7442,7 +7999,19 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "High risk",
-        "sort_order": 5
+        "sort_order": 5,
+        "reference_range_female": "",
+        "reference_range_child": ""
+      },
+      {
+        "parameter_name": "< 25.3",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "Low risk",
+        "sort_order": 6,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_note": ": ROMA accurately identifies 94% of the patients with pelvic mass as having ovarian cancer. ROMA has a higher sensitivity than CA 125 alone; among ten women with ovarian cancer, ROMA identifies one more patient than CA 125 alone ( sensitivity: ROMA 90% vs. CA 125 79% )",
@@ -7483,7 +8052,7 @@
       {
         "parameter_name": "Bicarbonate",
         "unit": "mmol/L",
-        "method": ".",
+        "method": "",
         "reference_range_male": "22.0 - 29.0",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -7513,7 +8082,7 @@
     ],
     "clinical_significance": "Sodium (Na+) is the primary extracellular cation. Na+ is responsible for almost one-half the osmolality of the plasma and, therefore, plays a central role in maintaining the normal distribution of water and the osmotic pressure in the extracellular fluid compartment. The amount of Na+ in the body is a reflection of the balance between Na+ intake and output. The normal daily diet contains 8 to 15 grams of sodium chloride (NaCl), which is nearly completely absorbed from the gastrointestinal tract. The body requires only 1 to 2 mmol/day, and the excess is excreted by the kidneys, which are the ultimate regulators of the amount of Na+ (and thus water) in the body. Na+ is freely filtered by the glomeruli. Approximately 70% to 80% of the filtered Na+ is actively reabsorbed in the proximal tubules with chloride and water passively following in an iso-osmotic and electrically neutral manner. Another 20% to 25% is reabsorbed in the loop of Henle along with chloride and more water. In the distal tubules, interaction of the adrenocortical hormone aldosterone with the coupled sodium-potassium and sodium-.",
     "report_extra_sections": {
-      "Reference Range": "Males - 25-301 Females--25-267"
+      "Reference Range": "AGE IN YEARS Males - 25-301 Females--25-267"
     }
   },
   {
@@ -7544,7 +8113,18 @@
       "STONE ANALYSIS KIDNEY"
     ],
     "sample_type": "Stone",
-    "parameters": []
+    "parameters": [
+      {
+        "parameter_name": "Physical Examination Colour Brownish Appearance stone with rough surface. Weight 0.5gms Grams - Biochemical Examination Calcium Present (25%) % - Oxalates Present (20%) % - Phosphates Present (20%) % - Magnesium Present 30 % - Uric Acid Present (05%)-",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "",
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
+      }
+    ]
   },
   {
     "test_name": "Synovial Fluid For Crystals",
@@ -7557,7 +8137,7 @@
       {
         "parameter_name": "Synovial Fluid for Crystals",
         "unit": "",
-        "method": ".",
+        "method": "",
         "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -7718,12 +8298,34 @@
         "sort_order": 1
       },
       {
+        "parameter_name": "<12",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "NORMAL",
+        "sort_order": 2,
+        "reference_range_female": "",
+        "reference_range_child": ""
+      },
+      {
+        "parameter_name": "12-18",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "EQUIVOCAL",
+        "sort_order": 3,
+        "reference_range_female": "",
+        "reference_range_child": ""
+      },
+      {
         "parameter_name": ">18",
         "unit": "",
         "method": "",
         "reference_range_male": "",
         "sample_value": "POSITIVE",
-        "sort_order": 2
+        "sort_order": 4,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ]
   },
@@ -7742,7 +8344,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "JAK2 V617F Qualitative PCR* Wild",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_extra_sections": {
@@ -7799,7 +8403,18 @@
       "SPUTUM FOR GRAM STAIN"
     ],
     "sample_type": "SPUTUM",
-    "parameters": []
+    "parameters": [
+      {
+        "parameter_name": "SAMPLE TYPE : SPUTUM . . - . MICROSCOPY :",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "NO MICRO-ORGANISM SEEN",
+        "sort_order": 1
+      }
+    ]
   },
   {
     "test_name": "Allergy Food And Non Veg",
@@ -7815,7 +8430,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.15",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "ANISEED",
@@ -7823,7 +8440,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.22",
-        "sort_order": 2
+        "sort_order": 2,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "APPLE",
@@ -7831,7 +8450,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.10",
-        "sort_order": 3
+        "sort_order": 3,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "ARECANUT",
@@ -7839,7 +8460,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.18",
-        "sort_order": 4
+        "sort_order": 4,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "BAJARI",
@@ -7847,7 +8470,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.16",
-        "sort_order": 5
+        "sort_order": 5,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "BANANA",
@@ -7855,7 +8480,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.47",
-        "sort_order": 6
+        "sort_order": 6,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "BARLEY",
@@ -7863,7 +8490,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.14",
-        "sort_order": 7
+        "sort_order": 7,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "BLACK PEPPER",
@@ -7871,7 +8500,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.29",
-        "sort_order": 8
+        "sort_order": 8,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "BRINJAL",
@@ -7879,7 +8510,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.23",
-        "sort_order": 9
+        "sort_order": 9,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CABBAGE",
@@ -7887,7 +8520,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.14",
-        "sort_order": 10
+        "sort_order": 10,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CAPSICUM",
@@ -7895,7 +8530,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.27",
-        "sort_order": 11
+        "sort_order": 11,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CARDIMUM",
@@ -7903,7 +8540,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.27",
-        "sort_order": 12
+        "sort_order": 12,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CARROT",
@@ -7911,7 +8550,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.22",
-        "sort_order": 13
+        "sort_order": 13,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CASHEWNUT",
@@ -7919,7 +8560,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.23",
-        "sort_order": 14
+        "sort_order": 14,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CAULIFLOWER",
@@ -7927,7 +8570,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.20",
-        "sort_order": 15
+        "sort_order": 15,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CHEESE",
@@ -7935,7 +8580,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.27",
-        "sort_order": 16
+        "sort_order": 16,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CHILLY",
@@ -7943,7 +8590,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.13",
-        "sort_order": 17
+        "sort_order": 17,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CINNAMON",
@@ -7951,7 +8600,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.22",
-        "sort_order": 18
+        "sort_order": 18,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CLOVE",
@@ -7959,7 +8610,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.14",
-        "sort_order": 19
+        "sort_order": 19,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "COCOA",
@@ -7967,7 +8620,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.14",
-        "sort_order": 20
+        "sort_order": 20,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "COCONUT",
@@ -7975,7 +8630,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.19",
-        "sort_order": 21
+        "sort_order": 21,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "COFFEE",
@@ -7983,7 +8640,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.18",
-        "sort_order": 22
+        "sort_order": 22,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CORIANDER",
@@ -7991,7 +8650,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.19",
-        "sort_order": 23
+        "sort_order": 23,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "COTTON SEED",
@@ -7999,7 +8660,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.21",
-        "sort_order": 24
+        "sort_order": 24,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CUCUMBER",
@@ -8007,7 +8670,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.27",
-        "sort_order": 25
+        "sort_order": 25,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CUMMIN",
@@ -8015,7 +8680,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.20",
-        "sort_order": 26
+        "sort_order": 26,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CURD",
@@ -8023,7 +8690,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.30",
-        "sort_order": 27
+        "sort_order": 27,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "DAL ARHAR",
@@ -8031,7 +8700,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.13",
-        "sort_order": 28
+        "sort_order": 28,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "DAL CHANA",
@@ -8039,7 +8710,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.14",
-        "sort_order": 29
+        "sort_order": 29,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "DAL MASOOR",
@@ -8047,7 +8720,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.26",
-        "sort_order": 30
+        "sort_order": 30,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "DAL MOONG",
@@ -8055,7 +8730,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.12",
-        "sort_order": 31
+        "sort_order": 31,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "DAL RAJMA",
@@ -8063,7 +8740,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.30",
-        "sort_order": 32
+        "sort_order": 32,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "DAL URAD",
@@ -8071,7 +8750,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.87",
-        "sort_order": 33
+        "sort_order": 33,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "DATES",
@@ -8079,7 +8760,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.30",
-        "sort_order": 34
+        "sort_order": 34,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "EGGS",
@@ -8087,7 +8770,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.10",
-        "sort_order": 35
+        "sort_order": 35,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "FENUGREEK",
@@ -8095,7 +8780,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.30",
-        "sort_order": 36
+        "sort_order": 36,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "GARLIC",
@@ -8103,7 +8790,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.24",
-        "sort_order": 37
+        "sort_order": 37,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "GINGER",
@@ -8111,7 +8800,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.21",
-        "sort_order": 38
+        "sort_order": 38,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "GRAPES",
@@ -8119,7 +8810,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.21",
-        "sort_order": 39
+        "sort_order": 39,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "GROUNDNUT",
@@ -8127,7 +8820,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.14",
-        "sort_order": 40
+        "sort_order": 40,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "GUVAVA",
@@ -8135,7 +8830,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.10",
-        "sort_order": 41
+        "sort_order": 41,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "HONEY",
@@ -8143,7 +8840,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.21",
-        "sort_order": 42
+        "sort_order": 42,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "JAGGERY",
@@ -8151,7 +8850,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.19",
-        "sort_order": 43
+        "sort_order": 43,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "KATHA",
@@ -8159,7 +8860,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.27",
-        "sort_order": 44
+        "sort_order": 44,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "LADY S FINGER",
@@ -8167,7 +8870,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.28",
-        "sort_order": 45
+        "sort_order": 45,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "LEMON",
@@ -8175,7 +8880,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.27",
-        "sort_order": 46
+        "sort_order": 46,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "MAIZE",
@@ -8183,7 +8890,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.27",
-        "sort_order": 47
+        "sort_order": 47,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "MANGO",
@@ -8191,7 +8900,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.30",
-        "sort_order": 48
+        "sort_order": 48,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "MELON",
@@ -8199,7 +8910,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.25",
-        "sort_order": 49
+        "sort_order": 49,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "MILK",
@@ -8207,7 +8920,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.23",
-        "sort_order": 50
+        "sort_order": 50,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "MSG ( AJINOMOTO)",
@@ -8215,7 +8930,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "1.54",
-        "sort_order": 51
+        "sort_order": 51,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "MUSHROOM",
@@ -8223,7 +8940,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "1.65",
-        "sort_order": 52
+        "sort_order": 52,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "MUSTARD",
@@ -8231,7 +8950,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.28",
-        "sort_order": 53
+        "sort_order": 53,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "NUTMEG",
@@ -8239,7 +8960,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.22",
-        "sort_order": 54
+        "sort_order": 54,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "OAT",
@@ -8247,7 +8970,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.22",
-        "sort_order": 55
+        "sort_order": 55,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "ONION",
@@ -8255,7 +8980,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.21",
-        "sort_order": 56
+        "sort_order": 56,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "ORANGE",
@@ -8263,7 +8990,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.20",
-        "sort_order": 57
+        "sort_order": 57,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "PAPAYA",
@@ -8271,7 +9000,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.23",
-        "sort_order": 58
+        "sort_order": 58,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "PEAS",
@@ -8279,7 +9010,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.15",
-        "sort_order": 59
+        "sort_order": 59,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "PINEAPPLE",
@@ -8287,7 +9020,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.28",
-        "sort_order": 60
+        "sort_order": 60,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "PISTA",
@@ -8295,7 +9030,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.25",
-        "sort_order": 61
+        "sort_order": 61,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "POTATO",
@@ -8303,7 +9040,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.20",
-        "sort_order": 62
+        "sort_order": 62,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "RADISH",
@@ -8311,7 +9050,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.10",
-        "sort_order": 63
+        "sort_order": 63,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "RICE",
@@ -8319,7 +9060,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.10",
-        "sort_order": 64
+        "sort_order": 64,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "SALT",
@@ -8327,7 +9070,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.10",
-        "sort_order": 65
+        "sort_order": 65,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "SESAME",
@@ -8335,7 +9080,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.13",
-        "sort_order": 66
+        "sort_order": 66,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "SOYABEAN",
@@ -8343,7 +9090,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.13",
-        "sort_order": 67
+        "sort_order": 67,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "SPINACH",
@@ -8351,7 +9100,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.20",
-        "sort_order": 68
+        "sort_order": 68,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "SQUASH",
@@ -8359,7 +9110,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.28",
-        "sort_order": 69
+        "sort_order": 69,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "STRAW BERRY",
@@ -8367,7 +9120,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.11",
-        "sort_order": 70
+        "sort_order": 70,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "SUGAR",
@@ -8375,7 +9130,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.24",
-        "sort_order": 71
+        "sort_order": 71,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "SUNFLOWER",
@@ -8383,7 +9140,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.18",
-        "sort_order": 72
+        "sort_order": 72,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "TAMARIND",
@@ -8391,7 +9150,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.29",
-        "sort_order": 73
+        "sort_order": 73,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "TEA",
@@ -8399,7 +9160,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.16",
-        "sort_order": 74
+        "sort_order": 74,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "TOBACCO",
@@ -8407,7 +9170,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.21",
-        "sort_order": 75
+        "sort_order": 75,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "TOMATOES",
@@ -8415,7 +9180,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.16",
-        "sort_order": 76
+        "sort_order": 76,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "TURMERIC",
@@ -8423,7 +9190,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.21",
-        "sort_order": 77
+        "sort_order": 77,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "VINEGAR",
@@ -8431,7 +9200,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.20",
-        "sort_order": 78
+        "sort_order": 78,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "WALNUT",
@@ -8439,7 +9210,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.20",
-        "sort_order": 79
+        "sort_order": 79,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "WHEAT",
@@ -8447,7 +9220,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.14",
-        "sort_order": 80
+        "sort_order": 80,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "YEAST",
@@ -8455,7 +9230,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.77",
-        "sort_order": 81
+        "sort_order": 81,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "BEEF",
@@ -8463,7 +9240,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.10",
-        "sort_order": 82
+        "sort_order": 82,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CHICKEN MEAT",
@@ -8471,7 +9250,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "1.58",
-        "sort_order": 83
+        "sort_order": 83,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "CRAB",
@@ -8479,7 +9260,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.14",
-        "sort_order": 84
+        "sort_order": 84,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "MUTTON",
@@ -8487,7 +9270,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.10",
-        "sort_order": 85
+        "sort_order": 85,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "PORK",
@@ -8495,7 +9280,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.18",
-        "sort_order": 86
+        "sort_order": 86,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "PRAWN",
@@ -8503,7 +9290,9 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.11",
-        "sort_order": 87
+        "sort_order": 87,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "SHRIMP",
@@ -8511,12 +9300,14 @@
         "method": "ELISA",
         "reference_range_male": "< 0.35",
         "sample_value": "0.24",
-        "sort_order": 88
+        "sort_order": 88,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ]
   },
   {
-    "test_name": "Blood C/S Bactec Aerobic",
+    "test_name": "Blood C/s Bactec Aerobic",
     "match_names": [
       "Blood C/s Bactec Aerobic",
       "Blood C/S Bactec Aerobic",
@@ -8525,12 +9316,14 @@
     "sample_type": "Heparin",
     "parameters": [
       {
-        "parameter_name": "Blood C/S Bactec Aerobic",
+        "parameter_name": "Blood C/s Bactec Aerobic",
         "unit": "",
         "method": "",
         "reference_range_male": "",
-        "sample_value": "Preliminary Report ‎- No bacterial growth was obse",
-        "sort_order": 1
+        "sample_value": "Preliminary Report ‎- No bacterial growth was observed after ‎48 ‎hours of ‎ aerobic incubation‎.",
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_note": "‎ -"
@@ -8634,13 +9427,24 @@
       "HISTOPATHOLOGY (S)"
     ],
     "sample_type": "Tissue",
-    "parameters": [],
+    "parameters": [
+      {
+        "parameter_name": "BIOPSY-14978/26 NOS-ENDOMETRIAL TISSUE FOR HPE. GROSS- RECEIVED TINY GRAY BROWN TISSUE BIT MEASURING 0.5X0.5 CM, ,ALL EMBEDED IN ONE BLOCK. MICROSCOPIC PICTURE-SMEARS STUDIED SHOWS CYSTICALLY DILATED GLANDS (> 2X NORMAL SIZE) RANDOMLY INTERSPERSED AMONG PROLIFERATIVE ENDOMETRIAL GLANDS DILATED GLANDS WITH IRREGULAR SHAPE (BRANCHED, CONVOLUTED, SCALLOPED OUTER CONTOURS)",
+        "unit": "RELATIVELY NORMAL GLAND TO STROMA RATIO (GLANDS OCCUPY < 50% OF THE SURFACE AREA)",
+        "method": "",
+        "reference_range_male": "METAPLASTIC CHANGES PRESENT, INCLUDING TUBAL METAPLASIA,",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "> 10% OF OVERALL GLANDS",
+        "sort_order": 1
+      }
+    ],
     "report_extra_sections": {
       "IMPRESSION": "- SUGGESTIVE OF PROLIFERATIVE PHASE WITH DISORDERED PROLIFERATION . COMMENT- KINDLY CORRELATE CLINICALLY."
     }
   },
   {
-    "test_name": "Pus C/S Bactec Aerobic",
+    "test_name": "Pus C/s BACTEC Aerobic",
     "match_names": [
       "Pus C/s BACTEC Aerobic",
       "Pus C/S Bactec Aerobic",
@@ -8649,12 +9453,14 @@
     "sample_type": "PUS",
     "parameters": [
       {
-        "parameter_name": "Pus C/S Bactec Aerobic",
+        "parameter_name": "Pus C/s BACTEC Aerobic",
         "unit": "",
         "method": "",
         "reference_range_male": "",
-        "sample_value": "Preliminary Report ‎- No bacterial growth was obse",
-        "sort_order": 1
+        "sample_value": "Preliminary Report ‎- No bacterial growth was observed after ‎48 ‎hours of ‎ aerobic incubation‎.",
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_note": "‎ -"
@@ -8668,6 +9474,16 @@
     "sample_type": "Serum",
     "parameters": [
       {
+        "parameter_name": "FLOURESCENCE NOT SEEN . . - NOT SEEN INTENSITY NIL . . - NIL TITER",
+        "unit": "",
+        "method": "",
+        "reference_range_male": ". - 1:80",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "1:80",
+        "sort_order": 1
+      },
+      {
         "parameter_name": "HEp-2 PATTERN NIL . . - NIL RESULTS",
         "unit": "",
         "method": "",
@@ -8675,7 +9491,7 @@
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "NEGATIVE",
-        "sort_order": 1
+        "sort_order": 2
       }
     ],
     "clinical_significance": "ANA are commonly found in a variety of autoimmune diseases. Antibody frequency increases with age in apparently healthy people. ANA patterns on Hep-2 slides provide only general clues about particles (chromatin, nucleosomes and spliceosomes). ANA patterns (other than centromere pattern) are not reliably correlated with the presence of specific antibodies and must be further evaluated by EIA using individual ENA antigens Please correlate with clinical conditions",
@@ -8736,7 +9552,7 @@
       {
         "parameter_name": "COMPLEMENT C4",
         "unit": "G/L",
-        "method": ".",
+        "method": "",
         "reference_range_male": "0.10 - 0.40",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -8799,7 +9615,7 @@
       {
         "parameter_name": "COLOUR COLOURLESS . . - . QUANTITY",
         "unit": "ML",
-        "method": ".",
+        "method": "",
         "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -8807,14 +9623,34 @@
         "sort_order": 1
       },
       {
+        "parameter_name": "SAMPLE TYPE CSF . . - . AFB STAIN NOT SEEN . . - . OTHERS . . . - . POLYMORPHS",
+        "unit": "%",
+        "method": "",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "00",
+        "sort_order": 2
+      },
+      {
         "parameter_name": "LYMPHOCYTES",
         "unit": "%",
-        "method": ".",
+        "method": "",
         "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "100",
-        "sort_order": 2
+        "sort_order": 3
+      },
+      {
+        "parameter_name": "RBC'S NIL . . - . Total Leucocyte Count(TLC)",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "314",
+        "sort_order": 4
       },
       {
         "parameter_name": "CHLORIDES",
@@ -8824,7 +9660,7 @@
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "110.2",
-        "sort_order": 3
+        "sort_order": 5
       },
       {
         "parameter_name": "PROTEINS",
@@ -8834,7 +9670,7 @@
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "0.05",
-        "sort_order": 4
+        "sort_order": 6
       },
       {
         "parameter_name": "GLUCOSE",
@@ -8844,17 +9680,17 @@
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "98.6",
-        "sort_order": 5
+        "sort_order": 7
       },
       {
         "parameter_name": "SPECIFIC GRAVITY",
         "unit": "",
-        "method": ".",
+        "method": "",
         "reference_range_male": "1.020 : EXUDATES",
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "1.020",
-        "sort_order": 6
+        "sort_order": 8
       },
       {
         "parameter_name": "PH",
@@ -8864,7 +9700,17 @@
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "7.0",
-        "sort_order": 7
+        "sort_order": 9
+      },
+      {
+        "parameter_name": "COAGULUM ABSENT . . - . APPEARANCE SLIGHTLY HAZY . . - . GRAM STAIN NO- MICRO ORGANISM SEEN . . - .",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "",
+        "sort_order": 10,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ]
   },
@@ -8903,7 +9749,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_extra_sections": {
@@ -9241,7 +10089,8 @@
     "test_name": "Fibrinogen",
     "match_names": [
       "Fibrinogen",
-      "FIBRINOGEN"
+      "FIBRINOGEN",
+      "HY Coagulation Profile -1"
     ],
     "sample_type": "Citrated Plasma",
     "parameters": [
@@ -9271,8 +10120,10 @@
         "unit": "",
         "method": "",
         "reference_range_male": "",
-        "sample_value": "INTERNATIONAL SYSTEM FOR REPORTING FLUID CYTOPATHO",
-        "sort_order": 1
+        "sample_value": "INTERNATIONAL SYSTEM FOR REPORTING FLUID CYTOPATHOLOGY-",
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_extra_sections": {
@@ -9294,7 +10145,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "Mycobacterium Tuberculosis",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "clinical_significance": "Result Interpretation: If result is TB negative: This indicates no tuber culosis (TB). However, if the clinical picture is strongly suggestive of TB, a repeat test can be suggested by your referring doctor. If result is TB positive, and Rifampicin resistan ce negative: This indicates tuberculosis that can be treated with commonly used drugs. Please seek assistance from the referring doctor for treatment of tuberculosis, which is a highly curable disease. If result is Rifampicin resistance positive and you have previously taken TB treatment: This indicates drug resistance - TB that is difficult to treat with commonly used drugs. Please seek assistance from the referring doctor for treatment of multidrug resistant tuberculosis (MDR TB) which requires specialized management,including additional drug-susceptibility testing. If result is Rifampicin resistance positive and you have NOT previously taken TB treatment: This may indicate drug resistance, but requires confirmation. Please seek a second test from an accredited laboratory to confirm the presence of multidrug resistant tuberculosis (MDR TB) which requires specialized management. You are entitled to FREE TB drugs from specific government TB centers and hospitals.Details are available on www.ipaqt.org. Clinical Background: GeneXpert MTB/RIF, is a rapid automated molecular test for diagnosis of Mycobacterium tuberculosis (MTB) and resistance to rifampicin (RIF) in clinical specimens. It targets rpoB gene (hot spot region) which is critical for identifying Rifampicin resistance mutations. MDR TB is defined as TB due M.tb complex,resistant to both Isoniazid & Rifampicin. Rifiampicin acts as a surrogate marker for MDR TB as 90% of rifampicin resistant strains are also isoniazid resistant."
@@ -9314,7 +10167,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "Mycobacterium Tuberculosis",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "clinical_significance": "Result Interpretation: If result is TB negative: This indicates no tuber culosis (TB). However, if the clinical picture is strongly suggestive of TB, a repeat test can be suggested by your referring doctor. If result is TB positive, and Rifampicin resistan ce negative: This indicates tuberculosis that can be treated with commonly used drugs. Please seek assistance from the referring doctor for treatment of tuberculosis, which is a highly curable disease. If result is Rifampicin resistance positive and you have previously taken TB treatment: This indicates drug resistance - TB that is difficult to treat with commonly used drugs. Please seek assistance from the referring doctor for treatment of multidrug resistant tuberculosis (MDR TB) which requires specialized management,including additional drug-susceptibility testing. If result is Rifampicin resistance positive and you have NOT previously taken TB treatment: This may indicate drug resistance, but requires confirmation. Please seek a second test from an accredited laboratory to confirm the presence of multidrug resistant tuberculosis (MDR TB) which requires specialized management. You are entitled to FREE TB drugs from specific government TB centers and hospitals.Details are available on www.ipaqt.org. Clinical Background: GeneXpert MTB/RIF, is a rapid automated molecular test for diagnosis of Mycobacterium tuberculosis (MTB) and resistance to rifampicin (RIF) in clinical specimens. It targets rpoB gene (hot spot region) which is critical for identifying Rifampicin resistance mutations. MDR TB is defined as TB due M.tb complex,resistant to both Isoniazid & Rifampicin. Rifiampicin acts as a surrogate marker for MDR TB as 90% of rifampicin resistant strains are also isoniazid resistant. Please correlate with clinical conditions"
@@ -9381,15 +10236,19 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "PUS MICROSCOPY",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "MICROSCOPY",
         "unit": "",
         "method": "",
         "reference_range_male": "",
-        "sample_value": "Smears show abundant neutrophils, necrotic debris,",
-        "sort_order": 2
+        "sample_value": "Smears show abundant neutrophils, necrotic debris, and proteinaceous background. No",
+        "sort_order": 2,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_extra_sections": {
@@ -9432,7 +10291,7 @@
       {
         "parameter_name": "Stool For Occult Blood",
         "unit": "",
-        "method": ".",
+        "method": "",
         "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -9453,7 +10312,7 @@
       {
         "parameter_name": "TROPONIN-T",
         "unit": "",
-        "method": ".",
+        "method": "",
         "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -9478,7 +10337,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "Type of Specimen",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_extra_sections": {
@@ -9500,7 +10361,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "Type of Specimen",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_extra_sections": {
@@ -9521,7 +10384,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "Type of Specimen :",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_extra_sections": {
@@ -9535,7 +10400,18 @@
       "ALBUMIN, BODY FLUID"
     ],
     "sample_type": "Body Fluid",
-    "parameters": [],
+    "parameters": [
+      {
+        "parameter_name": "Type of Fluid Ascitic fluid . . - . Albumin",
+        "unit": "g/dL",
+        "method": "",
+        "reference_range_male": ". - Not Established",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "0.58",
+        "sort_order": 1
+      }
+    ],
     "report_note": ":",
     "report_extra_sections": {
       "Reference Range": ". Physician to correlate clinically."
@@ -9553,7 +10429,7 @@
       {
         "parameter_name": "ANTI MICROSOMAL/THRYROPEROXIDASE ANTIBODY (AMA/ANTI TPO) TITRE",
         "unit": "",
-        "method": ".",
+        "method": "",
         "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -9563,7 +10439,7 @@
       {
         "parameter_name": "TITER",
         "unit": "",
-        "method": ".",
+        "method": "",
         "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -9624,7 +10500,18 @@
       "EPSTEIN BARR VIRUS ANTIBODY TO VIRAL CAPSID ANTIGEN (VCA) IGM"
     ],
     "sample_type": "Serum",
-    "parameters": [],
+    "parameters": [
+      {
+        "parameter_name": "EPSTEIN BARR VIRUS ANTIBODY TO VIRAL CAPSID ANTIGEN (VCA) IgM",
+        "unit": "U/mL",
+        "method": "EIA",
+        "reference_range_male": "0.0 - 8.0",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "6.95",
+        "sort_order": 1
+      }
+    ],
     "report_extra_sections": {
       "Reference Range": "RESULT IN U/mL REMARKS <8.00 Negative 8.00-12.00 Equivocal >12.00 Positive",
       "INTERPRETATION": "Epstein-Barr virus (EBV) is a virus that typically causes a mild to moderate illness. Blood tests for Epstein-Barr virus detect antibodies to EBV in the blood and help establish a diagnosis of EBV infection. Epstein-Barr virus causes an infection that is very common. According to the Centers for Disease Control and Prevention (CDC), most people in the United States are infected by EBV at some point in their lives. The virus is very contagious and easily passed from person to person. It is present in the saliva of infected individuals and can be spread through close contact such as kissing and through sharing utensils or cups. After initial exposure to EBV, there is a period of several weeks before associated symptoms may appear, called the incubation period. During the acute primary infection, the virus multiplies in number. This is followed by a decrease in viral numbers and resolution of symptoms, but the virus never completely goes away. Latent EBV remains in the person’s body for the rest of that person’s life and may reactivate but usually causes few problems unless the person’s immune system is significantly weakened."
@@ -9719,7 +10606,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "Type of Specimen:",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_comments": "Condition which can cause a false negative Cultures : 1. Patient is on Antibiotics. 2. Anaerobic bacteria. 3. Fastidious aerobic bacteria which are not able to grow on routine culture media. 4. Besides all these factors, at least in 25-40 % of cases there is on direct correlation between in vivo clinincal pictures and in-vitro culture result.",
@@ -9898,8 +10787,10 @@
         "unit": "",
         "method": "",
         "reference_range_male": "",
-        "sample_value": "Preliminary Report ‎- No bacterial growth was obse",
-        "sort_order": 1
+        "sample_value": "Preliminary Report ‎- No bacterial growth was observed after ‎48 ‎hours of ‎ aerobic incubation‎.",
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_note": "‎ -"
@@ -9938,7 +10829,7 @@
       {
         "parameter_name": "DENGUE NS1 RAPID",
         "unit": "",
-        "method": "-",
+        "method": "",
         "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -9979,7 +10870,18 @@
       "FLUID FOR Z-N STAIN"
     ],
     "sample_type": "Body Fluid",
-    "parameters": []
+    "parameters": [
+      {
+        "parameter_name": "TYPE OF SPECIMEN FLUID . . - . ORGANISM NOT SEEN - - - -",
+        "unit": "",
+        "method": "Z-N STAIN",
+        "reference_range_male": "",
+        "sample_value": "",
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
+      }
+    ]
   },
   {
     "test_name": "Hepatitis C Virus (HCV) IgM",
@@ -10049,7 +10951,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "≤ 0.8",
-        "sort_order": 2
+        "sort_order": 2,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "weekly positive",
@@ -10057,7 +10961,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "0.8 - 1.0",
-        "sort_order": 3
+        "sort_order": 3,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "Positive result",
@@ -10065,7 +10971,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "≥ 1.0",
-        "sort_order": 4
+        "sort_order": 4,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_extra_sections": {
@@ -10089,6 +10997,16 @@
         "reference_range_child": "",
         "sample_value": "86.5",
         "sort_order": 1
+      },
+      {
+        "parameter_name": "Comment Metanephrines and Normetanephrines collectively called Metanephrines are metabolites of Epinephrine and Norepinephrine respectively. They are elevated in catecholamine secreting tumors like Pheochromocytomas and in tumors derived from neural crest cells like Paraganglioma and Neuroblastoma. Measurement of plasma free metanephrines appears to be the best test for excluding pheochromocytoma as the test's sensitivity is approximately 96-99 %. It offers a specificity between 80-100 % and therefore relatively high rate of false positive results may be found. Several preanalytical factors may affect the test results such as exercise, posture, food, stress, hypoglycemia and certain medications etc. Due to the low prevalence of pheochromocytomas and related tumors, it is recommended to confirm elevated plasma free metanephrines with a second line test. The recommended second -line test is measurement of fractionated 24-hour urinary metanephrines. Tumoural production of 3-methoxytyramine is associated with presence of an underlying SDHB mutation and may be a biomarker of malignancy.",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "",
+        "sort_order": 2,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ]
   },
@@ -10199,12 +11117,24 @@
         "sort_order": 1
       },
       {
+        "parameter_name": "141.0 - 200.0",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "Prediabetic",
+        "sort_order": 2,
+        "reference_range_female": "",
+        "reference_range_child": ""
+      },
+      {
         "parameter_name": ">200.0",
         "unit": "",
         "method": "",
         "reference_range_male": "",
         "sample_value": "Diabetic",
-        "sort_order": 2
+        "sort_order": 3,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_extra_sections": {
@@ -10231,12 +11161,24 @@
         "sort_order": 1
       },
       {
+        "parameter_name": "141.0 - 200.0",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "Prediabetic",
+        "sort_order": 2,
+        "reference_range_female": "",
+        "reference_range_child": ""
+      },
+      {
         "parameter_name": ">200.0",
         "unit": "",
         "method": "",
         "reference_range_male": "",
         "sample_value": "Diabetic",
-        "sort_order": 2
+        "sort_order": 3,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_extra_sections": {
@@ -10297,7 +11239,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "<20",
-        "sort_order": 2
+        "sort_order": 2,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "Insufficiency",
@@ -10305,7 +11249,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "20 - 30",
-        "sort_order": 3
+        "sort_order": 3,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "Sufficiency",
@@ -10313,7 +11259,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "30 - 100",
-        "sort_order": 4
+        "sort_order": 4,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "Toxicity",
@@ -10321,7 +11269,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "> 100",
-        "sort_order": 5
+        "sort_order": 5,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_extra_sections": {
@@ -10335,7 +11285,18 @@
       "CSF AFB STAIN"
     ],
     "sample_type": "CSF",
-    "parameters": []
+    "parameters": [
+      {
+        "parameter_name": "CSF AFB STAIN NOT SEEN . - - -",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "",
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
+      }
+    ]
   },
   {
     "test_name": "DENGUE IgG,IgM,NS1 RAPID",
@@ -10391,8 +11352,10 @@
         "unit": "",
         "method": "",
         "reference_range_male": "",
-        "sample_value": "Preliminary Report ‎- No bacterial growth was obse",
-        "sort_order": 1
+        "sample_value": "Preliminary Report ‎- No bacterial growth was observed after ‎48 ‎hours of ‎ aerobic incubation‎.",
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_note": "‎ -"
@@ -10434,7 +11397,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "TEST NAME",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_comments": "All immunohistochemistry markers have been evaluated in the context of appropriate positive and negative controls. A result is considered uninterpretable as a result of the type of fixative used (non 10% neutral buffered formalin), time to fixation (> 1 hour), duration of fixation (> 6 hr or <72 hour), strong decalcification, or inappropriate staining of normal internal or external assay controls. An alternative sample for retesting is then usually recommended. These assays",
@@ -10517,7 +11482,8 @@
     "test_name": "Lp-Pla2",
     "match_names": [
       "Lp-Pla2",
-      "LP-PLA2"
+      "LP-PLA2",
+      "HY HEART ADVANCED"
     ],
     "sample_type": "Serum",
     "parameters": [
@@ -10542,7 +11508,18 @@
       "OT MICROBIOLOGICAL SURVEILLANCE PANEL (BACTERIAL & FUNGAL), 5 SWABS"
     ],
     "sample_type": "OT Swabs",
-    "parameters": []
+    "parameters": [
+      {
+        "parameter_name": "AC -Aerobic Culture No growth . . - . AC Fungal Culture No growth . . - . Trolley -Aerobic Culture No growth . . - . Trolley- Fungal Culture No growth . . - . OT Light -Aerobic Culture No growth . . - . OT Light - Fungal Culture No growth . . - . Table-Aerobic Culture No growth . . - . Table-Fungal Culture No growth . . - . Boyles machine-Aerobic Culture No growth . . - . Boyles machine-Fungal Culture No growth . . - .",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "",
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
+      }
+    ]
   },
   {
     "test_name": "Ra,Aso,CRP",
@@ -10581,6 +11558,16 @@
         "reference_range_child": "",
         "sample_value": "1.7",
         "sort_order": 3
+      },
+      {
+        "parameter_name": ". The test detects rheumatoid factor (RF) in your blood. This protein is part of a normal immunogenic response to the presence of a foreign entity, such as bacteria or a virus, forming a complex that the immune system can remove. Antistreptolysin O (ASO) is an antibody targeted against streptolysin O, a toxic enzyme produced by group A Streptococcus bacteria. ASO and anti-DNase B are the most common of several antibodies that are produced by the body’s immune system in response to a strep infection with group A Streptococcus. This test measures the amount of ASO in the blood. A c-reactive protein test measures the level of c-reactive protein (CRP) in a sample of your blood. CRP is a protein that your liver makes. Normally, you have low levels of c-reactive protein in your blood. Your liver releases more CRP into your bloodstream if you have inflammation in your body. High levels of CRP may mean you have a serious health condition that causes inflammation.",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "",
+        "sort_order": 4,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ]
   },
@@ -10597,14 +11584,16 @@
         "unit": "",
         "method": "",
         "reference_range_male": "",
-        "sample_value": "Preliminary Report ‎- No bacterial growth was obse",
-        "sort_order": 1
+        "sample_value": "Preliminary Report ‎- No bacterial growth was observed after ‎24 ‎hours of ‎ aerobic incubation‎.",
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_note": "‎"
   },
   {
-    "test_name": "Tissue Cytology",
+    "test_name": "tissue Cytology",
     "match_names": [
       "tissue Cytology",
       "Tissue Cytology",
@@ -10618,15 +11607,19 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "Tissue Cytology.",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "MICROSCOPY",
         "unit": "",
         "method": "",
         "reference_range_male": "",
-        "sample_value": "Smear studied shows moderate cellularity comprisin",
-        "sort_order": 2
+        "sample_value": "Smear studied shows moderate cellularity comprising of lymphocytes-60% and",
+        "sort_order": 2,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_extra_sections": {
@@ -10644,7 +11637,7 @@
       {
         "parameter_name": "TISSUE FOR GRAM STAIN",
         "unit": "",
-        "method": ".",
+        "method": "",
         "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -10731,6 +11724,16 @@
         "reference_range_child": "",
         "sample_value": "POSITIVE",
         "sort_order": 2
+      },
+      {
+        "parameter_name": ". Typhoid IgG and IgM tests are blood tests used to diagnose typhoid fever. IgG and IgM are types of antibodies produced by the immune system in response to an infection. IgM antibodies are produced first, followed by IgG antibodies. The presence of these antibodies in the blood indicates that the body has been exposed to the Salmonella typhi bacteria. Typhoid IgM Test The typhoid IgM test is used to detect the presence of IgM antibodies in the blood. IgM antibodies are produced in the early stages of the infection, usually within 1-2 weeks after exposure to the bacteria. A positive result on the typhoid IgM test indicates that the individual is currently infected with the Salmonella typhi bacteria. The test is highly specific, meaning that it rarely gives false-positive results. Typhoid IgG Test The typhoid IgG test is used to detect the presence of IgG antibodies in the blood. IgG antibodies are produced in the later stages of the infection, usually after 2-3 weeks. A positive result on the typhoid IgG test indicates that the individual has been exposed to the Salmonella typhi bacteria in the past and has developed immunity against it. The test is less specific than the typhoid IgM test, meaning that it can sometimes give false-positive results",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "sample_value": "",
+        "sort_order": 3,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ]
   },
@@ -10748,14 +11751,18 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "1",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
-        "parameter_name": "VDRL TITER 1",
+        "parameter_name": "NON REACTIVE - - - - VDRL TITER 1:2",
         "unit": "",
         "method": "",
         "reference_range_male": "",
-        "sample_value": "4",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "NON REACTIVE",
         "sort_order": 2
       },
       {
@@ -10763,8 +11770,40 @@
         "unit": "",
         "method": "",
         "reference_range_male": "",
+        "sample_value": "4",
+        "sort_order": 3,
+        "reference_range_female": "",
+        "reference_range_child": ""
+      },
+      {
+        "parameter_name": "NON REACTIVE - - - - VDRL TITER 1:8",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "NON REACTIVE",
+        "sort_order": 4
+      },
+      {
+        "parameter_name": "VDRL TITER 1",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
         "sample_value": "16",
-        "sort_order": 3
+        "sort_order": 5,
+        "reference_range_female": "",
+        "reference_range_child": ""
+      },
+      {
+        "parameter_name": "NON REACTIVEN - - - - VDRL TITER 1:32",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "NON REACTIVE",
+        "sort_order": 6
       },
       {
         "parameter_name": "VDRL TITER 1",
@@ -10772,7 +11811,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "64",
-        "sort_order": 4
+        "sort_order": 7,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_extra_sections": {
@@ -10846,7 +11887,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "< 0.9",
-        "sort_order": 2
+        "sort_order": 2,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "Borderline",
@@ -10854,7 +11897,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "0.91 - 1.2",
-        "sort_order": 3
+        "sort_order": 3,
+        "reference_range_female": "",
+        "reference_range_child": ""
       },
       {
         "parameter_name": "High",
@@ -10862,7 +11907,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "> 1.2",
-        "sort_order": 4
+        "sort_order": 4,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "clinical_significance": "dsDNA antibodies are detectable in approximately 85% of patients with untreated SLE, and are rarely detectable in other connective tissue diseases. Weakly positive results caused by low-avidity antibodies to dsDNA are not specific for SLE and can occur in a variety of diseases. Testing for IgG antibodies to dsDNA is indicated in patients who have a positive test for antinuclear antibodies (ANA) along with signs and symptoms that are compatible with the diagnosis of SLE.(2) If the ANA test is negative, there is no reason to test for antibodies to dsDNA.(2) The levels of IgG antibodies to dsDNA in serum are known to fluctuate with disease activity in lupus erythematosus, often increasing prior to an increase in inflammation and decreasing in response to therapy. Please correlate with clinical conditions."
@@ -10921,7 +11968,7 @@
       {
         "parameter_name": "QUANTITY",
         "unit": "ML",
-        "method": ".",
+        "method": "",
         "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -10929,24 +11976,44 @@
         "sort_order": 1
       },
       {
+        "parameter_name": "COLOUR PALE YELLOW . . - . SAMPLE TYPE SYNOVIAL FLUID . . - . GRAM STAIN",
+        "unit": "",
+        "method": "",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "NO MICRO-ORGANISM SEEN",
+        "sort_order": 2
+      },
+      {
+        "parameter_name": "AFB STAIN NOT SEEN . . - . OTHERS . . . - . RBC'S NIL . . - . LYMPHOCYTES",
+        "unit": "%",
+        "method": "",
+        "reference_range_male": "",
+        "reference_range_female": "",
+        "reference_range_child": "",
+        "sample_value": "80",
+        "sort_order": 3
+      },
+      {
         "parameter_name": "POLYMORPHS",
         "unit": "%",
-        "method": ".",
+        "method": "",
         "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "20",
-        "sort_order": 2
+        "sort_order": 4
       },
       {
         "parameter_name": "Total Leucocyte Count(TLC)",
         "unit": "",
-        "method": ".",
+        "method": "",
         "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "326",
-        "sort_order": 3
+        "sort_order": 5
       },
       {
         "parameter_name": "CHLORIDES",
@@ -10956,7 +12023,7 @@
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "106.50",
-        "sort_order": 4
+        "sort_order": 6
       },
       {
         "parameter_name": "PROTEINS",
@@ -10966,7 +12033,7 @@
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "2.50",
-        "sort_order": 5
+        "sort_order": 7
       },
       {
         "parameter_name": "GLUCOSE",
@@ -10976,17 +12043,17 @@
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "100.6",
-        "sort_order": 6
+        "sort_order": 8
       },
       {
         "parameter_name": "SPECIFIC GRAVITY",
         "unit": "",
-        "method": ".",
+        "method": "",
         "reference_range_male": "1.020 EXUDATES",
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "1.025",
-        "sort_order": 7
+        "sort_order": 9
       },
       {
         "parameter_name": "PH",
@@ -10996,7 +12063,7 @@
         "reference_range_female": "",
         "reference_range_child": "",
         "sample_value": "7.0",
-        "sort_order": 8
+        "sort_order": 10
       }
     ],
     "report_extra_sections": {
@@ -11018,7 +12085,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "Mycobacterium Tuberculosis",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "clinical_significance": "Result Interpretation: If result is TB negative: This indicates no tuber culosis (TB). However, if the clinical picture is strongly suggestive of TB, a repeat test can be suggested by your referring doctor. If result is TB positive, and Rifampicin resistan ce negative: This indicates tuberculosis that can be treated with commonly used drugs. Please seek assistance from the referring doctor for treatment of tuberculosis, which is a highly curable disease. If result is Rifampicin resistance positive and you have previously taken TB treatment: This indicates drug resistance - TB that is difficult to treat with commonly used drugs. Please seek assistance from the referring doctor for treatment of multidrug resistant tuberculosis (MDR TB) which requires specialized management,including additional drug-susceptibility testing. If result is Rifampicin resistance positive and you have NOT previously taken TB treatment: This may indicate drug resistance, but requires confirmation. Please seek a second test from an accredited laboratory to confirm the presence of multidrug resistant tuberculosis (MDR TB) which requires specialized management. You are entitled to FREE TB drugs from specific government TB centers and hospitals.Details are available on www.ipaqt.org. Clinical Background: GeneXpert MTB/RIF, is a rapid automated molecular test for diagnosis of Mycobacterium tuberculosis (MTB) and resistance to rifampicin (RIF) in clinical specimens. It targets rpoB gene (hot spot region) which is critical for identifying Rifampicin resistance mutations. MDR TB is defined as TB due M.tb complex,resistant to both Isoniazid & Rifampicin. Rifiampicin acts as a surrogate marker for MDR TB as 90% of rifampicin resistant strains are also isoniazid resistant."
@@ -11103,7 +12172,7 @@
       {
         "parameter_name": "sickle cell",
         "unit": "",
-        "method": ".",
+        "method": "",
         "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -11126,8 +12195,10 @@
         "unit": "",
         "method": "",
         "reference_range_male": "",
-        "sample_value": "",
-        "sort_order": 1
+        "sample_value": "BIOPSY-15137/26",
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_extra_sections": {
@@ -11138,14 +12209,15 @@
     "test_name": "Vdrl (Rapid)",
     "match_names": [
       "Vdrl (Rapid)",
-      "VDRL (RAPID)"
+      "VDRL (RAPID)",
+      "HY ANC ADVANCE"
     ],
     "sample_type": "Serum",
     "parameters": [
       {
         "parameter_name": "Vdrl",
         "unit": "",
-        "method": ".",
+        "method": "",
         "reference_range_male": "",
         "reference_range_female": "",
         "reference_range_child": "",
@@ -11169,7 +12241,9 @@
         "method": "",
         "reference_range_male": "",
         "sample_value": "Giemsa Stain",
-        "sort_order": 1
+        "sort_order": 1,
+        "reference_range_female": "",
+        "reference_range_child": ""
       }
     ],
     "report_extra_sections": {

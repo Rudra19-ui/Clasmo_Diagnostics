@@ -11,6 +11,8 @@ import DiscountReason from './pages/admin/DiscountReason';
 import DiscountAuthority from './pages/admin/DiscountAuthority';
 import WhatsAppLogger from './pages/admin/WhatsAppLogger';
 import ExpenseType from './pages/admin/ExpenseType';
+import Notes from './pages/admin/Notes';
+import TestDetails from './pages/admin/TestDetails';
 import CollectionCenterManagement from './pages/admin/CollectionCenterManagement';
 import DoctorManagement from './pages/admin/DoctorManagement';
 import PatientManagement from './pages/admin/PatientManagement';
@@ -315,7 +317,8 @@ export default function App() {
           />
           <Route path="/test-result" element={<ProtectedRoute allowedRoles={TECHNICIAN_REPORT_ROLES}><TestResult /></ProtectedRoute>} />
           <Route path="/portfolio/test-list" element={<ProtectedRoute allowedRoles={TEST_PORTFOLIO_ROLES}><TestList /></ProtectedRoute>} />
-          <Route path="/portfolio/test-profile" element={<ProtectedRoute allowedRoles={TEST_PORTFOLIO_ROLES}><TestProfile /></ProtectedRoute>} />
+          <Route path="/portfolio/test-profile" element={<ProtectedRoute requirePermission="test_profile"><TestProfile /></ProtectedRoute>} />
+          <Route path="/admin/test-profile" element={<Navigate to="/portfolio/test-profile" replace />} />
           <Route path="/portfolio/sample-report" element={<ProtectedRoute allowedRoles={TEST_PORTFOLIO_ROLES}><SampleReport /></ProtectedRoute>} />
           <Route path="/user-signup" element={<ProtectedRoute allowedRoles={USER_CREATOR_ROLES}><UserSignUp /></ProtectedRoute>} />
           <Route path="/enquire-box" element={<ProtectedRoute adminOnly><EnquireBox /></ProtectedRoute>} />
@@ -331,7 +334,11 @@ export default function App() {
           <Route path="/admin/discount-reason" element={<ProtectedRoute allowedRoles={ALL_ROLES}><DiscountReason /></ProtectedRoute>} />
           <Route path="/admin/discount-authority" element={<ProtectedRoute allowedRoles={ALL_ROLES}><DiscountAuthority /></ProtectedRoute>} />
           <Route path="/admin/whatsapp-logger" element={<ProtectedRoute allowedRoles={ALL_ROLES}><WhatsAppLogger /></ProtectedRoute>} />
-          <Route path="/admin/expense-type" element={<ProtectedRoute allowedRoles={ALL_ROLES}><ExpenseType /></ProtectedRoute>} />
+          <Route path="/expense-type" element={<ProtectedRoute requirePermission="expense_type"><ExpenseType /></ProtectedRoute>} />
+          <Route path="/admin/expense-type" element={<Navigate to="/expense-type" replace />} />
+          <Route path="/notes" element={<ProtectedRoute requirePermission="notes"><Notes /></ProtectedRoute>} />
+          <Route path="/admin/notes" element={<Navigate to="/notes" replace />} />
+          <Route path="/admin/test-details" element={<ProtectedRoute allowedRoles={ALL_ROLES}><TestDetails /></ProtectedRoute>} />
           <Route path="/admin/collection-center-management" element={<ProtectedRoute allowedRoles={ALL_ROLES}><CollectionCenterManagement /></ProtectedRoute>} />
           <Route path="/admin/doctor-management" element={<ProtectedRoute allowedRoles={ALL_ROLES}><DoctorManagement /></ProtectedRoute>} />
           <Route path="/admin/patient-management" element={<ProtectedRoute allowedRoles={ALL_ROLES}><PatientManagement /></ProtectedRoute>} />
@@ -345,7 +352,7 @@ export default function App() {
           <Route path="/admin/franchise-bulk-pricing" element={<ProtectedRoute allowedRoles={ADMIN_ROLES}><FranchiseBulkPricing /></ProtectedRoute>} />
           <Route path="/admin/franchise-transfer-pricing" element={<ProtectedRoute allowedRoles={ADMIN_ROLES}><FranchiseTransferPricing /></ProtectedRoute>} />
           {getAllAdminModules()
-            .filter((module) => !['change-password', 'role-management', 'membership', 'collection-center-boy', 'discount-reason', 'discount-authority', 'whatsapp-logger', 'expense-type', 'collection-center-management', 'doctor-management', 'patient-management', 'lab-configuration', 'services-in-area', 'create-activity', 'activities', 'franchise-pricing-credits'].includes(module.slug))
+            .filter((module) => !['change-password', 'role-management', 'membership', 'collection-center-boy', 'discount-reason', 'discount-authority', 'whatsapp-logger', 'expense-type', 'notes', 'test-details', 'test-profile', 'collection-center-management', 'doctor-management', 'patient-management', 'lab-configuration', 'services-in-area', 'create-activity', 'activities', 'franchise-pricing-credits'].includes(module.slug))
             .map((module) => (
             <Route
               key={module.slug}

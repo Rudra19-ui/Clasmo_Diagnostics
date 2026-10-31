@@ -16,6 +16,20 @@ DEFAULT_JSON = (
 )
 
 
+_PLACEHOLDER_VALUES = {
+    '.',
+    '-',
+    '- - -',
+    '. - .',
+    '–',
+    '—',
+    'N/A',
+    'NA',
+    '..',
+    '. .',
+}
+
+
 def _norm(name: str) -> str:
     text = (name or '').lower()
     text = text.replace('&', ' and ')
@@ -23,28 +37,77 @@ def _norm(name: str) -> str:
     return re.sub(r'\s+', ' ', text).strip()
 
 
-def find_test_by_names(names: list[str]) -> Test | None:
+def _clean_field(value: str | None, max_len: int) -> str:
+    text = (value or '').strip()
+    if not text or text in _PLACEHOLDER_VALUES or re.fullmatch(r'[.\-\s–—]+', text):
+        return ''
+    return text[:max_len]
+
+
+def _is_usable_parameter_name(name: str) -> bool:
+    text = (name or '').strip()
+    if len(text) < 2:
+        return False
+    # Parsed result fragments / range crumbs that are not real parameters.
+    if re.fullmatch(r'[<>]=?\s*\d+(\.\d+)?', text):
+        return False
+    if re.fullmatch(r'\d+(\.\d+)?', text):
+        return False
+    if text.upper() in {
+        'RESULT',
+        'UNITS',
+        'UNIT',
+        'METHOD',
+        'RANGE',
+        'TEST DESCRIPTION',
+        'BIOLOGICAL REFERENCE RANGE',
+    }:
+        return False
+    return True
+
+
+def find_test_by_names(names: list[str], catalog: list[Test] | None = None) -> Test | None:
     cleaned = [n.strip() for n in names if (n or '').strip()]
     if not cleaned:
         return None
 
+    if catalog is None:
+        for name in cleaned:
+            hit = Test.objects.filter(name__iexact=name).first()
+            if hit:
+                return hit
+
+        for name in cleaned:
+            hit = Test.objects.filter(name__icontains=name).first()
+            if hit:
+                return hit
+
+        catalog = list(Test.objects.all().only('id', 'name', 'short_name', 'test_code'))
+
+    lower_exact = { (t.name or '').strip().lower(): t for t in catalog if (t.name or '').strip() }
     for name in cleaned:
-        hit = Test.objects.filter(name__iexact=name).first()
+        hit = lower_exact.get(name.lower())
         if hit:
             return hit
 
     for name in cleaned:
-        hit = Test.objects.filter(name__icontains=name).first()
-        if hit:
-            return hit
+        needle = name.lower()
+        for test in catalog:
+            if needle and needle in (test.name or '').lower():
+                return test
 
     norms = {_norm(n) for n in cleaned}
-    for test in Test.objects.all().only('id', 'name', 'short_name', 'test_code'):
+    indexed: list[tuple[Test, set[str], str]] = []
+    for test in catalog:
         candidates = {_norm(test.name), _norm(test.short_name), _norm(test.test_code)}
+        indexed.append((test, candidates, _norm(test.name)))
+
+    for test, candidates, name_norm in indexed:
         if candidates & norms:
             return test
+    for test, _candidates, name_norm in indexed:
         for n in norms:
-            if n and (n in _norm(test.name) or _norm(test.name) in n):
+            if n and (n in name_norm or name_norm in n):
                 return test
     return None
 
@@ -57,7 +120,6 @@ def load_report_detail_rows(path: Path | None = None) -> list[dict]:
     return data
 
 
-@transaction.atomic
 def import_report_details(
     rows: list[dict],
     *,
@@ -71,13 +133,43 @@ def import_report_details(
     unmatched = []
     imported = []
 
-    for row in rows:
+    # One catalog load — avoids N remote full-table scans on Railway.
+    catalog = list(
+        Test.objects.only(
+            'id',
+            'name',
+            'short_name',
+            'test_code',
+            'sample_type',
+            'report_note',
+            'report_comments',
+            'clinical_significance',
+            'report_extra_sections',
+        )
+    )
+    params_by_test: dict[int, dict[str, TestParameter]] = {}
+    for param in TestParameter.objects.only(
+        'id',
+        'test_id',
+        'parameter_name',
+        'unit',
+        'method',
+        'reference_range_male',
+        'reference_range_female',
+        'reference_range_child',
+        'sample_value',
+        'sort_order',
+        'is_active',
+    ):
+        params_by_test.setdefault(param.test_id, {})[param.parameter_name] = param
+
+    for row_index, row in enumerate(rows, start=1):
         test_name = (row.get('test_name') or '').strip()
         match_names = list(row.get('match_names') or [])
         if test_name and test_name not in match_names:
             match_names.insert(0, test_name)
 
-        test = find_test_by_names(match_names)
+        test = find_test_by_names(match_names, catalog=catalog)
         created_this = False
         if not test:
             if not create_missing or not test_name:
@@ -93,6 +185,8 @@ def import_report_details(
                 mrp=0,
                 sample_type=(row.get('sample_type') or '').strip(),
             )
+            catalog.append(test)
+            params_by_test[test.id] = {}
             created_this = True
             created_tests += 1
 
@@ -113,68 +207,132 @@ def import_report_details(
                 'parameters': len(row.get('parameters') or []),
             })
         else:
-            dirty = []
-            if sample_type and sample_type != (test.sample_type or ''):
-                test.sample_type = sample_type
-                dirty.append('sample_type')
-            if report_note != (test.report_note or ''):
-                test.report_note = report_note
-                dirty.append('report_note')
-            if report_comments != (test.report_comments or ''):
-                test.report_comments = report_comments
-                dirty.append('report_comments')
-            if clinical_significance != (test.clinical_significance or ''):
-                test.clinical_significance = clinical_significance
-                dirty.append('clinical_significance')
-            if extra != (test.report_extra_sections or {}):
-                test.report_extra_sections = extra
-                dirty.append('report_extra_sections')
-            if dirty and not created_this:
-                test.save(update_fields=[*dirty])
-                updated_tests += 1
-            elif dirty and created_this:
-                test.save(update_fields=[*dirty])
+            with transaction.atomic():
+                dirty = []
+                if sample_type and sample_type != (test.sample_type or ''):
+                    test.sample_type = sample_type
+                    dirty.append('sample_type')
+                if report_note != (test.report_note or ''):
+                    test.report_note = report_note
+                    dirty.append('report_note')
+                if report_comments != (test.report_comments or ''):
+                    test.report_comments = report_comments
+                    dirty.append('report_comments')
+                if clinical_significance != (test.clinical_significance or ''):
+                    test.clinical_significance = clinical_significance
+                    dirty.append('clinical_significance')
+                if extra != (test.report_extra_sections or {}):
+                    test.report_extra_sections = extra
+                    dirty.append('report_extra_sections')
+                if dirty and not created_this:
+                    test.save(update_fields=[*dirty])
+                    updated_tests += 1
+                elif dirty and created_this:
+                    test.save(update_fields=[*dirty])
 
-            param_count = 0
-            keep_names = set()
-            for index, param in enumerate(row.get('parameters') or [], start=1):
-                pname = (param.get('parameter_name') or '').strip()[:200]
-                if not pname:
-                    continue
-                keep_names.add(pname)
-                defaults = {
-                    'unit': (param.get('unit') or '').strip()[:50],
-                    'method': (param.get('method') or '').strip()[:100],
-                    'reference_range_male': (param.get('reference_range_male') or '').strip()[:100],
-                    'reference_range_female': (param.get('reference_range_female') or '').strip()[:100],
-                    'reference_range_child': (param.get('reference_range_child') or '').strip()[:100],
-                    'sample_value': (param.get('sample_value') or '').strip()[:50],
-                    'sort_order': int(param.get('sort_order') or index),
-                    'is_active': True,
-                }
-                obj, was_created = TestParameter.objects.update_or_create(
-                    test=test,
-                    parameter_name=pname,
-                    defaults=defaults,
+                param_count = 0
+                keep_names = set()
+                existing_map = params_by_test.setdefault(test.id, {})
+                # Collapse duplicate parameter names within one report row (last wins).
+                deduped: dict[str, tuple[int, dict]] = {}
+                for index, param in enumerate(row.get('parameters') or [], start=1):
+                    pname = (param.get('parameter_name') or '').strip()[:200]
+                    if not pname or not _is_usable_parameter_name(pname):
+                        continue
+                    deduped[pname] = (index, param)
+
+                to_bulk_update: list[TestParameter] = []
+                to_create: list[TestParameter] = []
+                seen_update_ids: set[int] = set()
+                for pname, (index, param) in deduped.items():
+                    keep_names.add(pname)
+                    incoming = {
+                        'unit': _clean_field(param.get('unit'), 50),
+                        'method': _clean_field(param.get('method'), 100),
+                        'reference_range_male': _clean_field(param.get('reference_range_male'), 100),
+                        'reference_range_female': _clean_field(param.get('reference_range_female'), 100),
+                        'reference_range_child': _clean_field(param.get('reference_range_child'), 100),
+                        'sample_value': _clean_field(param.get('sample_value'), 50),
+                        'sort_order': int(param.get('sort_order') or index),
+                        'is_active': True,
+                    }
+                    existing = existing_map.get(pname)
+                    if existing:
+                        # Do not wipe real unit/range/method with blank PDF placeholders.
+                        for key in (
+                            'unit',
+                            'method',
+                            'reference_range_male',
+                            'reference_range_female',
+                            'reference_range_child',
+                            'sample_value',
+                        ):
+                            new_val = incoming[key]
+                            old_val = (getattr(existing, key) or '').strip()
+                            setattr(existing, key, new_val if new_val else old_val)
+                        existing.sort_order = incoming['sort_order']
+                        existing.is_active = True
+                        if existing.id not in seen_update_ids:
+                            to_bulk_update.append(existing)
+                            seen_update_ids.add(existing.id)
+                            updated_params += 1
+                    else:
+                        obj = TestParameter(test=test, parameter_name=pname, **incoming)
+                        to_create.append(obj)
+                        created_params += 1
+                    param_count += 1
+
+                if to_create:
+                    created_objs = TestParameter.objects.bulk_create(
+                        to_create,
+                        batch_size=100,
+                        ignore_conflicts=True,
+                    )
+                    # Re-load any that already existed or were just inserted.
+                    created_names = [obj.parameter_name for obj in to_create]
+                    for obj in TestParameter.objects.filter(test=test, parameter_name__in=created_names):
+                        existing_map[obj.parameter_name] = obj
+                if to_bulk_update:
+                    TestParameter.objects.bulk_update(
+                        to_bulk_update,
+                        [
+                            'unit',
+                            'method',
+                            'reference_range_male',
+                            'reference_range_female',
+                            'reference_range_child',
+                            'sample_value',
+                            'sort_order',
+                            'is_active',
+                        ],
+                        batch_size=100,
+                    )
+
+                # Drop stub / obsolete rows (e.g. panel name used as sole parameter).
+                if keep_names:
+                    obsolete_ids = [
+                        p.id for name, p in existing_map.items()
+                        if name not in keep_names and p.is_active
+                    ]
+                    if obsolete_ids:
+                        TestParameter.objects.filter(id__in=obsolete_ids).update(is_active=False)
+                        for name, p in existing_map.items():
+                            if name not in keep_names:
+                                p.is_active = False
+
+                imported.append({
+                    'test_id': test.id,
+                    'test_name': test.name,
+                    'action': 'created' if created_this else 'updated',
+                    'parameters': param_count,
+                })
+
+            if row_index % 25 == 0 or row_index == len(rows):
+                print(
+                    f'import progress {row_index}/{len(rows)} '
+                    f'created_params={created_params} updated_params={updated_params}',
+                    flush=True,
                 )
-                param_count += 1
-                if was_created:
-                    created_params += 1
-                else:
-                    updated_params += 1
-
-            # Drop stub / obsolete rows (e.g. panel name used as sole parameter).
-            if keep_names:
-                TestParameter.objects.filter(test=test).exclude(
-                    parameter_name__in=keep_names
-                ).update(is_active=False)
-
-            imported.append({
-                'test_id': test.id,
-                'test_name': test.name,
-                'action': 'created' if created_this else 'updated',
-                'parameters': param_count,
-            })
 
     propagated = {'copied_tests': 0, 'copied_parameters': 0, 'deactivated_stubs': 0}
     if not dry_run:

@@ -60,6 +60,24 @@ export const NAV = [
     excludeRoles: [ROLES.PATHOLOGIST, ROLES.RECEPTIONIST],
   },
   {
+    id: 'expense-type',
+    label: 'Expense Type',
+    href: '/expense-type',
+    permission: 'expense_type',
+  },
+  {
+    id: 'notes',
+    label: 'Notes',
+    href: '/notes',
+    permission: 'notes',
+  },
+  {
+    id: 'test-profile',
+    label: 'Test Profile',
+    href: '/portfolio/test-profile',
+    permission: 'test_profile',
+  },
+  {
     id: 'user-signup',
     label: 'New User Sign Up',
     href: '/user-signup',
@@ -258,6 +276,27 @@ export const STANDARD_NAV = [
         href: '/administration',
         icon: 'administration',
         excludeRoles: [ROLES.PATHOLOGIST, ROLES.RECEPTIONIST],
+      },
+      {
+        id: 'expense-type',
+        label: 'Expense Type',
+        href: '/expense-type',
+        icon: 'expense-type',
+        permission: 'expense_type',
+      },
+      {
+        id: 'notes',
+        label: 'Notes',
+        href: '/notes',
+        icon: 'notes',
+        permission: 'notes',
+      },
+      {
+        id: 'test-profile',
+        label: 'Test Profile',
+        href: '/portfolio/test-profile',
+        icon: 'test-profile',
+        permission: 'test_profile',
       },
       {
         id: 'user-signup',

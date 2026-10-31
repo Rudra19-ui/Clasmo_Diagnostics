@@ -118,7 +118,8 @@ function isItemActive(item, location, activePage) {
     return location.pathname.startsWith('/portfolio/');
   }
   if (item.id === 'all-tests' && location.pathname === '/portfolio/test-list') return true;
-  if (item.id === 'package-list' && location.pathname === '/portfolio/test-profile') return true;
+  if ((item.id === 'package-list' || item.id === 'test-profile')
+    && location.pathname === '/portfolio/test-profile') return true;
   if (item.id === 'reports-format' && location.pathname === '/portfolio/sample-report') return true;
   if (item.id === 'reports') {
     return location.pathname === '/reports' || location.pathname.startsWith('/reports#');

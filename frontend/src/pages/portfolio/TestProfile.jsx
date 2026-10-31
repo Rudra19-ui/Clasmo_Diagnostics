@@ -231,7 +231,7 @@ export default function TestProfile() {
   }, [packages, search]);
 
   return (
-    <Layout activePage={franchise ? 'package-list' : 'test-portfolio'}>
+    <Layout activePage={franchise ? 'package-list' : 'test-profile'}>
       <main className={`dash-main portfolio-page${franchise ? ' franchise-module-page' : ''}`}>
         <nav className="breadcrumb" aria-label="Breadcrumb">
           <ul>

@@ -16,9 +16,43 @@ ROLE_PERMISSION_SCHEMA = [
     {'key': 'test_parameters', 'label': 'Test Parameter Master'},
     {'key': 'manage_users', 'label': 'Manage Users'},
     {'key': 'manage_roles', 'label': 'Manage Roles'},
+    {'key': 'expense_type', 'label': 'Expense Type'},
+    {'key': 'notes', 'label': 'Notes'},
+    {'key': 'test_profile', 'label': 'Test Profile'},
     {'key': 'show_price', 'label': 'Show Price'},
     {'key': 'show_mrp', 'label': 'Show MRP'},
 ]
+
+# Roles that could open Expense Type before the dedicated permission existed.
+EXPENSE_TYPE_DEFAULT_ROLES = {
+    'super_admin',
+    'admin',
+    'hr',
+    'user',
+    'technician',
+}
+
+# Roles that could open Notes (Test Mgmt) before the dedicated permission existed.
+NOTES_DEFAULT_ROLES = {
+    'super_admin',
+    'admin',
+    'hr',
+    'user',
+    'technician',
+}
+
+# Roles that could open Test Profile before the dedicated permission existed.
+TEST_PROFILE_DEFAULT_ROLES = {
+    'super_admin',
+    'admin',
+    'hr',
+    'user',
+    'technician',
+    'pathologist',
+    'super_franchisee',
+    'franchisee',
+    'sub_franchise',
+}
 
 # Roles that already had Entry Section before the permission flag existed.
 ENTRY_SECTION_DEFAULT_ROLES = {
@@ -61,6 +95,30 @@ def role_has_entry_section(role_code: str, permissions: dict | None) -> bool:
     return role_code in ENTRY_SECTION_DEFAULT_ROLES
 
 
+def role_has_expense_type(role_code: str, permissions: dict | None) -> bool:
+    """Whether a role may open the Expense Type master page."""
+    stored = permissions or {}
+    if 'expense_type' in stored:
+        return bool(stored.get('expense_type'))
+    return role_code in EXPENSE_TYPE_DEFAULT_ROLES
+
+
+def role_has_notes(role_code: str, permissions: dict | None) -> bool:
+    """Whether a role may open the Notes master page."""
+    stored = permissions or {}
+    if 'notes' in stored:
+        return bool(stored.get('notes'))
+    return role_code in NOTES_DEFAULT_ROLES
+
+
+def role_has_test_profile(role_code: str, permissions: dict | None) -> bool:
+    """Whether a role may open Test Profile."""
+    stored = permissions or {}
+    if 'test_profile' in stored:
+        return bool(stored.get('test_profile'))
+    return role_code in TEST_PROFILE_DEFAULT_ROLES
+
+
 def normalize_permissions(permissions: dict | None) -> dict:
     stored = permissions or {}
     return {key: bool(stored.get(key, False)) for key in ALL_PERMISSION_KEYS}
@@ -95,6 +153,9 @@ DEFAULT_ROLE_DEFINITIONS = [
             elab_pay=True,
             help=True,
             report_preview=True,
+            expense_type=True,
+            notes=True,
+            test_profile=True,
             show_price=True,
             show_mrp=True,
         ),
@@ -116,6 +177,9 @@ DEFAULT_ROLE_DEFINITIONS = [
             help=True,
             result_entry=True,
             report_preview=True,
+            expense_type=True,
+            notes=True,
+            test_profile=True,
             show_price=True,
             show_mrp=True,
         ),
@@ -134,6 +198,7 @@ DEFAULT_ROLE_DEFINITIONS = [
             help=True,
             report_preview=True,
             test_parameters=True,
+            test_profile=True,
             show_price=True,
             show_mrp=True,
         ),
@@ -150,6 +215,9 @@ DEFAULT_ROLE_DEFINITIONS = [
             dashboard=True,
             help=True,
             manage_users=True,
+            expense_type=True,
+            notes=True,
+            test_profile=True,
             show_price=True,
             show_mrp=True,
         ),
@@ -184,6 +252,7 @@ DEFAULT_ROLE_DEFINITIONS = [
             dashboard=True,
             help=True,
             manage_users=True,
+            test_profile=True,
             show_price=False,
             show_mrp=False,
         ),
@@ -200,6 +269,7 @@ DEFAULT_ROLE_DEFINITIONS = [
             dashboard=True,
             help=True,
             manage_users=True,
+            test_profile=True,
             show_price=False,
             show_mrp=False,
         ),
@@ -215,6 +285,7 @@ DEFAULT_ROLE_DEFINITIONS = [
             reports=True,
             dashboard=True,
             help=True,
+            test_profile=True,
             show_price=False,
             show_mrp=False,
         ),

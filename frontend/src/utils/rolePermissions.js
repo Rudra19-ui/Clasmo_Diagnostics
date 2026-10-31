@@ -14,6 +14,9 @@ export const ROLE_PERMISSION_SCHEMA = [
   { key: 'test_parameters', label: 'Test Parameter Master' },
   { key: 'manage_users', label: 'Manage Users' },
   { key: 'manage_roles', label: 'Manage Roles' },
+  { key: 'expense_type', label: 'Expense Type' },
+  { key: 'notes', label: 'Notes' },
+  { key: 'test_profile', label: 'Test Profile' },
   { key: 'show_price', label: 'Show Price' },
   { key: 'show_mrp', label: 'Show MRP' },
 ];
@@ -24,6 +27,37 @@ export const PRICE_ALWAYS_VISIBLE_ROLES = ['admin', 'super_admin'];
 export const ENTRY_SECTION_DEFAULT_ROLES = [
   'super_admin',
   'admin',
+  'super_franchisee',
+  'franchisee',
+  'sub_franchise',
+];
+
+/** Roles that could open Expense Type before the dedicated permission existed. */
+export const EXPENSE_TYPE_DEFAULT_ROLES = [
+  'super_admin',
+  'admin',
+  'hr',
+  'user',
+  'technician',
+];
+
+/** Roles that could open Notes (Test Mgmt) before the dedicated permission existed. */
+export const NOTES_DEFAULT_ROLES = [
+  'super_admin',
+  'admin',
+  'hr',
+  'user',
+  'technician',
+];
+
+/** Roles that could open Test Profile before the dedicated permission existed. */
+export const TEST_PROFILE_DEFAULT_ROLES = [
+  'super_admin',
+  'admin',
+  'hr',
+  'user',
+  'technician',
+  'pathologist',
   'super_franchisee',
   'franchisee',
   'sub_franchise',
@@ -53,9 +87,39 @@ export function canAccessEntrySection(user) {
   return ENTRY_SECTION_DEFAULT_ROLES.includes(user.role);
 }
 
+export function canAccessExpenseType(user) {
+  if (!user) return false;
+  if (typeof user.expense_type === 'boolean') return user.expense_type;
+  if (user.permissions && typeof user.permissions.expense_type === 'boolean') {
+    return user.permissions.expense_type;
+  }
+  return EXPENSE_TYPE_DEFAULT_ROLES.includes(user.role);
+}
+
+export function canAccessNotes(user) {
+  if (!user) return false;
+  if (typeof user.notes === 'boolean') return user.notes;
+  if (user.permissions && typeof user.permissions.notes === 'boolean') {
+    return user.permissions.notes;
+  }
+  return NOTES_DEFAULT_ROLES.includes(user.role);
+}
+
+export function canAccessTestProfile(user) {
+  if (!user) return false;
+  if (typeof user.test_profile === 'boolean') return user.test_profile;
+  if (user.permissions && typeof user.permissions.test_profile === 'boolean') {
+    return user.permissions.test_profile;
+  }
+  return TEST_PROFILE_DEFAULT_ROLES.includes(user.role);
+}
+
 export function userHasPermission(user, key) {
   if (!user || !key) return false;
   if (key === 'entry_section') return canAccessEntrySection(user);
+  if (key === 'expense_type') return canAccessExpenseType(user);
+  if (key === 'notes') return canAccessNotes(user);
+  if (key === 'test_profile') return canAccessTestProfile(user);
   if (key === 'show_price') return canViewPrice(user);
   if (key === 'show_mrp') return canViewMrp(user);
   if (user.permissions && typeof user.permissions[key] === 'boolean') {

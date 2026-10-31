@@ -8,6 +8,9 @@ from .role_permissions import (
     ROLE_PERMISSION_SCHEMA,
     normalize_permissions,
     role_has_entry_section,
+    role_has_expense_type,
+    role_has_notes,
+    role_has_test_profile,
     role_shows_amount,
 )
 
@@ -64,6 +67,9 @@ class UserSerializer(serializers.ModelSerializer):
     show_price = serializers.SerializerMethodField()
     show_mrp = serializers.SerializerMethodField()
     entry_section = serializers.SerializerMethodField()
+    expense_type = serializers.SerializerMethodField()
+    notes = serializers.SerializerMethodField()
+    test_profile = serializers.SerializerMethodField()
     login_password = serializers.SerializerMethodField()
     email = serializers.EmailField(read_only=True)
 
@@ -74,6 +80,7 @@ class UserSerializer(serializers.ModelSerializer):
             'is_active', 'save_credentials', 'save_info', 'last_login', 'login_password',
             'parent_franchisee_id', 'parent_franchisee_name', 'parent_franchisee_role',
             'zone_id', 'zone_code', 'zone_name', 'show_price', 'show_mrp', 'entry_section',
+            'expense_type', 'notes', 'test_profile',
         ]
         read_only_fields = ['last_login', 'login_password']
 
@@ -120,6 +127,21 @@ class UserSerializer(serializers.ModelSerializer):
         if obj.is_superuser:
             return True
         return role_has_entry_section(obj.role, self._role_permissions(obj))
+
+    def get_expense_type(self, obj):
+        if obj.is_superuser:
+            return True
+        return role_has_expense_type(obj.role, self._role_permissions(obj))
+
+    def get_notes(self, obj):
+        if obj.is_superuser:
+            return True
+        return role_has_notes(obj.role, self._role_permissions(obj))
+
+    def get_test_profile(self, obj):
+        if obj.is_superuser:
+            return True
+        return role_has_test_profile(obj.role, self._role_permissions(obj))
 
     def get_login_password(self, obj):
         request = self.context.get('request')
@@ -370,10 +392,19 @@ class LabRoleSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         stored = data.get('permissions') or {}
-        # Keep legacy defaults for Entry Section until Super Admin saves the role.
+        # Keep legacy defaults until Super Admin saves the role.
         if 'entry_section' not in stored:
             from .role_permissions import ENTRY_SECTION_DEFAULT_ROLES
             stored = {**stored, 'entry_section': instance.code in ENTRY_SECTION_DEFAULT_ROLES}
+        if 'expense_type' not in stored:
+            from .role_permissions import EXPENSE_TYPE_DEFAULT_ROLES
+            stored = {**stored, 'expense_type': instance.code in EXPENSE_TYPE_DEFAULT_ROLES}
+        if 'notes' not in stored:
+            from .role_permissions import NOTES_DEFAULT_ROLES
+            stored = {**stored, 'notes': instance.code in NOTES_DEFAULT_ROLES}
+        if 'test_profile' not in stored:
+            from .role_permissions import TEST_PROFILE_DEFAULT_ROLES
+            stored = {**stored, 'test_profile': instance.code in TEST_PROFILE_DEFAULT_ROLES}
         data['permissions'] = normalize_permissions(stored)
         return data
 
@@ -448,11 +479,14 @@ class TestCategorySerializer(serializers.ModelSerializer):
 
 
 class TestRenameSerializer(serializers.ModelSerializer):
-    """Admin-only rename of the catalog test name and its prices."""
+    """Admin-only update of catalog test name, prices, and report notes."""
 
     class Meta:
         model = Test
-        fields = ['name', 'price', 'mrp']
+        fields = [
+            'name', 'price', 'mrp',
+            'report_note', 'report_comments', 'clinical_significance',
+        ]
 
     def validate_name(self, value):
         name = (value or '').strip()
@@ -474,6 +508,15 @@ class TestRenameSerializer(serializers.ModelSerializer):
         if value is None or value < 0:
             raise serializers.ValidationError('Enter an MRP of 0 or more.')
         return value
+
+    def validate_report_note(self, value):
+        return (value or '').strip()
+
+    def validate_report_comments(self, value):
+        return (value or '').strip()
+
+    def validate_clinical_significance(self, value):
+        return (value or '').strip()
 
 
 class TestSerializer(serializers.ModelSerializer):

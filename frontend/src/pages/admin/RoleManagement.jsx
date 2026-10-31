@@ -252,12 +252,33 @@ export default function RoleManagement() {
     roleDraft.permissions?.[key] ?? roleDraft.permissions?.show_price_mrp,
   );
 
+  const priceMrpOn = () => (
+    PRICE_ALWAYS_VISIBLE_ROLES.includes(selectedRoleCode)
+    || permissionOn('show_price')
+    || permissionOn('show_mrp')
+  );
+
   const togglePermission = (key) => {
     if (!isAdmin) return;
     setRoleDraft((prev) => {
-      const current = key === 'show_price' || key === 'show_mrp'
-        ? Boolean(prev.permissions?.[key] ?? prev.permissions?.show_price_mrp)
-        : Boolean(prev.permissions?.[key]);
+      if (key === 'show_price_mrp') {
+        const current = Boolean(
+          prev.permissions?.show_price
+          ?? prev.permissions?.show_mrp
+          ?? prev.permissions?.show_price_mrp,
+        );
+        const next = !current;
+        return {
+          ...prev,
+          permissions: {
+            ...prev.permissions,
+            show_price: next,
+            show_mrp: next,
+            show_price_mrp: next,
+          },
+        };
+      }
+      const current = Boolean(prev.permissions?.[key]);
       return {
         ...prev,
         permissions: {
@@ -484,44 +505,20 @@ export default function RoleManagement() {
                     </div>
                   </div>
 
-                  <section className="price-visibility-option price-visibility-combined">
-                    <h4 className="role-permissions-title">Price &amp; MRP</h4>
-                    <div className="price-visibility-checks">
-                      <label className="role-permission-item">
-                        <input
-                          type="checkbox"
-                          checked={
-                            PRICE_ALWAYS_VISIBLE_ROLES.includes(selectedRole.code)
-                            || permissionOn('show_price')
-                          }
-                          onChange={() => togglePermission('show_price')}
-                          disabled={!isAdmin || PRICE_ALWAYS_VISIBLE_ROLES.includes(selectedRole.code)}
-                        />
-                        <span>Show Price</span>
-                      </label>
-                      <label className="role-permission-item">
-                        <input
-                          type="checkbox"
-                          checked={
-                            PRICE_ALWAYS_VISIBLE_ROLES.includes(selectedRole.code)
-                            || permissionOn('show_mrp')
-                          }
-                          onChange={() => togglePermission('show_mrp')}
-                          disabled={!isAdmin || PRICE_ALWAYS_VISIBLE_ROLES.includes(selectedRole.code)}
-                        />
-                        <span>Show MRP</span>
-                      </label>
-                    </div>
-                    {PRICE_ALWAYS_VISIBLE_ROLES.includes(selectedRole.code) && (
-                      <p className="role-readonly-note">Admin and Super Admin always see Price and MRP.</p>
-                    )}
-                  </section>
-
                   <h4 className="role-permissions-title">Module Permissions</h4>
                   <p className="role-management-subtitle" style={{ marginTop: 0 }}>
-                    Tick <strong>Entry Section</strong> to show New / Edit Entry for that role after they log in again.
+                    Tick modules to grant access. <strong>Show Price &amp; MRP</strong> controls both amount columns together. Sidebar items update after the role logs in again.
                   </p>
                   <div className="role-permissions-grid">
+                    <label className="role-permission-item role-permission-item--accent">
+                      <input
+                        type="checkbox"
+                        checked={priceMrpOn()}
+                        onChange={() => togglePermission('show_price_mrp')}
+                        disabled={!isAdmin || PRICE_ALWAYS_VISIBLE_ROLES.includes(selectedRole.code)}
+                      />
+                      <span>Show Price &amp; MRP</span>
+                    </label>
                     {MODULE_PERMISSIONS.map((item) => (
                       <label key={item.key} className={`role-permission-item${item.key === 'entry_section' ? ' role-permission-item--accent' : ''}`}>
                         <input
@@ -534,6 +531,9 @@ export default function RoleManagement() {
                       </label>
                     ))}
                   </div>
+                  {PRICE_ALWAYS_VISIBLE_ROLES.includes(selectedRole.code) && (
+                    <p className="role-readonly-note">Admin and Super Admin always see Price and MRP.</p>
+                  )}
                 </>
               ) : (
                 <p className="role-panel-empty">Select a role to manage permissions.</p>

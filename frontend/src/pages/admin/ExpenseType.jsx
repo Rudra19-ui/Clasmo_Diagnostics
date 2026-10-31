@@ -110,13 +110,11 @@ export default function ExpenseType() {
   };
 
   return (
-    <Layout activePage="administration">
+    <Layout activePage="expense-type">
       <main className="dash-main admin-content-main">
         <nav className="breadcrumb" aria-label="Breadcrumb">
           <ul>
             <li><Link to="/search">Home</Link></li>
-            <li><Link to="/administration">Administration</Link></li>
-            <li>User Management</li>
             <li>Expense Type</li>
           </ul>
         </nav>
